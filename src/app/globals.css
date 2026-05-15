@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #0f0a0a;
+  --color-foreground: #f4ecec;
+  
+  --color-heritage-red: #8b0000;
+  --color-heritage-ochre: #cc7722;
+  --color-heritage-black: #1a1110;
+  
+  --font-display: var(--font-playfair);
+  --font-sans: var(--font-inter);
+}
+
+:root {
+  --bhulia-red: #8b0000;
+  --bhulia-black: #1a1110;
+  --bhulia-ochre: #cc7722;
+  --bhulia-bg: #0f0a0a;
+}
+
+@layer base {
+  body {
+    background-color: var(--bhulia-bg);
+    color: #f4ecec;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer components {
+  .bhulia-card {
+    background: rgba(26, 17, 16, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(139, 0, 0, 0.2);
+    border-radius: 12px;
+  }
+  
+  .bhulia-gradient-text {
+    background: linear-gradient(135deg, #cc7722 0%, #ff9933 50%, #cc7722 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .bhulia-button {
+    background: #8b0000;
+    color: white;
+    font-weight: 600;
+    padding: 12px 32px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    border: 1px solid #cc7722;
+  }
+  
+  .bhulia-button:hover {
+    background: #cc7722;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(204, 119, 34, 0.4);
+  }
+}
