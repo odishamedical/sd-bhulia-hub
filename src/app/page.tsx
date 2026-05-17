@@ -161,63 +161,63 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* Main Hero Banner E.g. Span 7 */}
-          <div className="lg:col-span-7 bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border border-[#C5A059] rounded-3xl p-8 md:p-12 flex flex-col justify-between relative overflow-hidden shadow-[0_0_35px_rgba(197,160,89,0.2)] group">
+          <div className="lg:col-span-7 bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border border-[#C5A059] rounded-3xl p-6 md:p-8 flex flex-col justify-between relative overflow-hidden shadow-[0_0_35px_rgba(197,160,89,0.2)] group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#C5A059]/15 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000"></div>
             
-            <div className="relative z-10 space-y-6 max-w-lg">
+            <div className="relative z-10 space-y-4 max-w-lg">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-xs font-bold uppercase tracking-widest">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse"></span>
                 <span>Odisha Handloom Sovereign Hub</span>
               </div>
               
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white leading-tight">
+              <h2 className="text-3xl md:text-4xl font-serif font-bold text-white leading-tight">
                 Bhulia.com: <br />
                 <span className="text-[#C5A059]">The Collective of Odisha's Master Weavers.</span>
               </h2>
 
-              <p className="text-sm md:text-base text-gray-200 leading-relaxed font-sans">
+              <p className="text-xs md:text-sm text-gray-200 leading-relaxed font-sans">
                 Direct access to thousands of authentic handloom artisans, primary weaving societies, and GI-Tag verified masterpieces from multiple tenant stores.
               </p>
             </div>
 
-            <div className="relative z-10 pt-8 flex items-center gap-4">
-              <button className="px-8 py-4 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_25px_rgba(197,160,89,0.4)] cursor-pointer">
+            <div className="relative z-10 pt-6 flex items-center gap-4">
+              <button className="px-6 py-3.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_25px_rgba(197,160,89,0.4)] cursor-pointer">
                 Shop the Collections
               </button>
             </div>
           </div>
 
           {/* Two Side Cards E.g. Span 5 */}
-          <div className="lg:col-span-5 grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+          <div className="lg:col-span-5 grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
             
             {/* Side Card 1: New Weaver Collective Arrivals */}
-            <div className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-[#C5A059] transition-all shadow-xl">
-              <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-6 border border-[#C5A059]/20 group-hover:border-[#C5A059]/50 transition-colors">
+            <div className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden group hover:border-[#C5A059] transition-all shadow-xl">
+              <div className="relative w-full h-32 rounded-xl overflow-hidden mb-4 border border-[#C5A059]/20 group-hover:border-[#C5A059]/50 transition-colors">
                 <Image src="/bhulia-hero.png" alt="New Weaver Arrivals" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A3A35] via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500"></div>
-                <span className="absolute top-3 left-3 px-2.5 py-1 bg-[#C5A059] text-[#0A1021] text-[9px] font-bold uppercase tracking-widest rounded shadow">New Arrivals</span>
+                <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#C5A059] text-[#0A1021] text-[9px] font-bold uppercase tracking-widest rounded shadow">New Arrivals</span>
               </div>
-              <div className="space-y-2">
-                <h3 className="text-lg font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors">New Weaver Collective Arrivals</h3>
-                <p className="text-xs text-gray-300 font-sans leading-relaxed">Discover fresh Mulberry Silk & Cotton Ikat weaves directly from Bargarh & Sonepur pit looms.</p>
+              <div className="space-y-1.5">
+                <h3 className="text-base font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors leading-tight">New Weaver Collective Arrivals</h3>
+                <p className="text-[11px] text-gray-300 font-sans leading-relaxed">Discover fresh Mulberry Silk & Cotton Ikat weaves directly from Bargarh & Sonepur pit looms.</p>
               </div>
-              <button className="w-full mt-4 py-3 bg-[#0B2B26] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-xs font-bold uppercase tracking-widest text-[#C5A059] rounded-xl transition-all cursor-pointer">
+              <button className="w-full mt-3 py-2 bg-[#0B2B26] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-[11px] font-bold uppercase tracking-widest text-[#C5A059] rounded-lg transition-all cursor-pointer">
                 Inspect Lot
               </button>
             </div>
 
             {/* Side Card 2: Meet Our Tenant Stores */}
-            <div className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-[#C5A059] transition-all shadow-xl">
-              <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-6 border border-[#C5A059]/20 group-hover:border-[#C5A059]/50 transition-colors">
+            <div className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden group hover:border-[#C5A059] transition-all shadow-xl">
+              <div className="relative w-full h-32 rounded-xl overflow-hidden mb-4 border border-[#C5A059]/20 group-hover:border-[#C5A059]/50 transition-colors">
                 <Image src="/bhulia-hero.png" alt="Featured Artisans" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A3A35] via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500"></div>
-                <span className="absolute top-3 left-3 px-2.5 py-1 bg-[#D4AF37] text-[#0A1021] text-[9px] font-bold uppercase tracking-widest rounded shadow">Tenant Stores</span>
+                <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#D4AF37] text-[#0A1021] text-[9px] font-bold uppercase tracking-widest rounded shadow">Tenant Stores</span>
               </div>
-              <div className="space-y-2">
-                <h3 className="text-lg font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors">Meet Our Tenant Stores: Featured Artisans</h3>
-                <p className="text-xs text-gray-300 font-sans leading-relaxed">Explore verified Primary Weavers Cooperative Societies (PWCS) and award-winning master workshops.</p>
+              <div className="space-y-1.5">
+                <h3 className="text-base font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors leading-tight">Meet Our Tenant Stores: Featured Artisans</h3>
+                <p className="text-[11px] text-gray-300 font-sans leading-relaxed">Explore verified Primary Weavers Cooperative Societies (PWCS) and master workshops.</p>
               </div>
-              <button className="w-full mt-4 py-3 bg-[#0B2B26] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-xs font-bold uppercase tracking-widest text-[#C5A059] rounded-xl transition-all cursor-pointer">
+              <button className="w-full mt-3 py-2 bg-[#0B2B26] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-[11px] font-bold uppercase tracking-widest text-[#C5A059] rounded-lg transition-all cursor-pointer">
                 View Stores
               </button>
             </div>
@@ -308,39 +308,39 @@ export default function Home() {
               { id: "GI-4419", name: "Mustard Yellow Cotton Ikat", vendor: "Pata Weaver Group", price: "₹ 5,499", img: "/bhulia-hero.png", ticket: "✨ Handspun Cotton E.g. Organic Dye" }
             ].map((item, idx) => (
               <div key={idx} className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl">
-                <div className="relative w-full h-64 overflow-hidden bg-[#0B2B26]">
+                <div className="relative w-full h-48 overflow-hidden bg-[#0B2B26]">
                   <Image src={item.img} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                  <div className="absolute top-3 right-3 bg-[#0B2B26]/80 backdrop-blur-md px-2.5 py-1 rounded-md border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
+                  <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
                     {item.id}
                   </div>
-                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#0B2B26] to-transparent p-4 pt-10">
-                    <p className="text-[10px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.vendor}</p>
+                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#0B2B26] to-transparent p-3 pt-8">
+                    <p className="text-[9px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.vendor}</p>
                   </div>
                 </div>
 
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2.5">
                   <div>
-                    <h4 className="font-bold text-white text-base group-hover:text-[#C5A059] transition-colors mb-1">{item.name}</h4>
-                    <p className="text-lg font-serif font-bold text-[#C5A059]">{item.price}</p>
+                    <h4 className="font-bold text-white text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.name}</h4>
+                    <p className="text-base font-serif font-bold text-[#C5A059]">{item.price}</p>
                   </div>
 
                   {/* Social Share Affiliate Buttons */}
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#C5A059]/20">
-                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1.5 py-2 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] rounded-lg font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer">
+                  <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-[#C5A059]/20">
+                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] rounded-md font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📲 WhatsApp</span>
                     </button>
-                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1.5 py-2 bg-[#1877F2]/20 hover:bg-[#1877F2]/30 border border-[#1877F2]/40 text-[#1877F2] rounded-lg font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer">
+                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/20 hover:bg-[#1877F2]/30 border border-[#1877F2]/40 text-[#1877F2] rounded-md font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📘 Facebook</span>
                     </button>
                   </div>
 
-                  <button className="w-full py-2.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] cursor-pointer">
+                  <button className="w-full py-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-[10px] uppercase tracking-wider rounded-lg hover:brightness-110 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] cursor-pointer">
                     Add to Cart
                   </button>
                 </div>
 
                 {/* Bottom Ticket */}
-                <div className="bg-[#0B2B26] px-4 py-2.5 border-t border-[#C5A059]/30 text-[10px] font-mono text-gray-300 flex items-center justify-center gap-1.5 text-center leading-tight">
+                <div className="bg-[#0B2B26] px-3 py-1.5 border-t border-[#C5A059]/30 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
                   <span className="truncate">{item.ticket}</span>
                 </div>
               </div>
@@ -396,39 +396,39 @@ export default function Home() {
               { id: "GI-9565", name: "Pure Tussar Silk Ikat Saree", vendor: "Pata Weaver Group", price: "₹ 17,499", img: "/bhulia-hero.png", ticket: "⏱️ Weaving Ends in 2 Days E.g. Reserve" }
             ].map((item, idx) => (
               <div key={idx} className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl">
-                <div className="relative w-full h-64 overflow-hidden bg-[#0B2B26]">
+                <div className="relative w-full h-48 overflow-hidden bg-[#0B2B26]">
                   <Image src={item.img} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                  <div className="absolute top-3 right-3 bg-[#0B2B26]/80 backdrop-blur-md px-2.5 py-1 rounded-md border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
+                  <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
                     {item.id}
                   </div>
-                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#0B2B26] to-transparent p-4 pt-10">
-                    <p className="text-[10px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.vendor}</p>
+                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#0B2B26] to-transparent p-3 pt-8">
+                    <p className="text-[9px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.vendor}</p>
                   </div>
                 </div>
 
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2.5">
                   <div>
-                    <h4 className="font-bold text-white text-base group-hover:text-[#C5A059] transition-colors mb-1">{item.name}</h4>
-                    <p className="text-lg font-serif font-bold text-[#C5A059]">{item.price}</p>
+                    <h4 className="font-bold text-white text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.name}</h4>
+                    <p className="text-base font-serif font-bold text-[#C5A059]">{item.price}</p>
                   </div>
 
                   {/* Social Share Affiliate Buttons */}
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#C5A059]/20">
-                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1.5 py-2 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] rounded-lg font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer">
+                  <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-[#C5A059]/20">
+                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] rounded-md font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📲 WhatsApp</span>
                     </button>
-                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1.5 py-2 bg-[#1877F2]/20 hover:bg-[#1877F2]/30 border border-[#1877F2]/40 text-[#1877F2] rounded-lg font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer">
+                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/20 hover:bg-[#1877F2]/30 border border-[#1877F2]/40 text-[#1877F2] rounded-md font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📘 Facebook</span>
                     </button>
                   </div>
 
-                  <button className="w-full py-2.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] cursor-pointer">
+                  <button className="w-full py-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-[10px] uppercase tracking-wider rounded-lg hover:brightness-110 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] cursor-pointer">
                     Add to Cart
                   </button>
                 </div>
 
                 {/* Bottom Ticket */}
-                <div className="bg-[#0B2B26] px-4 py-2.5 border-t border-[#C5A059]/30 text-[10px] font-mono text-gray-300 flex items-center justify-center gap-1.5 text-center leading-tight">
+                <div className="bg-[#0B2B26] px-3 py-1.5 border-t border-[#C5A059]/30 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
                   <span className="truncate">{item.ticket}</span>
                 </div>
               </div>
