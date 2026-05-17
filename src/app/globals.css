@@ -21,7 +21,7 @@
 
 @layer base {
   body {
-    background-color: var(--bhulia-bg);
+    background-color: #0A2520;
     color: #f4ecec;
     -webkit-font-smoothing: antialiased;
   }

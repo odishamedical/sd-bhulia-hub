@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import SsoBridge from "@/components/SsoBridge";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "BHULIA | Heritage Sambalpuri Marketplace",
@@ -24,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
-      <body className={`${inter.variable} ${playfair.variable} font-sans min-h-full flex flex-col`}>
+    <html lang="en" className="h-full bg-[#0A2520]">
+      <body className="font-sans min-h-full flex flex-col bg-[#0A2520] text-white">
         <SsoBridge />
         {children}
       </body>
