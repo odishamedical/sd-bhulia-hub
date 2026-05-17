@@ -47,7 +47,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative min-h-screen bg-gradient-to-b from-[#0B2B26] via-[#0D3630] to-[#0A2520] text-white overflow-hidden font-sans flex flex-col">
+    <main className="relative min-h-screen bg-gradient-to-b from-[#0B2B26] via-[#0D3630] to-[#0A2520] text-white font-sans flex flex-col">
       
       {/* Background Gold Glows & Ikat Texture */}
       <div className="absolute inset-0 z-0 opacity-15 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #C5A059 1px, transparent 0)', backgroundSize: '48px 48px' }} />
@@ -547,7 +547,7 @@ export default function Home() {
 
       {/* 7. Global Ecosystem Continuous Footer Bar */}
       <footer className="bg-[#051815] border-t border-[#C5A059]/40 text-white py-12 px-6 z-50 relative shadow-[0_-4_30px_rgba(0,0,0,0.6)] mt-auto font-sans">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-10">
+        <div className="max-w-[1400px] mx-auto flex flex-col gap-12">
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-[#C5A059]/20 pb-10">
             <div>
@@ -563,7 +563,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 border-b border-[#C5A059]/20 pb-12">
             
             {/* Hub 1: Gold Hub */}
             <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg">
@@ -624,6 +624,63 @@ export default function Home() {
               <a href="https://sd-it-hub.vercel.app" className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-indigo-300 hover:text-white transition-colors">
                 Explore IT Hub →
               </a>
+            </div>
+
+          </div>
+
+          {/* Bottom Section: Gold Hub Corporate Footer Columns */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pt-4 pb-6">
+            
+            {/* Col 1: Branding & Description */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#C5A059] shrink-0">
+                  <Image src="/bhulia_logo_final.jpg" alt="Bhulia Logo" fill className="object-cover" />
+                </div>
+                <div>
+                  <h4 className="text-lg font-serif font-bold text-[#C5A059] leading-none">Shyam Dash</h4>
+                  <p className="text-[9px] text-gray-400 uppercase tracking-widest mt-1">India's Verified Handloom Marketplace.</p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans">
+                The premier luxury marketplace for authenticated, GI-Tagged Sambalpuri handlooms. Partnering exclusively with master weavers and primary cooperative societies across India.
+              </p>
+            </div>
+
+            {/* Col 2: Quick Links */}
+            <div className="space-y-4">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Quick Links</h4>
+              <ul className="space-y-2.5 text-xs text-gray-300">
+                <li><a href="#" className="hover:text-[#C5A059] transition-colors">Our Weaver Network</a></li>
+                <li><a href="#" className="hover:text-[#C5A059] transition-colors">Verify GI-Tag Certificate</a></li>
+                <li><a href="#" className="hover:text-[#C5A059] transition-colors">Live Silk & Yarn Rates</a></li>
+                <li><a href="#" className="hover:text-[#C5A059] transition-colors">SD Digital Services</a></li>
+              </ul>
+            </div>
+
+            {/* Col 3: Customer Care */}
+            <div className="space-y-4">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Customer Care</h4>
+              <ul className="space-y-2.5 text-xs text-gray-300">
+                <li><a href="#" className="hover:text-[#C5A059] transition-colors">Artisan Escrow Guide</a></li>
+                <li><a href="#" className="hover:text-[#C5A059] transition-colors">Secure BVC Armored Transit</a></li>
+                <li><a href="#" className="hover:text-[#C5A059] transition-colors">Platform Return Policy</a></li>
+                <li><a href="#" className="hover:text-[#C5A059] transition-colors">24/7 Concierge Support</a></li>
+              </ul>
+            </div>
+
+            {/* Col 4: Stay Updated (Newsletter) */}
+            <div className="space-y-4">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Stay Updated</h4>
+              <p className="text-xs text-gray-300 leading-relaxed">
+                Subscribe for daily live silk rates, artisan drop announcements, and exclusive GI collection releases.
+              </p>
+              <div className="flex items-center gap-2 bg-[#0B2B26] border border-[#C5A059]/40 rounded-xl p-1.5 shadow-inner">
+                <input type="email" placeholder="Email Address" className="w-full bg-transparent px-3 py-1.5 text-xs text-white placeholder-gray-400 focus:outline-none" />
+                <button className="bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-5 py-2 rounded-lg font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] shrink-0 cursor-pointer">
+                  Join
+                </button>
+              </div>
             </div>
 
           </div>
