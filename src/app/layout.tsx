@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full bg-[#0A2520]">
-      <body className="font-sans min-h-full flex flex-col bg-[#0A2520] text-white">
+      <body className="font-sans min-h-full flex flex-col bg-[#0A2520] text-white overflow-x-hidden">
         <SsoBridge />
         {children}
       </body>

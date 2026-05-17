@@ -52,11 +52,11 @@ export default function Home() {
       
       {/* Background Gold Glows & Ikat Texture */}
       <div className="absolute inset-0 z-0 opacity-15 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #C5A059 1px, transparent 0)', backgroundSize: '48px 48px' }} />
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#C5A059]/15 blur-[160px] rounded-full pointer-events-none z-0" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#D4AF37]/15 blur-[160px] rounded-full pointer-events-none z-0" />
+      <div className="absolute top-0 left-0 w-[40%] h-[40%] bg-[#C5A059]/15 blur-[160px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D4AF37]/15 blur-[160px] rounded-full pointer-events-none z-0" />
 
       {/* Top Sticky Header / Perfect Left-Center-Right Balance */}
-      <header className="sticky top-0 z-50 bg-[#0B2B26]/95 backdrop-blur-md border-b border-[#C5A059]/40 px-6 py-4 flex justify-between items-center shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+      <header className="sticky top-0 w-full z-50 bg-[#0B2B26]/95 backdrop-blur-md border-b border-[#C5A059]/40 px-6 py-4 flex justify-between items-center shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
         
         {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
         <div className="flex items-center gap-3 sm:gap-4">
@@ -586,7 +586,7 @@ export default function Home() {
       </div>
 
       {/* 7. Global Ecosystem Continuous Footer Bar */}
-      <footer className="bg-[#051815] border-t border-[#C5A059]/40 text-white py-12 px-6 z-50 relative shadow-[0_-4_30px_rgba(0,0,0,0.6)] mt-auto font-sans">
+      <footer className="w-full bg-[#051815] border-t border-[#C5A059]/40 text-white py-12 px-6 z-50 relative shadow-[0_-4_30px_rgba(0,0,0,0.6)] mt-auto font-sans">
         <div className="max-w-[1400px] mx-auto flex flex-col gap-12">
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-[#C5A059]/20 pb-10">
