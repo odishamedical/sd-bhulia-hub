@@ -217,25 +217,33 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 3. Onboarding Gateway Row */}
-        <div className="bg-[#0A3A35] border border-[#C5A059]/50 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
-          <div className="space-y-1 text-center md:text-left">
-            <h4 className="text-lg font-serif font-bold text-white">Join the Sovereign Sambalpuri Handloom Ecosystem</h4>
-            <p className="text-xs text-gray-300">Select your operational gateway to initiate secure, verified onboarding.</p>
+        {/* 3. Operational Onboarding Gateways (Sovereign Pillars 4-Column Grid) */}
+        <div className="space-y-6 pt-4">
+          <div>
+            <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Operational Onboarding Gateways</h3>
+            <p className="text-xs text-gray-300 uppercase tracking-widest">Select your dedicated operational pillar to initiate secure, verified onboarding</p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-4 w-full md:w-auto">
-            <button className="flex-1 sm:flex-none px-6 py-3 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_15px_rgba(197,160,89,0.4)] cursor-pointer">
-              Weavers Onboarding
-            </button>
-            <button className="flex-1 sm:flex-none px-6 py-3 bg-[#0B2B26] border border-[#C5A059] hover:bg-[#0D4B45] text-[#C5A059] hover:text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all cursor-pointer">
-              Store Owners
-            </button>
-            <button className="flex-1 sm:flex-none px-6 py-3 bg-[#0B2B26] border border-[#C5A059] hover:bg-[#0D4B45] text-[#C5A059] hover:text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all cursor-pointer">
-              Wholesalers
-            </button>
-            <button className="flex-1 sm:flex-none px-6 py-3 bg-[#0B2B26] border border-[#C5A059] hover:bg-[#0D4B45] text-[#C5A059] hover:text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all cursor-pointer">
-              Franchises
-            </button>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { title: "Weavers Onboarding", desc: "List your traditional pit looms, mint GI-Tagged sarees, and receive direct D2C escrow payouts.", icon: "🧵", btn: "Apply as Weaver" },
+              { title: "Store Owners Gateway", desc: "Register your Primary Weaving Cooperative Society (PWCS) or master boutique for global Spree sync.", icon: "🏛️", btn: "Apply as Store Owner" },
+              { title: "Wholesalers Portal", desc: "Access bulk B2B handloom requisitions, custom Ikat commissioning lots, and tax-exempt export billing.", icon: "📦", btn: "Apply as Wholesaler" },
+              { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise" }
+            ].map((gate, idx) => (
+              <div key={idx} className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl">
+                <div>
+                  <div className="w-12 h-12 rounded-xl bg-[#0B2B26] border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow">
+                    {gate.icon}
+                  </div>
+                  <h4 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-[#C5A059] transition-colors">{gate.title}</h4>
+                  <p className="text-xs text-gray-300 leading-relaxed font-sans">{gate.desc}</p>
+                </div>
+                <button className="w-full mt-6 py-3 bg-[#0B2B26] border border-[#C5A059]/50 hover:border-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021] text-xs font-bold uppercase tracking-widest text-[#C5A059] rounded-xl transition-all shadow-md cursor-pointer">
+                  {gate.btn} →
+                </button>
+              </div>
+            ))}
           </div>
         </div>
 
