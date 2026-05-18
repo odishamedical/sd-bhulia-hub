@@ -302,40 +302,51 @@ export default function ArtisanStorePage() {
       <div className="absolute top-0 left-0 w-[40%] h-[40%] bg-[#C5A059]/15 blur-[160px] rounded-full pointer-events-none z-0" />
       <div className="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D4AF37]/15 blur-[160px] rounded-full pointer-events-none z-0" />
 
-      {/* Top Sticky Header */}
-      <header className="sticky top-0 w-full z-50 bg-[#0B2B26]/95 backdrop-blur-md border-b border-[#C5A059]/40 px-6 py-4 flex justify-between items-center shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center gap-3 sm:gap-4">
-          <Link href="/" className="relative w-10 sm:w-14 h-10 sm:h-14 rounded-full overflow-hidden border-2 border-[#C5A059] shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0 block">
-            <Image src="/bhulia_logo_final.jpg" alt="Bhulia Gold Logo" fill className="object-cover" />
-          </Link>
-          <div>
-            <Link href="/">
-              <h1 className="text-xl sm:text-2xl font-serif font-bold tracking-wider text-[#C5A059] leading-none hover:opacity-80 transition-opacity">Bhulia.com</h1>
+      {/* Top Sticky Header / Perfect Left-Center-Right Balance */}
+      <header className="sticky top-0 w-full z-50 bg-[#0B2B26]/95 backdrop-blur-md border-b border-[#C5A059]/40 px-4 sm:px-6 py-3 sm:py-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)] flex flex-col gap-3">
+        <div className="flex justify-between items-center gap-2 w-full">
+          {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0">
+            <div className="relative w-8 sm:w-14 h-8 sm:h-14 rounded-full overflow-hidden border border-[#C5A059] sm:border-2 shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
+              <Image src="/bhulia_logo_final.jpg" alt="Bhulia Gold Logo" fill className="object-cover" />
+            </div>
+            <div className="min-w-0">
+              <Link href="/">
+                <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wider text-[#C5A059] leading-none hover:opacity-80 transition-opacity truncate">Bhulia.com</h1>
+              </Link>
+              <p className="hidden sm:block text-[11px] text-gray-300 font-medium tracking-wide mt-1 truncate">Sambalpuri saree, Direct from Weavers</p>
+            </div>
+          </div>
+
+          {/* Center Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-gray-200">
+            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Home</Link>
+            <Link href="/#cotton-sambalpuri" className="hover:text-[#C5A059] transition-colors pb-1">Products</Link>
+            <Link href="/directory" className="text-[#C5A059] border-b-2 border-[#C5A059] pb-1">Weaver Directory</Link>
+            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
+            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
+          </nav>
+
+          {/* Right Side Actions & Mobile Hamburger */}
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+            <Link href="/directory" className="hidden sm:flex px-5 py-2.5 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shadow shrink-0">
+              ← Back to Directory
             </Link>
-            <p className="text-[9px] sm:text-[11px] text-gray-300 font-medium tracking-wide mt-1 truncate max-w-[160px] sm:max-w-none">Sambalpuri saree, Direct from Weavers</p>
+
+            {/* Mobile Hamburger Button */}
+            <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0 shadow">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileNavOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />}
+              </svg>
+            </button>
           </div>
         </div>
 
-        {/* Center Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-gray-200">
-          <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Home</Link>
-          <Link href="/#cotton-sambalpuri" className="hover:text-[#C5A059] transition-colors pb-1">Products</Link>
-          <Link href="/directory" className="text-[#C5A059] border-b-2 border-[#C5A059] pb-1">Weaver Directory</Link>
-          <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
-          <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
-        </nav>
-
-        {/* Right Side Actions */}
-        <div className="flex items-center gap-4">
-          <Link href="/directory" className="px-5 py-2.5 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shadow">
+        {/* Mobile-Only Dedicated Back to Directory Bar right below Bhulia.com */}
+        <div className="sm:hidden w-full pt-1 border-t border-[#C5A059]/20 flex justify-center">
+          <Link href="/directory" className="w-full flex items-center justify-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow">
             ← Back to Directory
           </Link>
-
-          <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-10 h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0 shadow">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {mobileNavOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />}
-            </svg>
-          </button>
         </div>
       </header>
 
