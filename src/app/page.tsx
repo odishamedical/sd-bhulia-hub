@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
@@ -71,7 +72,7 @@ export default function Home() {
 
         {/* Center: Dedicated Navigation Links */}
         <nav className="hidden lg:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-gray-200">
-          <a href="#" className="text-[#C5A059] border-b-2 border-[#C5A059] pb-1">Home</a>
+          <Link href="/" className="text-[#C5A059] border-b-2 border-[#C5A059] pb-1">Home</Link>
           <div className="relative group py-1">
             <button className="flex items-center gap-1 hover:text-[#C5A059] transition-colors cursor-pointer">
               <span>Products</span>
@@ -86,8 +87,9 @@ export default function Home() {
               <a href="#pata-pasapalli" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Pasapalli (Silk)</a>
             </div>
           </div>
-          <a href="#" className="hover:text-[#C5A059] transition-colors pb-1">About Us</a>
-          <a href="#" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</a>
+          <Link href="/directory" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Directory</Link>
+          <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
+          <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
         </nav>
 
         {/* Right Side: User Menu / Sign In / Register & Mobile Hamburger */}
@@ -130,7 +132,7 @@ export default function Home() {
       {mobileNavOpen && (
         <div className="lg:hidden sticky top-[73px] z-40 bg-[#0B2B26]/98 backdrop-blur-md border-b border-[#C5A059]/40 px-6 py-6 space-y-4 shadow-2xl animate-fadeIn">
           <div className="flex flex-col space-y-3 text-xs font-bold uppercase tracking-widest text-gray-200">
-            <a href="#" onClick={() => setMobileNavOpen(false)} className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Home</a>
+            <Link href="/" onClick={() => setMobileNavOpen(false)} className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Home</Link>
             <div className="space-y-2 border-b border-[#C5A059]/20 pb-2">
               <span className="text-gray-400 block text-[10px]">Products:</span>
               <div className="grid grid-cols-2 gap-2 pl-2 text-[11px] font-medium text-gray-300 capitalize">
@@ -142,8 +144,9 @@ export default function Home() {
                 <a href="#pata-pasapalli" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Pata Pasapalli (Silk)</a>
               </div>
             </div>
-            <a href="#" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">About Us</a>
-            <a href="#" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] pb-1 block">Contact Us</a>
+            <Link href="/directory" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Weaver Directory</Link>
+            <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">About Us</Link>
+            <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] pb-1 block">Contact Us</Link>
 
             {/* Mobile Cart Button */}
             <button className="w-full mt-2 flex items-center justify-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shadow">
@@ -240,7 +243,7 @@ export default function Home() {
               { title: "Browse by Bandha Artists", desc: "Discover legendary Tie & Dye master craftsmen preserving 800-year-old Ikat motifs.", icon: "🎨" },
               { title: "Browse by Graph Designers", desc: "Meet the mathematical visionaries who chart complex Ikat patterns onto paper grids.", icon: "📐" }
             ].map((dir, idx) => (
-              <div key={idx} className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl cursor-pointer">
+              <Link key={idx} href="/directory" className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl cursor-pointer block">
                 <div>
                   <div className="w-12 h-12 rounded-xl bg-[#0B2B26] border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow">
                     {dir.icon}
@@ -252,7 +255,7 @@ export default function Home() {
                   <span>Explore Directory</span>
                   <span>→</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -691,10 +694,10 @@ export default function Home() {
             <div className="space-y-4">
               <h4 className="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Quick Links</h4>
               <ul className="space-y-2.5 text-xs text-gray-300">
-                <li><a href="#" className="hover:text-[#C5A059] transition-colors">Our Weaver Network</a></li>
-                <li><a href="#" className="hover:text-[#C5A059] transition-colors">Verify GI-Tag Certificate</a></li>
-                <li><a href="#" className="hover:text-[#C5A059] transition-colors">Live Silk & Yarn Rates</a></li>
-                <li><a href="#" className="hover:text-[#C5A059] transition-colors">SD Digital Services</a></li>
+                <li><Link href="/directory" className="hover:text-[#C5A059] transition-colors">Our Weaver Network</Link></li>
+                <li><Link href="/directory" className="hover:text-[#C5A059] transition-colors">Verify GI-Tag Certificate</Link></li>
+                <li><Link href="/" className="hover:text-[#C5A059] transition-colors">Live Silk & Yarn Rates</Link></li>
+                <li><Link href="/" className="hover:text-[#C5A059] transition-colors">SD Digital Services</Link></li>
               </ul>
             </div>
 
