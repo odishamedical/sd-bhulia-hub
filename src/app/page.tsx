@@ -57,75 +57,86 @@ export default function Home() {
       <div className="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D4AF37]/15 blur-[160px] rounded-full pointer-events-none z-0" />
 
       {/* Top Sticky Header / Perfect Left-Center-Right Balance */}
-      <header className="sticky top-0 w-full z-50 bg-[#0B2B26]/95 backdrop-blur-md border-b border-[#C5A059]/40 px-6 py-4 flex justify-between items-center shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
-        
-        {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="relative w-10 sm:w-14 h-10 sm:h-14 rounded-full overflow-hidden border-2 border-[#C5A059] shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
-            <Image src="/bhulia_logo_final.jpg" alt="Bhulia Gold Logo" fill className="object-cover" />
-          </div>
-          <div>
-            <h1 className="text-xl sm:text-2xl font-serif font-bold tracking-wider text-[#C5A059] leading-none">Bhulia.com</h1>
-            <p className="text-[9px] sm:text-[11px] text-gray-300 font-medium tracking-wide mt-1 truncate max-w-[160px] sm:max-w-none">Sambalpuri saree, Direct from Weavers</p>
-          </div>
-        </div>
-
-        {/* Center: Dedicated Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-gray-200">
-          <Link href="/" className="text-[#C5A059] border-b-2 border-[#C5A059] pb-1">Home</Link>
-          <div className="relative group py-1">
-            <button className="flex items-center gap-1 hover:text-[#C5A059] transition-colors cursor-pointer">
-              <span>Products</span>
-              <span className="text-[10px]">▼</span>
-            </button>
-            <div className="absolute top-full left-0 mt-2 w-56 bg-[#0D3630] border border-[#C5A059]/40 rounded-xl shadow-2xl py-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50">
-              <a href="#cotton-sambalpuri" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Cotton Sambalpuri</a>
-              <a href="#pata-sambalpuri" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Sambalpuri (Silk)</a>
-              <a href="#cotton-bomkai" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Cotton Bomkai</a>
-              <a href="#pata-bomkai" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Bomkai (Silk)</a>
-              <a href="#cotton-pasapalli" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Cotton Pasapalli</a>
-              <a href="#pata-pasapalli" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Pasapalli (Silk)</a>
+      <header className="sticky top-0 w-full z-50 bg-[#0B2B26]/95 backdrop-blur-md border-b border-[#C5A059]/40 px-4 sm:px-6 py-3 sm:py-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)] flex flex-col gap-3">
+        <div className="flex justify-between items-center gap-2 w-full">
+          {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0">
+            <div className="relative w-8 sm:w-14 h-8 sm:h-14 rounded-full overflow-hidden border border-[#C5A059] sm:border-2 shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
+              <Image src="/bhulia_logo_final.jpg" alt="Bhulia Gold Logo" fill className="object-cover" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wider text-[#C5A059] leading-none truncate">Bhulia.com</h1>
+              <p className="hidden sm:block text-[11px] text-gray-300 font-medium tracking-wide mt-1 truncate">Sambalpuri saree, Direct from Weavers</p>
             </div>
           </div>
-          <Link href="/directory" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Directory</Link>
-          <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
-          <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
-        </nav>
 
-        {/* Right Side: User Menu / Sign In / Register & Mobile Hamburger */}
-        <div className="flex items-center gap-2 sm:gap-4">
-          {userAvatar ? (
-            <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#0A3A35] rounded-xl border border-[#C5A059]/50 shadow-inner">
-              <img src={userAvatar} alt="User Avatar" className="w-6 sm:w-8 h-6 sm:h-8 rounded-full border border-[#C5A059]" />
-              <div className="hidden sm:flex flex-col text-left">
-                <span className="text-xs font-bold text-white leading-none">{userName}</span>
-                <span className="text-[9px] text-[#C5A059] uppercase tracking-widest mt-0.5">{userRole}</span>
+          {/* Center: Dedicated Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-gray-200">
+            <Link href="/" className="text-[#C5A059] border-b-2 border-[#C5A059] pb-1">Home</Link>
+            <div className="relative group py-1">
+              <button className="flex items-center gap-1 hover:text-[#C5A059] transition-colors cursor-pointer">
+                <span>Products</span>
+                <span className="text-[10px]">▼</span>
+              </button>
+              <div className="absolute top-full left-0 mt-2 w-56 bg-[#0D3630] border border-[#C5A059]/40 rounded-xl shadow-2xl py-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50">
+                <a href="#cotton-sambalpuri" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Cotton Sambalpuri</a>
+                <a href="#pata-sambalpuri" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Sambalpuri (Silk)</a>
+                <a href="#cotton-bomkai" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Cotton Bomkai</a>
+                <a href="#pata-bomkai" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Bomkai (Silk)</a>
+                <a href="#cotton-pasapalli" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Cotton Pasapalli</a>
+                <a href="#pata-pasapalli" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Pasapalli (Silk)</a>
               </div>
             </div>
-          ) : (
-            <a href="https://sd-auth-center.vercel.app" className="flex items-center gap-1.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(197,160,89,0.4)] hover:brightness-110 transition-all cursor-pointer shrink-0">
-              <svg className="w-3.5 h-3.5 hidden sm:inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+            <Link href="/directory" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Directory</Link>
+            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
+            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
+          </nav>
+
+          {/* Right Side: User Menu / Sign In / Register (Desktop) & Mobile Hamburger */}
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+            {userAvatar ? (
+              <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-4 py-1 sm:py-2 bg-[#0A3A35] rounded-xl border border-[#C5A059]/50 shadow-inner shrink-0">
+                <img src={userAvatar} alt="User Avatar" className="w-6 sm:w-8 h-6 sm:h-8 rounded-full border border-[#C5A059]" />
+                <div className="hidden sm:flex flex-col text-left">
+                  <span className="text-xs font-bold text-white leading-none">{userName}</span>
+                  <span className="text-[9px] text-[#C5A059] uppercase tracking-widest mt-0.5">{userRole}</span>
+                </div>
+              </div>
+            ) : (
+              <a href="https://sd-auth-center.vercel.app" className="hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(197,160,89,0.4)] hover:brightness-110 transition-all cursor-pointer shrink-0">
+                <svg className="w-3.5 h-3.5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                <span>Sign In / Register</span>
+              </a>
+            )}
+
+            {/* Cart Button */}
+            <button className="hidden sm:flex items-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+              <span>Cart (2)</span>
+            </button>
+
+            {/* Mobile Hamburger Button */}
+            <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0 shadow">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileNavOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile-Only Dedicated Sign In / Register Bar right below Bhulia.com */}
+        {!userAvatar && (
+          <div className="sm:hidden w-full pt-1 border-t border-[#C5A059]/20 flex justify-center">
+            <a href="https://sd-auth-center.vercel.app" className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(197,160,89,0.4)] hover:brightness-110 transition-all cursor-pointer">
+              <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
               <span>Sign In / Register</span>
             </a>
-          )}
-
-          {/* Cart Button */}
-          <button className="hidden sm:flex items-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-            <span>Cart (2)</span>
-          </button>
-
-          {/* Mobile Hamburger Button */}
-          <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-9 sm:w-10 h-9 sm:h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0 shadow">
-            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {mobileNavOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
-        </div>
+          </div>
+        )}
       </header>
 
       {/* Mobile Navigation Drawer */}
@@ -158,7 +169,7 @@ export default function Home() {
       )}
 
       {/* Main Content Container */}
-      <div className="flex-1 container mx-auto px-6 py-8 relative z-10 space-y-12">
+      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 relative z-10 space-y-12 overflow-hidden">
         
         {/* 1. Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
