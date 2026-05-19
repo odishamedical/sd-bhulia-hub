@@ -243,6 +243,50 @@ const MASTER_ARTISANS: ArtisanListing[] = [
       masterpieceMotifs: ["✨ Machha (Fish) Wealth Motif", "✨ Padmapakhuda (Lotus Petal)", "✨ Traditional Jala Zari Border"],
       detailedBiography: "Rooted in the royal weaving traditions of Subarnapur, this collective specializes in heavy 3-ply Mulberry silk Bomkai sarees. Using the ancient 'Jala' wooden frame attachment, master weavers manually lift individual silk threads to interlace intricate extra-weft motifs of fish, peacocks, and temple spires across the pallu.\n\nTheir creations have historically adorned royalty and temple deities, representing the highest echelon of ceremonial silk craftsmanship in India. Every saree carries an absolute guarantee of purity via Silk Mark Gold certification.",
     },
+  },
+  {
+    id: "ART-104",
+    slug: "ravi-meher",
+    name: "Ravi Meher | Master Weaver Ikata & Graph Artist",
+    cluster: "Bargarh Cluster",
+    village: "Lumunda, Bargarh",
+    category: "bargarh",
+    entityType: "Independent",
+    loomCount: 15,
+    giTagNumber: "GI-Cert: #OD-1102-BG",
+    specialtyTags: ["Pasapali Cotton Classics", "Bichitrapuri Masterpieces", "Sachipar Designs", "Modern Narrative Graphs", "Mathematical Graph Art"],
+    seoDescription: "Ravi Meher, from Lumunda, Bargarh, is a visionary Master Weaver and Graph Artist redefining Indian handlooms by merging mathematical precision with Bandha Kala.",
+    img: "/ravi_meher.png",
+    isClaimed: true,
+    claimStatus: "verified",
+    biodata: {
+      artisanTitle: "Master Weaver Ikata & Graph Artist",
+      legacyEst: "Cultural Guardian of Lumunda",
+      shortStory: "Ravi Meher is a visionary Master Weaver, Ikat Designer, and Graph Artist from Lumunda, Bargarh. He merges the architectural precision of mathematical graph art with the ancient, intuitive soul of Bandha Kala.",
+      awardHighlights: [
+        "🏆 National Graph Artist Recognition",
+        "🏆 Community Artisan Empowerment",
+        "🏆 Guardian of Bandha Kala Heritage"
+      ],
+      masterpieceMotifs: [
+        "✨ Pasapali Mathematical Classics",
+        "✨ Bichitrapuri Intricate Borders",
+        "✨ Sachipar & Asamantara Matrices",
+        "✨ Modern Narrative Corporate Graphs"
+      ],
+      detailedBiography: "Ravi Meher, hailing from Lumunda, Bargarh (Odisha), is a visionary Master Weaver, Ikat Designer, and Graph Artist redefining the landscape of Indian handlooms. Merging the architectural precision of mathematical graph art with the ancient, intuitive soul of Bandha Kala (Tie & Dye), Ravi transforms raw cotton yarns into national masterpieces.\n\nBeyond his loom, he serves as a cultural guardian. He has dedicated his life to preserving Odisha’s heritage by training and mentoring hundreds of next-generation Bandha artists, ensuring that this painstaking heirloom craft thrives for decades to come.\n\nSignature Creations\nEvery piece is hand-mapped on a graph before meeting the loom. It takes months of precise calculating, resist-dyeing, and high-count cotton weaving to yield flawless symmetry. His nationally acclaimed Sambalpuri Cotton Sarees include iconic signature varieties:\n• Pasapali Cotton Classics: Striking, mathematical chess-board patterns woven with flawless geometric accuracy.\n• Bichitrapuri Masterpieces: Elaborately detailed bodies coupled with intensely intricate Ikat borders and heritage motifs.\n• Barpali & Sonepuri Weaves: Region-inspired traditional layouts featuring crisp, high-contrast cultural iconography.\n• Sachipar & Asamantara Designs: Classic checkered matrices balanced beautifully with star-studded skies across the anchal (pallu).\n• Modern Narrative Graphs: Custom, cutting-edge corporate and thematic drapes plotted on modern graphs and translated directly onto yarn.\n\nThe Craft Process\n• The Graph Matrix: Ravi hand-draws complex mathematical layouts on graph sheets, mapping out every individual thread intersection.\n• Bandha Kala (Tie & Dye): Cotton threads are bound with absolute precision and dyed repeatedly to construct multi-coloured patterns directly onto the loose warp and weft yarns.\n• The Weave: The pre-dyed yarns are carefully aligned on traditional pit looms, revealing the intricate patterns thread-by-thread during the weaving process.\n\nWhy Choose Authenticity?\n• 100% Pure Cotton: Light, fully breathable, and incredibly durable fabrics built for premium comfort.\n• National Recognition: Coveted, heirloom-grade collector pieces well accepted and celebrated across the nation.\n• Empowering Communities: Directly supports a weaver-led setup that sustains hundreds of local rural artisans.",
+    },
+    galleryImages: [
+      "/bhulia-hero.png",
+      "https://images.unsplash.com/photo-1605513511874-569d4ceb8b6e?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1584285408660-3162638f2191?w=800&auto=format&fit=crop&q=80"
+    ],
+    contactDetails: {
+      address: "At/Po: Lumunda, District: Bargarh, Odisha, India",
+      phone: "+91 98765 43213",
+      whatsapp: "919876543213",
+      email: "ravi.meher@bhulia.com"
+    }
   }
 ];
 
