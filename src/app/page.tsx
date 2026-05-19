@@ -10,6 +10,41 @@ export default function Home() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [userUid, setUserUid] = useState<string>("sd_super_admin_custom_uid");
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
+
+  const heroSlides = [
+    {
+      badge: "Odisha Handloom Sovereign Hub",
+      title: "Bhulia.com:",
+      subtitle: "The Collective of Odisha's Master Weavers.",
+      desc: "Direct access to thousands of authentic handloom artisans, primary weaving societies, and GI-Tag verified masterpieces from multiple tenant stores.",
+      img: "https://images.unsplash.com/photo-1605513511874-569d4ceb8b6e?w=1600&auto=format&fit=crop&q=80",
+      btn: "Shop the Collections"
+    },
+    {
+      badge: "GI-Tag Verified Heritage",
+      title: "Silk Masterpieces:",
+      subtitle: "Authentic Double Ikat Pata.",
+      desc: "Invest in 800 years of living heritage. Every silk thread is tie-dyed with mathematical precision and secured with D2C Jan Dhan escrow.",
+      img: "https://images.unsplash.com/photo-1620799140188-3b2a02fd9a77?w=1600&auto=format&fit=crop&q=80",
+      btn: "Explore Silk Pata"
+    },
+    {
+      badge: "Empowering Artisans directly",
+      title: "Cotton Handlooms:",
+      subtitle: "Everyday Luxury, Direct from Pit Looms.",
+      desc: "Discover breathable, incredibly comfortable Cotton Sambalpuri and Bomkai sarees sourced right from the village weaving clusters.",
+      img: "https://images.unsplash.com/photo-1584285408660-3162638f2191?w=1600&auto=format&fit=crop&q=80",
+      btn: "Shop Cotton Deals"
+    }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -174,30 +209,52 @@ export default function Home() {
         {/* 1. Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch">
           
-          {/* Main Hero Banner E.g. Span 7 */}
-          <div className="lg:col-span-7 bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border border-[#C5A059] rounded-3xl p-5 md:p-8 flex flex-col justify-between relative overflow-hidden shadow-[0_0_35px_rgba(197,160,89,0.2)] group">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#C5A059]/15 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000"></div>
+          {/* Main Hero Banner E.g. Span 7 (Dynamic Slider) */}
+          <div className="lg:col-span-7 bg-[#051815] border border-[#C5A059] rounded-3xl overflow-hidden relative shadow-[0_0_35px_rgba(197,160,89,0.2)] group min-h-[400px]">
+            {/* Background Image Slider */}
+            {heroSlides.map((slide, idx) => (
+              <div 
+                key={idx} 
+                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${currentSlide === idx ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+              >
+                <Image src={slide.img} alt={slide.title} fill className="object-cover transform scale-105 transition-transform duration-[10000ms] ease-linear" style={{ transform: currentSlide === idx ? 'scale(1)' : 'scale(1.05)' }} />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0A2520] via-[#0A2520]/90 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A2520] via-transparent to-transparent opacity-80"></div>
+              </div>
+            ))}
             
-            <div className="relative z-10 space-y-4 max-w-lg">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-xs font-bold uppercase tracking-widest">
+            {/* Overlay Content */}
+            <div className="relative z-20 h-full p-6 md:p-10 flex flex-col justify-center max-w-xl space-y-5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0A2520]/80 backdrop-blur border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest self-start shadow-xl">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse"></span>
-                <span>Odisha Handloom Sovereign Hub</span>
+                <span>{heroSlides[currentSlide].badge}</span>
               </div>
               
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-white leading-tight">
-                Bhulia.com: <br />
-                <span className="text-[#C5A059]">The Collective of Odisha's Master Weavers.</span>
+              <h2 className="text-3xl md:text-5xl font-serif font-bold text-white leading-tight drop-shadow-2xl">
+                {heroSlides[currentSlide].title} <br />
+                <span className="text-[#C5A059]">{heroSlides[currentSlide].subtitle}</span>
               </h2>
 
-              <p className="text-xs md:text-sm text-gray-200 leading-relaxed font-sans">
-                Direct access to thousands of authentic handloom artisans, primary weaving societies, and GI-Tag verified masterpieces from multiple tenant stores.
+              <p className="text-xs md:text-sm text-gray-200 leading-relaxed font-sans drop-shadow-md max-w-md">
+                {heroSlides[currentSlide].desc}
               </p>
+
+              <div className="pt-2">
+                <button className="px-6 py-3.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_25px_rgba(197,160,89,0.5)] cursor-pointer">
+                  {heroSlides[currentSlide].btn}
+                </button>
+              </div>
             </div>
 
-            <div className="relative z-10 pt-6 flex items-center gap-4">
-              <button className="px-6 py-3.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_25px_rgba(197,160,89,0.4)] cursor-pointer">
-                Shop the Collections
-              </button>
+            {/* Slider Dots Indicator */}
+            <div className="absolute bottom-6 left-6 md:left-10 z-20 flex gap-2">
+              {heroSlides.map((_, idx) => (
+                <button 
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${currentSlide === idx ? "w-8 bg-[#C5A059]" : "w-2 bg-white/40 hover:bg-white/80"}`}
+                />
+              ))}
             </div>
           </div>
 
