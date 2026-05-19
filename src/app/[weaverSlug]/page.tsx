@@ -27,11 +27,45 @@ interface ArtisanListing {
     awardHighlights: string[];
     masterpieceMotifs: string[];
     detailedBiography: string;
+    shortStory?: string;
   };
 }
 
-// Master Artisan Database (with Vanity Slugs)
+// Master Artisan Database (with Vanity Slugs & Nandalal Meher)
 const MASTER_ARTISANS: ArtisanListing[] = [
+  {
+    id: "ART-101",
+    slug: "nandalal-meher",
+    name: "Master Weaver Nandalal Meher | Authentic Sonepur Ikat",
+    cluster: "Sonepur Cluster",
+    village: "Dasrajpur, Sonepur",
+    category: "sonepur",
+    entityType: "Independent",
+    loomCount: 14,
+    giTagNumber: "GI-Cert: #OD-4491-SP",
+    specialtyTags: ["Double Ikat Pata", "Single Ikat", "Premium Silk", "Traditional Motifs"],
+    seoDescription: "Exquisite, handcrafted single and double ikat silk sarees straight from the looms of Dasrajpur. Preserving the rare mathematical alignment of authentic Odishan Pata.",
+    img: "/nandalal_meher.jpg",
+    isClaimed: true,
+    claimStatus: "verified",
+    biodata: {
+      artisanTitle: "National Award-Winning Master Weaver",
+      legacyEst: "Est. 1982 / Dasrajpur Ikat Heritage Loom",
+      shortStory: "Every thread tells a story. Based in Sonepur, Odisha, National Award-winning artisan Nandalal Meher spends months meticulously tie-dying and weaving a single Pata saree. Own a piece of living heritage.",
+      awardHighlights: [
+        "🏆 National Award for Handloom Excellence",
+        "🏆 Sant Kabir Master Craft Seal",
+        "🏆 State Champion of Double Ikat Weaving"
+      ],
+      masterpieceMotifs: [
+        "✨ Traditional Temple Spire",
+        "✨ Shankha (Conch Shell) Geometry",
+        "✨ Machha (Fish) Wealth Motif",
+        "✨ Flawless Mathematical Double Bandha"
+      ],
+      detailedBiography: "Nandalal Meher is a visionary master weaver from Dasrajpur in the Sonepur district of Odisha. He stands as a true guardian of India's rich textile heritage. Sonepur is globally renowned for its intricate handloom traditions. There, Meher has dedicated his life to perfecting the complex arts of single and double ikat weaving. His exceptional skill transforms fine silk threads into breathtaking masterpieces of wearable art.\n\nThe Craftsmanship: Single and Double Ikat Pata\nMeher’s expertise lies in creating high-class silk sarees, locally known as Pata. His work showcases an extraordinary level of precision and mathematical skill:\n• Single Ikat: Threads of either the warp or the weft are dyed before weaving to create stunning patterns.\n• Double Ikat: Both warp and weft threads are meticulously tie-dyed. They must align perfectly on the loom to form sharp, seamless designs.\n• Premium Silk: He uses only the finest quality silk, ensuring a luxurious drape and a brilliant, lasting sheen.\n• Traditional Motifs: His designs beautifully incorporate classic Odisha motifs, including temples, conch shells, and fish.\n\nLegacy and Impact\nNandalal Meher is more than just an artisan; he is a cultural ambassador for Sonepur handlooms. By maintaining the rigorous standards of authentic double ikat, he preserves a rare craft that few weavers can successfully execute today. His workshop in Dasrajpur serves as a hub of excellence, keeping the legacy of Odishan silk alive for future generations.",
+    },
+  },
   {
     id: "ART-001",
     slug: "maa-samaleswari-weavers",
@@ -50,6 +84,7 @@ const MASTER_ARTISANS: ArtisanListing[] = [
     biodata: {
       artisanTitle: "Padmashree Awardee & Master Weaver Lineage",
       legacyEst: "Est. 1956 / Legacy of Late Kunja Bihari Meher",
+      shortStory: "Founded upon the legendary design principles of Padmashree Kunja Bihari Meher, this premier cooperative society operates 142 active pit looms across Barpali.",
       awardHighlights: ["🏆 Padmashree (1998)", "🏆 National Merit Award (1984)", "🏆 Sant Kabir Handloom Icon"],
       masterpieceMotifs: ["✨ Calligraphy Script Ikat", "✨ Matha Pasapalli Matrix", "✨ Phoda Kumbha Temple"],
       detailedBiography: "Founded upon the legendary design principles of Padmashree Kunja Bihari Meher, this premier cooperative society operates 142 active pit looms across Barpali. The master weavers here are renowned for pioneering the integration of calligraphy and intricate portraiture directly into the tie-and-dye Ikat matrix.\n\nEvery saree undergoes a rigorous 18-stage preparation process, from boiling handspun cotton yarn in natural organic mordants to aligning micro-millimeter Bandha knots on specialized graph paper. This collective remains the absolute sovereign guardian of Bargarh's textile heritage.",
@@ -73,6 +108,7 @@ const MASTER_ARTISANS: ArtisanListing[] = [
     biodata: {
       artisanTitle: "National Awardee & Vegetable Dye Pioneer",
       legacyEst: "Est. 1972 / Bhagabata Meher Family Loom",
+      shortStory: "Operating from the historic weaving hamlet of Bijepur, the Bhagabata Meher workshop is internationally celebrated for its uncompromising dedication to 100% natural vegetable dyes.",
       awardHighlights: ["🏆 National Award for Excellence (1992)", "🏆 State Handloom Champion (2004)", "🏆 UNESCO Craft Seal"],
       masterpieceMotifs: ["✨ Pomegranate Peta Motif", "✨ Madder Root Crimson Ikat", "✨ Mathematical Double Bandha"],
       detailedBiography: "Operating from the historic weaving hamlet of Bijepur, the Bhagabata Meher workshop is internationally celebrated for its uncompromising dedication to 100% natural vegetable dyes. Foraging wild madder roots, native indigo, and pomegranate rinds, the family formulates organic colors that deepen in luster over decades.\n\nTheir signature double-ikat sarees exhibit flawless mathematical symmetry, where both warp and weft are tied and dyed with absolute precision before mounting on the pit loom. Each piece is a living testament to sustainable, chemical-free luxury.",
@@ -96,101 +132,10 @@ const MASTER_ARTISANS: ArtisanListing[] = [
     biodata: {
       artisanTitle: "Master of Extra-Weft Bomkai & Royal Patronage",
       legacyEst: "Est. 1948 / Subarnapur Royal Guild",
+      shortStory: "Rooted in the royal weaving traditions of Subarnapur, this collective specializes in heavy 3-ply Mulberry silk Bomkai sarees.",
       awardHighlights: ["🏆 President's Gold Medal (1978)", "🏆 Silk Mark Championship (2015)", "🏆 Master Guild Trophy"],
       masterpieceMotifs: ["✨ Machha (Fish) Wealth Motif", "✨ Padmapakhuda (Lotus Petal)", "✨ Traditional Jala Zari Border"],
       detailedBiography: "Rooted in the royal weaving traditions of Subarnapur, this collective specializes in heavy 3-ply Mulberry silk Bomkai sarees. Using the ancient 'Jala' wooden frame attachment, master weavers manually lift individual silk threads to interlace intricate extra-weft motifs of fish, peacocks, and temple spires across the pallu.\n\nTheir creations have historically adorned royalty and temple deities, representing the highest echelon of ceremonial silk craftsmanship in India. Every saree carries an absolute guarantee of purity via Silk Mark Gold certification.",
-    },
-  },
-  {
-    id: "ART-010",
-    slug: "sambalpur-weavers-union",
-    name: "Sambalpur District Handloom Weavers Union",
-    cluster: "Sambalpur Cluster",
-    village: "Sambalpur City",
-    category: "sambalpur",
-    entityType: "PWCS",
-    loomCount: 110,
-    giTagNumber: "GI-Cert: #OD-2234-SM",
-    specialtyTags: ["Sambalpuri Cotton", "Dhoti & Chadar", "Sovereign Escrow"],
-    seoDescription: "Central district union supporting over 110 master weavers. Supplying high-grade Sambalpuri cotton sarees, traditional dhotis, and angavastrams directly to sovereign retail hubs.",
-    img: "/bhulia-hero.png",
-    isClaimed: true,
-    claimStatus: "verified",
-    biodata: {
-      artisanTitle: "Central District Master Weavers Syndicate",
-      legacyEst: "Est. 1965 / Apex District Union",
-      awardHighlights: ["🏆 State Welfare Excellence (1988)", "🏆 Fair Trade Handloom Shield", "🏆 Jan Dhan D2C Pioneer"],
-      masterpieceMotifs: ["✨ Shankha (Conch) Motif", "✨ Chakra (Wheel) Matrix", "✨ Traditional Angavastram Border"],
-      detailedBiography: "As the central union for Sambalpur District, this collective empowers over 110 hereditary weaving families. They focus on preserving the authentic daily-luxury drape of Sambalpuri cotton, utilizing high-twist handspun yarn that offers exceptional breathability and comfort.\n\nBy fully integrating with the Jan Dhan Direct Escrow gateway, the union has successfully eliminated exploitative middlemen, ensuring that 100% of the premium value flows directly into the artisan's household bank account.",
-    },
-  },
-  {
-    id: "ART-013",
-    slug: "boudh-organic-ikat",
-    name: "Boudh Natural Vegetable Dye Ikat Collective",
-    cluster: "Boudh & Balangir",
-    village: "Boudh Town",
-    category: "boudh-balangir",
-    entityType: "PWCS",
-    loomCount: 65,
-    giTagNumber: "GI-Cert: #OD-7789-BD",
-    specialtyTags: ["100% Organic Dye", "Madder & Indigo", "Boudh Silk Ikat"],
-    seoDescription: "Pioneering natural dye cooperative utilizing madder roots, pomegranate peel, and native indigo. Crafting chemical-free, skin-friendly Mulberry silk and cotton Ikat sarees.",
-    img: "/bhulia-hero.png",
-    isClaimed: true,
-    claimStatus: "verified",
-    biodata: {
-      artisanTitle: "Pioneers of Organic Dye & Herbal Handlooms",
-      legacyEst: "Est. 1980 / Boudh Herbal Loom Project",
-      awardHighlights: ["🏆 National Eco-Weave Trophy (2012)", "🏆 Organic Handloom Seal", "🏆 Sant Kabir Merit Shield"],
-      masterpieceMotifs: ["✨ Indigo Tribal Matrix", "✨ Harida Peta Border", "✨ Madder Red Kumbha"],
-      detailedBiography: "The Boudh Collective stands at the forefront of the global sustainable fashion movement. Situated along the Mahanadi river basin, the weavers forage seasonal barks, flowers, and roots to prepare 100% chemical-free dye baths. Their sarees are renowned for being entirely hypoallergenic and soothing to the skin.\n\nTheir master graph designers plot complex Ikat patterns that reflect the pristine natural biodiversity of the Boudh forest tracts, offering an unmatched organic luxury experience.",
-    },
-  },
-  {
-    id: "ART-008",
-    slug: "kalahandi-habaspuri",
-    name: "Kalahandi Habaspuri Master Weaver Syndicate",
-    cluster: "Kalahandi Cluster",
-    village: "Habaspur / Bhawanipatna",
-    category: "kalahandi-nuapada",
-    entityType: "Independent",
-    loomCount: 38,
-    giTagNumber: "GI-Cert: #OD-9941-KL",
-    specialtyTags: ["Habaspuri Cotton", "Kumbha Temple Border", "Traditional Chapa Work"],
-    seoDescription: "Renowned syndicate preserving the legendary Habaspuri handloom technique of Kalahandi. Known for traditional Chapa extra-weft work, fish motifs, and highly breathable mercerized cotton.",
-    img: "/bhulia-hero.png",
-    isClaimed: true,
-    claimStatus: "verified",
-    biodata: {
-      artisanTitle: "Guardians of the Ancient Habaspuri Weave",
-      legacyEst: "Est. 1952 / Habaspur Heritage Guild",
-      awardHighlights: ["🏆 National Habaspuri Revival Award (2008)", "🏆 State Tribal Craft Trophy", "🏆 GI-Tag Preservation Shield"],
-      masterpieceMotifs: ["✨ Chapa Extra-Weft Fish", "✨ Habaspuri Temple Spire", "✨ Tribal Tortoise Matrix"],
-      detailedBiography: "Originating from the historic village of Habaspur in Kalahandi, this master syndicate is dedicated to saving the critically endangered Habaspuri weaving technique. Unlike standard Ikat, Habaspuri relies on intricate 'Chapa' extra-weft patterning, where master weavers manually insert specialized cotton tufts to create raised, three-dimensional motifs of fish, flowers, and tortoises across the borders.\n\nWeaving a single Habaspuri masterpiece requires over 25 days of intense focus on the traditional pit loom. This collective ensures the survival of Kalahandi's most prized cultural treasure.",
-    },
-  },
-  {
-    id: "ART-016",
-    slug: "nuapada-khariar-bandha",
-    name: "Nuapada Khariar Bandha & Ikat Collective",
-    cluster: "Nuapada Cluster",
-    village: "Khariar, Nuapada",
-    category: "kalahandi-nuapada",
-    entityType: "Unverified",
-    loomCount: 24,
-    giTagNumber: "GI-Pending Registry",
-    specialtyTags: ["Khariar Cotton Ikat", "Tribal Geometry", "Grassroots Loom"],
-    seoDescription: "Grassroots collaborative of pit loom weavers in Khariar, Nuapada. Crafting heavy-count cotton Ikat sarees featuring striking tribal geometric patterns and earthy organic tones.",
-    img: "/bhulia-hero.png",
-    isClaimed: false,
-    claimStatus: "unverified",
-    biodata: {
-      artisanTitle: "Grassroots Tribal Ikat & Bandha Masters",
-      legacyEst: "Est. 1985 / Khariar Pit Loom Association",
-      awardHighlights: ["🏆 Regional Tribal Weave Commendation", "🏆 Grassroots Loom Shield", "🏆 D2C Empowerment Seal"],
-      masterpieceMotifs: ["✨ Khariar Geometric Matrix", "✨ Earthy Red & Ochre Bandha", "✨ Heavy Count Cotton Drape"],
-      detailedBiography: "Operating from the remote, scenic highlands of Khariar in Nuapada district, this grassroots collaborative represents 24 dedicated pit loom artisan families. They specialize in weaving heavy-count cotton Ikat sarees designed for exceptional durability and thermal comfort in highland climates.\n\nTheir designs draw direct inspiration from indigenous tribal geometry and local folklore, utilizing earthy ochres, deep terracottas, and forest greens. By onboarding onto Bhulia Hub, they are establishing their very first direct digital bridge to global handloom connoisseurs.",
     },
   }
 ];
@@ -214,25 +159,122 @@ const DEFAULT_ARTISAN: ArtisanListing = {
   biodata: {
     artisanTitle: "Sovereign Master Weaver Heritage Guild",
     legacyEst: "Est. 1945 / Odisha Handloom Syndicate",
+    shortStory: "This sovereign syndicate unites elite hereditary weaving families across the seven official Sambalpuri GI districts.",
     awardHighlights: ["🏆 National Handloom Heritage Trophy", "🏆 Padmashree Lineage Seal", "🏆 100% Jan Dhan Escrow Verified"],
     masterpieceMotifs: ["✨ Traditional Pasapalli Matrix", "✨ Extra-Weft Bomkai Zari", "✨ Phoda Kumbha Temple Spire"],
     detailedBiography: "This sovereign syndicate unites elite hereditary weaving families across the seven official Sambalpuri GI districts. Operating traditional pit looms passed down through generations, these artisans represent the absolute pinnacle of Indian textile graph design and mathematical tie-and-dye Ikat execution.\n\nEvery thread is spun, tied, boiled in natural mordants, and woven with uncompromising dedication to quality, ensuring that every saree is an heirloom masterpiece designed to last for generations.",
   },
 };
 
-// Sample Sarees Catalog for the Storefront
-const SAREE_CATALOG = [
-  { id: "SAR-101", title: "Royal Pasapalli Mercerized Cotton Ikat", price: "₹ 12,500", mrp: "₹ 18,000", weave: "Double Ikat", time: "18 Days Weaving", rating: "4.9", img: "/bhulia-hero.png", inStock: true },
-  { id: "SAR-102", title: "Subarnapur Extra-Weft Mulberry Silk Bomkai", price: "₹ 24,800", mrp: "₹ 32,000", weave: "Bomkai Extra-Weft", time: "25 Days Weaving", rating: "5.0", img: "/bhulia-hero.png", inStock: true },
-  { id: "SAR-103", title: "Traditional Phoda Kumbha Border Cotton Saree", price: "₹ 8,900", mrp: "₹ 12,500", weave: "Single Ikat", time: "12 Days Weaving", rating: "4.8", img: "/bhulia-hero.png", inStock: true },
-  { id: "SAR-104", title: "Sachipar Heavy Check Pattern Silk Masterpiece", price: "₹ 28,500", mrp: "₹ 38,000", weave: "Complex Matrix", time: "30 Days Weaving", rating: "5.0", img: "/bhulia-hero.png", inStock: true },
-  { id: "SAR-105", title: "Barpali Calligraphy Script Silk Dupatta", price: "₹ 14,200", mrp: "₹ 19,000", weave: "Script Ikat", time: "15 Days Weaving", rating: "4.9", img: "/bhulia-hero.png", inStock: true },
-  { id: "SAR-106", title: "Boudh Madder Root Organic Dye Cotton Saree", price: "₹ 11,400", mrp: "₹ 16,000", weave: "Natural Dye Ikat", time: "20 Days Weaving", rating: "4.7", img: "/bhulia-hero.png", inStock: true },
+// Nandalal Meher Saree Catalog (Grouped by Blueprint Categories)
+const NANDALAL_SAREES = [
+  // Category 1: The Double Ikat Masterpieces
+  { 
+    id: "SAR-N101", 
+    title: "Dasrajpur Royal Pasapalli Double Ikat Pata", 
+    category: "The Double Ikat Masterpieces",
+    desc: "Flawless mathematical alignment where both warp and weft silk threads are tie-dyed before mounting on the pit loom.",
+    price: "₹ 34,500", 
+    mrp: "₹ 42,000", 
+    weave: "Double Ikat Pata", 
+    time: "Handwoven over 45 days", 
+    rating: "5.0", 
+    img: "/nandalal_meher.jpg", 
+    inStock: true,
+    lightSheen: "Brilliant Crimson & Gold Sheen in Natural Light",
+    badge: "Verified By Bhulia.com"
+  },
+  { 
+    id: "SAR-N102", 
+    title: "Sonepur Temple Spire & Conch Double Ikat Silk", 
+    category: "The Double Ikat Masterpieces",
+    desc: "Intricate temple borders and conch shell motifs tie-dyed with absolute micro-millimeter precision across the silk matrix.",
+    price: "₹ 38,000", 
+    mrp: "₹ 46,000", 
+    weave: "Double Ikat Pata", 
+    time: "Handwoven over 52 days", 
+    rating: "5.0", 
+    img: "/nandalal_meher.jpg", 
+    inStock: true,
+    lightSheen: "Deep Purple & Royal Gold Sheen in Natural Light",
+    badge: "Verified By Bhulia.com"
+  },
+
+  // Category 2: Classic Single Ikat Pata
+  { 
+    id: "SAR-N103", 
+    title: "Traditional Machha (Fish) Motif Single Ikat Pata", 
+    category: "Classic Single Ikat Pata",
+    desc: "Vibrant everyday luxury silk saree featuring classic Odishan fish wealth motifs along the rich pallu.",
+    price: "₹ 18,500", 
+    mrp: "₹ 24,000", 
+    weave: "Single Ikat Pata", 
+    time: "Handwoven over 22 days", 
+    rating: "4.9", 
+    img: "/nandalal_meher.jpg", 
+    inStock: true,
+    lightSheen: "Vibrant Emerald & Copper Sheen in Natural Light",
+    badge: "Verified By Bhulia.com"
+  },
+  { 
+    id: "SAR-N104", 
+    title: "Dasrajpur Phoda Kumbha Border Silk Saree", 
+    category: "Classic Single Ikat Pata",
+    desc: "Elegant single ikat body paired with traditional Phoda Kumbha temple borders woven using 3-ply Mulberry silk.",
+    price: "₹ 16,800", 
+    mrp: "₹ 22,000", 
+    weave: "Single Ikat Pata", 
+    time: "Handwoven over 18 days", 
+    rating: "4.8", 
+    img: "/nandalal_meher.jpg", 
+    inStock: true,
+    lightSheen: "Lustrous Ruby & Zari Sheen in Natural Light",
+    badge: "Verified By Bhulia.com"
+  },
+
+  // Category 3: Contemporary Fusion
+  { 
+    id: "SAR-N105", 
+    title: "Midnight Blue & Rose Gold Fusion Ikat Pata", 
+    category: "Contemporary Fusion",
+    desc: "Modern color palettes merged with ancient Sonepur tie-and-dye geometry, designed for evening galas and ceremonial elegance.",
+    price: "₹ 26,400", 
+    mrp: "₹ 34,000", 
+    weave: "Contemporary Fusion Ikat", 
+    time: "Handwoven over 30 days", 
+    rating: "4.9", 
+    img: "/nandalal_meher.jpg", 
+    inStock: true,
+    lightSheen: "Midnight Sapphire & Rose Gold Sheen in Natural Light",
+    badge: "Verified By Bhulia.com"
+  },
+  { 
+    id: "SAR-N106", 
+    title: "Pastel Mint & Antique Gold Ikat Masterpiece", 
+    category: "Contemporary Fusion",
+    desc: "Soft pastel silk warp interlaced with antique gold zari weft, offering a breathtaking contemporary drape.",
+    price: "₹ 28,900", 
+    mrp: "₹ 36,000", 
+    weave: "Contemporary Fusion Ikat", 
+    time: "Handwoven over 35 days", 
+    rating: "5.0", 
+    img: "/nandalal_meher.jpg", 
+    inStock: true,
+    lightSheen: "Mint Pearl & Antique Gold Sheen in Natural Light",
+    badge: "Verified By Bhulia.com"
+  }
+];
+
+// Standard Fallback Catalog
+const STANDARD_SAREES = [
+  { id: "SAR-101", title: "Royal Pasapalli Mercerized Cotton Ikat", category: "Classic Single Ikat Pata", desc: "Handspun, high-density traditional weave featuring flawless mathematical symmetry.", price: "₹ 12,500", mrp: "₹ 18,000", weave: "Double Ikat", time: "Handwoven over 18 days", rating: "4.9", img: "/bhulia-hero.png", inStock: true, lightSheen: "Rich Crimson Sheen in Natural Light", badge: "Verified By Bhulia.com" },
+  { id: "SAR-102", title: "Subarnapur Extra-Weft Mulberry Silk Bomkai", category: "The Double Ikat Masterpieces", desc: "Heavy 3-ply Mulberry silk Bomkai sarees featuring rich extra-weft gold thread work.", price: "₹ 24,800", mrp: "₹ 32,000", weave: "Bomkai Extra-Weft", time: "Handwoven over 25 days", rating: "5.0", img: "/bhulia-hero.png", inStock: true, lightSheen: "Royal Gold Sheen in Natural Light", badge: "Verified By Bhulia.com" },
+  { id: "SAR-103", title: "Traditional Phoda Kumbha Border Cotton Saree", category: "Classic Single Ikat Pata", desc: "High-twist handspun yarn offering exceptional breathability and comfort.", price: "₹ 8,900", mrp: "₹ 12,500", weave: "Single Ikat", time: "Handwoven over 12 days", rating: "4.8", img: "/bhulia-hero.png", inStock: true, lightSheen: "Earthy Ochre Sheen in Natural Light", badge: "Verified By Bhulia.com" },
 ];
 
 export default function WeaverStorePage() {
   const params = useParams();
-  const rawSlug = typeof params?.weaverSlug === "string" ? params.weaverSlug : "maa-samaleswari-weavers";
+  const rawSlug = typeof params?.weaverSlug === "string" ? params.weaverSlug : "nandalal-meher";
   const weaverSlug = rawSlug.toLowerCase();
 
   // Find Artisan by Slug or ID
@@ -246,9 +288,19 @@ export default function WeaverStorePage() {
   const [artisan, setArtisan] = useState<ArtisanListing>(foundArtisan);
   const [userUid, setUserUid] = useState<string>("sd_super_admin_custom_uid");
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
+  const [activeCategoryTab, setActiveCategoryTab] = useState<string>("All");
+
+  // Determine Catalog
+  const isNandalal = artisan.slug === "nandalal-meher";
+  const currentCatalog = isNandalal ? NANDALAL_SAREES : STANDARD_SAREES;
+
+  // Filtered Catalog
+  const filteredCatalog = activeCategoryTab === "All" 
+    ? currentCatalog 
+    : currentCatalog.filter(s => s.category === activeCategoryTab);
 
   // Checkout Modal State
-  const [selectedSaree, setSelectedSaree] = useState<typeof SAREE_CATALOG[0] | null>(null);
+  const [selectedSaree, setSelectedSaree] = useState<typeof NANDALAL_SAREES[0] | null>(null);
   const [checkoutStep, setCheckoutStep] = useState<number>(1);
   const [checkoutForm, setCheckoutForm] = useState({
     fullName: "",
@@ -374,11 +426,11 @@ export default function WeaverStorePage() {
       {/* Main Content Container */}
       <div className="flex-1 container mx-auto px-6 py-8 relative z-10 space-y-12">
         
-        {/* 1. Artisan Hero Storefront Banner */}
+        {/* ==================== 1. BLUEPRINT HERO SECTION ==================== */}
         <div className="bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border-2 border-[#C5A059] rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.25)] flex flex-col md:flex-row items-start md:items-center justify-between gap-8 group">
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#C5A059]/15 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000 pointer-events-none"></div>
           
-          <div className="space-y-4 max-w-2xl relative z-10">
+          <div className="space-y-6 max-w-2xl relative z-10">
             <div className="flex flex-wrap items-center gap-2">
               <span className="px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-xs font-bold uppercase tracking-widest font-mono">
                 {artisan.id}
@@ -386,16 +438,9 @@ export default function WeaverStorePage() {
               <span className="px-3 py-1 rounded-full bg-[#0B2B26] border border-[#C5A059]/30 text-gray-200 text-xs font-bold uppercase tracking-widest">
                 📍 {artisan.cluster}
               </span>
-              {artisan.entityType === "PWCS" && (
-                <span className="bg-[#C5A059] text-[#0A1021] px-3 py-1 rounded-full font-bold text-xs uppercase tracking-widest shadow-[0_0_15px_rgba(197,160,89,0.6)] flex items-center gap-1">
-                  🛡️ Verified PWCS
-                </span>
-              )}
-              {artisan.entityType === "Independent" && (
-                <span className="bg-slate-200 text-slate-900 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-widest shadow flex items-center gap-1">
-                  🌱 Independent Master
-                </span>
-              )}
+              <span className="bg-[#C5A059] text-[#0A1021] px-3 py-1 rounded-full font-bold text-xs uppercase tracking-widest shadow-[0_0_15px_rgba(197,160,89,0.6)] flex items-center gap-1">
+                🛡️ Verified Sovereign Flagship
+              </span>
             </div>
             
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-white leading-tight">
@@ -414,25 +459,26 @@ export default function WeaverStorePage() {
               ))}
             </div>
 
-            {/* GI-Tag & Escrow Status Bar */}
-            <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 text-xs font-mono border-t border-[#C5A059]/20">
-              <div className="bg-[#0B2B26] px-4 py-2 rounded-xl border border-[#C5A059]/30 flex items-center gap-2 shadow">
-                <span className="text-gray-400">GI Registry:</span>
-                <span className="text-[#C5A059] font-bold">{artisan.giTagNumber}</span>
-              </div>
-              <div className="bg-[#0B2B26] px-4 py-2 rounded-xl border border-[#C5A059]/30 flex items-center gap-2 shadow">
-                <span className="text-gray-400">Active Capacity:</span>
-                <span className="text-white font-bold">🧵 {artisan.loomCount} Traditional Pit Looms</span>
-              </div>
-              <div className="bg-green-500/10 px-4 py-2 rounded-xl border border-green-500/30 flex items-center gap-2 shadow text-green-400 font-bold tracking-wider uppercase">
-                <span>✅ 100% Jan Dhan Direct Escrow Active</span>
+            {/* Action Button: Explore the Collection */}
+            <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <a 
+                href="#collection" 
+                className="px-8 py-4 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_25px_rgba(197,160,89,0.5)] flex items-center gap-2 cursor-pointer"
+              >
+                <span>🛍️ Explore the Collection</span>
+                <span>↓</span>
+              </a>
+
+              <div className="bg-[#0B2B26] px-4 py-3 rounded-xl border border-[#C5A059]/30 flex items-center gap-2 shadow">
+                <span className="text-gray-400 text-xs font-mono">GI Registry:</span>
+                <span className="text-[#C5A059] text-xs font-mono font-bold">{artisan.giTagNumber}</span>
               </div>
             </div>
           </div>
 
-          {/* Right Side: Visual Preview / Share Box */}
+          {/* Right Side: Visual Portrait / Share Box */}
           <div className="relative z-10 shrink-0 w-full md:w-80 space-y-4 bg-[#0B2B26]/80 p-6 rounded-2xl border border-[#C5A059]/40 backdrop-blur-md shadow-2xl">
-            <div className="relative w-full h-48 rounded-xl overflow-hidden border border-[#C5A059]/30 shadow-inner bg-[#051815]">
+            <div className="relative w-full h-64 rounded-xl overflow-hidden border border-[#C5A059]/30 shadow-inner bg-[#051815]">
               <Image src={artisan.img} alt={artisan.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B26] via-transparent to-transparent"></div>
               <div className="absolute bottom-3 left-3 right-3 text-center">
@@ -457,15 +503,17 @@ export default function WeaverStorePage() {
           </div>
         </div>
 
-        {/* 1.5. Renowned Master Weaver Biodata & Heritage Lineage */}
+        {/* ==================== 2. BLUEPRINT ARTISAN'S STORY ==================== */}
         {artisan.biodata && (
           <div className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl space-y-6 backdrop-blur-md animate-fadeIn">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#C5A059]/20 pb-6">
-              <div className="space-y-1">
-                <span className="text-xs font-mono text-[#C5A059] font-bold uppercase tracking-widest block">📜 Verified Heritage Lineage & Biodata</span>
-                <h3 className="text-2xl md:text-3xl font-serif text-white font-bold">{artisan.biodata.artisanTitle}</h3>
+              <div className="space-y-1 max-w-3xl">
+                <span className="text-xs font-mono text-[#C5A059] font-bold uppercase tracking-widest block">📜 The Artisan&apos;s Story (Building Trust)</span>
+                <h3 className="text-xl md:text-2xl font-serif text-white font-bold italic leading-relaxed">
+                  &ldquo;{artisan.biodata.shortStory || artisan.biodata.artisanTitle}&rdquo;
+                </h3>
               </div>
-              <div className="bg-[#0B2B26] px-5 py-2.5 rounded-xl border border-[#C5A059]/40 text-xs font-mono text-[#C5A059] font-bold shadow">
+              <div className="bg-[#0B2B26] px-5 py-2.5 rounded-xl border border-[#C5A059]/40 text-xs font-mono text-[#C5A059] font-bold shadow shrink-0">
                 🏛️ {artisan.biodata.legacyEst}
               </div>
             </div>
@@ -494,7 +542,7 @@ export default function WeaverStorePage() {
 
               <div className="space-y-4 bg-[#0B2B26]/60 p-6 rounded-2xl border border-[#C5A059]/20 flex flex-col justify-between shadow-inner">
                 <div className="space-y-3">
-                  <h4 className="text-xs font-bold text-[#C5A059] uppercase tracking-wider font-mono">📖 Historical Artisan Biography</h4>
+                  <h4 className="text-xs font-bold text-[#C5A059] uppercase tracking-wider font-mono">📖 Historical Artisan Biography & Craftsmanship</h4>
                   <p className="text-xs text-gray-200 leading-relaxed font-sans whitespace-pre-line">
                     {artisan.biodata.detailedBiography}
                   </p>
@@ -508,20 +556,35 @@ export default function WeaverStorePage() {
           </div>
         )}
 
-        {/* 2. Sovereign Saree Catalog Grid */}
-        <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#C5A059]/20 pb-4">
+        {/* ==================== 3. BLUEPRINT PRODUCT CATEGORIES & CATALOG ==================== */}
+        <div id="collection" className="space-y-8 scroll-mt-24">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-[#C5A059]/20 pb-4">
             <div>
-              <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Authentic Saree Catalog & Masterpieces</h3>
+              <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Authentic Saree Collection & Masterpieces</h3>
               <p className="text-xs text-gray-300 uppercase tracking-widest">Handwoven on traditional pit looms in {artisan.village}. Backed by Jan Dhan escrow settlement.</p>
             </div>
-            <div className="bg-[#0A3A35] px-4 py-2 rounded-xl border border-[#C5A059]/30 text-xs font-mono text-[#C5A059] font-bold">
-              📜 Silk Mark & Handloom Mark Certified
+            
+            {/* Scannable Category Tabs */}
+            <div className="flex flex-wrap gap-2 bg-[#0B2B26] p-1.5 rounded-2xl border border-[#C5A059]/30 shadow-inner">
+              {["All", "The Double Ikat Masterpieces", "Classic Single Ikat Pata", "Contemporary Fusion"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveCategoryTab(tab)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeCategoryTab === tab 
+                      ? "bg-[#C5A059] text-[#0A1021] shadow-[0_0_15px_rgba(197,160,89,0.5)]" 
+                      : "text-gray-300 hover:text-white"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
             </div>
           </div>
 
+          {/* ==================== 4. BLUEPRINT PRODUCT PAGE ESSENTIALS ==================== */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {SAREE_CATALOG.map((saree) => (
+            {filteredCatalog.map((saree) => (
               <div key={saree.id} className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl">
                 
                 {/* Saree Image & Badges */}
@@ -550,13 +613,33 @@ export default function WeaverStorePage() {
 
                 {/* Saree Details & Pricing */}
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-6">
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <h4 className="font-serif font-bold text-white text-lg group-hover:text-[#C5A059] transition-colors leading-tight">
                       {saree.title}
                     </h4>
                     <p className="text-xs text-gray-300 font-sans leading-relaxed">
-                      Handspun, high-density traditional weave featuring flawless mathematical symmetry and intricate extra-weft temple borders.
+                      {saree.desc}
                     </p>
+
+                    {/* Blueprint Video Snippets Simulation Box */}
+                    <div className="bg-[#0B2B26] p-3 rounded-xl border border-[#C5A059]/30 space-y-1.5 shadow-inner relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer pointer-events-none" />
+                      <span className="text-[10px] font-mono text-[#C5A059] font-bold uppercase tracking-wider block">
+                        ✨ Live Silk Sheen Simulation (Natural Light)
+                      </span>
+                      <p className="text-[11px] text-gray-200 font-sans italic flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span>{saree.lightSheen}</span>
+                      </p>
+                    </div>
+
+                    {/* Blueprint Authenticity Badge */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <span className="text-[10px] bg-[#C5A059]/20 text-[#C5A059] border border-[#C5A059]/40 px-2.5 py-1 rounded font-mono font-bold uppercase tracking-wider flex items-center gap-1 shadow">
+                        🛡️ {saree.badge}
+                      </span>
+                    </div>
+
                   </div>
 
                   <div className="space-y-4 pt-4 border-t border-[#C5A059]/20">
@@ -585,7 +668,7 @@ export default function WeaverStorePage() {
           </div>
         </div>
 
-        {/* 3. Artisan Heritage & Quality Assurance Section */}
+        {/* Preserving Heritage Footer Box */}
         <div className="bg-[#0A3A35]/60 border border-[#C5A059]/40 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl space-y-8 backdrop-blur-md">
           <div className="max-w-3xl space-y-3">
             <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Preserving an 800-Year-Old Ikat Legacy</h3>
@@ -612,7 +695,7 @@ export default function WeaverStorePage() {
 
       </div>
 
-      {/* 4. Instant Direct Checkout Glassmorphism Modal */}
+      {/* Instant Direct Checkout Glassmorphism Modal */}
       {selectedSaree && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#051815]/80 backdrop-blur-md animate-fadeIn">
           <div className="bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border-2 border-[#C5A059] rounded-3xl w-full max-w-xl overflow-hidden shadow-[0_0_50px_rgba(197,160,89,0.4)] relative flex flex-col max-h-[90vh]">
