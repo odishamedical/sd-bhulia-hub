@@ -253,45 +253,44 @@ export default function Home() {
                 title: "Master Weaver Nandalal Meher", 
                 desc: "National Award-winning master weaver from Dasrajpur, Sonepur. Preserving the rare mathematical alignment of authentic double ikat silk Pata.", 
                 img: "/nandalal_meher.jpg", 
-                badge: "🏆 National Awardee",
+                badge: "Bhulia Verified Master Weaver",
                 link: "/nandalal-meher" 
               },
               { 
                 title: "Maa Samaleswari PWCS", 
                 desc: "Inspect 142 active pit looms in Barpali. Specializing in Pasapalli Ikat and traditional Phoda Kumbha temple borders.", 
                 img: "/bhulia-hero.png", 
-                badge: "🛡️ Verified PWCS",
+                badge: "Bhulia Verified Master Weaver",
                 link: "/maa-samaleswari-weavers" 
               },
               { 
                 title: "Bhagabata Meher Workshop", 
                 desc: "Explore world-class Bijepur cotton Ikat crafted with 100% natural organic vegetable dyes.", 
                 img: "/bhulia-hero.png", 
-                badge: "🌱 Natural Dyes",
+                badge: "Bhulia Verified Master Weaver",
                 link: "/bhagabata-meher" 
               },
               { 
                 title: "Sonepur Royal Silk PWCS", 
                 desc: "Discover luxurious 3-ply Mulberry silk Bomkai sarees featuring rich extra-weft gold zari thread work.", 
                 img: "/bhulia-hero.png", 
-                badge: "📜 Silk Mark Gold",
+                badge: "Bhulia Verified Master Weaver",
                 link: "/sonepur-royal-silk" 
               }
             ].map((dir, idx) => (
               <Link key={idx} href={dir.link} className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl cursor-pointer block">
                 <div>
-                  {/* Image Thumbnail */}
+                  {/* Image Thumbnail (100% Clean & Unobstructed Face) */}
                   <div className="relative w-full h-48 overflow-hidden bg-[#051815]">
                     <Image src={dir.img} alt={dir.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0A3A35] via-transparent to-transparent" />
-                    <div className="absolute top-3 right-3 z-10">
-                      <span className="bg-[#C5A059] text-[#0A1021] px-2.5 py-1 rounded font-bold text-[10px] uppercase tracking-widest shadow-[0_0_15px_rgba(197,160,89,0.5)]">
-                        {dir.badge}
-                      </span>
-                    </div>
                   </div>
 
                   <div className="p-6 pb-0">
+                    {/* Unifying Sovereign Branding Line Underneath Image */}
+                    <div className="mb-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] text-[11px] font-mono font-bold uppercase tracking-widest shadow-sm">
+                      <span>✦ {dir.badge}</span>
+                    </div>
                     <h4 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-[#C5A059] transition-colors leading-tight">{dir.title}</h4>
                     <p className="text-xs text-gray-300 leading-relaxed font-sans">{dir.desc}</p>
                   </div>

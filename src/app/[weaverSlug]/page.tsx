@@ -439,7 +439,7 @@ export default function WeaverStorePage() {
                 📍 {artisan.cluster}
               </span>
               <span className="bg-[#C5A059] text-[#0A1021] px-3 py-1 rounded-full font-bold text-xs uppercase tracking-widest shadow-[0_0_15px_rgba(197,160,89,0.6)] flex items-center gap-1">
-                🛡️ Verified Sovereign Flagship
+                ✦ Bhulia Verified Master Weaver
               </span>
             </div>
             
