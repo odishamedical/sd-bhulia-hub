@@ -87,7 +87,7 @@ export default function Home() {
                 <a href="#pata-pasapalli" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Pasapalli (Silk)</a>
               </div>
             </div>
-            <Link href="/directory" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Directory</Link>
+            <Link href="/#cotton-sambalpuri" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Boutiques</Link>
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
           </nav>
@@ -155,7 +155,7 @@ export default function Home() {
                 <a href="#pata-pasapalli" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Pata Pasapalli (Silk)</a>
               </div>
             </div>
-            <Link href="/directory" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Weaver Directory</Link>
+            <Link href="/#cotton-sambalpuri" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Weaver Boutiques</Link>
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">About Us</Link>
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] pb-1 block">Contact Us</Link>
 
@@ -240,21 +240,21 @@ export default function Home() {
 
         </div>
 
-        {/* 2. Explore Master Artisan Directory Grid (The Missing Row!) */}
+        {/* 2. Explore Master Weaver Flagship Boutiques */}
         <div className="space-y-6 pt-4">
           <div>
-            <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore Master Artisan Directory</h3>
-            <p className="text-xs text-gray-300 uppercase tracking-widest">Browse verified grassroots profiles, village clusters, and GI-Tag registries</p>
+            <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore Master Weaver Flagships</h3>
+            <p className="text-xs text-gray-300 uppercase tracking-widest">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: "Browse by Saree Weavers", desc: "Inspect individual artisan profiles, pit loom capacities, and active GI certifications.", icon: "🧵" },
-              { title: "Browse by Village Clusters", desc: "Explore master weaving hubs including Barpali, Bijepur, Bargarh, and Sonepur.", icon: "🏛️" },
-              { title: "Browse by Bandha Artists", desc: "Discover legendary Tie & Dye master craftsmen preserving 800-year-old Ikat motifs.", icon: "🎨" },
-              { title: "Browse by Graph Designers", desc: "Meet the mathematical visionaries who chart complex Ikat patterns onto paper grids.", icon: "📐" }
+              { title: "Maa Samaleswari PWCS", desc: "Inspect 142 active pit looms in Barpali. Specializing in Pasapalli Ikat and temple borders.", icon: "🧵", link: "/maa-samaleswari-weavers" },
+              { title: "Bhagabata Meher Workshop", desc: "Explore world-class Bijepur cotton Ikat with 100% natural vegetable dyes.", icon: "🏛️", link: "/bhagabata-meher" },
+              { title: "Sonepur Royal Silk PWCS", desc: "Discover luxurious 3-ply Mulberry silk Bomkai sarees with extra-weft gold thread work.", icon: "🎨", link: "/sonepur-royal-silk" },
+              { title: "Boudh Organic Collective", desc: "Meet the sustainable pioneers crafting chemical-free, skin-friendly herbal handlooms.", icon: "📐", link: "/boudh-organic-ikat" }
             ].map((dir, idx) => (
-              <Link key={idx} href="/directory" className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl cursor-pointer block">
+              <Link key={idx} href={dir.link} className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl cursor-pointer block">
                 <div>
                   <div className="w-12 h-12 rounded-xl bg-[#0B2B26] border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow">
                     {dir.icon}
@@ -263,7 +263,7 @@ export default function Home() {
                   <p className="text-xs text-gray-300 leading-relaxed font-sans">{dir.desc}</p>
                 </div>
                 <div className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#C5A059]">
-                  <span>Explore Directory</span>
+                  <span>Visit Flagship Store</span>
                   <span>→</span>
                 </div>
               </Link>
@@ -705,8 +705,8 @@ export default function Home() {
             <div className="space-y-4">
               <h4 className="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Quick Links</h4>
               <ul className="space-y-2.5 text-xs text-gray-300">
-                <li><Link href="/directory" className="hover:text-[#C5A059] transition-colors">Our Weaver Network</Link></li>
-                <li><Link href="/directory" className="hover:text-[#C5A059] transition-colors">Verify GI-Tag Certificate</Link></li>
+                <li><Link href="/maa-samaleswari-weavers" className="hover:text-[#C5A059] transition-colors">Our Weaver Network</Link></li>
+                <li><Link href="/bhagabata-meher" className="hover:text-[#C5A059] transition-colors">Verify GI-Tag Certificate</Link></li>
                 <li><Link href="/" className="hover:text-[#C5A059] transition-colors">Live Silk & Yarn Rates</Link></li>
                 <li><Link href="/" className="hover:text-[#C5A059] transition-colors">SD Digital Services</Link></li>
               </ul>

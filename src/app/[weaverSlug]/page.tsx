@@ -5,9 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-// Structure for Artisan Listing
+// Structure for Artisan Listing with Slug
 interface ArtisanListing {
   id: string;
+  slug: string;
   name: string;
   cluster: string;
   village: string;
@@ -29,10 +30,11 @@ interface ArtisanListing {
   };
 }
 
-// Master Artisan Database (Matching Directory) with Renowned Weavers Biodata
+// Master Artisan Database (with Vanity Slugs)
 const MASTER_ARTISANS: ArtisanListing[] = [
   {
     id: "ART-001",
+    slug: "maa-samaleswari-weavers",
     name: "Maa Samaleswari Weavers Cooperative Society (PWCS)",
     cluster: "Bargarh Cluster",
     village: "Barpali, Bargarh",
@@ -55,6 +57,7 @@ const MASTER_ARTISANS: ArtisanListing[] = [
   },
   {
     id: "ART-002",
+    slug: "bhagabata-meher",
     name: "Bhagabata Meher Master Ikat Workshop",
     cluster: "Bargarh Cluster",
     village: "Bijepur, Bargarh",
@@ -77,6 +80,7 @@ const MASTER_ARTISANS: ArtisanListing[] = [
   },
   {
     id: "ART-006",
+    slug: "sonepur-royal-silk",
     name: "Sonepur Royal Silk PWCS",
     cluster: "Sonepur Cluster",
     village: "Sonepur Town",
@@ -99,6 +103,7 @@ const MASTER_ARTISANS: ArtisanListing[] = [
   },
   {
     id: "ART-010",
+    slug: "sambalpur-weavers-union",
     name: "Sambalpur District Handloom Weavers Union",
     cluster: "Sambalpur Cluster",
     village: "Sambalpur City",
@@ -121,6 +126,7 @@ const MASTER_ARTISANS: ArtisanListing[] = [
   },
   {
     id: "ART-013",
+    slug: "boudh-organic-ikat",
     name: "Boudh Natural Vegetable Dye Ikat Collective",
     cluster: "Boudh & Balangir",
     village: "Boudh Town",
@@ -143,6 +149,7 @@ const MASTER_ARTISANS: ArtisanListing[] = [
   },
   {
     id: "ART-008",
+    slug: "kalahandi-habaspuri",
     name: "Kalahandi Habaspuri Master Weaver Syndicate",
     cluster: "Kalahandi Cluster",
     village: "Habaspur / Bhawanipatna",
@@ -165,6 +172,7 @@ const MASTER_ARTISANS: ArtisanListing[] = [
   },
   {
     id: "ART-016",
+    slug: "nuapada-khariar-bandha",
     name: "Nuapada Khariar Bandha & Ikat Collective",
     cluster: "Nuapada Cluster",
     village: "Khariar, Nuapada",
@@ -187,9 +195,10 @@ const MASTER_ARTISANS: ArtisanListing[] = [
   }
 ];
 
-// Fallback Default Artisan if ID doesn't match exactly
+// Fallback Default Artisan
 const DEFAULT_ARTISAN: ArtisanListing = {
   id: "ART-999",
+  slug: "odisha-master-weavers",
   name: "Odisha Heritage Master Weaver Syndicate",
   cluster: "Odisha Handloom Belt",
   village: "Handloom Cluster, Odisha",
@@ -221,16 +230,17 @@ const SAREE_CATALOG = [
   { id: "SAR-106", title: "Boudh Madder Root Organic Dye Cotton Saree", price: "₹ 11,400", mrp: "₹ 16,000", weave: "Natural Dye Ikat", time: "20 Days Weaving", rating: "4.7", img: "/bhulia-hero.png", inStock: true },
 ];
 
-export default function ArtisanStorePage() {
+export default function WeaverStorePage() {
   const params = useParams();
-  const rawId = typeof params?.artisanId === "string" ? params.artisanId : "ART-001";
-  const artisanId = rawId.toUpperCase();
+  const rawSlug = typeof params?.weaverSlug === "string" ? params.weaverSlug : "maa-samaleswari-weavers";
+  const weaverSlug = rawSlug.toLowerCase();
 
-  // Find Artisan
-  const foundArtisan = MASTER_ARTISANS.find((a) => a.id === artisanId) || {
+  // Find Artisan by Slug or ID
+  const foundArtisan = MASTER_ARTISANS.find((a) => a.slug === weaverSlug || a.id.toLowerCase() === weaverSlug) || {
     ...DEFAULT_ARTISAN,
-    id: artisanId,
-    name: `Master Weaver Store (${artisanId})`,
+    id: weaverSlug.toUpperCase(),
+    slug: weaverSlug,
+    name: `Master Weaver Store (${weaverSlug.replace(/-/g, " ")})`,
   };
 
   const [artisan, setArtisan] = useState<ArtisanListing>(foundArtisan);
@@ -269,8 +279,8 @@ export default function ArtisanStorePage() {
 
   // Social Share Handler
   const handleSocialShare = (platform: "whatsapp" | "facebook") => {
-    const shareUrl = `${window.location.origin}/artisan/${artisan.id.toLowerCase()}?ref=${userUid}`;
-    const message = `Explore the sovereign handloom store for ${artisan.name}. Buy authentic GI-Tagged Sambalpuri sarees directly from the artisan's pit loom on Bhulia Hub! ${shareUrl}`;
+    const shareUrl = `${window.location.origin}/${artisan.slug || artisan.id.toLowerCase()}?ref=${userUid}`;
+    const message = `Explore the sovereign handloom flagship store for ${artisan.name}. Buy authentic GI-Tagged Sambalpuri sarees directly from the artisan's pit loom on Bhulia Hub! ${shareUrl}`;
 
     if (platform === "whatsapp") {
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, "_blank");
@@ -302,7 +312,7 @@ export default function ArtisanStorePage() {
       <div className="absolute top-0 left-0 w-[40%] h-[40%] bg-[#C5A059]/15 blur-[160px] rounded-full pointer-events-none z-0" />
       <div className="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D4AF37]/15 blur-[160px] rounded-full pointer-events-none z-0" />
 
-      {/* Top Sticky Header / Perfect Left-Center-Right Balance */}
+      {/* Top Sticky Header */}
       <header className="sticky top-0 w-full z-50 bg-[#0B2B26]/95 backdrop-blur-md border-b border-[#C5A059]/40 px-4 sm:px-6 py-3 sm:py-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)] flex flex-col gap-3">
         <div className="flex justify-between items-center gap-2 w-full">
           {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
@@ -322,15 +332,14 @@ export default function ArtisanStorePage() {
           <nav className="hidden lg:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-gray-200">
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Home</Link>
             <Link href="/#cotton-sambalpuri" className="hover:text-[#C5A059] transition-colors pb-1">Products</Link>
-            <Link href="/directory" className="text-[#C5A059] border-b-2 border-[#C5A059] pb-1">Weaver Directory</Link>
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
           </nav>
 
           {/* Right Side Actions & Mobile Hamburger */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <Link href="/directory" className="hidden sm:flex px-5 py-2.5 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shadow shrink-0">
-              ← Back to Directory
+            <Link href="/" className="hidden sm:flex px-5 py-2.5 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shadow shrink-0">
+              ← Back to Marketplace
             </Link>
 
             {/* Mobile Hamburger Button */}
@@ -342,10 +351,10 @@ export default function ArtisanStorePage() {
           </div>
         </div>
 
-        {/* Mobile-Only Dedicated Back to Directory Bar right below Bhulia.com */}
+        {/* Mobile-Only Dedicated Back Bar */}
         <div className="sm:hidden w-full pt-1 border-t border-[#C5A059]/20 flex justify-center">
-          <Link href="/directory" className="w-full flex items-center justify-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow">
-            ← Back to Directory
+          <Link href="/" className="w-full flex items-center justify-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow">
+            ← Back to Marketplace
           </Link>
         </div>
       </header>
@@ -356,7 +365,6 @@ export default function ArtisanStorePage() {
           <div className="flex flex-col space-y-3 text-xs font-bold uppercase tracking-widest text-gray-200">
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Home</Link>
             <Link href="/#cotton-sambalpuri" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Products</Link>
-            <Link href="/directory" onClick={() => setMobileNavOpen(false)} className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Weaver Directory</Link>
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">About Us</Link>
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] pb-1 block">Contact Us</Link>
           </div>
@@ -738,7 +746,7 @@ export default function ArtisanStorePage() {
                 </div>
               ) : (
                 <div className="py-12 text-center space-y-6 animate-fadeIn">
-                  <div className="w-20 h-20 rounded-full bg-green-500/20 border-2 border-green-500 text-green-400 flex items-center justify-center text-4xl mx-auto shadow-[0_0_30px_rgba(34,197,94,0.3)] animate-bounce">
+                  <div className="w-20 h-20 rounded-full bg-green-500/20 border-2 border-green-50 text-green-400 flex items-center justify-center text-4xl mx-auto shadow-[0_0_30px_rgba(34,197,94,0.3)] animate-bounce">
                     ✓
                   </div>
                   
