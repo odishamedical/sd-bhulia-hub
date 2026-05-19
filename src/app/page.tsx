@@ -227,11 +227,6 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
                 
                 <div className="space-y-2 sm:space-y-3 max-w-lg">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0A2520]/80 backdrop-blur border border-[#C5A059]/40 text-[#C5A059] text-[9px] sm:text-[10px] font-bold uppercase tracking-widest shadow-xl">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse"></span>
-                    <span>{heroSlides[currentSlide].badge}</span>
-                  </div>
-                  
                   <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-white leading-tight drop-shadow-2xl">
                     {heroSlides[currentSlide].title} <span className="text-[#C5A059]">{heroSlides[currentSlide].subtitle}</span>
                   </h2>
