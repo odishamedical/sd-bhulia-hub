@@ -249,13 +249,13 @@ const MASTER_ARTISANS: ArtisanListing[] = [
     slug: "ravi-meher",
     name: "Ravi Meher | Master Weaver Ikata & Graph Artist",
     cluster: "Bargarh Cluster",
-    village: "Lumunda, Bargarh",
+    village: "Laumunda, Bargarh",
     category: "bargarh",
     entityType: "Independent",
     loomCount: 15,
     giTagNumber: "GI-Cert: #OD-1102-BG",
     specialtyTags: ["Pasapali Cotton Classics", "Bichitrapuri Masterpieces", "Sachipar Designs", "Modern Narrative Graphs", "Mathematical Graph Art"],
-    seoDescription: "Ravi Meher, from Lumunda, Bargarh, is a visionary Master Weaver and Graph Artist redefining Indian handlooms by merging mathematical precision with Bandha Kala.",
+    seoDescription: "Ravi Meher, from Laumunda, Bargarh, is a visionary Master Weaver and Graph Artist redefining Indian handlooms by merging mathematical precision with Bandha Kala.",
     img: "/ravi_meher_v3.png",
     isClaimed: true,
     claimStatus: "verified",
@@ -636,8 +636,8 @@ export default function WeaverStorePage() {
           <span className="text-gray-400">{artisan.id}</span>
         </div>
 
-        {/* Micro-Nav Sticky Bar */}
-        <div className="sticky top-[73px] sm:top-[89px] z-40 bg-[#0B2B26]/95 backdrop-blur-xl border border-[#C5A059]/30 rounded-xl p-1.5 flex items-center justify-between sm:justify-start overflow-x-auto gap-2 sm:gap-6 shadow-[0_10px_30px_rgba(0,0,0,0.5)] scrollbar-hide">
+        {/* Micro-Nav Sticky Bar (Mobile Only fallback) */}
+        <div className="sticky top-[73px] sm:top-[89px] z-40 md:hidden bg-[#0B2B26]/95 backdrop-blur-xl border border-[#C5A059]/30 rounded-xl p-1.5 flex items-center justify-between sm:justify-start overflow-x-auto gap-2 sm:gap-6 shadow-[0_10px_30px_rgba(0,0,0,0.5)] scrollbar-hide">
           <a href="#about" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">About Master</a>
           <a href="#gallery" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">Masterpiece Gallery</a>
           <a href="#collection" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">Live Collections</a>
@@ -645,92 +645,79 @@ export default function WeaverStorePage() {
         </div>
 
         {/* ==================== 1. BLUEPRINT HERO SECTION ==================== */}
-        <div className="bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border-2 border-[#C5A059] rounded-2xl md:rounded-3xl p-5 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.25)] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 group">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#C5A059]/15 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000 pointer-events-none"></div>
+        <div className="bg-[#0A3A35] border-2 border-[#C5A059] rounded-2xl md:rounded-3xl relative overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.25)] flex flex-col">
           
-          <div className="space-y-6 max-w-2xl relative z-10">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-xs font-bold uppercase tracking-widest font-mono">
-                {artisan.id}
-              </span>
-              <span className="px-3 py-1 rounded-full bg-[#0B2B26] border border-[#C5A059]/30 text-gray-200 text-xs font-bold uppercase tracking-widest">
-                📍 {artisan.cluster}
-              </span>
-              <div className="relative inline-flex items-center justify-center">
-                {/* Outer Expanding Water Wave Ripple Layers */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#FFF2B2] to-[#D4AF37] opacity-60 animate-ping pointer-events-none blur-sm" style={{ animationDuration: '2.5s' }} />
-                <div className="absolute -inset-1 rounded-2xl bg-[#C5A059] opacity-30 animate-pulse pointer-events-none blur-md" />
-
-                {/* Real 3D Metallic Gold Plaque Button */}
-                <div className="relative z-10 py-2 px-5 rounded-2xl bg-gradient-to-b from-[#FFF5C0] via-[#D4AF37] via-[#C5A059] to-[#8A5A00] border-2 border-[#FFF0A5] shadow-[0_12px_30px_rgba(0,0,0,0.85),inset_0_3px_4px_rgba(255,255,255,0.9),inset_0_-4px_6px_rgba(120,75,0,0.9)] flex flex-col items-center justify-center transform hover:scale-[1.02] transition-transform duration-300">
-                  <span className="text-[10px] sm:text-[11px] font-serif font-black tracking-widest text-[#0A1021] uppercase leading-none mb-1 drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)]">
-                    Bhulia Verified
-                  </span>
-                  <span className="text-[11px] sm:text-xs font-serif font-black tracking-wider text-[#0A1021] uppercase leading-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)] text-center">
-                    Sambalpuri Master Weaver
-                  </span>
+          <div className="flex flex-col md:flex-row items-stretch gap-0">
+            {/* Left Side: Photo & Verification ID Badge */}
+            <div className="w-full md:w-80 flex flex-col border-b md:border-b-0 md:border-r border-[#C5A059]/30 bg-[#0B2B26] shrink-0">
+              <div className="relative w-full h-72 md:h-80 overflow-hidden bg-[#051815]">
+                <Image src={artisan.img} alt={artisan.name} fill className="object-cover" />
+                {/* Round Logo Overlay (Bottom Left) */}
+                <div className="absolute bottom-3 left-3 w-10 h-10 rounded-full overflow-hidden border border-[#C5A059] shadow-lg z-20">
+                  <Image src="/bhulia_logo_final.jpg" alt="Bhulia Logo" fill className="object-cover" />
                 </div>
               </div>
-            </div>
-            
-            <h2 className="text-2xl md:text-5xl font-serif font-bold text-white leading-tight">
-              {artisan.name}
-            </h2>
-
-            <p className="text-sm md:text-base text-gray-200 leading-relaxed font-sans max-w-2xl">
-              {artisan.seoDescription}
-            </p>
-
-            <div className="flex flex-wrap gap-2 pt-2">
-              {artisan.specialtyTags.map((tag, idx) => (
-                <span key={idx} className="bg-[#0B2B26] border border-[#C5A059]/30 text-[#C5A059] text-xs px-3 py-1 rounded-lg font-sans font-medium shadow-inner">
-                  #{tag}
-                </span>
-              ))}
-            </div>
-
-            {/* Action Button: Explore the Collection */}
-            <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <a 
-                href="#collection" 
-                className="px-8 py-4 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_25px_rgba(197,160,89,0.5)] flex items-center gap-2 cursor-pointer"
-              >
-                <span>🛍️ Explore the Collection</span>
-                <span>↓</span>
-              </a>
-
-              <div className="bg-[#0B2B26] px-4 py-3 rounded-xl border border-[#C5A059]/30 flex items-center gap-2 shadow">
-                <span className="text-gray-400 text-xs font-mono">GI Registry:</span>
-                <span className="text-[#C5A059] text-xs font-mono font-bold">{artisan.giTagNumber}</span>
+              {/* Yellow Tag Below Image */}
+              <div className="bg-[#EAB308] text-[#0A1021] py-3 px-4 text-center text-[10px] sm:text-xs font-serif font-black tracking-wide uppercase border-t border-[#C5A059]/40">
+                Bhulia.com Verified Weaver : {artisan.name.split('|')[0].trim()} ({artisan.id.replace('ART-', 'BW/')})
               </div>
+            </div>
+
+            {/* Right Side: Navigation & Info */}
+            <div className="flex-1 flex flex-col justify-between p-5 md:p-8 bg-gradient-to-br from-[#0A3A35] to-[#0B2B26] relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-[#C5A059]/15 rounded-full blur-3xl pointer-events-none"></div>
+
+              {/* Navigation inside Hero */}
+              <div className="hidden md:flex items-center justify-between border border-[#C5A059]/40 rounded-xl bg-[#051815]/85 p-1 mb-6">
+                <a href="#about" className="flex-1 text-center py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-white hover:bg-[#C5A059]/20 rounded-lg transition-all">About Master</a>
+                <a href="#gallery" className="flex-1 text-center py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-white hover:bg-[#C5A059]/20 rounded-lg transition-all">Masterpiece Gallery</a>
+                <a href="#collection" className="flex-1 text-center py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-white hover:bg-[#C5A059]/20 rounded-lg transition-all">Live Collections</a>
+                <a href="#contact" className="flex-1 text-center py-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-white hover:bg-[#C5A059]/20 rounded-lg transition-all">Contact & Visit</a>
+              </div>
+
+              {/* Title & Description */}
+              <div className="space-y-4 relative z-10">
+                <h2 className="text-2xl md:text-4xl font-serif font-bold text-white leading-tight">
+                  {artisan.name.split('|')[0].trim()} , {artisan.village.split(',')[0].trim()}, {artisan.cluster.replace('Cluster','').trim()}
+                </h2>
+
+                <div className="inline-block bg-[#EAB308] text-[#0A1021] px-5 py-2 rounded-xl font-serif font-black text-xs sm:text-sm tracking-wider shadow">
+                  {artisan.biodata?.artisanTitle || "Master Weaver"}
+                </div>
+
+                <p className="text-sm md:text-base text-gray-200 leading-relaxed font-sans max-w-xl pt-2">
+                  {artisan.seoDescription}
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#C5A059]/10 relative z-10">
+                <div className="flex gap-2">
+                  {artisan.specialtyTags.slice(0, 3).map((tag, idx) => (
+                    <span key={idx} className="bg-[#0B2B26] border border-[#C5A059]/30 text-[#C5A059] text-[10px] px-2.5 py-1 rounded-lg font-sans font-medium shadow-inner">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+                
+                <div className="flex gap-2">
+                  <button onClick={() => handleSocialShare("whatsapp")} className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] rounded-xl font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow">
+                    <span>📲 WhatsApp</span>
+                  </button>
+                  <button onClick={() => handleSocialShare("facebook")} className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[#1877F2]/20 hover:bg-[#1877F2]/30 border border-[#1877F2]/40 text-[#1877F2] rounded-xl font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow">
+                    <span>📘 Facebook</span>
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
 
-          {/* Right Side: Visual Portrait / Share Box */}
-          <div className="relative z-10 shrink-0 w-full md:w-80 space-y-4 bg-[#0B2B26]/80 p-4 md:p-6 rounded-2xl border border-[#C5A059]/40 backdrop-blur-md shadow-2xl">
-            <div className="relative w-full h-64 rounded-xl overflow-hidden border border-[#C5A059]/30 shadow-inner bg-[#051815]">
-              <Image src={artisan.img} alt={artisan.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B26] via-transparent to-transparent"></div>
-              <div className="absolute bottom-3 left-3 right-3 text-center">
-                <span className="text-[10px] font-mono text-[#C5A059] bg-[#0B2B26]/90 px-3 py-1 rounded-full border border-[#C5A059]/40 font-bold block uppercase tracking-widest">
-                  📍 {artisan.village}
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-2 pt-2">
-              <span className="text-xs font-bold text-white block text-center uppercase tracking-widest">Promote Original Sambalpuri Saree</span>
-              <div className="grid grid-cols-2 gap-2">
-                <button onClick={() => handleSocialShare("whatsapp")} className="flex items-center justify-center gap-1.5 py-2.5 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] rounded-xl font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow">
-                  <span>📲 WhatsApp</span>
-                </button>
-                <button onClick={() => handleSocialShare("facebook")} className="flex items-center justify-center gap-1.5 py-2.5 bg-[#1877F2]/20 hover:bg-[#1877F2]/30 border border-[#1877F2]/40 text-[#1877F2] rounded-xl font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow">
-                  <span>📘 Facebook</span>
-                </button>
-              </div>
-              <p className="text-[10px] text-gray-400 text-center font-mono pt-1 truncate">Ref Tag: ?ref={userUid}</p>
-            </div>
+          {/* Bottom Full-Width Promotes Banner */}
+          <div className="w-full bg-[#EAB308] text-[#0A1021] py-2.5 px-4 text-center text-xs md:text-sm font-serif font-black uppercase tracking-wider border-t border-[#C5A059]/40 z-10 shrink-0">
+            Bhulia.com Promotes Only Original Sambalpuri Sarees and Weavers
           </div>
+
         </div>
 
         {/* ==================== 2. BLUEPRINT ARTISAN'S STORY ==================== */}
