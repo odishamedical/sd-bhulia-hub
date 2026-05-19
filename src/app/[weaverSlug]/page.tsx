@@ -579,7 +579,7 @@ export default function WeaverStorePage() {
       )}
 
       {/* Main Content Container */}
-      <div className="flex-1 container mx-auto px-6 py-8 relative z-10 space-y-12">
+      <div className="flex-1 container mx-auto px-4 md:px-6 py-6 md:py-8 relative z-10 space-y-10 md:space-y-12">
         
         {/* Breadcrumb Navigation - Back to Marketplace */}
         <div className="flex items-center text-xs font-bold uppercase tracking-widest text-gray-300">
@@ -601,7 +601,7 @@ export default function WeaverStorePage() {
         </div>
 
         {/* ==================== 1. BLUEPRINT HERO SECTION ==================== */}
-        <div className="bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border-2 border-[#C5A059] rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.25)] flex flex-col md:flex-row items-start md:items-center justify-between gap-8 group">
+        <div className="bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border-2 border-[#C5A059] rounded-2xl md:rounded-3xl p-5 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.25)] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 group">
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#C5A059]/15 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000 pointer-events-none"></div>
           
           <div className="space-y-6 max-w-2xl relative z-10">
@@ -629,7 +629,7 @@ export default function WeaverStorePage() {
               </div>
             </div>
             
-            <h2 className="text-3xl md:text-5xl font-serif font-bold text-white leading-tight">
+            <h2 className="text-2xl md:text-5xl font-serif font-bold text-white leading-tight">
               {artisan.name}
             </h2>
 
@@ -663,7 +663,7 @@ export default function WeaverStorePage() {
           </div>
 
           {/* Right Side: Visual Portrait / Share Box */}
-          <div className="relative z-10 shrink-0 w-full md:w-80 space-y-4 bg-[#0B2B26]/80 p-6 rounded-2xl border border-[#C5A059]/40 backdrop-blur-md shadow-2xl">
+          <div className="relative z-10 shrink-0 w-full md:w-80 space-y-4 bg-[#0B2B26]/80 p-4 md:p-6 rounded-2xl border border-[#C5A059]/40 backdrop-blur-md shadow-2xl">
             <div className="relative w-full h-64 rounded-xl overflow-hidden border border-[#C5A059]/30 shadow-inner bg-[#051815]">
               <Image src={artisan.img} alt={artisan.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B26] via-transparent to-transparent"></div>
@@ -691,7 +691,7 @@ export default function WeaverStorePage() {
 
         {/* ==================== 2. BLUEPRINT ARTISAN'S STORY ==================== */}
         {artisan.biodata && (
-          <div id="about" className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl space-y-6 backdrop-blur-md animate-fadeIn scroll-mt-32">
+          <div id="about" className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl md:rounded-3xl p-5 md:p-12 relative overflow-hidden shadow-2xl space-y-6 backdrop-blur-md animate-fadeIn scroll-mt-32">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#C5A059]/20 pb-6">
               <div className="space-y-1 max-w-3xl">
                 <span className="text-xs font-mono text-[#C5A059] font-bold uppercase tracking-widest block">📜 The Artisan&apos;s Story (Building Trust)</span>
@@ -726,7 +726,7 @@ export default function WeaverStorePage() {
                 </div>
               </div>
 
-              <div className="space-y-4 bg-[#0B2B26]/60 p-6 rounded-2xl border border-[#C5A059]/20 flex flex-col justify-between shadow-inner">
+              <div className="space-y-4 bg-[#0B2B26]/60 p-5 md:p-6 rounded-2xl border border-[#C5A059]/20 flex flex-col justify-between shadow-inner">
                 <div className="space-y-3">
                   <h4 className="text-xs font-bold text-[#C5A059] uppercase tracking-wider font-mono">📖 Historical Artisan Biography & Craftsmanship</h4>
                   <p className="text-xs text-gray-200 leading-relaxed font-sans whitespace-pre-line">
@@ -821,7 +821,7 @@ export default function WeaverStorePage() {
                 </div>
 
                 {/* Saree Details & Pricing */}
-                <div className="p-6 flex-1 flex flex-col justify-between space-y-6">
+                <div className="p-4 md:p-6 flex-1 flex flex-col justify-between space-y-5 md:space-y-6">
                   <div className="space-y-3">
                     <h4 className="font-serif font-bold text-white text-lg group-hover:text-[#C5A059] transition-colors leading-tight">
                       {saree.title}
