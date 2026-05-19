@@ -623,25 +623,27 @@ export default function WeaverStorePage() {
       )}
 
       {/* Main Content Container */}
-      <div className="flex-1 container mx-auto px-4 md:px-6 py-6 md:py-8 relative z-10 space-y-10 md:space-y-12">
+      <div className="flex-1 container mx-auto px-4 md:px-6 py-4 md:py-6 relative z-10 space-y-6 md:space-y-8">
         
-        {/* Breadcrumb Navigation - Back to Marketplace */}
-        <div className="flex items-center text-xs font-bold uppercase tracking-widest text-gray-300">
-          <Link href="/" className="hover:text-white transition-colors">Bhulia.com</Link>
-          <span className="mx-2 text-[#C5A059]">&gt;</span>
-          <Link href="/#weaver-boutiques" className="text-[#C5A059] hover:text-[#D4AF37] transition-colors flex items-center gap-1">
-            <span>Marketplace</span>
-          </Link>
-          <span className="mx-2 text-[#C5A059]">&gt;</span>
-          <span className="text-gray-400">{artisan.id}</span>
-        </div>
+        <div>
+          {/* Breadcrumb Navigation - Back to Marketplace */}
+          <div className="flex items-center text-xs font-bold uppercase tracking-widest text-gray-300 mb-3">
+            <Link href="/" className="hover:text-white transition-colors">Bhulia.com</Link>
+            <span className="mx-2 text-[#C5A059]">&gt;</span>
+            <Link href="/#weaver-boutiques" className="text-[#C5A059] hover:text-[#D4AF37] transition-colors flex items-center gap-1">
+              <span>Marketplace</span>
+            </Link>
+            <span className="mx-2 text-[#C5A059]">&gt;</span>
+            <span className="text-gray-400">{artisan.id}</span>
+          </div>
 
-        {/* Micro-Nav Sticky Bar (Mobile Only fallback) */}
-        <div className="sticky top-[73px] sm:top-[89px] z-40 md:hidden bg-[#0B2B26]/95 backdrop-blur-xl border border-[#C5A059]/30 rounded-xl p-1.5 flex items-center justify-between sm:justify-start overflow-x-auto gap-2 sm:gap-6 shadow-[0_10px_30px_rgba(0,0,0,0.5)] scrollbar-hide">
-          <a href="#about" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">About Master</a>
-          <a href="#gallery" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">Masterpiece Gallery</a>
-          <a href="#collection" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">Live Collections</a>
-          <a href="#contact" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">Contact & Visit</a>
+          {/* Micro-Nav Sticky Bar (Mobile Only fallback) */}
+          <div className="sticky top-[73px] sm:top-[89px] z-40 md:hidden bg-[#0B2B26]/95 backdrop-blur-xl border border-[#C5A059]/30 rounded-xl p-1.5 flex items-center justify-between sm:justify-start overflow-x-auto gap-2 sm:gap-6 shadow-[0_10px_30px_rgba(0,0,0,0.5)] scrollbar-hide">
+            <a href="#about" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">About Master</a>
+            <a href="#gallery" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">Masterpiece Gallery</a>
+            <a href="#collection" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">Live Collections</a>
+            <a href="#contact" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">Contact & Visit</a>
+          </div>
         </div>
 
         {/* ==================== 1. BLUEPRINT HERO SECTION ==================== */}
