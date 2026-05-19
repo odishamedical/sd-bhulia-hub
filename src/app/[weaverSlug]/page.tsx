@@ -5,43 +5,50 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-// Bilingual translations for the master weaver page
-const TRANSLATIONS = {
-  en: {
-    aboutTitle: "ABOUT THE WEAVER",
-    expertiseTitle: "EXPERTISE & BHULIA.COM AWARDS",
-    awardWinner: "Bhulia.com Award Winner",
-    awardWinnerDesc: "2018 | Textile Excellence",
-    masterWeaver: "Master Weaver",
-    masterWeaverDesc: "35+ Yrs Tradition",
-    ikatSpecialist: "Ikat Graph Specialist",
-    ikatSpecialistDesc: "Mathematical Designs",
-    heritageHandloom: "Heritage Handloom",
-    heritageHandloomDesc: "Preserving Bandha Kala",
-    verifiedText: "Verified by Handloom Census",
-    d2cReady: "✓ 100% D2C Jan Dhan Ready",
-    tagline: "The Weavers of Bhulia.com",
-    bio1: "Ravi Meher, hailing from Laumunda, Bargarh (Odisha), is a visionary Master Weaver, Ikat Designer, and Graph Artist redefining the landscape of Indian handlooms. Merging the architectural precision of mathematical graph art with the ancient, intuitive soul of Bandha Kala (Tie & Dye), Ravi transforms raw cotton yarns into national masterpieces.",
-    bio2: "Every piece is hand-mapped on a graph before meeting the loom. It takes months of precise calculating, resist-dyeing, and high-count cotton weaving to yield flawless symmetry.",
-    bio3: "Beyond his loom, he serves as a cultural guardian. He has dedicated his life to preserving Odisha’s heritage by training and mentoring hundreds of next-generation Bandha artists, ensuring that this painstaking heirloom craft thrives for decades to come."
+// Bilingual translations mapped by artisan slug
+const TRANSLATIONS: Record<string, {
+  en: { bio1: string; bio2: string };
+  or: { bio1: string; bio2: string };
+}> = {
+  "nandalal-meher": {
+    en: {
+      bio1: "Nandalal Meher is a master of Sonepur's prestigious handloom heritage. He specializes in the complex art of single and double ikat silk weaving, turning fine threads into wearable masterpieces.",
+      bio2: "Each Pata saree exhibits a rare mathematical alignment that takes months of precision dyeing and weaving to achieve, preserving a centuries-old tradition."
+    },
+    or: {
+      bio1: "ନନ୍ଦଲାଲ ମେହେର ସୋନପୁରର ପ୍ରସିଦ୍ଧ ହସ୍ତତନ୍ତ ଐତିହ୍ୟର ଜଣେ ମୁଖ୍ୟ ବୁଣାକାର। ସେ ରେଶମ ସୂତାରେ ଏକକ ଏବଂ ଦ୍ଵିମୁଖୀ ଇକତ୍ ବୁଣାକଳାରେ ପାରଦର୍ଶିତା ଅର୍ଜନ କରିଛନ୍ତି।",
+      bio2: "ତାଙ୍କର ପ୍ରତ୍ୟେକ ପାଟ ଶାଢ଼ୀରେ ଗାଣିତିକ ସମତୁଲତା ଦେଖିବାକୁ ମିଳେ, ଯାହା ପ୍ରସ୍ତୁତ କରିବାକୁ ମାସ ମାସ ସମୟ ଲାଗିଥାଏ।"
+    }
   },
-  or: {
-    aboutTitle: "ବୁଣାକାରଙ୍କ ସମ୍ପର୍କରେ",
-    expertiseTitle: "ଦକ୍ଷତା ଓ ଭୁଲିଆ ପୁରସ୍କାର",
-    awardWinner: "ଭୁଲିଆ.କମ୍ ପୁରସ୍କାର ବିଜେତା",
-    awardWinnerDesc: "୨୦୧୮ | ବସ୍ତ୍ରଶିଳ୍ପ ଶ୍ରେଷ୍ଠତା",
-    masterWeaver: "ମୁଖ୍ୟ ବୁଣାକାର",
-    masterWeaverDesc: "୩୫+ ବର୍ଷର ପରମ୍ପରା",
-    ikatSpecialist: "ଇକତ୍ ଗ୍ରାଫ୍ ବିଶେଷଜ୍ଞ",
-    ikatSpecialistDesc: "ଗାଣିତିକ ଶୈଳୀ ଓ ନକ୍ସା",
-    heritageHandloom: "ଐତିହ୍ୟ ହସ୍ତତନ୍ତ",
-    heritageHandloomDesc: "ବାନ୍ଧକଳାର ସଂରକ୍ଷଣ",
-    verifiedText: "ହସ୍ତତନ୍ତ ଜନଗଣନା ଦ୍ଵାରା ସତ୍ୟାପିତ",
-    d2cReady: "✓ ୧୦୦% ଡି୨ସି ଜନଧନ ପ୍ରସ୍ତୁତ",
-    tagline: "ଭୁଲିଆ.କମ୍ ର ବୁଣାକାର ସମୂହ",
-    bio1: "ଓଡ଼ିଶାର ବରଗଡ଼ ଜିଲ୍ଲା ଲଉମୁଣ୍ଡାର ରବି ମେହେର ଜଣେ ଦୂରଦୃଷ୍ଟିସମ୍ପନ୍ନ ମୁଖ୍ୟ ବୁଣାକାର, ଇକତ୍ ଡିଜାଇନର୍ ଏବଂ ଗ୍ରାଫ୍ କଳାକାର। ଗାଣିତିକ ଗ୍ରାଫ୍ କଳାର ସୂକ୍ଷ୍ମତା ସହିତ ପ୍ରାଚୀନ ବାନ୍ଧକଳାର ଅପୂର୍ବ ସମ୍ମିଶ୍ରଣ କରି ସେ କପା ସୂତାରୁ ଜାତୀୟ ସ୍ତରର ଅପୂର୍ବ କଳାକୃତି ସୃଷ୍ଟି କରନ୍ତି।",
-    bio2: "ପ୍ରତ୍ୟେକ ବସ୍ତ୍ର ବୁଣା ହେବା ପୂର୍ବରୁ ଗ୍ରାଫ୍ କାଗଜରେ ହାତରେ ଚିତ୍ରାଙ୍କନ କରାଯାଏ। ମାସ ମାସର ପରିଶ୍ରମ, ସଠିକ୍ ରଙ୍ଗ ପ୍ରସ୍ତୁତି ଏବଂ ଉଚ୍ଚ ମାନର କପା ସୂତାର ବ୍ୟବହାର ଦ୍ଵାରା ଏହି ସୁନ୍ଦର ପାସାପାଲି ଶୈଳୀ ସମ୍ଭବ ହୋଇଥାଏ।",
-    bio3: "ନିଜ ଶାଳ ବ୍ୟତୀତ ସେ ଜଣେ ସାଂସ୍କୃତିକ ସଂରକ୍ଷକ ଅଟନ୍ତି। ଶହ ଶହ ଯୁବ ପିଢିର କଳାକାରମାନଙ୍କୁ ବାନ୍ଧକଳା ଶିକ୍ଷା ଦେଇ ସେ ଓଡ଼ିଶାର ଏହି ପ୍ରାଚୀନ ଐତିହ୍ୟକୁ ବଞ୍ଚାଇ ରଖିବାରେ ନିଜ ଜୀବନ ଉତ୍ସର୍ଗ କରିଛନ୍ତି।"
+  "rabindra-meher": {
+    en: {
+      bio1: "Rabindra Meher is an innovative master weaver from Dasrajpur, Sonepur. Renowned for his creative vision, he breathes new life into Sambalpuri Pata sarees like Pasapalli, Nabakothi, and Bomkai.",
+      bio2: "By tie-dyeing and weaving fine silk yarns entirely by hand, he seamlessly blends traditional layouts with contemporary styles for modern collectors."
+    },
+    or: {
+      bio1: "ରବିନ୍ଦ୍ର ମେହେର ସୋନପୁର ଦାସରାଜପୁରର ଜଣେ ସୃଜନଶୀଳ ମୁଖ୍ୟ ବୁଣାକାର। ନିଜର ଅଭିନବ ଚିନ୍ତାଧାରା ପାଇଁ ଜଣାଶୁଣା ରବିନ୍ଦ୍ର ପାସାପାଲି, ନବକୋଠି ଏବଂ ବୋମକାଇ ଭଳି ସମ୍ବଲପୁରୀ ପାଟ ଶାଢ଼ୀକୁ ଏକ ନୂଆ ରୂପ ଦେଇଛନ୍ତି।",
+      bio2: "ସେ ହାତରେ ସୂତା ରଙ୍ଗ କରି ପାରମ୍ପରିକ ଓ ଆଧୁନିକତାର ଅପୂର୍ବ ସମ୍ମିଶ୍ରଣ କରନ୍ତି।"
+    }
+  },
+  "nagarjuna-meher": {
+    en: {
+      bio1: "Nagarjuna Meher is a legendary custodian of Sambalpuri Pata from Sonepur. Devoted to the pit loom since early childhood, he possesses an intuitive understanding of silk geometry.",
+      bio2: "His double-ikat creations are celebrated on national runways and sought after by collectors worldwide for their flawless patterns and rich heritage."
+    },
+    or: {
+      bio1: "ନାଗାର୍ଜୁନ ମେହେର ସୋନପୁରର ସମ୍ବଲପୁରୀ ପାଟର ଜଣେ କିମ୍ବଦନ୍ତୀ ବୁଣାକାର। ବାଲ୍ୟକାଳରୁ ଶାଳ ସହିତ ଜଡ଼ିତ ରହି ସେ ରେଶମ ଏବଂ ଜ୍ୟାମିତିକ ନକ୍ସାରେ ଅସାଧାରଣ ଦକ୍ଷତା ହାସଲ କରିଛନ୍ତି।",
+      bio2: "ତାଙ୍କର ଦ୍ଵିମୁଖୀ ଇକତ୍ କଳାକୃତି ଜାତୀୟ ସ୍ତରରେ ଏବଂ ସାରା ବିଶ୍ଵର ଗ୍ରାହକଙ୍କ ମଧ୍ୟରେ ବେଶ୍ ଆଦୃତ।"
+    }
+  },
+  "ravi-meher": {
+    en: {
+      bio1: "Ravi Meher, from Laumunda, Bargarh, is a visionary Master Weaver and Graph Artist. Merging mathematical precision with Bandha Kala, he hand-maps every thread matrix before weaving.",
+      bio2: "Beyond his loom, he serves as a cultural guardian, training and mentoring hundreds of next-generation Bandha artists to preserve this heritage."
+    },
+    or: {
+      bio1: "ରବି ମେହେର ବରଗଡ଼ ଜିଲ୍ଲା ଲଉମୁଣ୍ଡାର ଜଣେ ପ୍ରସିଦ୍ଧ ବୁଣାକାର ଓ ଗ୍ରାଫ୍ କଳାକାର। ଗ୍ରାଫ୍ କାଗଜରେ ପ୍ରତ୍ୟେକ ନକ୍ସା ପ୍ରସ୍ତୁତ କରି ସେ ମୂଲ୍ୟବାନ ବାନ୍ଧକଳାର ସୃଷ୍ଟି କରନ୍ତି।",
+      bio2: "ଜଣେ ସାଂସ୍କୃତିକ ସଂରକ୍ଷକ ଭାବେ ସେ ଶହ ଶହ ଯୁବ ବୁଣାକାରଙ୍କୁ ପ୍ରଶିକ୍ଷଣ ଦେଇ ପରମ୍ପରାକୁ ବଞ୍ଚାଇ ରଖିଛନ୍ତି।"
+    }
   }
 };
 
@@ -776,7 +783,7 @@ export default function WeaverStorePage() {
 
         {/* ==================== 2. BLUEPRINT ARTISAN'S STORY ==================== */}
         {artisan.biodata && (
-          <div id="about" className="bg-[#0A3A35]/80 border-2 border-[#C5A059]/40 rounded-2xl md:rounded-3xl p-6 md:p-10 relative overflow-hidden shadow-2xl space-y-6 backdrop-blur-md animate-fadeIn scroll-mt-32">
+          <div id="about" className="bg-[#0A3A35]/80 border-2 border-[#C5A059]/40 rounded-2xl md:rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-2xl space-y-6 backdrop-blur-md animate-fadeIn scroll-mt-32">
             
             {/* Section Header with English / Odia Selector */}
             <div className="flex justify-between items-center border-b border-[#C5A059]/20 pb-4">
@@ -800,19 +807,19 @@ export default function WeaverStorePage() {
               
               {/* Column 1: Image Gallery (At the Loom & Work) */}
               <div className="md:col-span-4 flex flex-col gap-4">
-                <div className="relative w-full h-52 rounded-xl overflow-hidden border border-[#C5A059]/40 shadow-md bg-[#0B2B26]">
+                <div className="relative w-full h-44 rounded-xl overflow-hidden border border-[#C5A059]/40 shadow-md bg-[#0B2B26]">
                   <Image 
-                    src={artisan.slug === "ravi-meher" ? "/ravi_meher_v3.png" : artisan.img} 
+                    src={artisan.img} 
                     alt={artisan.name} 
                     fill 
                     className="object-cover" 
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 </div>
-                <div className="relative w-full h-52 rounded-xl overflow-hidden border border-[#C5A059]/40 shadow-md bg-[#0B2B26]">
+                <div className="relative w-full h-44 rounded-xl overflow-hidden border border-[#C5A059]/40 shadow-md bg-[#0B2B26]">
                   <Image 
-                    src={artisan.slug === "ravi-meher" ? "/ravi_meher_v2.png" : "/bhulia-hero.png"} 
-                    alt="At the Loom" 
+                    src="/ravi_meher_v2.png" 
+                    alt="Loom Workshop" 
                     fill 
                     className="object-cover" 
                   />
@@ -823,51 +830,51 @@ export default function WeaverStorePage() {
                 </p>
               </div>
 
-              {/* Column 2: Accolades & Expertise Badges */}
+              {/* Column 2: Accolades & Expertise Badges (Compact, no huge cards) */}
               <div className="md:col-span-4 flex flex-col justify-between border-y md:border-y-0 md:border-x border-[#C5A059]/20 py-4 md:py-0 md:px-6 space-y-4">
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <h4 className="text-xs font-bold text-[#C5A059] uppercase tracking-wider font-mono">
                     {lang === "en" ? "Expertise & Bhulia Awards" : "ଦକ୍ଷତା ଓ ଭୁଲିଆ ପୁରସ୍କାର"}
                   </h4>
                   
                   {/* Badge 1: Bhulia Award Winner */}
-                  <div className="bg-[#051815] p-3 rounded-xl border border-[#C5A059]/30 flex items-center gap-3 shadow-inner">
-                    <span className="text-[#C5A059] text-lg">🎖️</span>
+                  <div className="flex items-start gap-3 py-1">
+                    <span className="text-[#C5A059] text-lg shrink-0 mt-0.5">🎖️</span>
                     <div>
                       <p className="text-xs font-bold text-white uppercase">{lang === "en" ? "Bhulia.com Award Winner" : "ଭୁଲିଆ.କମ୍ ପୁରସ୍କାର ବିଜେତା"}</p>
-                      <p className="text-[10px] text-gray-400">{lang === "en" ? "2018 | Textile Excellence" : "୨୦୧୮ | ବସ୍ତ୍ରଶିଳ୍ପ ଶ୍ରେଷ୍ଠତା"}</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">{lang === "en" ? "Textile Excellence" : "ବସ୍ତ୍ରଶିଳ୍ପ ଶ୍ରେଷ୍ଠତା"}</p>
                     </div>
                   </div>
 
                   {/* Badge 2: Master Weaver */}
-                  <div className="bg-[#051815] p-3 rounded-xl border border-[#C5A059]/20 flex items-center gap-3 shadow-inner">
-                    <span className="text-[#C5A059] text-lg">🎖️</span>
+                  <div className="flex items-start gap-3 py-1">
+                    <span className="text-[#C5A059] text-lg shrink-0 mt-0.5">🎖️</span>
                     <div>
                       <p className="text-xs font-bold text-white uppercase">{lang === "en" ? "Master Weaver" : "ମୁଖ୍ୟ ବୁଣାକାର"}</p>
-                      <p className="text-[10px] text-gray-400">{lang === "en" ? `${artisan.loomCount}+ Active Looms / Guild` : `${artisan.loomCount}+ ସକ୍ରିୟ ତନ୍ତୁ`}</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">{lang === "en" ? `${artisan.loomCount}+ Active Looms` : `${artisan.loomCount}+ ସକ୍ରିୟ ତନ୍ତୁ`}</p>
                     </div>
                   </div>
 
                   {/* Badge 3: Ikat Graph Specialist */}
-                  <div className="bg-[#051815] p-3 rounded-xl border border-[#C5A059]/20 flex items-center gap-3 shadow-inner">
-                    <span className="text-[#C5A059] text-lg">🎖️</span>
+                  <div className="flex items-start gap-3 py-1">
+                    <span className="text-[#C5A059] text-lg shrink-0 mt-0.5">🎖️</span>
                     <div>
-                      <p className="text-xs font-bold text-white uppercase">{lang === "en" ? "Ikat Graph Specialist" : "ଇକତ୍ ଗ୍ରାଫ୍ ବିଶେଷଜ୍ଞ"}</p>
-                      <p className="text-[10px] text-gray-400">{lang === "en" ? "Mathematical Layouts" : "ଗାଣିତିକ ଶୈଳୀ ଓ ନକ୍ସା"}</p>
+                      <p className="text-xs font-bold text-white uppercase">{lang === "en" ? "Ikat Specialist" : "ଇକତ୍ ବିଶେଷଜ୍ଞ"}</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">{lang === "en" ? "Traditional Design" : "ପାରମ୍ପରିକ ନକ୍ସା"}</p>
                     </div>
                   </div>
 
                   {/* Badge 4: Heritage Handloom */}
-                  <div className="bg-[#051815] p-3 rounded-xl border border-[#C5A059]/20 flex items-center gap-3 shadow-inner">
-                    <span className="text-[#C5A059] text-lg">🎖️</span>
+                  <div className="flex items-start gap-3 py-1">
+                    <span className="text-[#C5A059] text-lg shrink-0 mt-0.5">🎖️</span>
                     <div>
                       <p className="text-xs font-bold text-white uppercase">{lang === "en" ? "Heritage Handloom" : "ଐତିହ୍ୟ ହସ୍ତତନ୍ତ"}</p>
-                      <p className="text-[10px] text-gray-400">{lang === "en" ? "Preserving Bandha Kala" : "ବାନ୍ଧକଳାର ସଂରକ୍ଷଣ"}</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">{lang === "en" ? "Preserving Artistry" : "ବାନ୍ଧକଳାର ସଂରକ୍ଷଣ"}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-1.5 pt-2">
+                <div className="flex flex-wrap gap-1.5 pt-4 border-t border-[#C5A059]/10">
                   {artisan.biodata.masterpieceMotifs.slice(0, 3).map((motif, i) => (
                     <span key={i} className="bg-[#0B2B26] border border-[#C5A059]/30 text-white text-[9px] px-2.5 py-1 rounded-lg font-sans font-medium shadow">
                       ✦ {motif.replace('✨', '').trim()}
@@ -883,12 +890,11 @@ export default function WeaverStorePage() {
                     {lang === "en" ? "Artisan Story & Craftsmanship" : "ବୁଣାକାରଙ୍କ କାହାଣୀ ଓ କଳା"}
                   </h4>
                   
-                  <div className="text-xs text-gray-200 leading-relaxed font-sans space-y-3 max-h-[300px] overflow-y-auto pr-1">
-                    {artisan.slug === "ravi-meher" ? (
+                  <div className="text-xs text-gray-200 leading-relaxed font-sans space-y-3">
+                    {artisan.slug && TRANSLATIONS[artisan.slug] ? (
                       <>
-                        <p>{lang === "en" ? TRANSLATIONS.en.bio1 : TRANSLATIONS.or.bio1}</p>
-                        <p>{lang === "en" ? TRANSLATIONS.en.bio2 : TRANSLATIONS.or.bio2}</p>
-                        <p>{lang === "en" ? TRANSLATIONS.en.bio3 : TRANSLATIONS.or.bio3}</p>
+                        <p>{lang === "en" ? TRANSLATIONS[artisan.slug].en.bio1 : TRANSLATIONS[artisan.slug].or.bio1}</p>
+                        <p>{lang === "en" ? TRANSLATIONS[artisan.slug].en.bio2 : TRANSLATIONS[artisan.slug].or.bio2}</p>
                       </>
                     ) : (
                       <p className="whitespace-pre-line">{artisan.biodata.detailedBiography}</p>
