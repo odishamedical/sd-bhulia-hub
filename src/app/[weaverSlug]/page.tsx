@@ -352,6 +352,9 @@ export default function WeaverStorePage() {
   };
 
   const [artisan, setArtisan] = useState<ArtisanListing>(foundArtisan);
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [userUid, setUserUid] = useState<string>("sd_super_admin_custom_uid");
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [activeCategoryTab, setActiveCategoryTab] = useState<string>("All");
@@ -378,8 +381,28 @@ export default function WeaverStorePage() {
   const [isProcessingOrder, setIsProcessingOrder] = useState<boolean>(false);
 
   useEffect(() => {
-    const uid = localStorage.getItem("sd_current_user_uid") || "sd_super_admin_custom_uid";
-    setUserUid(uid);
+    const checkAuth = () => {
+      const email = localStorage.getItem("sd_current_user_email");
+      const name = localStorage.getItem("sd_current_user_name");
+      const avatar = localStorage.getItem("sd_current_user_avatar");
+      const role = localStorage.getItem("sd_current_user_role");
+      const uid = localStorage.getItem("sd_current_user_uid") || "sd_super_admin_custom_uid";
+
+      if (email) {
+        setUserName(name || email.split("@")[0]);
+        setUserAvatar(avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80");
+        setUserRole(role || "user");
+        setUserUid(uid);
+      } else {
+        setUserName(null);
+        setUserAvatar(null);
+        setUserRole(null);
+        setUserUid("sd_super_admin_custom_uid");
+      }
+    };
+
+    checkAuth();
+    window.addEventListener("sd_auth_change", checkAuth);
 
     // Check if claimed in localStorage
     const savedClaims = localStorage.getItem("sd_bhulia_claimed_artisans");
@@ -393,6 +416,8 @@ export default function WeaverStorePage() {
         console.error(e);
       }
     }
+
+    return () => window.removeEventListener("sd_auth_change", checkAuth);
   }, [artisan.id]);
 
   // Social Share Handler
@@ -454,27 +479,51 @@ export default function WeaverStorePage() {
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
           </nav>
 
-          {/* Right Side Actions & Mobile Hamburger */}
+          {/* Right Side: User Menu / Sign In / Register (Desktop) & Mobile Hamburger */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <Link href="/#weaver-boutiques" className="hidden sm:flex px-5 py-2.5 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shadow shrink-0">
-              ← Back to Marketplace
-            </Link>
+            {userAvatar ? (
+              <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-4 py-1 sm:py-2 bg-[#0A3A35] rounded-xl border border-[#C5A059]/50 shadow-inner shrink-0">
+                <img src={userAvatar} alt="User Avatar" className="w-6 sm:w-8 h-6 sm:h-8 rounded-full border border-[#C5A059]" />
+                <div className="hidden sm:flex flex-col text-left">
+                  <span className="text-xs font-bold text-white leading-none">{userName}</span>
+                  <span className="text-[9px] text-[#C5A059] uppercase tracking-widest mt-0.5">{userRole}</span>
+                </div>
+              </div>
+            ) : (
+              <a href="https://sd-auth-center.vercel.app" className="hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(197,160,89,0.4)] hover:brightness-110 transition-all cursor-pointer shrink-0">
+                <svg className="w-3.5 h-3.5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                <span>Sign In / Register</span>
+              </a>
+            )}
+
+            {/* Cart Button */}
+            <button className="hidden sm:flex items-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+              <span>Cart (2)</span>
+            </button>
 
             {/* Mobile Hamburger Button */}
             <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0 shadow">
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {mobileNavOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />}
+                {mobileNavOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                )}
               </svg>
             </button>
           </div>
         </div>
 
-        {/* Mobile-Only Dedicated Back Bar */}
-        <div className="sm:hidden w-full pt-1 border-t border-[#C5A059]/20 flex justify-center">
-          <Link href="/#weaver-boutiques" className="w-full flex items-center justify-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow">
-            ← Back to Marketplace
-          </Link>
-        </div>
+        {/* Mobile-Only Dedicated Sign In / Register Bar right below Bhulia.com */}
+        {!userAvatar && (
+          <div className="sm:hidden w-full pt-1 border-t border-[#C5A059]/20 flex justify-center">
+            <a href="https://sd-auth-center.vercel.app" className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(197,160,89,0.4)] hover:brightness-110 transition-all cursor-pointer">
+              <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+              <span>Sign In / Register</span>
+            </a>
+          </div>
+        )}
       </header>
 
       {/* Mobile Navigation Drawer */}
@@ -492,6 +541,17 @@ export default function WeaverStorePage() {
       {/* Main Content Container */}
       <div className="flex-1 container mx-auto px-6 py-8 relative z-10 space-y-12">
         
+        {/* Breadcrumb Navigation - Back to Marketplace */}
+        <div className="flex items-center text-xs font-bold uppercase tracking-widest text-gray-300">
+          <Link href="/" className="hover:text-white transition-colors">Bhulia.com</Link>
+          <span className="mx-2 text-[#C5A059]">&gt;</span>
+          <Link href="/#weaver-boutiques" className="text-[#C5A059] hover:text-[#D4AF37] transition-colors flex items-center gap-1">
+            <span>Marketplace</span>
+          </Link>
+          <span className="mx-2 text-[#C5A059]">&gt;</span>
+          <span className="text-gray-400">{artisan.id}</span>
+        </div>
+
         {/* ==================== 1. BLUEPRINT HERO SECTION ==================== */}
         <div className="bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border-2 border-[#C5A059] rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.25)] flex flex-col md:flex-row items-start md:items-center justify-between gap-8 group">
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#C5A059]/15 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000 pointer-events-none"></div>
