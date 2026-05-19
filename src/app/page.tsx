@@ -253,28 +253,28 @@ export default function Home() {
                 title: "Master Weaver Nandalal Meher", 
                 desc: "National Award-winning master weaver from Dasrajpur, Sonepur. Preserving the rare mathematical alignment of authentic double ikat silk Pata.", 
                 img: "/nandalal_meher.jpg", 
-                badge: "Bhulia Verified Master Weaver",
+                badge: "Bhulia Verified Sambalpuri Master Weaver",
                 link: "/nandalal-meher" 
               },
               { 
                 title: "Maa Samaleswari PWCS", 
                 desc: "Inspect 142 active pit looms in Barpali. Specializing in Pasapalli Ikat and traditional Phoda Kumbha temple borders.", 
                 img: "/bhulia-hero.png", 
-                badge: "Bhulia Verified Master Weaver",
+                badge: "Bhulia Verified Sambalpuri Master Weaver",
                 link: "/maa-samaleswari-weavers" 
               },
               { 
                 title: "Bhagabata Meher Workshop", 
                 desc: "Explore world-class Bijepur cotton Ikat crafted with 100% natural organic vegetable dyes.", 
                 img: "/bhulia-hero.png", 
-                badge: "Bhulia Verified Master Weaver",
+                badge: "Bhulia Verified Sambalpuri Master Weaver",
                 link: "/bhagabata-meher" 
               },
               { 
                 title: "Sonepur Royal Silk PWCS", 
                 desc: "Discover luxurious 3-ply Mulberry silk Bomkai sarees featuring rich extra-weft gold zari thread work.", 
                 img: "/bhulia-hero.png", 
-                badge: "Bhulia Verified Master Weaver",
+                badge: "Bhulia Verified Sambalpuri Master Weaver",
                 link: "/sonepur-royal-silk" 
               }
             ].map((dir, idx) => (
