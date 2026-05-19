@@ -29,6 +29,13 @@ interface ArtisanListing {
     detailedBiography: string;
     shortStory?: string;
   };
+  galleryImages?: string[];
+  contactDetails?: {
+    address: string;
+    phone: string;
+    whatsapp: string;
+    email: string;
+  };
 }
 
 // Master Artisan Database (with Vanity Slugs & Nandalal Meher)
@@ -65,6 +72,17 @@ const MASTER_ARTISANS: ArtisanListing[] = [
       ],
       detailedBiography: "Nandalal Meher is a visionary master weaver from Dasrajpur in the Sonepur district of Odisha. He stands as a true guardian of India's rich textile heritage. Sonepur is globally renowned for its intricate handloom traditions. There, Meher has dedicated his life to perfecting the complex arts of single and double ikat weaving. His exceptional skill transforms fine silk threads into breathtaking masterpieces of wearable art.\n\nThe Craftsmanship: Single and Double Ikat Pata\nMeher’s expertise lies in creating high-class silk sarees, locally known as Pata. His work showcases an extraordinary level of precision and mathematical skill:\n• Single Ikat: Threads of either the warp or the weft are dyed before weaving to create stunning patterns.\n• Double Ikat: Both warp and weft threads are meticulously tie-dyed. They must align perfectly on the loom to form sharp, seamless designs.\n• Premium Silk: He uses only the finest quality silk, ensuring a luxurious drape and a brilliant, lasting sheen.\n• Traditional Motifs: His designs beautifully incorporate classic Odisha motifs, including temples, conch shells, and fish.\n\nLegacy and Impact\nNandalal Meher is more than just an artisan; he is a cultural ambassador for Sonepur handlooms. By maintaining the rigorous standards of authentic double ikat, he preserves a rare craft that few weavers can successfully execute today. His workshop in Dasrajpur serves as a hub of excellence, keeping the legacy of Odishan silk alive for future generations.",
     },
+    galleryImages: [
+      "/bhulia-hero.png",
+      "https://images.unsplash.com/photo-1605513511874-569d4ceb8b6e?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1620799140188-3b2a02fd9a77?w=800&auto=format&fit=crop&q=80"
+    ],
+    contactDetails: {
+      address: "Master Weaver's Guild, Dasrajpur, Sonepur, Odisha 767017",
+      phone: "+91 98765 43210",
+      whatsapp: "919876543210",
+      email: "nandalal.meher@bhulia.com"
+    }
   },
   {
     id: "ART-102",
@@ -98,6 +116,17 @@ const MASTER_ARTISANS: ArtisanListing[] = [
       ],
       detailedBiography: "Rabindra Meher is an extraordinarily creative weaver based in Dasrajpur, Sonepur—the heartland of Odisha's prestigious handloom heritage. Known for his innovative vision and mastery over silk, Meher breathes new life into the iconic Sambalpuri Pata saree. His work gracefully balances age-old weaving heritage with contemporary aesthetics, earning him a reputation for delivering high-class, luxury textiles.\n\nMeher specializes in both Single Ikat and highly complex Double Ikat (Bandhakala) techniques. By meticulously planning, tie-dying, and aligning fine silk yarns entirely by hand, he transforms raw mulberry silk into fluid, storytelling canvases. His premium creations are universally recognized for their deep color contrasts, sharp ikat outlines, and pristine silk luster.\n\nSignature Varieties in His Store Page\nTo build a comprehensive profile and store catalog, his collection can be categorized into these globally acclaimed varieties of Sambalpuri Pata:\n• Pasapalli Pata: Captivating sarees featuring the timeless, bold checkered board patterns inspired by the ancient game of dice (Pasa).\n• Bichitrapuri Pata: Grand heritage sarees characterized by large, striking geometric grids, decorative bands, and animal motifs woven on a rich silk canvas.\n• Nabakothi Pata: Highly artistic and spiritually significant sarees featuring nine houses (Kothi), each containing a unique auspicious motif like the Sankha (conch), Chakra (wheel), or Gaja (elephant).\n• Bomkai Pata (Sonepuri Masterpieces): High-class fusions where complex ikat patterns on the body seamlessly pair with extra-weft Jala/Jacquard borders and heavy, thread-work pallus.\n• Boita Bandana Pata: Theme-based creative masterpieces that depict the historic maritime glory and trading ships (Boita) of ancient Odisha along the borders and pallu.\n• Sachitra / Narrative Pata: Elite-tier storytelling sarees featuring intricate floral configurations, birds, deer, and scenes inspired by Nature or regional folklore.",
     },
+    galleryImages: [
+      "/bhulia-hero.png",
+      "https://images.unsplash.com/photo-1584285408660-3162638f2191?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1620799139834-6b8f844fbe61?w=800&auto=format&fit=crop&q=80"
+    ],
+    contactDetails: {
+      address: "Creative Loom House, Dasrajpur, Sonepur, Odisha 767017",
+      phone: "+91 98765 43211",
+      whatsapp: "919876543211",
+      email: "rabindra.meher@bhulia.com"
+    }
   },
   {
     id: "ART-103",
@@ -131,6 +160,17 @@ const MASTER_ARTISANS: ArtisanListing[] = [
       ],
       detailedBiography: "Nagarjuna Meher is a legendary master weaver from Dasrajpur, Sonepur, whose life story is woven into the very fabric of Odisha’s textile history. Dedicating himself to the loom since early childhood, Meher possesses an intuitive, lifelong understanding of silk, color, and geometry. Today, he is recognized as an original custodian of the Sambalpuri Pata saree.\n\nMeher’s high-class single and double ikat designs transcend regional borders. His masterpieces are celebrated on national runways and eagerly sought after by international textile collectors. By combining childhood precision with sophisticated artistry, his handwoven silk sarees are globally revered as true works of wearable art.\n\nGlobal Collection: Signature Sambalpuri Pata Varieties\nTo showcase the full breadth of his lifelong expertise, his profile and web store feature these globally acclaimed varieties:\n• Premium Double Ikat Masterpieces: Rare, high-investment silk sarees where both warp and weft threads are tie-dyed, creating flawlessly aligned, mirror-image geometric patterns.\n• Pasapalli Pata: The iconic, bold checkered board design inspired by the ancient royal game of dice, featuring sharp contrasting blocks and intricate borders.\n• Bichitrapuri Pata: Grand heritage sarees featuring large, striking geometric grids mixed with traditional animal, bird, and fish motifs.\n• Nabakothi Pata: Highly artistic sarees featuring nine auspicious houses (Kothi), each meticulously filled with unique motifs like the lotus, elephant, and conch shell.\n• Sonepuri Bomkai Pata: An elite fusion combining intricate body ikat with heavy, raised extra-weft thread work (Jala) on the borders and pallu.\n• Sachitra Narrative Pata: Storytelling sarees featuring breathtaking, free-hand ikat depictions of nature, folklore, and classical Indian mythology that attract international buyers.",
     },
+    galleryImages: [
+      "/bhulia-hero.png",
+      "https://images.unsplash.com/photo-1620799139834-6b8f844fbe61?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1605513511874-569d4ceb8b6e?w=800&auto=format&fit=crop&q=80"
+    ],
+    contactDetails: {
+      address: "Lifetime Excellence Loom, Dasrajpur, Sonepur, Odisha 767017",
+      phone: "+91 98765 43212",
+      whatsapp: "919876543212",
+      email: "nagarjuna.meher@bhulia.com"
+    }
   },
   {
     id: "ART-001",
@@ -552,6 +592,14 @@ export default function WeaverStorePage() {
           <span className="text-gray-400">{artisan.id}</span>
         </div>
 
+        {/* Micro-Nav Sticky Bar */}
+        <div className="sticky top-[73px] sm:top-[89px] z-40 bg-[#0B2B26]/95 backdrop-blur-xl border border-[#C5A059]/30 rounded-xl p-1.5 flex items-center justify-between sm:justify-start overflow-x-auto gap-2 sm:gap-6 shadow-[0_10px_30px_rgba(0,0,0,0.5)] scrollbar-hide">
+          <a href="#about" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">About Master</a>
+          <a href="#gallery" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">Masterpiece Gallery</a>
+          <a href="#collection" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">Live Collections</a>
+          <a href="#contact" className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-[#0A1021] hover:bg-[#C5A059] transition-all whitespace-nowrap">Contact & Visit</a>
+        </div>
+
         {/* ==================== 1. BLUEPRINT HERO SECTION ==================== */}
         <div className="bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border-2 border-[#C5A059] rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.25)] flex flex-col md:flex-row items-start md:items-center justify-between gap-8 group">
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#C5A059]/15 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000 pointer-events-none"></div>
@@ -627,7 +675,7 @@ export default function WeaverStorePage() {
             </div>
 
             <div className="space-y-2 pt-2">
-              <span className="text-xs font-bold text-white block text-center uppercase tracking-widest">Promote Artisan & Earn Affiliate</span>
+              <span className="text-xs font-bold text-white block text-center uppercase tracking-widest">Promote Original Sambalpuri Saree</span>
               <div className="grid grid-cols-2 gap-2">
                 <button onClick={() => handleSocialShare("whatsapp")} className="flex items-center justify-center gap-1.5 py-2.5 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] rounded-xl font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow">
                   <span>📲 WhatsApp</span>
@@ -643,7 +691,7 @@ export default function WeaverStorePage() {
 
         {/* ==================== 2. BLUEPRINT ARTISAN'S STORY ==================== */}
         {artisan.biodata && (
-          <div className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl space-y-6 backdrop-blur-md animate-fadeIn">
+          <div id="about" className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl space-y-6 backdrop-blur-md animate-fadeIn scroll-mt-32">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#C5A059]/20 pb-6">
               <div className="space-y-1 max-w-3xl">
                 <span className="text-xs font-mono text-[#C5A059] font-bold uppercase tracking-widest block">📜 The Artisan&apos;s Story (Building Trust)</span>
@@ -690,6 +738,29 @@ export default function WeaverStorePage() {
                   <span className="text-green-400 font-bold">✓ 100% D2C Jan Dhan Ready</span>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================== 2.5 GALLERY SECTION ==================== */}
+        {artisan.galleryImages && artisan.galleryImages.length > 0 && (
+          <div id="gallery" className="space-y-6 scroll-mt-32 border-t border-[#C5A059]/20 pt-8">
+            <div>
+              <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Masterpiece Gallery & Loom Portfolio</h3>
+              <p className="text-xs text-gray-300 uppercase tracking-widest">Visual proof of authentic handloom craftsmanship</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+              {artisan.galleryImages.map((img, idx) => (
+                <div key={idx} className="relative h-64 md:h-80 w-full rounded-2xl overflow-hidden border border-[#C5A059]/30 shadow-[0_10px_20px_rgba(0,0,0,0.4)] group">
+                  <Image src={img} alt={`${artisan.name} Gallery Image ${idx + 1}`} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A2520] via-transparent to-transparent opacity-80" />
+                  <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                    <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-[#C5A059] bg-[#0B2B26]/80 px-2 py-1 rounded backdrop-blur border border-[#C5A059]/30 shadow">
+                      VERIFIED ASSET
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -1008,6 +1079,49 @@ export default function WeaverStorePage() {
               )}
 
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ==================== 5. CONTACT & VISIT FOOTER ==================== */}
+      {artisan.contactDetails && (
+        <div id="contact" className="container mx-auto px-6 mb-8 mt-12 scroll-mt-32">
+          <div className="bg-gradient-to-br from-[#051815] to-[#0A3A35] border border-[#C5A059]/40 rounded-3xl p-8 md:p-12 shadow-[0_0_40px_rgba(197,160,89,0.15)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#C5A059]/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div className="space-y-4">
+                <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Contact & Visit the Artisan</h3>
+                <p className="text-sm text-gray-300 font-sans leading-relaxed max-w-md">
+                  We encourage buyers to build direct relationships with our master weavers. Visit their looms, feel the silk, and witness the magic of Ikat first-hand.
+                </p>
+                <div className="space-y-3 pt-4 font-mono text-xs text-gray-200">
+                  <div className="flex items-start gap-3 bg-[#0B2B26] p-3 rounded-xl border border-[#C5A059]/20 shadow-inner">
+                    <span className="text-[#C5A059] text-base mt-0.5">📍</span>
+                    <span className="leading-relaxed">{artisan.contactDetails.address}</span>
+                  </div>
+                  <div className="flex items-center gap-3 bg-[#0B2B26] p-3 rounded-xl border border-[#C5A059]/20 shadow-inner">
+                    <span className="text-[#C5A059] text-base">📞</span>
+                    <span>{artisan.contactDetails.phone}</span>
+                  </div>
+                  <div className="flex items-center gap-3 bg-[#0B2B26] p-3 rounded-xl border border-[#C5A059]/20 shadow-inner">
+                    <span className="text-[#C5A059] text-base">✉️</span>
+                    <span>{artisan.contactDetails.email}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col items-start md:items-end gap-5">
+                <a href={`https://wa.me/${artisan.contactDetails.whatsapp}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#1EBE5D] to-[#25D366] text-white rounded-xl font-bold text-sm shadow-[0_0_30px_rgba(37,211,102,0.4)] hover:brightness-110 hover:scale-105 transition-all">
+                  <span className="text-xl">💬</span>
+                  <span>WhatsApp the Artisan</span>
+                </a>
+                <div className="bg-[#0B2B26]/80 backdrop-blur-md p-4 rounded-xl border border-[#C5A059]/30 max-w-xs text-left md:text-right shadow-inner">
+                  <p className="text-[10px] font-mono text-gray-400 leading-relaxed">
+                    When you message them directly, please mention you found them on <span className="text-[#C5A059] font-bold">Bhulia.com</span> to ensure priority D2C Jan Dhan escrow protection and VIP service.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
