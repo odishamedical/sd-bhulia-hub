@@ -218,7 +218,7 @@ export default function Home() {
                 className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${currentSlide === idx ? "opacity-100 z-10" : "opacity-0 z-0"}`}
               >
                 <Image src={slide.img} alt={slide.title} fill className="object-cover transform scale-105 transition-transform duration-[10000ms] ease-linear" style={{ transform: currentSlide === idx ? 'scale(1)' : 'scale(1.05)' }} />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#051815] via-[#051815]/70 to-transparent opacity-90"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#010a08] via-[#051815]/80 to-transparent opacity-95"></div>
               </div>
             ))}
             
@@ -227,13 +227,9 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
                 
                 <div className="space-y-2 sm:space-y-3 max-w-lg">
-                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-white leading-tight drop-shadow-2xl">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-white leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
                     {heroSlides[currentSlide].title} <span className="text-[#C5A059]">{heroSlides[currentSlide].subtitle}</span>
                   </h2>
-
-                  <p className="text-[11px] md:text-[13px] text-gray-200 leading-relaxed font-sans drop-shadow-md max-w-md line-clamp-2">
-                    {heroSlides[currentSlide].desc}
-                  </p>
                 </div>
 
                 <div className="shrink-0 w-full sm:w-auto">
