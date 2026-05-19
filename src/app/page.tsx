@@ -249,20 +249,54 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: "Maa Samaleswari PWCS", desc: "Inspect 142 active pit looms in Barpali. Specializing in Pasapalli Ikat and temple borders.", icon: "🧵", link: "/maa-samaleswari-weavers" },
-              { title: "Bhagabata Meher Workshop", desc: "Explore world-class Bijepur cotton Ikat with 100% natural vegetable dyes.", icon: "🏛️", link: "/bhagabata-meher" },
-              { title: "Sonepur Royal Silk PWCS", desc: "Discover luxurious 3-ply Mulberry silk Bomkai sarees with extra-weft gold thread work.", icon: "🎨", link: "/sonepur-royal-silk" },
-              { title: "Boudh Organic Collective", desc: "Meet the sustainable pioneers crafting chemical-free, skin-friendly herbal handlooms.", icon: "📐", link: "/boudh-organic-ikat" }
+              { 
+                title: "Master Weaver Nandalal Meher", 
+                desc: "National Award-winning master weaver from Dasrajpur, Sonepur. Preserving the rare mathematical alignment of authentic double ikat silk Pata.", 
+                img: "/nandalal_meher.jpg", 
+                badge: "🏆 National Awardee",
+                link: "/nandalal-meher" 
+              },
+              { 
+                title: "Maa Samaleswari PWCS", 
+                desc: "Inspect 142 active pit looms in Barpali. Specializing in Pasapalli Ikat and traditional Phoda Kumbha temple borders.", 
+                img: "/bhulia-hero.png", 
+                badge: "🛡️ Verified PWCS",
+                link: "/maa-samaleswari-weavers" 
+              },
+              { 
+                title: "Bhagabata Meher Workshop", 
+                desc: "Explore world-class Bijepur cotton Ikat crafted with 100% natural organic vegetable dyes.", 
+                img: "/bhulia-hero.png", 
+                badge: "🌱 Natural Dyes",
+                link: "/bhagabata-meher" 
+              },
+              { 
+                title: "Sonepur Royal Silk PWCS", 
+                desc: "Discover luxurious 3-ply Mulberry silk Bomkai sarees featuring rich extra-weft gold zari thread work.", 
+                img: "/bhulia-hero.png", 
+                badge: "📜 Silk Mark Gold",
+                link: "/sonepur-royal-silk" 
+              }
             ].map((dir, idx) => (
-              <Link key={idx} href={dir.link} className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl cursor-pointer block">
+              <Link key={idx} href={dir.link} className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl cursor-pointer block">
                 <div>
-                  <div className="w-12 h-12 rounded-xl bg-[#0B2B26] border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow">
-                    {dir.icon}
+                  {/* Image Thumbnail */}
+                  <div className="relative w-full h-48 overflow-hidden bg-[#051815]">
+                    <Image src={dir.img} alt={dir.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A3A35] via-transparent to-transparent" />
+                    <div className="absolute top-3 right-3 z-10">
+                      <span className="bg-[#C5A059] text-[#0A1021] px-2.5 py-1 rounded font-bold text-[10px] uppercase tracking-widest shadow-[0_0_15px_rgba(197,160,89,0.5)]">
+                        {dir.badge}
+                      </span>
+                    </div>
                   </div>
-                  <h4 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-[#C5A059] transition-colors">{dir.title}</h4>
-                  <p className="text-xs text-gray-300 leading-relaxed font-sans">{dir.desc}</p>
+
+                  <div className="p-6 pb-0">
+                    <h4 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-[#C5A059] transition-colors leading-tight">{dir.title}</h4>
+                    <p className="text-xs text-gray-300 leading-relaxed font-sans">{dir.desc}</p>
+                  </div>
                 </div>
-                <div className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#C5A059]">
+                <div className="p-6 pt-4 mt-4 border-t border-[#C5A059]/20 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-[#C5A059]">
                   <span>Visit Flagship Store</span>
                   <span>→</span>
                 </div>
