@@ -638,10 +638,10 @@ export default function Home() {
       </div>
 
       {/* 7. Global Ecosystem Continuous Footer Bar */}
-      <footer className="w-full bg-[#051815] border-t border-[#C5A059]/40 text-white py-12 px-6 z-50 relative shadow-[0_-4_30px_rgba(0,0,0,0.6)] mt-auto font-sans">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-12">
+      <footer className="w-full bg-[#051815] border-t border-[#C5A059]/40 text-white py-8 px-6 z-50 relative shadow-[0_-4_30px_rgba(0,0,0,0.6)] mt-auto font-sans">
+        <div className="max-w-[1400px] mx-auto flex flex-col gap-6 md:gap-8">
           
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-[#C5A059]/20 pb-10">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#C5A059]/20 pb-4 md:pb-6">
             <div>
               <h3 className="text-lg font-serif font-bold tracking-widest text-[#C5A059] uppercase mb-1">Shyam Dash Global Network</h3>
               <p className="text-xs text-gray-300 uppercase tracking-widest">Continuous Global Ecosystem Menu E.g. Trust • Heritage • Innovation • Future</p>
@@ -655,10 +655,10 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 border-b border-[#C5A059]/20 pb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 border-b border-[#C5A059]/20 pb-6 md:pb-8">
             
             {/* Hub 1: Gold Hub */}
-            <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg">
+            <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg">
               <div>
                 <div className="flex justify-between items-start mb-4">
                   <span className="text-xs font-mono font-bold text-[#C5A059] bg-[#C5A059]/20 px-2.5 py-1 rounded border border-[#C5A059]/30">HUB 01</span>
@@ -673,7 +673,7 @@ export default function Home() {
             </div>
 
             {/* Hub 2: Bhulia Hub (Active) */}
-            <div className="bg-[#0D4B45] border-2 border-[#C5A059] rounded-2xl p-6 flex flex-col justify-between shadow-[0_0_25px_rgba(197,160,89,0.3)] relative overflow-hidden group">
+            <div className="bg-[#0D4B45] border-2 border-[#C5A059] rounded-2xl p-5 flex flex-col justify-between shadow-[0_0_25px_rgba(197,160,89,0.3)] relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-24 h-24 bg-[#C5A059]/20 rounded-full blur-2xl pointer-events-none"></div>
               <div>
                 <div className="flex justify-between items-start mb-4">
@@ -689,7 +689,7 @@ export default function Home() {
             </div>
 
             {/* Hub 3: Dehapa Hub */}
-            <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-400 transition-all group shadow-lg">
+            <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-2xl p-5 flex flex-col justify-between hover:border-cyan-400 transition-all group shadow-lg">
               <div>
                 <div className="flex justify-between items-start mb-4">
                   <span className="text-xs font-mono font-bold text-cyan-300 bg-cyan-500/20 px-2.5 py-1 rounded border border-cyan-500/30">HUB 03</span>
@@ -704,7 +704,7 @@ export default function Home() {
             </div>
 
             {/* Hub 4: IT Hub */}
-            <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-400 transition-all group shadow-lg">
+            <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-2xl p-5 flex flex-col justify-between hover:border-indigo-400 transition-all group shadow-lg">
               <div>
                 <div className="flex justify-between items-start mb-4">
                   <span className="text-xs font-mono font-bold text-indigo-300 bg-indigo-500/20 px-2.5 py-1 rounded border border-indigo-500/30">HUB 04</span>
@@ -721,7 +721,7 @@ export default function Home() {
           </div>
 
           {/* Bottom Section: Gold Hub Corporate Footer Columns */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pt-4 pb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-2 pb-4">
             
             {/* Col 1: Branding & Description */}
             <div className="space-y-4">
