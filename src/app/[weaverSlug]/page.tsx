@@ -5,6 +5,46 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
+// Bilingual translations for the master weaver page
+const TRANSLATIONS = {
+  en: {
+    aboutTitle: "ABOUT THE WEAVER",
+    expertiseTitle: "EXPERTISE & BHULIA.COM AWARDS",
+    awardWinner: "Bhulia.com Award Winner",
+    awardWinnerDesc: "2018 | Textile Excellence",
+    masterWeaver: "Master Weaver",
+    masterWeaverDesc: "35+ Yrs Tradition",
+    ikatSpecialist: "Ikat Graph Specialist",
+    ikatSpecialistDesc: "Mathematical Designs",
+    heritageHandloom: "Heritage Handloom",
+    heritageHandloomDesc: "Preserving Bandha Kala",
+    verifiedText: "Verified by Handloom Census",
+    d2cReady: "✓ 100% D2C Jan Dhan Ready",
+    tagline: "The Weavers of Bhulia.com",
+    bio1: "Ravi Meher, hailing from Laumunda, Bargarh (Odisha), is a visionary Master Weaver, Ikat Designer, and Graph Artist redefining the landscape of Indian handlooms. Merging the architectural precision of mathematical graph art with the ancient, intuitive soul of Bandha Kala (Tie & Dye), Ravi transforms raw cotton yarns into national masterpieces.",
+    bio2: "Every piece is hand-mapped on a graph before meeting the loom. It takes months of precise calculating, resist-dyeing, and high-count cotton weaving to yield flawless symmetry.",
+    bio3: "Beyond his loom, he serves as a cultural guardian. He has dedicated his life to preserving Odisha’s heritage by training and mentoring hundreds of next-generation Bandha artists, ensuring that this painstaking heirloom craft thrives for decades to come."
+  },
+  or: {
+    aboutTitle: "ବୁଣାକାରଙ୍କ ସମ୍ପର୍କରେ",
+    expertiseTitle: "ଦକ୍ଷତା ଓ ଭୁଲିଆ ପୁରସ୍କାର",
+    awardWinner: "ଭୁଲିଆ.କମ୍ ପୁରସ୍କାର ବିଜେତା",
+    awardWinnerDesc: "୨୦୧୮ | ବସ୍ତ୍ରଶିଳ୍ପ ଶ୍ରେଷ୍ଠତା",
+    masterWeaver: "ମୁଖ୍ୟ ବୁଣାକାର",
+    masterWeaverDesc: "୩୫+ ବର୍ଷର ପରମ୍ପରା",
+    ikatSpecialist: "ଇକତ୍ ଗ୍ରାଫ୍ ବିଶେଷଜ୍ଞ",
+    ikatSpecialistDesc: "ଗାଣିତିକ ଶୈଳୀ ଓ ନକ୍ସା",
+    heritageHandloom: "ଐତିହ୍ୟ ହସ୍ତତନ୍ତ",
+    heritageHandloomDesc: "ବାନ୍ଧକଳାର ସଂରକ୍ଷଣ",
+    verifiedText: "ହସ୍ତତନ୍ତ ଜନଗଣନା ଦ୍ଵାରା ସତ୍ୟାପିତ",
+    d2cReady: "✓ ୧୦୦% ଡି୨ସି ଜନଧନ ପ୍ରସ୍ତୁତ",
+    tagline: "ଭୁଲିଆ.କମ୍ ର ବୁଣାକାର ସମୂହ",
+    bio1: "ଓଡ଼ିଶାର ବରଗଡ଼ ଜିଲ୍ଲା ଲଉମୁଣ୍ଡାର ରବି ମେହେର ଜଣେ ଦୂରଦୃଷ୍ଟିସମ୍ପନ୍ନ ମୁଖ୍ୟ ବୁଣାକାର, ଇକତ୍ ଡିଜାଇନର୍ ଏବଂ ଗ୍ରାଫ୍ କଳାକାର। ଗାଣିତିକ ଗ୍ରାଫ୍ କଳାର ସୂକ୍ଷ୍ମତା ସହିତ ପ୍ରାଚୀନ ବାନ୍ଧକଳାର ଅପୂର୍ବ ସମ୍ମିଶ୍ରଣ କରି ସେ କପା ସୂତାରୁ ଜାତୀୟ ସ୍ତରର ଅପୂର୍ବ କଳାକୃତି ସୃଷ୍ଟି କରନ୍ତି।",
+    bio2: "ପ୍ରତ୍ୟେକ ବସ୍ତ୍ର ବୁଣା ହେବା ପୂର୍ବରୁ ଗ୍ରାଫ୍ କାଗଜରେ ହାତରେ ଚିତ୍ରାଙ୍କନ କରାଯାଏ। ମାସ ମାସର ପରିଶ୍ରମ, ସଠିକ୍ ରଙ୍ଗ ପ୍ରସ୍ତୁତି ଏବଂ ଉଚ୍ଚ ମାନର କପା ସୂତାର ବ୍ୟବହାର ଦ୍ଵାରା ଏହି ସୁନ୍ଦର ପାସାପାଲି ଶୈଳୀ ସମ୍ଭବ ହୋଇଥାଏ।",
+    bio3: "ନିଜ ଶାଳ ବ୍ୟତୀତ ସେ ଜଣେ ସାଂସ୍କୃତିକ ସଂରକ୍ଷକ ଅଟନ୍ତି। ଶହ ଶହ ଯୁବ ପିଢିର କଳାକାରମାନଙ୍କୁ ବାନ୍ଧକଳା ଶିକ୍ଷା ଦେଇ ସେ ଓଡ଼ିଶାର ଏହି ପ୍ରାଚୀନ ଐତିହ୍ୟକୁ ବଞ୍ଚାଇ ରଖିବାରେ ନିଜ ଜୀବନ ଉତ୍ସର୍ଗ କରିଛନ୍ତି।"
+  }
+};
+
 // Structure for Artisan Listing with Slug
 interface ArtisanListing {
   id: string;
@@ -463,6 +503,7 @@ export default function WeaverStorePage() {
     paymentMode: "escrow",
   });
   const [isProcessingOrder, setIsProcessingOrder] = useState<boolean>(false);
+  const [lang, setLang] = useState<"en" | "or">("en");
 
   useEffect(() => {
     const checkAuth = () => {
@@ -538,6 +579,17 @@ export default function WeaverStorePage() {
       {/* Background Gold Glows */}
       <div className="absolute top-0 left-0 w-[40%] h-[40%] bg-[#C5A059]/15 blur-[160px] rounded-full pointer-events-none z-0" />
       <div className="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D4AF37]/15 blur-[160px] rounded-full pointer-events-none z-0" />
+
+      {/* Global Gold Filigree Page Borders */}
+      <div className="hidden lg:block absolute inset-4 border border-[#C5A059]/30 rounded-2xl pointer-events-none z-30">
+        <div className="absolute inset-1 border border-[#C5A059]/15 rounded-xl" />
+        
+        {/* Corner Ornaments */}
+        <div className="absolute top-3 left-3 text-[#C5A059]/60 font-serif text-lg leading-none select-none">⚜</div>
+        <div className="absolute top-3 right-3 text-[#C5A059]/60 font-serif text-lg leading-none select-none">⚜</div>
+        <div className="absolute bottom-3 left-3 text-[#C5A059]/60 font-serif text-lg leading-none select-none">⚜</div>
+        <div className="absolute bottom-3 right-3 text-[#C5A059]/60 font-serif text-lg leading-none select-none">⚜</div>
+      </div>
 
       {/* Top Sticky Header */}
       <header className="sticky top-0 w-full z-50 bg-[#0B2B26]/95 backdrop-blur-md border-b border-[#C5A059]/40 px-4 sm:px-6 py-3 sm:py-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)] flex flex-col gap-3">
@@ -724,54 +776,134 @@ export default function WeaverStorePage() {
 
         {/* ==================== 2. BLUEPRINT ARTISAN'S STORY ==================== */}
         {artisan.biodata && (
-          <div id="about" className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl md:rounded-3xl p-5 md:p-12 relative overflow-hidden shadow-2xl space-y-6 backdrop-blur-md animate-fadeIn scroll-mt-32">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#C5A059]/20 pb-6">
-              <div className="space-y-1 max-w-3xl">
-                <span className="text-xs font-mono text-[#C5A059] font-bold uppercase tracking-widest block">📜 The Artisan&apos;s Story (Building Trust)</span>
-                <h3 className="text-xl md:text-2xl font-serif text-white font-bold italic leading-relaxed">
-                  &ldquo;{artisan.biodata.shortStory || artisan.biodata.artisanTitle}&rdquo;
-                </h3>
-              </div>
-              <div className="bg-[#0B2B26] px-5 py-2.5 rounded-xl border border-[#C5A059]/40 text-xs font-mono text-[#C5A059] font-bold shadow shrink-0">
-                🏛️ {artisan.biodata.legacyEst}
-              </div>
+          <div id="about" className="bg-[#0A3A35]/80 border-2 border-[#C5A059]/40 rounded-2xl md:rounded-3xl p-6 md:p-10 relative overflow-hidden shadow-2xl space-y-6 backdrop-blur-md animate-fadeIn scroll-mt-32">
+            
+            {/* Section Header with English / Odia Selector */}
+            <div className="flex justify-between items-center border-b border-[#C5A059]/20 pb-4">
+              <h3 className="text-xl md:text-2xl font-serif font-bold text-[#C5A059] tracking-wider uppercase">
+                {lang === "en" ? "About the Weaver" : "ବୁଣାକାରଙ୍କ ସମ୍ପର୍କରେ"}
+              </h3>
+              
+              {/* Language Selector Toggle */}
+              <button 
+                onClick={() => setLang(lang === "en" ? "or" : "en")}
+                className="relative py-1.5 px-4 rounded-full bg-[#051815] border border-[#C5A059] text-xs font-bold font-mono tracking-widest text-[#C5A059] hover:bg-[#C5A059]/10 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] flex items-center gap-2 cursor-pointer z-20"
+              >
+                <span className={lang === "en" ? "text-white underline decoration-amber-400 decoration-2" : "opacity-60"}>EN</span>
+                <span className="text-[#C5A059]/40">|</span>
+                <span className={lang === "or" ? "text-white underline decoration-amber-400 decoration-2" : "opacity-60"}>ଓଡ଼ିଆ</span>
+              </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
-              <div className="space-y-4">
-                <h4 className="text-xs font-bold text-[#C5A059] uppercase tracking-wider font-mono">🏆 National Awards & Accolades</h4>
-                <div className="space-y-2.5">
-                  {artisan.biodata.awardHighlights.map((award, i) => (
-                    <div key={i} className="bg-[#0B2B26] p-3 rounded-xl border border-[#C5A059]/20 flex items-center gap-3 shadow-inner text-xs font-medium text-gray-200">
-                      <span className="text-[#C5A059] text-base">🎖️</span>
-                      <span>{award}</span>
+            {/* 3-Column Compact Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
+              
+              {/* Column 1: Image Gallery (At the Loom & Work) */}
+              <div className="md:col-span-4 flex flex-col gap-4">
+                <div className="relative w-full h-52 rounded-xl overflow-hidden border border-[#C5A059]/40 shadow-md bg-[#0B2B26]">
+                  <Image 
+                    src={artisan.slug === "ravi-meher" ? "/ravi_meher_v3.png" : artisan.img} 
+                    alt={artisan.name} 
+                    fill 
+                    className="object-cover" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                </div>
+                <div className="relative w-full h-52 rounded-xl overflow-hidden border border-[#C5A059]/40 shadow-md bg-[#0B2B26]">
+                  <Image 
+                    src={artisan.slug === "ravi-meher" ? "/ravi_meher_v2.png" : "/bhulia-hero.png"} 
+                    alt="At the Loom" 
+                    fill 
+                    className="object-cover" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                </div>
+                <p className="text-[10px] text-center text-gray-400 font-mono">
+                  {lang === "en" ? "Loom workshop & master portrait" : "ତନ୍ତଶାଳା ଏବଂ ମୁଖ୍ୟ ବୁଣାକାରଙ୍କ ପ୍ରତିକୃତି"}
+                </p>
+              </div>
+
+              {/* Column 2: Accolades & Expertise Badges */}
+              <div className="md:col-span-4 flex flex-col justify-between border-y md:border-y-0 md:border-x border-[#C5A059]/20 py-4 md:py-0 md:px-6 space-y-4">
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold text-[#C5A059] uppercase tracking-wider font-mono">
+                    {lang === "en" ? "Expertise & Bhulia Awards" : "ଦକ୍ଷତା ଓ ଭୁଲିଆ ପୁରସ୍କାର"}
+                  </h4>
+                  
+                  {/* Badge 1: Bhulia Award Winner */}
+                  <div className="bg-[#051815] p-3 rounded-xl border border-[#C5A059]/30 flex items-center gap-3 shadow-inner">
+                    <span className="text-[#C5A059] text-lg">🎖️</span>
+                    <div>
+                      <p className="text-xs font-bold text-white uppercase">{lang === "en" ? "Bhulia.com Award Winner" : "ଭୁଲିଆ.କମ୍ ପୁରସ୍କାର ବିଜେତା"}</p>
+                      <p className="text-[10px] text-gray-400">{lang === "en" ? "2018 | Textile Excellence" : "୨୦୧୮ | ବସ୍ତ୍ରଶିଳ୍ପ ଶ୍ରେଷ୍ଠତା"}</p>
                     </div>
-                  ))}
+                  </div>
+
+                  {/* Badge 2: Master Weaver */}
+                  <div className="bg-[#051815] p-3 rounded-xl border border-[#C5A059]/20 flex items-center gap-3 shadow-inner">
+                    <span className="text-[#C5A059] text-lg">🎖️</span>
+                    <div>
+                      <p className="text-xs font-bold text-white uppercase">{lang === "en" ? "Master Weaver" : "ମୁଖ୍ୟ ବୁଣାକାର"}</p>
+                      <p className="text-[10px] text-gray-400">{lang === "en" ? `${artisan.loomCount}+ Active Looms / Guild` : `${artisan.loomCount}+ ସକ୍ରିୟ ତନ୍ତୁ`}</p>
+                    </div>
+                  </div>
+
+                  {/* Badge 3: Ikat Graph Specialist */}
+                  <div className="bg-[#051815] p-3 rounded-xl border border-[#C5A059]/20 flex items-center gap-3 shadow-inner">
+                    <span className="text-[#C5A059] text-lg">🎖️</span>
+                    <div>
+                      <p className="text-xs font-bold text-white uppercase">{lang === "en" ? "Ikat Graph Specialist" : "ଇକତ୍ ଗ୍ରାଫ୍ ବିଶେଷଜ୍ଞ"}</p>
+                      <p className="text-[10px] text-gray-400">{lang === "en" ? "Mathematical Layouts" : "ଗାଣିତିକ ଶୈଳୀ ଓ ନକ୍ସା"}</p>
+                    </div>
+                  </div>
+
+                  {/* Badge 4: Heritage Handloom */}
+                  <div className="bg-[#051815] p-3 rounded-xl border border-[#C5A059]/20 flex items-center gap-3 shadow-inner">
+                    <span className="text-[#C5A059] text-lg">🎖️</span>
+                    <div>
+                      <p className="text-xs font-bold text-white uppercase">{lang === "en" ? "Heritage Handloom" : "ଐତିହ୍ୟ ହସ୍ତତନ୍ତ"}</p>
+                      <p className="text-[10px] text-gray-400">{lang === "en" ? "Preserving Bandha Kala" : "ବାନ୍ଧକଳାର ସଂରକ୍ଷଣ"}</p>
+                    </div>
+                  </div>
                 </div>
 
-                <h4 className="text-xs font-bold text-[#C5A059] uppercase tracking-wider font-mono pt-2">✨ Signature Masterpiece Motifs</h4>
-                <div className="flex flex-wrap gap-2">
-                  {artisan.biodata.masterpieceMotifs.map((motif, i) => (
-                    <span key={i} className="bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs px-3.5 py-1.5 rounded-xl font-sans font-medium shadow">
-                      ✦ {motif}
+                <div className="flex flex-wrap gap-1.5 pt-2">
+                  {artisan.biodata.masterpieceMotifs.slice(0, 3).map((motif, i) => (
+                    <span key={i} className="bg-[#0B2B26] border border-[#C5A059]/30 text-white text-[9px] px-2.5 py-1 rounded-lg font-sans font-medium shadow">
+                      ✦ {motif.replace('✨', '').trim()}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div className="space-y-4 bg-[#0B2B26]/60 p-5 md:p-6 rounded-2xl border border-[#C5A059]/20 flex flex-col justify-between shadow-inner">
+              {/* Column 3: Detailed Biography (Storytelling) */}
+              <div className="md:col-span-4 flex flex-col justify-between space-y-4">
                 <div className="space-y-3">
-                  <h4 className="text-xs font-bold text-[#C5A059] uppercase tracking-wider font-mono">📖 Historical Artisan Biography & Craftsmanship</h4>
-                  <p className="text-xs text-gray-200 leading-relaxed font-sans whitespace-pre-line">
-                    {artisan.biodata.detailedBiography}
-                  </p>
+                  <h4 className="text-xs font-bold text-[#C5A059] uppercase tracking-wider font-mono">
+                    {lang === "en" ? "Artisan Story & Craftsmanship" : "ବୁଣାକାରଙ୍କ କାହାଣୀ ଓ କଳା"}
+                  </h4>
+                  
+                  <div className="text-xs text-gray-200 leading-relaxed font-sans space-y-3 max-h-[300px] overflow-y-auto pr-1">
+                    {artisan.slug === "ravi-meher" ? (
+                      <>
+                        <p>{lang === "en" ? TRANSLATIONS.en.bio1 : TRANSLATIONS.or.bio1}</p>
+                        <p>{lang === "en" ? TRANSLATIONS.en.bio2 : TRANSLATIONS.or.bio2}</p>
+                        <p>{lang === "en" ? TRANSLATIONS.en.bio3 : TRANSLATIONS.or.bio3}</p>
+                      </>
+                    ) : (
+                      <p className="whitespace-pre-line">{artisan.biodata.detailedBiography}</p>
+                    )}
+                  </div>
                 </div>
-                <div className="pt-4 border-t border-[#C5A059]/20 flex justify-between items-center text-[10px] font-mono text-gray-400">
-                  <span>Verified by Handloom Census</span>
-                  <span className="text-green-400 font-bold">✓ 100% D2C Jan Dhan Ready</span>
+
+                <div className="pt-3 border-t border-[#C5A059]/20 flex justify-between items-center text-[9px] font-mono text-gray-400">
+                  <span>{lang === "en" ? "Verified Handloom Census" : "ହସ୍ତତନ୍ତ ଜନଗଣନା ଦ୍ଵାରା ସତ୍ୟାପିତ"}</span>
+                  <span className="text-green-400 font-bold">✓ D2C Escrow Ready</span>
                 </div>
               </div>
+
             </div>
+
           </div>
         )}
 
