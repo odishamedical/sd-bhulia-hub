@@ -218,48 +218,41 @@ export default function Home() {
                 className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${currentSlide === idx ? "opacity-100 z-10" : "opacity-0 z-0"}`}
               >
                 <Image src={slide.img} alt={slide.title} fill className="object-cover transform scale-105 transition-transform duration-[10000ms] ease-linear" style={{ transform: currentSlide === idx ? 'scale(1)' : 'scale(1.05)' }} />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#0A2520] via-[#0A2520]/90 to-transparent"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A2520] via-transparent to-transparent opacity-80"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#051815] via-[#051815]/70 to-transparent opacity-90"></div>
               </div>
             ))}
             
-            {/* Overlay Content */}
-            <div className="relative z-20 h-full p-5 md:p-8 flex flex-col justify-center max-w-lg space-y-3 sm:space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0A2520]/80 backdrop-blur border border-[#C5A059]/40 text-[#C5A059] text-[9px] sm:text-[10px] font-bold uppercase tracking-widest self-start shadow-xl">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse"></span>
-                <span>{heroSlides[currentSlide].badge}</span>
+            {/* Overlay Content (Bottom Aligned) */}
+            <div className="relative z-20 h-full p-5 md:p-8 flex flex-col justify-end">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+                
+                <div className="space-y-2 sm:space-y-3 max-w-lg">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0A2520]/80 backdrop-blur border border-[#C5A059]/40 text-[#C5A059] text-[9px] sm:text-[10px] font-bold uppercase tracking-widest shadow-xl">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse"></span>
+                    <span>{heroSlides[currentSlide].badge}</span>
+                  </div>
+                  
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-white leading-tight drop-shadow-2xl">
+                    {heroSlides[currentSlide].title} <span className="text-[#C5A059]">{heroSlides[currentSlide].subtitle}</span>
+                  </h2>
+
+                  <p className="text-[11px] md:text-[13px] text-gray-200 leading-relaxed font-sans drop-shadow-md max-w-md line-clamp-2">
+                    {heroSlides[currentSlide].desc}
+                  </p>
+                </div>
+
+                <div className="shrink-0 w-full sm:w-auto">
+                  <button className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_25px_rgba(197,160,89,0.5)] cursor-pointer">
+                    {heroSlides[currentSlide].btn}
+                  </button>
+                </div>
+
               </div>
-              
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-white leading-tight drop-shadow-2xl">
-                {heroSlides[currentSlide].title} <br />
-                <span className="text-[#C5A059]">{heroSlides[currentSlide].subtitle}</span>
-              </h2>
-
-              <p className="text-[11px] md:text-[13px] text-gray-200 leading-relaxed font-sans drop-shadow-md max-w-md line-clamp-3">
-                {heroSlides[currentSlide].desc}
-              </p>
-
-              <div className="pt-1">
-                <button className="px-5 py-2.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-[10px] uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_25px_rgba(197,160,89,0.5)] cursor-pointer">
-                  {heroSlides[currentSlide].btn}
-                </button>
-              </div>
-            </div>
-
-            {/* Slider Dots Indicator */}
-            <div className="absolute bottom-6 left-6 md:left-10 z-20 flex gap-2">
-              {heroSlides.map((_, idx) => (
-                <button 
-                  key={idx}
-                  onClick={() => setCurrentSlide(idx)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${currentSlide === idx ? "w-8 bg-[#C5A059]" : "w-2 bg-white/40 hover:bg-white/80"}`}
-                />
-              ))}
             </div>
           </div>
 
           {/* Two Side Cards E.g. Span 5 */}
-          <div className="lg:col-span-5 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch">
+          <div className="lg:col-span-5 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch h-auto lg:h-[315px]">
             
             {/* Side Card 1: New Weaver Collective Arrivals */}
             <div className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden group hover:border-[#C5A059] transition-all shadow-xl">
@@ -269,8 +262,8 @@ export default function Home() {
                 <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#C5A059] text-[#0A1021] text-[9px] font-bold uppercase tracking-widest rounded shadow">New Arrivals</span>
               </div>
               <div className="space-y-1.5">
-                <h3 className="text-base font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors leading-tight">New Weaver Collective Arrivals</h3>
-                <p className="text-[11px] text-gray-300 font-sans leading-relaxed">Discover fresh Mulberry Silk & Cotton Ikat weaves directly from Bargarh & Sonepur pit looms.</p>
+                <h3 className="text-base font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors leading-tight line-clamp-2">New Weaver Collective Arrivals</h3>
+                <p className="text-[11px] text-gray-300 font-sans leading-relaxed line-clamp-2">Discover fresh Mulberry Silk & Cotton Ikat weaves directly from Bargarh & Sonepur pit looms.</p>
               </div>
               <button className="w-full mt-3 py-2 bg-[#0B2B26] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-[11px] font-bold uppercase tracking-widest text-[#C5A059] rounded-lg transition-all cursor-pointer">
                 Inspect Lot
@@ -285,8 +278,8 @@ export default function Home() {
                 <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#D4AF37] text-[#0A1021] text-[9px] font-bold uppercase tracking-widest rounded shadow">Tenant Stores</span>
               </div>
               <div className="space-y-1.5">
-                <h3 className="text-base font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors leading-tight">Meet Our Tenant Stores: Featured Artisans</h3>
-                <p className="text-[11px] text-gray-300 font-sans leading-relaxed">Explore verified Primary Weavers Cooperative Societies (PWCS) and master workshops.</p>
+                <h3 className="text-base font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors leading-tight line-clamp-2">Meet Our Tenant Stores: Featured Artisans</h3>
+                <p className="text-[11px] text-gray-300 font-sans leading-relaxed line-clamp-2">Explore verified Primary Weavers Cooperative Societies (PWCS) and master workshops.</p>
               </div>
               <a href="#weaver-boutiques" className="w-full mt-3 py-2 bg-[#0B2B26] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-[11px] font-bold uppercase tracking-widest text-[#C5A059] rounded-lg transition-all cursor-pointer text-center block">
                 View Stores
