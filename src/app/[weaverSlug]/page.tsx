@@ -783,10 +783,10 @@ export default function WeaverStorePage() {
 
         {/* ==================== 2. BLUEPRINT ARTISAN'S STORY ==================== */}
         {artisan.biodata && (
-          <div id="about" className="bg-[#0A3A35]/80 border-2 border-[#C5A059]/40 rounded-2xl md:rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-2xl space-y-6 backdrop-blur-md animate-fadeIn scroll-mt-32">
+          <div id="about" className="bg-[#0A3A35]/80 border-2 border-[#C5A059]/40 rounded-2xl md:rounded-3xl p-5 md:py-5 md:px-7 relative overflow-hidden shadow-2xl space-y-4 backdrop-blur-md animate-fadeIn scroll-mt-32">
             
             {/* Section Header with English / Odia Selector */}
-            <div className="flex justify-between items-center border-b border-[#C5A059]/20 pb-4">
+            <div className="flex justify-between items-center border-b border-[#C5A059]/20 pb-2.5">
               <h3 className="text-xl md:text-2xl font-serif font-bold text-[#C5A059] tracking-wider uppercase">
                 {lang === "en" ? "About the Weaver" : "ବୁଣାକାରଙ୍କ ସମ୍ପର୍କରେ"}
               </h3>
@@ -803,11 +803,11 @@ export default function WeaverStorePage() {
             </div>
 
             {/* 3-Column Compact Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
               
               {/* Column 1: Image Gallery (At the Loom & Work) */}
-              <div className="md:col-span-4 flex flex-col gap-4">
-                <div className="relative w-full h-44 rounded-xl overflow-hidden border border-[#C5A059]/40 shadow-md bg-[#0B2B26]">
+              <div className="md:col-span-4 flex flex-col gap-3">
+                <div className="relative w-full h-32 rounded-xl overflow-hidden border border-[#C5A059]/40 shadow-md bg-[#0B2B26]">
                   <Image 
                     src={artisan.img} 
                     alt={artisan.name} 
@@ -816,7 +816,7 @@ export default function WeaverStorePage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 </div>
-                <div className="relative w-full h-44 rounded-xl overflow-hidden border border-[#C5A059]/40 shadow-md bg-[#0B2B26]">
+                <div className="relative w-full h-32 rounded-xl overflow-hidden border border-[#C5A059]/40 shadow-md bg-[#0B2B26]">
                   <Image 
                     src="/ravi_meher_v2.png" 
                     alt="Loom Workshop" 
@@ -831,8 +831,8 @@ export default function WeaverStorePage() {
               </div>
 
               {/* Column 2: Accolades & Expertise Badges (Compact, no huge cards) */}
-              <div className="md:col-span-4 flex flex-col justify-between border-y md:border-y-0 md:border-x border-[#C5A059]/20 py-4 md:py-0 md:px-6 space-y-4">
-                <div className="space-y-4">
+              <div className="md:col-span-4 flex flex-col justify-between border-y md:border-y-0 md:border-x border-[#C5A059]/20 py-3 md:py-1 md:px-5">
+                <div className="space-y-3">
                   <h4 className="text-xs font-bold text-[#C5A059] uppercase tracking-wider font-mono">
                     {lang === "en" ? "Expertise & Bhulia Awards" : "ଦକ୍ଷତା ଓ ଭୁଲିଆ ପୁରସ୍କାର"}
                   </h4>
@@ -874,7 +874,7 @@ export default function WeaverStorePage() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-1.5 pt-4 border-t border-[#C5A059]/10">
+                <div className="flex flex-wrap gap-1.5 pt-3 border-t border-[#C5A059]/10">
                   {artisan.biodata.masterpieceMotifs.slice(0, 3).map((motif, i) => (
                     <span key={i} className="bg-[#0B2B26] border border-[#C5A059]/30 text-white text-[9px] px-2.5 py-1 rounded-lg font-sans font-medium shadow">
                       ✦ {motif.replace('✨', '').trim()}
@@ -884,13 +884,13 @@ export default function WeaverStorePage() {
               </div>
 
               {/* Column 3: Detailed Biography (Storytelling) */}
-              <div className="md:col-span-4 flex flex-col justify-between space-y-4">
-                <div className="space-y-3">
+              <div className="md:col-span-4 flex flex-col justify-start gap-3">
+                <div className="space-y-2.5">
                   <h4 className="text-xs font-bold text-[#C5A059] uppercase tracking-wider font-mono">
                     {lang === "en" ? "Artisan Story & Craftsmanship" : "ବୁଣାକାରଙ୍କ କାହାଣୀ ଓ କଳା"}
                   </h4>
                   
-                  <div className="text-xs text-gray-200 leading-relaxed font-sans space-y-3">
+                  <div className="text-xs text-gray-200 leading-relaxed font-sans space-y-2.5">
                     {artisan.slug && TRANSLATIONS[artisan.slug] ? (
                       <>
                         <p>{lang === "en" ? TRANSLATIONS[artisan.slug].en.bio1 : TRANSLATIONS[artisan.slug].or.bio1}</p>
@@ -902,7 +902,7 @@ export default function WeaverStorePage() {
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-[#C5A059]/20 flex justify-between items-center text-[9px] font-mono text-gray-400">
+                <div className="pt-3 border-t border-[#C5A059]/20 flex justify-between items-center text-[9px] font-mono text-gray-400 mt-auto">
                   <span>{lang === "en" ? "Verified Handloom Census" : "ହସ୍ତତନ୍ତ ଜନଗଣନା ଦ୍ଵାରା ସତ୍ୟାପିତ"}</span>
                   <span className="text-green-400 font-bold">✓ D2C Escrow Ready</span>
                 </div>
