@@ -169,13 +169,13 @@ export default function Home() {
       )}
 
       {/* Main Content Container */}
-      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 relative z-10 space-y-12 overflow-hidden">
+      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 relative z-10 space-y-8 md:space-y-12 overflow-hidden">
         
         {/* 1. Hero Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch">
           
           {/* Main Hero Banner E.g. Span 7 */}
-          <div className="lg:col-span-7 bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border border-[#C5A059] rounded-3xl p-6 md:p-8 flex flex-col justify-between relative overflow-hidden shadow-[0_0_35px_rgba(197,160,89,0.2)] group">
+          <div className="lg:col-span-7 bg-gradient-to-br from-[#0A3A35] via-[#0D3630] to-[#0B2B26] border border-[#C5A059] rounded-3xl p-5 md:p-8 flex flex-col justify-between relative overflow-hidden shadow-[0_0_35px_rgba(197,160,89,0.2)] group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#C5A059]/15 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000"></div>
             
             <div className="relative z-10 space-y-4 max-w-lg">
@@ -202,7 +202,7 @@ export default function Home() {
           </div>
 
           {/* Two Side Cards E.g. Span 5 */}
-          <div className="lg:col-span-5 grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+          <div className="lg:col-span-5 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch">
             
             {/* Side Card 1: New Weaver Collective Arrivals */}
             <div className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden group hover:border-[#C5A059] transition-all shadow-xl">
@@ -241,13 +241,13 @@ export default function Home() {
         </div>
 
         {/* 2. Explore Master Weaver Flagship Boutiques */}
-        <div id="weaver-boutiques" className="space-y-6 pt-4 scroll-mt-24">
+        <div id="weaver-boutiques" className="space-y-4 md:space-y-6 pt-2 md:pt-4 scroll-mt-24">
           <div>
-            <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore Master Weaver Flagships</h3>
-            <p className="text-xs text-gray-300 uppercase tracking-widest">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
+            <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore Master Weaver Flagships</h3>
+            <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {[
               { 
                 title: "Master Weaver Nandalal Meher", 
@@ -310,13 +310,13 @@ export default function Home() {
         </div>
 
         {/* 3. Operational Onboarding Gateways (Sovereign Pillars 4-Column Grid) */}
-        <div className="space-y-6 pt-4">
+        <div className="space-y-4 md:space-y-6 pt-2 md:pt-4">
           <div>
-            <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Operational Onboarding Gateways</h3>
-            <p className="text-xs text-gray-300 uppercase tracking-widest">Select your dedicated operational pillar to initiate secure, verified onboarding</p>
+            <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Operational Onboarding Gateways</h3>
+            <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest">Select your dedicated operational pillar to initiate secure, verified onboarding</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[
               { title: "Weavers Onboarding", desc: "List your traditional pit looms, mint GI-Tagged sarees, and receive direct D2C escrow payouts.", icon: "🧵", btn: "Apply as Weaver" },
               { title: "Store Owners Gateway", desc: "Register your Primary Weaving Cooperative Society (PWCS) or master boutique for global Spree sync.", icon: "🏛️", btn: "Apply as Store Owner" },
@@ -340,18 +340,18 @@ export default function Home() {
         </div>
 
         {/* 4. 5-7 Product Category Grids E.g. Cotton Sambalpuri */}
-        <div id="cotton-sambalpuri" className="space-y-6 pt-6">
-          <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-4">
+        <div id="cotton-sambalpuri" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
+          <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Cotton Sambalpuri Sarees</h3>
-              <p className="text-xs text-gray-300 uppercase tracking-widest mt-1">Breathable, traditional daily luxury direct from grassroots pit looms</p>
+              <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Cotton Sambalpuri Sarees</h3>
+              <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1">Breathable, traditional daily luxury direct from grassroots pit looms</p>
             </div>
-            <button className="px-4 py-2 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
+            <button className="hidden sm:block px-4 py-2 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
               View All Cotton
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
             {[
               { id: "GI-8492", name: "Traditional Red Cotton Ikat", vendor: "Pata Weaver Group", price: "₹ 4,899", img: "/bhulia-hero.png", ticket: "👁️ 18 Connoisseurs Viewing E.g. 1 Saree Left" },
               { id: "GI-7738", name: "Royal Blue Cotton Pasapalli", vendor: "Maa Samaleswari Handlooms", price: "₹ 5,299", img: "/bhulia-hero.png", ticket: "🛡️ 100% GI-Tag Verified E.g. Barpali Loom" },
@@ -428,18 +428,18 @@ export default function Home() {
         </div>
 
         {/* 5. Product Category Grid 2 E.g. Pata Sambalpuri Silk */}
-        <div id="pata-sambalpuri" className="space-y-6 pt-6">
-          <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-4">
+        <div id="pata-sambalpuri" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
+          <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Pata Sambalpuri Sarees (Pure Silk)</h3>
-              <p className="text-xs text-gray-300 uppercase tracking-widest mt-1">Exquisite Mulberry & Tussar silk masterpieces for weddings and royal connoisseurs</p>
+              <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Pata Sambalpuri Sarees (Pure Silk)</h3>
+              <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1">Exquisite Mulberry & Tussar silk masterpieces for weddings and royal connoisseurs</p>
             </div>
-            <button className="px-4 py-2 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
+            <button className="hidden sm:block px-4 py-2 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
               View All Silk
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
             {[
               { id: "GI-9921", name: "Royal Crimson Pata Silk", vendor: "Pata Weaver Group", price: "₹ 14,899", img: "/bhulia-hero.png", ticket: "✨ Silk Mark Gold E.g. 3ply Mulberry Yarn" },
               { id: "GI-9832", name: "Midnight Blue Silk Pasapalli", vendor: "Maa Samaleswari Handlooms", price: "₹ 16,299", img: "/bhulia-hero.png", ticket: "🛡️ 100% GI-Tag Verified E.g. Sonepur Loom" },
@@ -516,18 +516,18 @@ export default function Home() {
         </div>
 
         {/* 6. Product Category Grid 3 E.g. Cotton Bomkai */}
-        <div id="cotton-bomkai" className="space-y-6 pt-6">
-          <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-4">
+        <div id="cotton-bomkai" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
+          <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Cotton Bomkai Sarees</h3>
-              <p className="text-xs text-gray-300 uppercase tracking-widest mt-1">Intricate extra-weft borders and tribal motifs woven into pure breathable cotton</p>
+              <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Cotton Bomkai</h3>
+              <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1">Intricate extra-weft thread work on comfortable cotton bases</p>
             </div>
-            <button className="px-4 py-2 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
+            <button className="hidden sm:block px-4 py-2 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
               View All Bomkai
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
             {[
               { id: "GI-8812", name: "Yellow & Red Cotton Bomkai", vendor: "Maa Samaleswari Handlooms", price: "₹ 5,699", img: "/bhulia-hero.png", ticket: "🔥 High Demand E.g. 14 Sold This Week" },
               { id: "GI-8823", name: "Forest Green Cotton Bomkai", vendor: "Pata Weaver Group", price: "₹ 5,899", img: "/bhulia-hero.png", ticket: "🛡️ 100% GI-Tag Verified E.g. Bargarh Loom" },
@@ -577,7 +577,7 @@ export default function Home() {
         </div>
 
         {/* Explore by Category & Mission Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch pt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch pt-4 md:pt-6">
           
           {/* Explore by Category E.g. Span 5 */}
           <div className="lg:col-span-5 bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-3xl p-8 flex flex-col justify-between shadow-xl space-y-6">
