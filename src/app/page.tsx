@@ -314,7 +314,7 @@ export default function Home() {
               { 
                 title: "Master Weaver Ravi Meher", 
                 desc: "Visionary Graph Artist from Lumunda, Bargarh. Merging architectural precision with Bandha Kala to create Pasapali and Sachipar masterpieces.", 
-                img: "/ravi_meher.png", 
+                img: "/ravi_meher_v2.png", 
                 badge: "Bhulia Verified Sambalpuri Master Weaver",
                 link: "/ravi-meher" 
               }
