@@ -169,7 +169,7 @@ export default function Home() {
       )}
 
       {/* Main Content Container */}
-      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 relative z-10 space-y-8 md:space-y-12 overflow-hidden">
+      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 relative z-10 space-y-6 md:space-y-8 overflow-hidden">
         
         {/* 1. Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch">
@@ -241,7 +241,7 @@ export default function Home() {
         </div>
 
         {/* 2. Explore Master Weaver Flagship Boutiques */}
-        <div id="weaver-boutiques" className="space-y-4 md:space-y-6 pt-2 md:pt-4 scroll-mt-24">
+        <div id="weaver-boutiques" className="space-y-3 md:space-y-4 scroll-mt-24">
           <div>
             <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore Master Weaver Flagships</h3>
             <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
@@ -279,9 +279,9 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0A3A35] via-transparent to-transparent" />
                   </div>
 
-                  <div className="p-6 pb-0">
+                  <div className="p-4 sm:p-5 pb-0">
                     {/* Unifying Sovereign Real Gold 3D Water Wave Ripple Plaque Underneath Image */}
-                    <div className="relative inline-flex items-center justify-center mb-4 w-full">
+                    <div className="relative inline-flex items-center justify-center mb-3 w-full">
                       {/* Outer Expanding Water Wave Ripple Layers */}
                       <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#FFF2B2] to-[#D4AF37] opacity-60 animate-ping pointer-events-none blur-sm" style={{ animationDuration: '2.5s' }} />
                       <div className="absolute -inset-1 rounded-2xl bg-[#C5A059] opacity-30 animate-pulse pointer-events-none blur-md" />
@@ -300,7 +300,7 @@ export default function Home() {
                     <p className="text-xs text-gray-300 leading-relaxed font-sans">{dir.desc}</p>
                   </div>
                 </div>
-                <div className="p-6 pt-4 mt-4 border-t border-[#C5A059]/20 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-[#C5A059]">
+                <div className="p-4 sm:p-5 pt-3 mt-3 border-t border-[#C5A059]/20 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-[#C5A059]">
                   <span>Visit Flagship Store</span>
                   <span>→</span>
                 </div>
@@ -310,7 +310,7 @@ export default function Home() {
         </div>
 
         {/* 3. Operational Onboarding Gateways (Sovereign Pillars 4-Column Grid) */}
-        <div className="space-y-4 md:space-y-6 pt-2 md:pt-4">
+        <div className="space-y-3 md:space-y-4">
           <div>
             <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Operational Onboarding Gateways</h3>
             <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest">Select your dedicated operational pillar to initiate secure, verified onboarding</p>
@@ -323,9 +323,9 @@ export default function Home() {
               { title: "Wholesalers Portal", desc: "Access bulk B2B handloom requisitions, custom Ikat commissioning lots, and tax-exempt export billing.", icon: "📦", btn: "Apply as Wholesaler" },
               { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise" }
             ].map((gate, idx) => (
-              <div key={idx} className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl">
+              <div key={idx} className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-4 sm:p-5 flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl">
                 <div>
-                  <div className="w-12 h-12 rounded-xl bg-[#0B2B26] border border-[#C5A059]/30 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#0B2B26] border border-[#C5A059]/30 flex items-center justify-center text-xl sm:text-2xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300 shadow">
                     {gate.icon}
                   </div>
                   <h4 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-[#C5A059] transition-colors">{gate.title}</h4>
@@ -340,7 +340,7 @@ export default function Home() {
         </div>
 
         {/* 4. 5-7 Product Category Grids E.g. Cotton Sambalpuri */}
-        <div id="cotton-sambalpuri" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
+        <div id="cotton-sambalpuri" className="space-y-3 md:space-y-4">
           <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
               <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Cotton Sambalpuri Sarees</h3>
