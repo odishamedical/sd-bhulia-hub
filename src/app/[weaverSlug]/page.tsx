@@ -100,6 +100,39 @@ const MASTER_ARTISANS: ArtisanListing[] = [
     },
   },
   {
+    id: "ART-103",
+    slug: "nagarjuna-meher",
+    name: "Master Artisan Nagarjuna Meher | Lifetime Handloom Excellence",
+    cluster: "Sonepur Cluster",
+    village: "Dasrajpur, Sonepur",
+    category: "sonepur",
+    entityType: "Independent",
+    loomCount: 22,
+    giTagNumber: "GI-Cert: #OD-6621-SP",
+    specialtyTags: ["Sambalpuri Pata", "Premium Double Ikat", "Pasapalli", "Bichitrapuri", "Nabakothi", "Sonepuri Bomkai", "Sachitra"],
+    seoDescription: "Legendary master weaver Nagarjuna Meher from Dasrajpur, Sonepur. Devoted to handloom excellence since childhood, producing premium double ikat, Pasapalli, Nabakothi, and narrative silk masterpieces for global collectors.",
+    img: "/nagarjuna_meher.png",
+    isClaimed: true,
+    claimStatus: "verified",
+    biodata: {
+      artisanTitle: "Legendary Custodian of Sambalpuri Pata",
+      legacyEst: "Est. 1976 / Dasrajpur Lifetime Excellence Loom",
+      shortStory: "Nagarjuna Meher is a legendary master weaver from Dasrajpur, Sonepur, whose life story is woven into the very fabric of Odisha’s textile history. Dedicating himself to the loom since early childhood, Meher possesses an intuitive, lifelong understanding of silk, color, and geometry.",
+      awardHighlights: [
+        "🏆 Lifetime Handloom Excellence Seal",
+        "🏆 Global Heritage Craft Ambassador",
+        "🏆 Master Craft Guardian of Sonepur"
+      ],
+      masterpieceMotifs: [
+        "✨ Premium Double Ikat Alignment",
+        "✨ Pasapalli Royal Dice Board",
+        "✨ Nabakothi Nine Auspicious Houses",
+        "✨ Sachitra Mythology Folklore"
+      ],
+      detailedBiography: "Nagarjuna Meher is a legendary master weaver from Dasrajpur, Sonepur, whose life story is woven into the very fabric of Odisha’s textile history. Dedicating himself to the loom since early childhood, Meher possesses an intuitive, lifelong understanding of silk, color, and geometry. Today, he is recognized as an original custodian of the Sambalpuri Pata saree.\n\nMeher’s high-class single and double ikat designs transcend regional borders. His masterpieces are celebrated on national runways and eagerly sought after by international textile collectors. By combining childhood precision with sophisticated artistry, his handwoven silk sarees are globally revered as true works of wearable art.\n\nGlobal Collection: Signature Sambalpuri Pata Varieties\nTo showcase the full breadth of his lifelong expertise, his profile and web store feature these globally acclaimed varieties:\n• Premium Double Ikat Masterpieces: Rare, high-investment silk sarees where both warp and weft threads are tie-dyed, creating flawlessly aligned, mirror-image geometric patterns.\n• Pasapalli Pata: The iconic, bold checkered board design inspired by the ancient royal game of dice, featuring sharp contrasting blocks and intricate borders.\n• Bichitrapuri Pata: Grand heritage sarees featuring large, striking geometric grids mixed with traditional animal, bird, and fish motifs.\n• Nabakothi Pata: Highly artistic sarees featuring nine auspicious houses (Kothi), each meticulously filled with unique motifs like the lotus, elephant, and conch shell.\n• Sonepuri Bomkai Pata: An elite fusion combining intricate body ikat with heavy, raised extra-weft thread work (Jala) on the borders and pallu.\n• Sachitra Narrative Pata: Storytelling sarees featuring breathtaking, free-hand ikat depictions of nature, folklore, and classical Indian mythology that attract international buyers.",
+    },
+  },
+  {
     id: "ART-001",
     slug: "maa-samaleswari-weavers",
     name: "Maa Samaleswari Weavers Cooperative Society (PWCS)",
