@@ -256,7 +256,7 @@ const MASTER_ARTISANS: ArtisanListing[] = [
     giTagNumber: "GI-Cert: #OD-1102-BG",
     specialtyTags: ["Pasapali Cotton Classics", "Bichitrapuri Masterpieces", "Sachipar Designs", "Modern Narrative Graphs", "Mathematical Graph Art"],
     seoDescription: "Ravi Meher, from Lumunda, Bargarh, is a visionary Master Weaver and Graph Artist redefining Indian handlooms by merging mathematical precision with Bandha Kala.",
-    img: "/ravi_meher_v2.png",
+    img: "/ravi_meher_v3.png",
     isClaimed: true,
     claimStatus: "verified",
     biodata: {
