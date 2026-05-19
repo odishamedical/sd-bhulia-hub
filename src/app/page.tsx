@@ -18,7 +18,7 @@ export default function Home() {
       title: "Bhulia.com:",
       subtitle: "The Collective of Odisha's Master Weavers.",
       desc: "Direct access to thousands of authentic handloom artisans, primary weaving societies, and GI-Tag verified masterpieces from multiple tenant stores.",
-      img: "https://images.unsplash.com/photo-1605513511874-569d4ceb8b6e?w=1600&auto=format&fit=crop&q=80",
+      img: "/hero_qc.png",
       btn: "Shop the Collections"
     },
     {
@@ -26,7 +26,7 @@ export default function Home() {
       title: "Silk Masterpieces:",
       subtitle: "Authentic Double Ikat Pata.",
       desc: "Invest in 800 years of living heritage. Every silk thread is tie-dyed with mathematical precision and secured with D2C Jan Dhan escrow.",
-      img: "https://images.unsplash.com/photo-1620799140188-3b2a02fd9a77?w=1600&auto=format&fit=crop&q=80",
+      img: "/hero_silk.jpg",
       btn: "Explore Silk Pata"
     },
     {
@@ -34,7 +34,7 @@ export default function Home() {
       title: "Cotton Handlooms:",
       subtitle: "Everyday Luxury, Direct from Pit Looms.",
       desc: "Discover breathable, incredibly comfortable Cotton Sambalpuri and Bomkai sarees sourced right from the village weaving clusters.",
-      img: "https://images.unsplash.com/photo-1584285408660-3162638f2191?w=1600&auto=format&fit=crop&q=80",
+      img: "/hero_loom.jpg",
       btn: "Shop Cotton Deals"
     }
   ];
