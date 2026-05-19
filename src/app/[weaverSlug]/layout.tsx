@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
-export async function generateMetadata({ params }: { params: { weaverSlug: string } }): Promise<Metadata> {
-  const weaverSlug = params.weaverSlug;
+export async function generateMetadata({ params }: { params: Promise<{ weaverSlug: string }> }): Promise<Metadata> {
+  const { weaverSlug } = await params;
   const formattedTitle = weaverSlug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   const title = `Master Weaver Flagship: ${formattedTitle} | Bhulia Hub`;
   const description = `Explore the sovereign D2C handloom flagship store for ${formattedTitle}. Buy authentic GI-Tagged Sambalpuri sarees directly from the artisan's pit loom with 100% Jan Dhan escrow protection.`;
