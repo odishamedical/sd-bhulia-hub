@@ -224,10 +224,10 @@ export default function Home() {
             
             {/* Overlay Content (Bottom Aligned) */}
             <div className="relative z-20 h-full p-5 md:p-8 flex flex-col justify-end">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+              <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center gap-4 w-full">
                 
-                <div className="space-y-2 sm:space-y-3 max-w-lg">
-                  <h2 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-white leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+                <div className="flex-1 max-w-xl">
+                  <h2 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-white leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] line-clamp-1 sm:line-clamp-2">
                     {heroSlides[currentSlide].title} <span className="text-[#C5A059]">{heroSlides[currentSlide].subtitle}</span>
                   </h2>
                 </div>
