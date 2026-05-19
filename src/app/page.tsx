@@ -251,7 +251,7 @@ export default function Home() {
             {[
               { 
                 title: "Master Weaver Nandalal Meher", 
-                desc: "National Award-winning master weaver from Dasrajpur, Sonepur. Preserving the rare mathematical alignment of authentic double ikat silk Pata.", 
+                desc: "Award-winning master weaver from Dasrajpur, Sonepur. Preserving the rare mathematical alignment of authentic double ikat silk Pata.", 
                 img: "/nandalal_meher.jpg", 
                 badge: "Bhulia Verified Sambalpuri Master Weaver",
                 link: "/nandalal-meher" 

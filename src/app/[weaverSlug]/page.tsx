@@ -49,11 +49,11 @@ const MASTER_ARTISANS: ArtisanListing[] = [
     isClaimed: true,
     claimStatus: "verified",
     biodata: {
-      artisanTitle: "National Award-Winning Master Weaver",
+      artisanTitle: "Award-Winning Master Weaver",
       legacyEst: "Est. 1982 / Dasrajpur Ikat Heritage Loom",
-      shortStory: "Every thread tells a story. Based in Sonepur, Odisha, National Award-winning artisan Nandalal Meher spends months meticulously tie-dying and weaving a single Pata saree. Own a piece of living heritage.",
+      shortStory: "Every thread tells a story. Based in Sonepur, Odisha, Award-winning artisan Nandalal Meher spends months meticulously tie-dying and weaving a single Pata saree. Own a piece of living heritage.",
       awardHighlights: [
-        "🏆 National Award for Handloom Excellence",
+        "🏆 Award for Handloom Excellence",
         "🏆 Sant Kabir Master Craft Seal",
         "🏆 State Champion of Double Ikat Weaving"
       ],
