@@ -310,6 +310,13 @@ export default function Home() {
                 img: "/nagarjuna_meher.png", 
                 badge: "Bhulia Verified Sambalpuri Master Weaver",
                 link: "/nagarjuna-meher" 
+              },
+              { 
+                title: "Master Weaver Ravi Meher", 
+                desc: "Visionary Graph Artist from Lumunda, Bargarh. Merging architectural precision with Bandha Kala to create Pasapali and Sachipar masterpieces.", 
+                img: "/ravi_meher.png", 
+                badge: "Bhulia Verified Sambalpuri Master Weaver",
+                link: "/ravi-meher" 
               }
             ].map((dir, idx) => (
               <Link key={idx} href={dir.link} className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl cursor-pointer block">
