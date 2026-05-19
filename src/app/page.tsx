@@ -210,7 +210,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch">
           
           {/* Main Hero Banner E.g. Span 7 (Dynamic Slider) */}
-          <div className="lg:col-span-7 bg-[#051815] border border-[#C5A059] rounded-3xl overflow-hidden relative shadow-[0_0_35px_rgba(197,160,89,0.2)] group min-h-[400px]">
+          <div className="lg:col-span-7 bg-[#051815] border border-[#C5A059] rounded-3xl overflow-hidden relative shadow-[0_0_35px_rgba(197,160,89,0.2)] group h-[380px] md:h-[420px]">
             {/* Background Image Slider */}
             {heroSlides.map((slide, idx) => (
               <div 
@@ -230,12 +230,12 @@ export default function Home() {
                 <span>{heroSlides[currentSlide].badge}</span>
               </div>
               
-              <h2 className="text-3xl md:text-5xl font-serif font-bold text-white leading-tight drop-shadow-2xl">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-white leading-tight drop-shadow-2xl">
                 {heroSlides[currentSlide].title} <br />
                 <span className="text-[#C5A059]">{heroSlides[currentSlide].subtitle}</span>
               </h2>
 
-              <p className="text-xs md:text-sm text-gray-200 leading-relaxed font-sans drop-shadow-md max-w-md">
+              <p className="text-[11px] md:text-[13px] text-gray-200 leading-relaxed font-sans drop-shadow-md max-w-md line-clamp-3">
                 {heroSlides[currentSlide].desc}
               </p>
 
