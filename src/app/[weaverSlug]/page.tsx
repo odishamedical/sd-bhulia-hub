@@ -438,9 +438,21 @@ export default function WeaverStorePage() {
               <span className="px-3 py-1 rounded-full bg-[#0B2B26] border border-[#C5A059]/30 text-gray-200 text-xs font-bold uppercase tracking-widest">
                 📍 {artisan.cluster}
               </span>
-              <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] border border-[#AA771C] text-[#0A1021] font-mono font-extrabold text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(197,160,89,0.6)] flex items-center gap-1 animate-pulse">
-                Bhulia Verified Sambalpuri Master Weaver
-              </span>
+              <div className="relative inline-flex items-center justify-center">
+                {/* Outer Expanding Water Wave Ripple Layers */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#FFF2B2] to-[#D4AF37] opacity-60 animate-ping pointer-events-none blur-sm" style={{ animationDuration: '2.5s' }} />
+                <div className="absolute -inset-1 rounded-2xl bg-[#C5A059] opacity-30 animate-pulse pointer-events-none blur-md" />
+
+                {/* Real 3D Metallic Gold Plaque Button */}
+                <div className="relative z-10 py-2 px-5 rounded-2xl bg-gradient-to-b from-[#FFF5C0] via-[#D4AF37] via-[#C5A059] to-[#8A5A00] border-2 border-[#FFF0A5] shadow-[0_12px_30px_rgba(0,0,0,0.85),inset_0_3px_4px_rgba(255,255,255,0.9),inset_0_-4px_6px_rgba(120,75,0,0.9)] flex flex-col items-center justify-center transform hover:scale-[1.02] transition-transform duration-300">
+                  <span className="text-[10px] sm:text-[11px] font-serif font-black tracking-widest text-[#0A1021] uppercase leading-none mb-1 drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)]">
+                    Bhulia Verified
+                  </span>
+                  <span className="text-[11px] sm:text-xs font-serif font-black tracking-wider text-[#0A1021] uppercase leading-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)] text-center">
+                    Sambalpuri Master Weaver
+                  </span>
+                </div>
+              </div>
             </div>
             
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-white leading-tight">

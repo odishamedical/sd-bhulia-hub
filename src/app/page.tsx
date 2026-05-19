@@ -287,9 +287,21 @@ export default function Home() {
                   </div>
 
                   <div className="p-6 pb-0">
-                    {/* Unifying Sovereign Real Gold 3D Pulsing Button Underneath Image */}
-                    <div className="mb-3 inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] border border-[#AA771C] text-[#0A1021] text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-widest shadow-[0_4px_15px_rgba(197,160,89,0.6)] animate-pulse">
-                      <span>{dir.badge}</span>
+                    {/* Unifying Sovereign Real Gold 3D Water Wave Ripple Plaque Underneath Image */}
+                    <div className="relative inline-flex items-center justify-center mb-4 w-full">
+                      {/* Outer Expanding Water Wave Ripple Layers */}
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#FFF2B2] to-[#D4AF37] opacity-60 animate-ping pointer-events-none blur-sm" style={{ animationDuration: '2.5s' }} />
+                      <div className="absolute -inset-1 rounded-2xl bg-[#C5A059] opacity-30 animate-pulse pointer-events-none blur-md" />
+
+                      {/* Real 3D Metallic Gold Plaque Button */}
+                      <div className="relative z-10 w-full py-2.5 px-4 rounded-2xl bg-gradient-to-b from-[#FFF5C0] via-[#D4AF37] via-[#C5A059] to-[#8A5A00] border-2 border-[#FFF0A5] shadow-[0_12px_30px_rgba(0,0,0,0.85),inset_0_3px_4px_rgba(255,255,255,0.9),inset_0_-4px_6px_rgba(120,75,0,0.9)] flex flex-col items-center justify-center transform hover:scale-[1.02] transition-transform duration-300">
+                        <span className="text-[10px] sm:text-[11px] font-serif font-black tracking-widest text-[#0A1021] uppercase leading-none mb-1 drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)]">
+                          Bhulia Verified
+                        </span>
+                        <span className="text-[11px] sm:text-xs font-serif font-black tracking-wider text-[#0A1021] uppercase leading-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)] text-center">
+                          Sambalpuri Master Weaver
+                        </span>
+                      </div>
                     </div>
                     <h4 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-[#C5A059] transition-colors leading-tight">{dir.title}</h4>
                     <p className="text-xs text-gray-300 leading-relaxed font-sans">{dir.desc}</p>
