@@ -438,8 +438,8 @@ export default function WeaverStorePage() {
               <span className="px-3 py-1 rounded-full bg-[#0B2B26] border border-[#C5A059]/30 text-gray-200 text-xs font-bold uppercase tracking-widest">
                 📍 {artisan.cluster}
               </span>
-              <span className="bg-[#C5A059] text-[#0A1021] px-3 py-1 rounded-full font-bold text-xs uppercase tracking-widest shadow-[0_0_15px_rgba(197,160,89,0.6)] flex items-center gap-1">
-                ✦ Bhulia Verified Sambalpuri Master Weaver
+              <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] border border-[#AA771C] text-[#0A1021] font-mono font-extrabold text-xs uppercase tracking-widest shadow-[0_4px_15px_rgba(197,160,89,0.6)] flex items-center gap-1 animate-pulse">
+                Bhulia Verified Sambalpuri Master Weaver
               </span>
             </div>
             

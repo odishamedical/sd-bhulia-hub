@@ -287,9 +287,9 @@ export default function Home() {
                   </div>
 
                   <div className="p-6 pb-0">
-                    {/* Unifying Sovereign Branding Line Underneath Image */}
-                    <div className="mb-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] text-[11px] font-mono font-bold uppercase tracking-widest shadow-sm">
-                      <span>✦ {dir.badge}</span>
+                    {/* Unifying Sovereign Real Gold 3D Pulsing Button Underneath Image */}
+                    <div className="mb-3 inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] border border-[#AA771C] text-[#0A1021] text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-widest shadow-[0_4px_15px_rgba(197,160,89,0.6)] animate-pulse">
+                      <span>{dir.badge}</span>
                     </div>
                     <h4 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-[#C5A059] transition-colors leading-tight">{dir.title}</h4>
                     <p className="text-xs text-gray-300 leading-relaxed font-sans">{dir.desc}</p>
