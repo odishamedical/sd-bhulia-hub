@@ -67,6 +67,39 @@ const MASTER_ARTISANS: ArtisanListing[] = [
     },
   },
   {
+    id: "ART-102",
+    slug: "rabindra-meher",
+    name: "Creative Weaver Rabindra Meher | Master of Sambalpuri Pata",
+    cluster: "Sonepur Cluster",
+    village: "Dasrajpur, Sonepur",
+    category: "sonepur",
+    entityType: "Independent",
+    loomCount: 18,
+    giTagNumber: "GI-Cert: #OD-5512-SP",
+    specialtyTags: ["Sambalpuri Pata", "Double Ikat", "Pasapalli", "Nabakothi", "Bomkai", "Sachitra"],
+    seoDescription: "Extraordinarily creative master weaver from Dasrajpur, Sonepur. Delivering high-class Sambalpuri Pata sarees including Pasapalli, Nabakothi, Bomkai, and narrative Sachitra silk masterpieces.",
+    img: "/rabindra_meher.jpg",
+    isClaimed: true,
+    claimStatus: "verified",
+    biodata: {
+      artisanTitle: "Creative Master of Sambalpuri Pata",
+      legacyEst: "Est. 1988 / Dasrajpur Silk Innovation Loom",
+      shortStory: "Rabindra Meher is an extraordinarily creative weaver based in Dasrajpur, Sonepur—the heartland of Odisha's prestigious handloom heritage. Known for his innovative vision and mastery over silk, Meher breathes new life into the iconic Sambalpuri Pata saree.",
+      awardHighlights: [
+        "🏆 Award for Handloom Innovation",
+        "🏆 State Champion of Bandhakala Silk",
+        "🏆 Master Craft Seal of Sonepur"
+      ],
+      masterpieceMotifs: [
+        "✨ Pasapalli Dice Matrix",
+        "✨ Nabakothi Auspicious Houses",
+        "✨ Boita Bandana Maritime Theme",
+        "✨ Sachitra Narrative Folklore"
+      ],
+      detailedBiography: "Rabindra Meher is an extraordinarily creative weaver based in Dasrajpur, Sonepur—the heartland of Odisha's prestigious handloom heritage. Known for his innovative vision and mastery over silk, Meher breathes new life into the iconic Sambalpuri Pata saree. His work gracefully balances age-old weaving heritage with contemporary aesthetics, earning him a reputation for delivering high-class, luxury textiles.\n\nMeher specializes in both Single Ikat and highly complex Double Ikat (Bandhakala) techniques. By meticulously planning, tie-dying, and aligning fine silk yarns entirely by hand, he transforms raw mulberry silk into fluid, storytelling canvases. His premium creations are universally recognized for their deep color contrasts, sharp ikat outlines, and pristine silk luster.\n\nSignature Varieties in His Store Page\nTo build a comprehensive profile and store catalog, his collection can be categorized into these globally acclaimed varieties of Sambalpuri Pata:\n• Pasapalli Pata: Captivating sarees featuring the timeless, bold checkered board patterns inspired by the ancient game of dice (Pasa).\n• Bichitrapuri Pata: Grand heritage sarees characterized by large, striking geometric grids, decorative bands, and animal motifs woven on a rich silk canvas.\n• Nabakothi Pata: Highly artistic and spiritually significant sarees featuring nine houses (Kothi), each containing a unique auspicious motif like the Sankha (conch), Chakra (wheel), or Gaja (elephant).\n• Bomkai Pata (Sonepuri Masterpieces): High-class fusions where complex ikat patterns on the body seamlessly pair with extra-weft Jala/Jacquard borders and heavy, thread-work pallus.\n• Boita Bandana Pata: Theme-based creative masterpieces that depict the historic maritime glory and trading ships (Boita) of ancient Odisha along the borders and pallu.\n• Sachitra / Narrative Pata: Elite-tier storytelling sarees featuring intricate floral configurations, birds, deer, and scenes inspired by Nature or regional folklore.",
+    },
+  },
+  {
     id: "ART-001",
     slug: "maa-samaleswari-weavers",
     name: "Maa Samaleswari Weavers Cooperative Society (PWCS)",

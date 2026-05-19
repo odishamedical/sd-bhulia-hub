@@ -247,7 +247,7 @@ export default function Home() {
             <p className="text-xs text-gray-300 uppercase tracking-widest">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {[
               { 
                 title: "Master Weaver Nandalal Meher", 
@@ -255,6 +255,13 @@ export default function Home() {
                 img: "/nandalal_meher.jpg", 
                 badge: "Bhulia Verified Sambalpuri Master Weaver",
                 link: "/nandalal-meher" 
+              },
+              { 
+                title: "Creative Weaver Rabindra Meher", 
+                desc: "Master of Sambalpuri Pata from Dasrajpur, Sonepur. Specializing in intricate Double Ikat, Pasapalli, Nabakothi, and narrative Sachitra silk canvases.", 
+                img: "/rabindra_meher.jpg", 
+                badge: "Bhulia Verified Sambalpuri Master Weaver",
+                link: "/rabindra-meher" 
               },
               { 
                 title: "Maa Samaleswari PWCS", 
