@@ -390,7 +390,7 @@ export default function WeaverStorePage() {
 
           {/* Right Side Actions & Mobile Hamburger */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <Link href="/" className="hidden sm:flex px-5 py-2.5 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shadow shrink-0">
+            <Link href="/#weaver-boutiques" className="hidden sm:flex px-5 py-2.5 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shadow shrink-0">
               ← Back to Marketplace
             </Link>
 
@@ -405,7 +405,7 @@ export default function WeaverStorePage() {
 
         {/* Mobile-Only Dedicated Back Bar */}
         <div className="sm:hidden w-full pt-1 border-t border-[#C5A059]/20 flex justify-center">
-          <Link href="/" className="w-full flex items-center justify-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow">
+          <Link href="/#weaver-boutiques" className="w-full flex items-center justify-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow">
             ← Back to Marketplace
           </Link>
         </div>

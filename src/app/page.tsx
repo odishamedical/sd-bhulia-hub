@@ -87,7 +87,7 @@ export default function Home() {
                 <a href="#pata-pasapalli" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Pasapalli (Silk)</a>
               </div>
             </div>
-            <Link href="/#cotton-sambalpuri" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Boutiques</Link>
+            <a href="#weaver-boutiques" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Boutiques</a>
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
           </nav>
@@ -155,7 +155,7 @@ export default function Home() {
                 <a href="#pata-pasapalli" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Pata Pasapalli (Silk)</a>
               </div>
             </div>
-            <Link href="/#cotton-sambalpuri" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Weaver Boutiques</Link>
+            <a href="#weaver-boutiques" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Weaver Boutiques</a>
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">About Us</Link>
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] pb-1 block">Contact Us</Link>
 
@@ -231,9 +231,9 @@ export default function Home() {
                 <h3 className="text-base font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors leading-tight">Meet Our Tenant Stores: Featured Artisans</h3>
                 <p className="text-[11px] text-gray-300 font-sans leading-relaxed">Explore verified Primary Weavers Cooperative Societies (PWCS) and master workshops.</p>
               </div>
-              <button className="w-full mt-3 py-2 bg-[#0B2B26] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-[11px] font-bold uppercase tracking-widest text-[#C5A059] rounded-lg transition-all cursor-pointer">
+              <a href="#weaver-boutiques" className="w-full mt-3 py-2 bg-[#0B2B26] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-[11px] font-bold uppercase tracking-widest text-[#C5A059] rounded-lg transition-all cursor-pointer text-center block">
                 View Stores
-              </button>
+              </a>
             </div>
 
           </div>
@@ -241,7 +241,7 @@ export default function Home() {
         </div>
 
         {/* 2. Explore Master Weaver Flagship Boutiques */}
-        <div className="space-y-6 pt-4">
+        <div id="weaver-boutiques" className="space-y-6 pt-4 scroll-mt-24">
           <div>
             <h3 className="text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore Master Weaver Flagships</h3>
             <p className="text-xs text-gray-300 uppercase tracking-widest">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
