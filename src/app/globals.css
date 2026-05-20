@@ -1,61 +1,72 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #0f0a0a;
-  --color-foreground: #f4ecec;
+  --color-background: #FDFBF7;
+  --color-foreground: #0D1917;
   
-  --color-heritage-red: #8b0000;
-  --color-heritage-ochre: #cc7722;
-  --color-heritage-black: #1a1110;
+  --color-brand: #0B2B26;
+  --color-gold: #C5A059;
   
   --font-display: var(--font-playfair);
   --font-sans: var(--font-inter);
 }
 
 :root {
-  --bhulia-red: #8b0000;
-  --bhulia-black: #1a1110;
-  --bhulia-ochre: #cc7722;
-  --bhulia-bg: #0f0a0a;
+  --bhulia-brand: #0B2B26;
+  --bhulia-gold: #C5A059;
+  --bhulia-bg: #FDFBF7;
+  --bhulia-card-bg: #0B2B26;
 }
 
 @layer base {
   body {
-    background-color: #0A2520;
-    color: #f4ecec;
+    background-color: #FDFBF7;
+    color: #0D1917;
     -webkit-font-smoothing: antialiased;
   }
 }
 
 @layer components {
-  .bhulia-card {
-    background: rgba(26, 17, 16, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(139, 0, 0, 0.2);
-    border-radius: 12px;
+  /* Premium Dark Heritage Green Card */
+  .bhulia-premium-card {
+    background-color: #0B2B26;
+    border: 1px solid rgba(197, 160, 89, 0.4);
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
   }
   
-  .bhulia-gradient-text {
-    background: linear-gradient(135deg, #cc7722 0%, #ff9933 50%, #cc7722 100%);
+  .bhulia-premium-card:hover {
+    border-color: #C5A059;
+    box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Gold Gradient Text */
+  .bhulia-gold-text {
+    background: linear-gradient(135deg, #FFF5C0 0%, #D4AF37 50%, #C5A059 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   
-  .bhulia-button {
-    background: #8b0000;
-    color: white;
-    font-weight: 600;
-    padding: 12px 32px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
+  /* Gold 3D/Gradient Button */
+  .bhulia-gold-button {
+    background: linear-gradient(to right, #996515, #C5A059, #996515);
+    color: #0A1021;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    border: 1px solid #cc7722;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+    transition: all 0.2s ease;
   }
   
-  .bhulia-button:hover {
-    background: #cc7722;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(204, 119, 34, 0.4);
+  .bhulia-gold-button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(197, 160, 89, 0.5);
+  }
+  
+  .bhulia-gold-button:active {
+    transform: translateY(0);
   }
 }
+

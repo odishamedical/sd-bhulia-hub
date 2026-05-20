@@ -71,6 +71,18 @@ export default function Home() {
     return () => window.removeEventListener("sd_auth_change", checkAuth);
   }, []);
 
+  // Capture Referral ID from URL parameters
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get("ref");
+      if (ref) {
+        localStorage.setItem("sd_referral_id", ref);
+        console.log("Captured Referral ID:", ref);
+      }
+    }
+  }, []);
+
   // Dynamic Social Share Handler with Affiliate Tracking ID
   const handleSocialShare = (platform: "whatsapp" | "facebook", productName: string) => {
     const shareUrl = `${window.location.origin}/product/${encodeURIComponent(productName.toLowerCase().replace(/\s+/g, "-"))}?ref=${userUid}`;
@@ -84,15 +96,15 @@ export default function Home() {
   };
 
   return (
-    <main className="relative flex-1 w-full bg-gradient-to-b from-[#0B2B26] via-[#0D3630] to-[#0A2520] text-white font-sans flex flex-col min-h-screen">
+    <main className="relative flex-1 w-full bg-[#FDFBF7] text-[#0D1917] font-sans flex flex-col min-h-screen">
       
       {/* Background Gold Glows & Ikat Texture */}
-      <div className="absolute inset-0 z-0 opacity-15 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #C5A059 1px, transparent 0)', backgroundSize: '48px 48px' }} />
-      <div className="absolute top-0 left-0 w-[40%] h-[40%] bg-[#C5A059]/15 blur-[160px] rounded-full pointer-events-none z-0" />
-      <div className="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D4AF37]/15 blur-[160px] rounded-full pointer-events-none z-0" />
+      <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #C5A059 1px, transparent 0)', backgroundSize: '48px 48px' }} />
+      <div className="absolute top-0 left-0 w-[40%] h-[40%] bg-[#C5A059]/10 blur-[160px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-0 right-0 w-[40%] h-[40%] bg-[#D4AF37]/10 blur-[160px] rounded-full pointer-events-none z-0" />
 
       {/* Top Sticky Header / Perfect Left-Center-Right Balance */}
-      <header className="sticky top-0 w-full z-50 bg-[#0B2B26]/95 backdrop-blur-md border-b border-[#C5A059]/40 px-4 sm:px-6 py-3 sm:py-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)] flex flex-col gap-3">
+      <header className="sticky top-0 w-full z-50 bg-[#0B2B26] border-b border-[#C5A059]/40 px-4 sm:px-6 py-3 sm:py-4 shadow-lg flex flex-col gap-3">
         <div className="flex justify-between items-center gap-2 w-full">
           {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0">
@@ -100,7 +112,7 @@ export default function Home() {
               <Image src="/bhulia_logo_final.jpg" alt="Bhulia Gold Logo" fill className="object-cover" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wider text-[#C5A059] leading-none truncate">Bhulia.com</h1>
+              <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wider text-[#C5A059] leading-none">BHULIA.COM</h1>
               <p className="hidden sm:block text-[11px] text-gray-300 font-medium tracking-wide mt-1 truncate">Sambalpuri saree, Direct from Weavers</p>
             </div>
           </div>
@@ -117,9 +129,6 @@ export default function Home() {
                 <a href="#cotton-sambalpuri" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Cotton Sambalpuri</a>
                 <a href="#pata-sambalpuri" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Sambalpuri (Silk)</a>
                 <a href="#cotton-bomkai" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Cotton Bomkai</a>
-                <a href="#pata-bomkai" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Bomkai (Silk)</a>
-                <a href="#cotton-pasapalli" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Cotton Pasapalli</a>
-                <a href="#pata-pasapalli" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Pasapalli (Silk)</a>
               </div>
             </div>
             <a href="#weaver-boutiques" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Boutiques</a>
@@ -162,21 +171,11 @@ export default function Home() {
             </button>
           </div>
         </div>
-
-        {/* Mobile-Only Dedicated Sign In / Register Bar right below Bhulia.com */}
-        {!userAvatar && (
-          <div className="sm:hidden w-full pt-1 border-t border-[#C5A059]/20 flex justify-center">
-            <a href="https://sd-auth-center.vercel.app" className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(197,160,89,0.4)] hover:brightness-110 transition-all cursor-pointer">
-              <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
-              <span>Sign In / Register</span>
-            </a>
-          </div>
-        )}
       </header>
 
       {/* Mobile Navigation Drawer */}
       {mobileNavOpen && (
-        <div className="lg:hidden sticky top-[73px] z-40 bg-[#0B2B26]/98 backdrop-blur-md border-b border-[#C5A059]/40 px-6 py-6 space-y-4 shadow-2xl animate-fadeIn">
+        <div className="lg:hidden sticky top-[57px] z-40 bg-[#0B2B26]/98 backdrop-blur-md border-b border-[#C5A059]/40 px-6 py-6 space-y-4 shadow-2xl animate-fadeIn">
           <div className="flex flex-col space-y-3 text-xs font-bold uppercase tracking-widest text-gray-200">
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Home</Link>
             <div className="space-y-2 border-b border-[#C5A059]/20 pb-2">
@@ -185,14 +184,19 @@ export default function Home() {
                 <a href="#cotton-sambalpuri" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Cotton Sambalpuri</a>
                 <a href="#pata-sambalpuri" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Pata Sambalpuri (Silk)</a>
                 <a href="#cotton-bomkai" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Cotton Bomkai</a>
-                <a href="#pata-bomkai" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Pata Bomkai (Silk)</a>
-                <a href="#cotton-pasapalli" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Cotton Pasapalli</a>
-                <a href="#pata-pasapalli" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Pata Pasapalli (Silk)</a>
               </div>
             </div>
             <a href="#weaver-boutiques" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Weaver Boutiques</a>
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">About Us</Link>
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] pb-1 block">Contact Us</Link>
+
+            {/* Mobile-Only Dedicated Sign In in Drawer */}
+            {!userAvatar && (
+              <a href="https://sd-auth-center.vercel.app" onClick={() => setMobileNavOpen(false)} className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow">
+                <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                <span>Sign In / Register</span>
+              </a>
+            )}
 
             {/* Mobile Cart Button */}
             <button className="w-full mt-2 flex items-center justify-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shadow">
@@ -246,7 +250,7 @@ export default function Home() {
           <div className="lg:col-span-5 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch h-auto lg:h-[315px]">
             
             {/* Side Card 1: New Weaver Collective Arrivals */}
-            <div className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden group hover:border-[#C5A059] transition-all shadow-xl">
+            <div className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden group hover:border-[#C5A059] transition-all shadow-xl">
               <div className="relative w-full h-32 rounded-xl overflow-hidden mb-4 border border-[#C5A059]/20 group-hover:border-[#C5A059]/50 transition-colors">
                 <Image src="/bhulia-hero.png" alt="New Weaver Arrivals" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A3A35] via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500"></div>
@@ -256,13 +260,13 @@ export default function Home() {
                 <h3 className="text-base font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors leading-tight line-clamp-2">New Weaver Collective Arrivals</h3>
                 <p className="text-[11px] text-gray-300 font-sans leading-relaxed line-clamp-2">Discover fresh Mulberry Silk & Cotton Ikat weaves directly from Bargarh & Sonepur pit looms.</p>
               </div>
-              <button className="w-full mt-3 py-2 bg-[#0B2B26] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-[11px] font-bold uppercase tracking-widest text-[#C5A059] rounded-lg transition-all cursor-pointer">
+              <button className="w-full mt-3 py-2 bg-[#0A3A35] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-[11px] font-bold uppercase tracking-widest text-[#C5A059] rounded-lg transition-all cursor-pointer">
                 Inspect Lot
               </button>
             </div>
 
             {/* Side Card 2: Meet Our Tenant Stores */}
-            <div className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden group hover:border-[#C5A059] transition-all shadow-xl">
+            <div className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden group hover:border-[#C5A059] transition-all shadow-xl">
               <div className="relative w-full h-32 rounded-xl overflow-hidden mb-4 border border-[#C5A059]/20 group-hover:border-[#C5A059]/50 transition-colors">
                 <Image src="/bhulia-hero.png" alt="Featured Artisans" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A3A35] via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500"></div>
@@ -272,7 +276,7 @@ export default function Home() {
                 <h3 className="text-base font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors leading-tight line-clamp-2">Meet Our Tenant Stores: Featured Artisans</h3>
                 <p className="text-[11px] text-gray-300 font-sans leading-relaxed line-clamp-2">Explore verified Primary Weavers Cooperative Societies (PWCS) and master workshops.</p>
               </div>
-              <a href="#weaver-boutiques" className="w-full mt-3 py-2 bg-[#0B2B26] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-[11px] font-bold uppercase tracking-widest text-[#C5A059] rounded-lg transition-all cursor-pointer text-center block">
+              <a href="#weaver-boutiques" className="w-full mt-3 py-2 bg-[#0A3A35] border border-[#C5A059]/40 group-hover:border-[#C5A059] text-[11px] font-bold uppercase tracking-widest text-[#C5A059] rounded-lg transition-all cursor-pointer text-center block">
                 View Stores
               </a>
             </div>
@@ -284,8 +288,8 @@ export default function Home() {
         {/* 2. Explore Master Weaver Flagship Boutiques */}
         <div id="weaver-boutiques" className="space-y-3 md:space-y-4 scroll-mt-24">
           <div>
-            <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore Master Weaver Flagships</h3>
-            <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
+            <h3 className="text-xl md:text-3xl font-serif text-[#0B2B26] font-bold tracking-wider mb-1">Explore Master Weaver Flagships</h3>
+            <p className="text-[10px] md:text-xs text-neutral-600 uppercase tracking-widest font-semibold">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
@@ -295,31 +299,31 @@ export default function Home() {
                 desc: "Award-winning master weaver from Dasrajpur, Sonepur. Preserving the rare mathematical alignment of authentic double ikat silk Pata.", 
                 img: "/nandalal_meher.jpg", 
                 badge: "Bhulia Verified Sambalpuri Master Weaver",
-                link: "/nandalal-meher" 
+                link: "/weaver/nandalal-meher" 
               },
               { 
                 title: "Creative Weaver Rabindra Meher", 
                 desc: "Master of Sambalpuri Pata from Dasrajpur, Sonepur. Specializing in intricate Double Ikat, Pasapalli, Nabakothi, and narrative Sachitra silk canvases.", 
                 img: "/rabindra_meher.jpg", 
                 badge: "Bhulia Verified Sambalpuri Master Weaver",
-                link: "/rabindra-meher" 
+                link: "/weaver/rabindra-meher" 
               },
               { 
                 title: "Master Artisan Nagarjuna Meher", 
                 desc: "Legendary master weaver from Dasrajpur, Sonepur. Devoted to handloom excellence since childhood, producing premium double ikat and narrative silk masterpieces.", 
                 img: "/nagarjuna_meher.png", 
                 badge: "Bhulia Verified Sambalpuri Master Weaver",
-                link: "/nagarjuna-meher" 
+                link: "/weaver/nagarjuna-meher" 
               },
               { 
                 title: "Master Weaver Ravi Meher", 
                 desc: "Visionary Graph Artist from Lumunda, Bargarh. Merging architectural precision with Bandha Kala to create Pasapali and Sachipar masterpieces.", 
                 img: "/ravi_meher_v3.png", 
                 badge: "Bhulia Verified Sambalpuri Master Weaver",
-                link: "/ravi-meher" 
+                link: "/weaver/ravi-meher" 
               }
             ].map((dir, idx) => (
-              <Link key={idx} href={dir.link} className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl cursor-pointer block">
+              <Link key={idx} href={dir.link} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all shadow-xl cursor-pointer block">
                 <div>
                   {/* Image Thumbnail (100% Clean & Unobstructed Face) */}
                   <div className="relative w-full h-48 overflow-hidden bg-[#051815]">
@@ -371,15 +375,15 @@ export default function Home() {
               { title: "Wholesalers Portal", desc: "Access bulk B2B handloom requisitions, custom Ikat commissioning lots, and tax-exempt export billing.", icon: "📦", btn: "Apply as Wholesaler" },
               { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise" }
             ].map((gate, idx) => (
-              <div key={idx} className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-4 sm:p-5 flex flex-col justify-between group hover:border-[#C5A059] hover:bg-[#0D4B45] transition-all shadow-xl">
+              <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl p-4 sm:p-5 flex flex-col justify-between group hover:border-[#C5A059] transition-all shadow-xl">
                 <div>
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#0B2B26] border border-[#C5A059]/30 flex items-center justify-center text-xl sm:text-2xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300 shadow">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#0A3A35] border border-[#C5A059]/30 flex items-center justify-center text-xl sm:text-2xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300 shadow">
                     {gate.icon}
                   </div>
                   <h4 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-[#C5A059] transition-colors">{gate.title}</h4>
                   <p className="text-xs text-gray-300 leading-relaxed font-sans">{gate.desc}</p>
                 </div>
-                <button className="w-full mt-6 py-3 bg-[#0B2B26] border border-[#C5A059]/50 hover:border-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021] text-xs font-bold uppercase tracking-widest text-[#C5A059] rounded-xl transition-all shadow-md cursor-pointer">
+                <button className="w-full mt-6 py-3 bg-[#0A3A35] border border-[#C5A059]/50 hover:border-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021] text-xs font-bold uppercase tracking-widest text-[#C5A059] rounded-xl transition-all shadow-md cursor-pointer">
                   {gate.btn} →
                 </button>
               </div>
@@ -391,15 +395,15 @@ export default function Home() {
         <div id="cotton-sambalpuri" className="space-y-3 md:space-y-4">
           <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Cotton Sambalpuri Sarees</h3>
-              <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1">Breathable, traditional daily luxury direct from grassroots pit looms</p>
+              <h3 className="text-xl md:text-3xl font-serif text-[#0B2B26] font-bold tracking-wider">Cotton Sambalpuri Sarees</h3>
+              <p className="text-[10px] md:text-xs text-neutral-600 uppercase tracking-widest mt-1 font-semibold">Breathable, traditional daily luxury direct from grassroots pit looms</p>
             </div>
-            <button className="hidden sm:block px-4 py-2 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
+            <button className="hidden sm:block px-4 py-2 bg-[#0B2B26] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
               View All Cotton
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6">
             {[
               { id: "GI-8492", name: "Traditional Red Cotton Ikat", vendor: "Pata Weaver Group", price: "₹ 4,899", img: "/bhulia-hero.png", ticket: "👁️ 18 Connoisseurs Viewing E.g. 1 Saree Left" },
               { id: "GI-7738", name: "Royal Blue Cotton Pasapalli", vendor: "Maa Samaleswari Handlooms", price: "₹ 5,299", img: "/bhulia-hero.png", ticket: "🛡️ 100% GI-Tag Verified E.g. Barpali Loom" },
@@ -407,8 +411,8 @@ export default function Home() {
               { id: "GI-5528", name: "Emerald Green Cotton Bandha", vendor: "Maa Samaleswari Handlooms", price: "₹ 4,999", img: "/bhulia-hero.png", ticket: "🔥 High Demand E.g. 12 Sold This Week" },
               { id: "GI-4419", name: "Mustard Yellow Cotton Ikat", vendor: "Pata Weaver Group", price: "₹ 5,499", img: "/bhulia-hero.png", ticket: "✨ Handspun Cotton E.g. Organic Dye" }
             ].map((item, idx) => (
-              <div key={idx} className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl">
-                <div className="relative w-full h-48 overflow-hidden bg-[#0B2B26]">
+              <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
+                <div className="relative w-full h-48 sm:h-64 overflow-hidden bg-[#0B2B26] rounded-t-xl">
                   <Image src={item.img} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
                     {item.id}
@@ -418,29 +422,29 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2.5">
+                <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
                   <div>
-                    <h4 className="font-bold text-white text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.name}</h4>
+                    <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.name}</h4>
                     <p className="text-base font-serif font-bold text-[#C5A059]">{item.price}</p>
                   </div>
 
                   {/* Social Share Affiliate Buttons */}
                   <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-[#C5A059]/20">
-                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] rounded-md font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
-                      <span>📲 WhatsApp</span>
+                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                      <span>📲 Share</span>
                     </button>
-                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/20 hover:bg-[#1877F2]/30 border border-[#1877F2]/40 text-[#1877F2] rounded-md font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
-                      <span>📘 Facebook</span>
+                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                      <span>📘 Share</span>
                     </button>
                   </div>
 
-                  <button className="w-full py-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-[10px] uppercase tracking-wider rounded-lg hover:brightness-110 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] cursor-pointer">
-                    Add to Cart
-                  </button>
+                  <Link href={`/product/${encodeURIComponent(item.name.toLowerCase().replace(/\s+/g, "-"))}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
+                    View Details
+                  </Link>
                 </div>
 
                 {/* Bottom Ticket */}
-                <div className="bg-[#0B2B26] px-3 py-1.5 border-t border-[#C5A059]/30 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
+                <div className="bg-[#0A2520] px-3 py-1.5 border-t border-[#C5A059]/20 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
                   <span className="truncate">{item.ticket}</span>
                 </div>
               </div>
@@ -479,15 +483,15 @@ export default function Home() {
         <div id="pata-sambalpuri" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
           <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Pata Sambalpuri Sarees (Pure Silk)</h3>
-              <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1">Exquisite Mulberry & Tussar silk masterpieces for weddings and royal connoisseurs</p>
+              <h3 className="text-xl md:text-3xl font-serif text-[#0B2B26] font-bold tracking-wider">Pata Sambalpuri Sarees (Pure Silk)</h3>
+              <p className="text-[10px] md:text-xs text-neutral-600 uppercase tracking-widest mt-1 font-semibold">Exquisite Mulberry & Tussar silk masterpieces for weddings and royal connoisseurs</p>
             </div>
-            <button className="hidden sm:block px-4 py-2 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
+            <button className="hidden sm:block px-4 py-2 bg-[#0B2B26] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
               View All Silk
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6">
             {[
               { id: "GI-9921", name: "Royal Crimson Pata Silk", vendor: "Pata Weaver Group", price: "₹ 14,899", img: "/bhulia-hero.png", ticket: "✨ Silk Mark Gold E.g. 3ply Mulberry Yarn" },
               { id: "GI-9832", name: "Midnight Blue Silk Pasapalli", vendor: "Maa Samaleswari Handlooms", price: "₹ 16,299", img: "/bhulia-hero.png", ticket: "🛡️ 100% GI-Tag Verified E.g. Sonepur Loom" },
@@ -495,8 +499,8 @@ export default function Home() {
               { id: "GI-9654", name: "Peacock Green Silk Bandha", vendor: "Maa Samaleswari Handlooms", price: "₹ 15,999", img: "/bhulia-hero.png", ticket: "🔥 High Demand E.g. 8 Sold This Week" },
               { id: "GI-9565", name: "Pure Tussar Silk Ikat Saree", vendor: "Pata Weaver Group", price: "₹ 17,499", img: "/bhulia-hero.png", ticket: "⏱️ Weaving Ends in 2 Days E.g. Reserve" }
             ].map((item, idx) => (
-              <div key={idx} className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl">
-                <div className="relative w-full h-48 overflow-hidden bg-[#0B2B26]">
+              <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
+                <div className="relative w-full h-48 sm:h-64 overflow-hidden bg-[#0B2B26] rounded-t-xl">
                   <Image src={item.img} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
                     {item.id}
@@ -506,29 +510,29 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2.5">
+                <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
                   <div>
-                    <h4 className="font-bold text-white text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.name}</h4>
+                    <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.name}</h4>
                     <p className="text-base font-serif font-bold text-[#C5A059]">{item.price}</p>
                   </div>
 
                   {/* Social Share Affiliate Buttons */}
                   <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-[#C5A059]/20">
-                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] rounded-md font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
-                      <span>📲 WhatsApp</span>
+                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                      <span>📲 Share</span>
                     </button>
-                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/20 hover:bg-[#1877F2]/30 border border-[#1877F2]/40 text-[#1877F2] rounded-md font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
-                      <span>📘 Facebook</span>
+                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                      <span>📘 Share</span>
                     </button>
                   </div>
 
-                  <button className="w-full py-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-[10px] uppercase tracking-wider rounded-lg hover:brightness-110 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] cursor-pointer">
-                    Add to Cart
-                  </button>
+                  <Link href={`/product/${encodeURIComponent(item.name.toLowerCase().replace(/\s+/g, "-"))}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
+                    View Details
+                  </Link>
                 </div>
 
                 {/* Bottom Ticket */}
-                <div className="bg-[#0B2B26] px-3 py-1.5 border-t border-[#C5A059]/30 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
+                <div className="bg-[#0A2520] px-3 py-1.5 border-t border-[#C5A059]/20 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
                   <span className="truncate">{item.ticket}</span>
                 </div>
               </div>
@@ -537,7 +541,7 @@ export default function Home() {
         </div>
 
         {/* Interspersed Advertisement Banner 2 */}
-        <div className="bg-gradient-to-r from-[#0A3A35] via-[#0D3630] to-[#0A3A35] border-2 border-[#C5A059] rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.3)] flex flex-col md:flex-row items-center justify-between gap-8 group">
+        <div className="bg-[#0B2B26] border-2 border-[#C5A059] rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.3)] flex flex-col md:flex-row items-center justify-between gap-8 group">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#C5A059]/15 via-transparent to-transparent pointer-events-none group-hover:scale-110 transition-transform duration-1000"></div>
           
           <div className="space-y-4 max-w-2xl relative z-10">
@@ -557,7 +561,7 @@ export default function Home() {
           </div>
 
           <div className="relative z-10 flex flex-col sm:flex-row gap-4 shrink-0 w-full md:w-auto">
-            <button className="px-8 py-4 bg-[#0B2B26] border border-[#C5A059] hover:bg-[#0D4B45] text-[#C5A059] hover:text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all cursor-pointer">
+            <button className="px-8 py-4 bg-[#0A3A35] border border-[#C5A059] hover:bg-[#0D4B45] text-[#C5A059] hover:text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all cursor-pointer">
               Inspect GI Registry
             </button>
           </div>
@@ -567,15 +571,15 @@ export default function Home() {
         <div id="cotton-bomkai" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
           <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider">Cotton Bomkai</h3>
-              <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1">Intricate extra-weft thread work on comfortable cotton bases</p>
+              <h3 className="text-xl md:text-3xl font-serif text-[#0B2B26] font-bold tracking-wider">Cotton Bomkai</h3>
+              <p className="text-[10px] md:text-xs text-neutral-600 uppercase tracking-widest mt-1 font-semibold">Intricate extra-weft thread work on comfortable cotton bases</p>
             </div>
-            <button className="hidden sm:block px-4 py-2 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
+            <button className="hidden sm:block px-4 py-2 bg-[#0B2B26] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
               View All Bomkai
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6">
             {[
               { id: "GI-8812", name: "Yellow & Red Cotton Bomkai", vendor: "Maa Samaleswari Handlooms", price: "₹ 5,699", img: "/bhulia-hero.png", ticket: "🔥 High Demand E.g. 14 Sold This Week" },
               { id: "GI-8823", name: "Forest Green Cotton Bomkai", vendor: "Pata Weaver Group", price: "₹ 5,899", img: "/bhulia-hero.png", ticket: "🛡️ 100% GI-Tag Verified E.g. Bargarh Loom" },
@@ -583,40 +587,40 @@ export default function Home() {
               { id: "GI-8845", name: "Maroon Tribal Border Bomkai", vendor: "Pata Weaver Group", price: "₹ 5,999", img: "/bhulia-hero.png", ticket: "✨ Extra-Weft Border E.g. Pure Cotton" },
               { id: "GI-8856", name: "Orange & Black Cotton Bomkai", vendor: "Maa Samaleswari Handlooms", price: "₹ 5,499", img: "/bhulia-hero.png", ticket: "⏱️ Weaving Ends in 4 Days E.g. Reserve" }
             ].map((item, idx) => (
-              <div key={idx} className="bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl">
-                <div className="relative w-full h-64 overflow-hidden bg-[#0B2B26]">
+              <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
+                <div className="relative w-full h-48 sm:h-64 overflow-hidden bg-[#0B2B26] rounded-t-xl">
                   <Image src={item.img} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                  <div className="absolute top-3 right-3 bg-[#0B2B26]/80 backdrop-blur-md px-2.5 py-1 rounded-md border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
+                  <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
                     {item.id}
                   </div>
-                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#0B2B26] to-transparent p-4 pt-10">
-                    <p className="text-[10px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.vendor}</p>
+                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#0B2B26] to-transparent p-3 pt-8">
+                    <p className="text-[9px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.vendor}</p>
                   </div>
                 </div>
 
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
                   <div>
-                    <h4 className="font-bold text-white text-base group-hover:text-[#C5A059] transition-colors mb-1">{item.name}</h4>
-                    <p className="text-lg font-serif font-bold text-[#C5A059]">{item.price}</p>
+                    <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.name}</h4>
+                    <p className="text-base font-serif font-bold text-[#C5A059]">{item.price}</p>
                   </div>
 
                   {/* Social Share Affiliate Buttons */}
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#C5A059]/20">
-                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1.5 py-2 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] rounded-lg font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer">
-                      <span>📲 WhatsApp</span>
+                  <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-[#C5A059]/20">
+                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                      <span>📲 Share</span>
                     </button>
-                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1.5 py-2 bg-[#1877F2]/20 hover:bg-[#1877F2]/30 border border-[#1877F2]/40 text-[#1877F2] rounded-lg font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer">
-                      <span>📘 Facebook</span>
+                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                      <span>📘 Share</span>
                     </button>
                   </div>
 
-                  <button className="w-full py-2.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] cursor-pointer">
-                    Add to Cart
-                  </button>
+                  <Link href={`/product/${encodeURIComponent(item.name.toLowerCase().replace(/\s+/g, "-"))}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
+                    View Details
+                  </Link>
                 </div>
 
                 {/* Bottom Ticket */}
-                <div className="bg-[#0B2B26] px-4 py-2.5 border-t border-[#C5A059]/30 text-[10px] font-mono text-gray-300 flex items-center justify-center gap-1.5 text-center leading-tight">
+                <div className="bg-[#0A2520] px-3 py-1.5 border-t border-[#C5A059]/20 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1.5 text-center leading-tight">
                   <span className="truncate">{item.ticket}</span>
                 </div>
               </div>
@@ -628,9 +632,9 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch pt-4 md:pt-6">
           
           {/* Explore by Category E.g. Span 5 */}
-          <div className="lg:col-span-5 bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-3xl p-8 flex flex-col justify-between shadow-xl space-y-6">
+          <div className="lg:col-span-5 bg-[#0B2B26] border border-[#C5A059]/30 rounded-3xl p-8 flex flex-col justify-between shadow-xl space-y-6">
             <div>
-              <h3 className="text-xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore by Category</h3>
+              <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore by Category</h3>
               <p className="text-xs text-gray-300 uppercase tracking-widest">Curated collections of authentic weaves</p>
             </div>
 
@@ -641,7 +645,7 @@ export default function Home() {
                 { name: "Dupattas", img: "/bhulia-hero.png", count: "890+ Pieces" },
                 { name: "Home Decor", img: "/bhulia-hero.png", count: "320+ Items" }
               ].map((cat, idx) => (
-                <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl p-4 flex flex-col items-center text-center group hover:border-[#C5A059] transition-all cursor-pointer shadow">
+                <div key={idx} className="bg-[#0A3A35] border border-[#C5A059]/40 rounded-2xl p-4 flex flex-col items-center text-center group hover:border-[#C5A059] transition-all cursor-pointer shadow">
                   <div className="w-16 h-16 rounded-full overflow-hidden relative mb-3 border border-[#C5A059]/40 group-hover:scale-110 transition-transform duration-500">
                     <Image src={cat.img} alt={cat.name} fill className="object-cover" />
                   </div>
@@ -653,7 +657,7 @@ export default function Home() {
           </div>
 
           {/* Our Mission Showcase E.g. Span 7 */}
-          <div className="lg:col-span-7 bg-[#0A3A35]/80 border border-[#C5A059]/30 rounded-3xl p-8 flex flex-col justify-between relative overflow-hidden shadow-xl group">
+          <div className="lg:col-span-7 bg-[#0B2B26] border border-[#C5A059]/30 rounded-3xl p-8 flex flex-col justify-between relative overflow-hidden shadow-xl group">
             <div className="absolute inset-0 z-0 opacity-40 group-hover:opacity-50 transition-opacity duration-700">
               <Image src="/bhulia-hero.png" alt="Weaver Loom Mission" fill className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-r from-[#0A3A35] via-[#0A3A35]/90 to-transparent"></div>
@@ -675,7 +679,7 @@ export default function Home() {
             </div>
 
             <div className="relative z-10 pt-6">
-              <button className="px-6 py-3 bg-[#0B2B26] border border-[#C5A059] hover:bg-[#0D4B45] text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all cursor-pointer">
+              <button className="px-6 py-3 bg-[#0A3A35] border border-[#C5A059] hover:bg-[#0D4B45] text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all cursor-pointer">
                 Read the Weaver's Story
               </button>
             </div>
