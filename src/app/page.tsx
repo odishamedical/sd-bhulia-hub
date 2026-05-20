@@ -288,8 +288,8 @@ export default function Home() {
         {/* 2. Explore Master Weaver Flagship Boutiques */}
         <div id="weaver-boutiques" className="space-y-3 md:space-y-4 scroll-mt-24">
           <div>
-            <h3 className="text-xl md:text-3xl font-serif text-[#0B2B26] font-bold tracking-wider mb-1">Explore Master Weaver Flagships</h3>
-            <p className="text-[10px] md:text-xs text-neutral-600 uppercase tracking-widest font-semibold">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
+            <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore Master Weaver Flagships</h3>
+            <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
@@ -395,8 +395,8 @@ export default function Home() {
         <div id="cotton-sambalpuri" className="space-y-3 md:space-y-4">
           <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-xl md:text-3xl font-serif text-[#0B2B26] font-bold tracking-wider">Cotton Sambalpuri Sarees</h3>
-              <p className="text-[10px] md:text-xs text-neutral-600 uppercase tracking-widest mt-1 font-semibold">Breathable, traditional daily luxury direct from grassroots pit looms</p>
+              <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Cotton Sambalpuri Sarees</h3>
+              <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1 font-semibold">Breathable, traditional daily luxury direct from grassroots pit looms</p>
             </div>
             <button className="hidden sm:block px-4 py-2 bg-[#0B2B26] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
               View All Cotton
@@ -483,8 +483,8 @@ export default function Home() {
         <div id="pata-sambalpuri" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
           <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-xl md:text-3xl font-serif text-[#0B2B26] font-bold tracking-wider">Pata Sambalpuri Sarees (Pure Silk)</h3>
-              <p className="text-[10px] md:text-xs text-neutral-600 uppercase tracking-widest mt-1 font-semibold">Exquisite Mulberry & Tussar silk masterpieces for weddings and royal connoisseurs</p>
+              <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Pata Sambalpuri Sarees (Pure Silk)</h3>
+              <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1 font-semibold">Exquisite Mulberry & Tussar silk masterpieces for weddings and royal connoisseurs</p>
             </div>
             <button className="hidden sm:block px-4 py-2 bg-[#0B2B26] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
               View All Silk
@@ -571,8 +571,8 @@ export default function Home() {
         <div id="cotton-bomkai" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
           <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-xl md:text-3xl font-serif text-[#0B2B26] font-bold tracking-wider">Cotton Bomkai</h3>
-              <p className="text-[10px] md:text-xs text-neutral-600 uppercase tracking-widest mt-1 font-semibold">Intricate extra-weft thread work on comfortable cotton bases</p>
+              <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Cotton Bomkai</h3>
+              <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1 font-semibold">Intricate extra-weft thread work on comfortable cotton bases</p>
             </div>
             <button className="hidden sm:block px-4 py-2 bg-[#0B2B26] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
               View All Bomkai
