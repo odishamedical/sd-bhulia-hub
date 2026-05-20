@@ -368,7 +368,7 @@ export default function WeaverStorePage() {
   };
 
   return (
-    <main className="relative flex-1 w-full bg-[#FDFBF7] text-[#0D1917] font-sans flex flex-col min-h-screen">
+    <main className="relative flex-1 w-full bg-[#051815] text-white font-sans flex flex-col min-h-screen">
       
       {/* Top Sticky Header */}
       <header className="sticky top-0 w-full z-50 bg-[#0B2B26] border-b border-[#C5A059]/40 px-4 sm:px-6 py-3 sm:py-4 shadow-lg flex flex-col gap-3">
@@ -544,8 +544,8 @@ export default function WeaverStorePage() {
 
         {/* Saree Catalog Header */}
         <div id="catalog" className="space-y-4 pt-6 border-t border-[#C5A059]/20">
-          <h3 className="text-xl md:text-3xl font-serif text-[#0B2B26] font-bold tracking-wider">Available Pit Loom Catalog</h3>
-          <p className="text-[10px] md:text-xs text-neutral-600 uppercase tracking-widest font-semibold">Reserve handloom pieces directly from this artisan - escrow protection activated</p>
+          <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Available Pit Loom Catalog</h3>
+          <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Reserve handloom pieces directly from this artisan - escrow protection activated</p>
 
           {/* Saree Catalog Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">

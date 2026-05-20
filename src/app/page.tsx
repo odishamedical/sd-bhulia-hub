@@ -96,7 +96,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative flex-1 w-full bg-[#FDFBF7] text-[#0D1917] font-sans flex flex-col min-h-screen">
+    <main className="relative flex-1 w-full bg-[#051815] text-white font-sans flex flex-col min-h-screen">
       
       {/* Background Gold Glows & Ikat Texture */}
       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #C5A059 1px, transparent 0)', backgroundSize: '48px 48px' }} />

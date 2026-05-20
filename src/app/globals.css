@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #FDFBF7;
-  --color-foreground: #0D1917;
+  --color-background: #051815;
+  --color-foreground: #FFFFFF;
   
   --color-brand: #0B2B26;
   --color-gold: #C5A059;
@@ -14,14 +14,14 @@
 :root {
   --bhulia-brand: #0B2B26;
   --bhulia-gold: #C5A059;
-  --bhulia-bg: #FDFBF7;
+  --bhulia-bg: #051815;
   --bhulia-card-bg: #0B2B26;
 }
 
 @layer base {
   body {
-    background-color: #FDFBF7;
-    color: #0D1917;
+    background-color: #051815;
+    color: #FFFFFF;
     -webkit-font-smoothing: antialiased;
   }
 }
