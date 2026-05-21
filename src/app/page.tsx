@@ -370,10 +370,10 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[
-              { title: "Weavers Onboarding", desc: "List your traditional pit looms, mint GI-Tagged sarees, and receive direct D2C escrow payouts.", icon: "🧵", btn: "Apply as Weaver" },
-              { title: "Store Owners Gateway", desc: "Register your Primary Weaving Cooperative Society (PWCS) or master boutique for global Spree sync.", icon: "🏛️", btn: "Apply as Store Owner" },
-              { title: "Wholesalers Portal", desc: "Access bulk B2B handloom requisitions, custom Ikat commissioning lots, and tax-exempt export billing.", icon: "📦", btn: "Apply as Wholesaler" },
-              { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise" }
+              { title: "Weavers Onboarding", desc: "List your traditional pit looms, mint GI-Tagged sarees, and receive direct D2C escrow payouts.", icon: "🧵", btn: "Apply as Weaver", href: "/register-weaver" },
+              { title: "Store Owners Gateway", desc: "Register your Primary Weaving Cooperative Society (PWCS) or master boutique for global Spree sync.", icon: "🏛️", btn: "Apply as Store Owner", href: "#" },
+              { title: "Wholesalers Portal", desc: "Access bulk B2B handloom requisitions, custom Ikat commissioning lots, and tax-exempt export billing.", icon: "📦", btn: "Apply as Wholesaler", href: "#" },
+              { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise", href: "#" }
             ].map((gate, idx) => (
               <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl p-4 sm:p-5 flex flex-col justify-between group hover:border-[#C5A059] transition-all shadow-xl">
                 <div>
@@ -383,9 +383,9 @@ export default function Home() {
                   <h4 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-[#C5A059] transition-colors">{gate.title}</h4>
                   <p className="text-xs text-gray-300 leading-relaxed font-sans">{gate.desc}</p>
                 </div>
-                <button className="w-full mt-6 py-3 bg-[#0A3A35] border border-[#C5A059]/50 hover:border-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021] text-xs font-bold uppercase tracking-widest text-[#C5A059] rounded-xl transition-all shadow-md cursor-pointer">
+                <Link href={gate.href} className="w-full mt-6 py-3 bg-[#0A3A35] border border-[#C5A059]/50 hover:border-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021] text-xs font-bold uppercase tracking-widest text-[#C5A059] rounded-xl transition-all shadow-md cursor-pointer text-center block">
                   {gate.btn} →
-                </button>
+                </Link>
               </div>
             ))}
           </div>
