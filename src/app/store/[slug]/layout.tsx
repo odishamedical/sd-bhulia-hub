@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import EcosystemSwitcher from "../../../components/EcosystemSwitcher";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { MASTER_STORES, DEFAULT_STORE } from "../data";
@@ -87,19 +88,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            {userAvatar ? (
-              <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-4 py-1 sm:py-2 bg-[#0A3A35] rounded-xl border border-[#C5A059]/50 shadow-inner">
-                <img src={userAvatar} alt="User Avatar" className="w-6 sm:w-8 h-6 sm:h-8 rounded-full border border-[#C5A059]" />
-                <div className="hidden sm:flex flex-col text-left">
-                  <span className="text-xs font-bold text-white leading-none">{userName}</span>
-                  <span className="text-[9px] text-[#C5A059] uppercase tracking-widest mt-0.5">{userRole}</span>
-                </div>
-              </div>
-            ) : (
-              <a href="https://sd-auth-center.vercel.app" className="hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow">
-                <span>Sign In / Register</span>
-              </a>
-            )}
+            <EcosystemSwitcher />
 
             <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all">
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
