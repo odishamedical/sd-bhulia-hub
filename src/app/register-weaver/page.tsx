@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -39,14 +39,15 @@ export default function WeaverRegistrationPage() {
       fullName: "Nandalal Meher",
       businessName: "Maa Samaleswari Handlooms",
       contactNumber: "+91 94371 00000",
+      whatsappNumber: "+91 94371 00000",
       emailAddress: "nandalal@bhulia.com",
       address: "Meher Pada, Barpali",
       district: "Bargarh",
       weaverId: "COOP-8821-BGH",
-      govIdFile: null,
       govIdFileName: "nandalal_aadhaar.jpg",
+      govIdFilePreview: "https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?w=100&auto=format&fit=crop&q=80",
       experienceYears: "35",
-      specializations: ["Sarees", "Fabrics", "Dress Material"],
+      specializations: ["Sarees", "Fabrics"],
       primaryCategory: "Sambalpuri Saree",
       productDescription: "Award-winning double ikat weave with intricate shell borders and traditional organic dye cotton yarn.",
       priceMin: "8500",
@@ -54,13 +55,13 @@ export default function WeaverRegistrationPage() {
       currency: "INR",
       availableStock: "12",
       productImages: [
-        { name: "saree_profile.jpg", type: "image/jpeg" },
-        { name: "loom_setup.jpg", type: "image/jpeg" },
-        { name: "border_detail.jpg", type: "image/jpeg" }
+        { name: "saree_profile.jpg", preview: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&auto=format&fit=crop&q=80" },
+        { name: "loom_setup.jpg", preview: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=120&auto=format&fit=crop&q=80" },
+        { name: "border_detail.jpg", preview: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=120&auto=format&fit=crop&q=80" }
       ],
       gstNumber: "21AAAAM1024A1Z0",
-      giCertFile: null,
       giCertFileName: "gi_cert_bargarh_042.pdf",
+      giCertFilePreview: "https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?w=100&auto=format&fit=crop&q=80",
       bankAccountNo: "909010023456789",
       bankIfsc: "UTIB0000100",
       bankName: "Axis Bank Ltd",
@@ -74,6 +75,14 @@ export default function WeaverRegistrationPage() {
   const [userName, setUserName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
+
+  // Camera States
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const [cameraActive, setCameraActive] = useState(false);
+  const [cameraTarget, setCameraTarget] = useState<"govId" | "giCert" | "productImages" | null>(null);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [cameraError, setCameraError] = useState<string | null>(null);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -103,12 +112,13 @@ export default function WeaverRegistrationPage() {
     fullName: "",
     businessName: "",
     contactNumber: "",
+    whatsappNumber: "",
     emailAddress: "",
     address: "",
     district: GI_DISTRICTS[0],
     weaverId: "", // Optional
-    govIdFile: null as File | null,
     govIdFileName: "",
+    govIdFilePreview: null as string | null,
     experienceYears: "",
     specializations: [] as string[],
     primaryCategory: PRODUCT_CATEGORIES[0],
@@ -117,10 +127,10 @@ export default function WeaverRegistrationPage() {
     priceMax: "",
     currency: "INR",
     availableStock: "",
-    productImages: [] as { name: string; type: string }[],
+    productImages: [] as { name: string; preview: string }[],
     gstNumber: "", // Optional
-    giCertFile: null as File | null,
     giCertFileName: "", // Optional
+    giCertFilePreview: null as string | null,
     bankAccountNo: "",
     bankIfsc: "",
     bankName: "",
@@ -147,29 +157,103 @@ export default function WeaverRegistrationPage() {
     });
   };
 
-  // Mock File Upload Handler
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, fieldName: "govIdFile" | "giCertFile") => {
+  // File Upload Handler (Base64 conversion)
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, fieldName: "govId" | "giCert") => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      setFormData((prev) => ({
-        ...prev,
-        [fieldName]: file,
-        [`${fieldName}Name`]: file.name
-      }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({
+          ...prev,
+          [`${fieldName}FileName`]: file.name,
+          [`${fieldName}FilePreview`]: reader.result as string
+        }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  // Mock Multi-Image Upload
+  // Multi-Image Upload (Base64 previews)
   const handleMultiImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const filesArray = Array.from(e.target.files).map((f) => ({
-        name: f.name,
-        type: f.type
-      }));
-      setFormData((prev) => ({
-        ...prev,
-        productImages: [...prev.productImages, ...filesArray]
-      }));
+      const filesArray = Array.from(e.target.files);
+      filesArray.forEach((file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setFormData((prev) => ({
+            ...prev,
+            productImages: [...prev.productImages, { name: file.name, preview: reader.result as string }]
+          }));
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  // Camera Handlers
+  const startCamera = async (target: "govId" | "giCert" | "productImages") => {
+    setCameraTarget(target);
+    setCapturedImage(null);
+    setCameraError(null);
+    setCameraActive(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" }
+      });
+      streamRef.current = stream;
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      }, 100);
+    } catch (err: any) {
+      console.error("Camera access error:", err);
+      setCameraError("Unable to access camera device. Please check permissions or upload file manually.");
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    setCameraActive(false);
+    setCameraTarget(null);
+    setCapturedImage(null);
+    setCameraError(null);
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current) {
+      const video = videoRef.current;
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL("image/jpeg");
+        setCapturedImage(dataUrl);
+      }
+    }
+  };
+
+  const saveCapturedPhoto = () => {
+    if (capturedImage && cameraTarget) {
+      const name = `camera_capture_${Date.now()}.jpg`;
+      if (cameraTarget === "productImages") {
+        setFormData((prev) => ({
+          ...prev,
+          productImages: [...prev.productImages, { name, preview: capturedImage }]
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          [`${cameraTarget}FileName`]: name,
+          [`${cameraTarget}FilePreview`]: capturedImage
+        }));
+      }
+      stopCamera();
     }
   };
 
@@ -180,6 +264,7 @@ export default function WeaverRegistrationPage() {
       if (!formData.fullName.trim()) return "Full Name is required.";
       if (!formData.businessName.trim()) return "Business or Weaver Group Name is required.";
       if (!formData.contactNumber.trim()) return "Contact Number is required.";
+      if (!formData.whatsappNumber.trim()) return "WhatsApp Number is required.";
       if (!formData.emailAddress.trim()) return "Email Address is required.";
       if (!formData.address.trim()) return "Postal Address is required.";
     } else if (currentStep === 2) {
@@ -439,13 +524,24 @@ export default function WeaverRegistrationPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold">Contact Number (WhatsApp preferred)</label>
+                      <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold">Contact Number</label>
                       <input 
                         type="tel" 
                         name="contactNumber"
                         value={formData.contactNumber}
+                        onChange={handleInputChange}
+                        placeholder="e.g. +91 94370 12345"
+                        className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-sm focus:border-[#C5A059] focus:outline-none"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold">WhatsApp Number (Mandatory)</label>
+                      <input 
+                        type="tel" 
+                        name="whatsappNumber"
+                        value={formData.whatsappNumber}
                         onChange={handleInputChange}
                         placeholder="e.g. +91 94370 12345"
                         className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-sm focus:border-[#C5A059] focus:outline-none"
@@ -553,18 +649,43 @@ export default function WeaverRegistrationPage() {
 
                   <div className="space-y-1.5">
                     <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block">Government ID Proof Document</label>
-                    <div className="relative border-2 border-dashed border-[#C5A059]/30 hover:border-[#C5A059]/70 rounded-2xl p-6 text-center cursor-pointer transition-all bg-[#051815]">
-                      <input 
-                        type="file" 
-                        onChange={(e) => handleFileUpload(e, "govIdFile")}
-                        accept="image/*,.pdf"
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                      <span className="text-2xl block mb-1">📇</span>
-                      <span className="text-xs font-bold block text-gray-300">
-                        {formData.govIdFileName ? formData.govIdFileName : "Upload Aadhaar card, Voter ID, or certificate scan"}
-                      </span>
-                      <span className="text-[9px] text-gray-400 block mt-1">Accepts PNG, JPG, or PDF (Max 5MB)</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      
+                      {/* Upload */}
+                      <div className="bg-[#051815] border border-[#C5A059]/30 rounded-2xl p-4 flex flex-col justify-center items-center gap-2.5 relative text-center min-h-[140px] hover:border-[#C5A059] transition-colors">
+                        <span className="text-xl">📁</span>
+                        <div className="space-y-0.5">
+                          <p className="text-[11px] font-bold text-white">Upload Document</p>
+                          <p className="text-[9px] text-gray-400">PDF, PNG, JPG up to 5MB</p>
+                        </div>
+                        <input 
+                          type="file" 
+                          accept="image/*,application/pdf"
+                          onChange={(e) => handleFileUpload(e, "govId")}
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                        />
+                        {formData.govIdFileName && (
+                          <span className="text-[9px] text-green-400 font-mono block mt-0.5 max-w-full truncate px-2">{formData.govIdFileName}</span>
+                        )}
+                      </div>
+
+                      {/* Camera */}
+                      <div 
+                        onClick={() => startCamera("govId")}
+                        className="bg-[#051815] border border-dashed border-[#C5A059]/30 hover:border-[#C5A059] rounded-2xl p-4 flex flex-col justify-center items-center gap-2.5 text-center cursor-pointer hover:bg-[#0A3A35]/20 transition-all min-h-[140px]"
+                      >
+                        <span className="text-xl">📸</span>
+                        <div className="space-y-0.5">
+                          <p className="text-[11px] font-bold text-white">Take Live Photo</p>
+                          <p className="text-[9px] text-gray-400">Snap Aadhaar/ID screen</p>
+                        </div>
+                        {formData.govIdFilePreview && (
+                          <div className="relative w-10 h-10 rounded border border-[#C5A059] overflow-hidden mt-0.5">
+                            <img src={formData.govIdFilePreview} className="object-cover w-full h-full" alt="Gov ID preview" />
+                          </div>
+                        )}
+                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -641,27 +762,63 @@ export default function WeaverRegistrationPage() {
                     />
                   </div>
 
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block">Upload Craft/Inventory Images (Min 3 required)</label>
-                    <div className="relative border-2 border-dashed border-[#C5A059]/30 hover:border-[#C5A059]/70 rounded-2xl p-6 text-center cursor-pointer transition-all bg-[#051815]">
-                      <input 
-                        type="file" 
-                        onChange={handleMultiImageUpload}
-                        accept="image/*"
-                        multiple
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                      <span className="text-2xl block mb-1">📸</span>
-                      <span className="text-xs font-bold block text-gray-300">
-                        Select multiple images of your workspace, loom, and finished sarees.
-                      </span>
-                      {formData.productImages.length > 0 && (
-                        <div className="mt-2 text-xs text-[#C5A059] font-bold">
-                          ✓ {formData.productImages.length} images selected
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block">Craft/Inventory Images (Min 3 required)</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      
+                      {/* Upload */}
+                      <div className="bg-[#051815] border border-[#C5A059]/30 rounded-2xl p-4 flex flex-col justify-center items-center gap-2.5 relative text-center min-h-[120px] hover:border-[#C5A059] transition-colors">
+                        <span className="text-xl">📁</span>
+                        <div className="space-y-0.5">
+                          <p className="text-[11px] font-bold text-white">Upload Photo Files</p>
+                          <p className="text-[9px] text-gray-400">Select multiple JPG or PNG files</p>
                         </div>
-                      )}
-                      <span className="text-[9px] text-gray-400 block mt-1">Needs at least 3 files (Max 5MB each)</span>
+                        <input 
+                          type="file" 
+                          multiple 
+                          accept="image/*"
+                          onChange={handleMultiImageUpload}
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                        />
+                      </div>
+
+                      {/* Camera */}
+                      <div 
+                        onClick={() => startCamera("productImages")}
+                        className="bg-[#051815] border border-dashed border-[#C5A059]/30 hover:border-[#C5A059] rounded-2xl p-4 flex flex-col justify-center items-center gap-2.5 text-center cursor-pointer hover:bg-[#0A3A35]/20 transition-all min-h-[120px]"
+                      >
+                        <span className="text-xl">📸</span>
+                        <div className="space-y-0.5">
+                          <p className="text-[11px] font-bold text-white">Take Live Photos</p>
+                          <p className="text-[9px] text-gray-400">Capture work in progress directly</p>
+                        </div>
+                      </div>
+
                     </div>
+
+                    {/* Previews grid */}
+                    {formData.productImages.length > 0 && (
+                      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-2">
+                        {formData.productImages.map((img, idx) => (
+                          <div key={idx} className="relative aspect-square rounded-xl border border-[#C5A059]/30 overflow-hidden group">
+                            <img src={img.preview} alt="Craft preview" className="object-cover w-full h-full" />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  productImages: prev.productImages.filter((_, i) => i !== idx)
+                                }));
+                              }}
+                              className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-4.5 h-4.5 text-[8px] flex items-center justify-center font-bold opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer shadow"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <span className="text-[9px] text-gray-400 block">Requires at least 3 photos of finished materials, your loom, or work in progress.</span>
                   </div>
                 </div>
               )}
@@ -694,17 +851,43 @@ export default function WeaverRegistrationPage() {
                       <span>Handloom Mark / GI Tag Certificate Scan</span>
                       <span className="text-gray-400 lowercase font-normal italic">Optional</span>
                     </label>
-                    <div className="relative border border-[#C5A059]/35 hover:border-[#C5A059]/75 rounded-2xl p-4 text-center cursor-pointer transition-all bg-[#051815]">
-                      <input 
-                        type="file" 
-                        onChange={(e) => handleFileUpload(e, "giCertFile")}
-                        accept="image/*,.pdf"
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                      <span className="text-sm block">📜</span>
-                      <span className="text-xs font-semibold block text-gray-300">
-                        {formData.giCertFileName ? formData.giCertFileName : "Select certificate PDF or Image file"}
-                      </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      
+                      {/* Upload */}
+                      <div className="bg-[#051815] border border-[#C5A059]/30 rounded-2xl p-4 flex flex-col justify-center items-center gap-2.5 relative text-center min-h-[120px] hover:border-[#C5A059] transition-colors">
+                        <span className="text-xl">📁</span>
+                        <div className="space-y-0.5">
+                          <p className="text-[11px] font-bold text-white">Upload Certificate</p>
+                          <p className="text-[9px] text-gray-400">PDF, PNG, JPG up to 5MB</p>
+                        </div>
+                        <input 
+                          type="file" 
+                          accept="image/*,application/pdf"
+                          onChange={(e) => handleFileUpload(e, "giCert")}
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                        />
+                        {formData.giCertFileName && (
+                          <span className="text-[9px] text-green-400 font-mono block mt-0.5 max-w-full truncate px-2">{formData.giCertFileName}</span>
+                        )}
+                      </div>
+
+                      {/* Camera */}
+                      <div 
+                        onClick={() => startCamera("giCert")}
+                        className="bg-[#051815] border border-dashed border-[#C5A059]/30 hover:border-[#C5A059] rounded-2xl p-4 flex flex-col justify-center items-center gap-2.5 text-center cursor-pointer hover:bg-[#0A3A35]/20 transition-all min-h-[120px]"
+                      >
+                        <span className="text-xl">📸</span>
+                        <div className="space-y-0.5">
+                          <p className="text-[11px] font-bold text-white">Take Live Photo</p>
+                          <p className="text-[9px] text-gray-400">Snap paper certificate directly</p>
+                        </div>
+                        {formData.giCertFilePreview && (
+                          <div className="relative w-10 h-10 rounded border border-[#C5A059] overflow-hidden mt-0.5">
+                            <img src={formData.giCertFilePreview} className="object-cover w-full h-full" alt="GI Cert preview" />
+                          </div>
+                        )}
+                      </div>
+
                     </div>
                   </div>
 
@@ -843,6 +1026,86 @@ export default function WeaverRegistrationPage() {
           <span className="text-[10px] font-mono text-gray-400">© 2026 Bhulia.com. All Rights Reserved.</span>
         </div>
       </footer>
+
+      {/* Camera UI Overlay Modal */}
+      {cameraActive && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex flex-col justify-between p-6">
+          <div className="flex justify-between items-center max-w-2xl mx-auto w-full">
+            <div>
+              <p className="text-xs font-bold text-[#C5A059] uppercase tracking-widest">Device Camera Portal</p>
+              <p className="text-[10px] text-gray-400">Position document inside frame</p>
+            </div>
+            <button 
+              type="button"
+              onClick={stopCamera} 
+              className="text-[#C5A059] hover:text-white font-bold text-xs uppercase tracking-widest bg-[#051815] border border-[#C5A059]/40 px-3.5 py-1.5 rounded-lg cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="flex-1 flex items-center justify-center py-6">
+            <div className="max-w-md w-full aspect-[4/3] bg-black rounded-2xl border-2 border-[#C5A059] overflow-hidden relative shadow-2xl">
+              {cameraError ? (
+                <div className="absolute inset-0 flex flex-col justify-center items-center p-6 text-center">
+                  <span className="text-3xl mb-2">⚠️</span>
+                  <p className="text-xs text-red-400 font-semibold">{cameraError}</p>
+                </div>
+              ) : (
+                <>
+                  {!capturedImage ? (
+                    <video 
+                      ref={videoRef} 
+                      autoPlay 
+                      playsInline 
+                      muted 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img 
+                      src={capturedImage} 
+                      className="w-full h-full object-cover" 
+                      alt="Captured snapshot"
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="max-w-2xl mx-auto w-full flex justify-center gap-4 pb-4">
+            <div className="flex gap-4">
+              {!capturedImage ? (
+                <button
+                  type="button"
+                  onClick={capturePhoto}
+                  disabled={!!cameraError}
+                  className="px-8 py-3 bg-[#C5A059] text-[#0A1021] rounded-xl text-xs font-bold uppercase tracking-wider hover:brightness-110 cursor-pointer disabled:opacity-40"
+                >
+                  Capture Snap
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setCapturedImage(null)}
+                    className="px-6 py-3 bg-[#0A3A35] border border-[#C5A059]/30 text-gray-300 rounded-xl text-xs font-bold uppercase tracking-wider hover:text-white cursor-pointer"
+                  >
+                    Retake
+                  </button>
+                  <button
+                    type="button"
+                    onClick={saveCapturedPhoto}
+                    className="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:brightness-110 cursor-pointer shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+                  >
+                    Accept & Save
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

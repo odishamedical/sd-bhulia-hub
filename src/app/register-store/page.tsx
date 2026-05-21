@@ -13,6 +13,19 @@ const INDIAN_STATES = [
   "International (Outside India)"
 ];
 
+const DISTRICTS_MAP: Record<string, string[]> = {
+  "Odisha": ["Sambalpur", "Bargarh", "Balangir", "Sonepur (Subarnapur)", "Jharsuguda", "Deogarh", "Sundargarh", "Cuttack", "Khurda (Bhubaneswar)", "Puri", "Ganjam", "Angul", "Balasore", "Bhadrak", "Boudh", "Dhenkanal", "Gajapati", "Jagatsinghpur", "Jajpur", "Kalahandi", "Kandhamal", "Kendrapara", "Keonjhar", "Koraput", "Malkangiri", "Mayurbhanj", "Nabarangpur", "Nayagarh", "Nuapada", "Rayagada"],
+  "West Bengal": ["Kolkata", "Howrah", "Hooghly", "Darjeeling", "Nadia", "Murshidabad", "Purulia", "Bankura", "Birbhum", "Malda", "Medinipur", "North 24 Parganas", "South 24 Parganas"],
+  "Delhi": ["New Delhi", "North Delhi", "South Delhi", "East Delhi", "West Delhi", "Central Delhi"],
+  "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Thane", "Nashik", "Aurangabad", "Solapur", "Kolhapur", "Amravati", "Nanded"],
+  "Karnataka": ["Bengaluru", "Mysuru", "Mangaluru", "Hubli-Dharwad", "Belagavi", "Tumakuru", "Udupi", "Dharwad"],
+  "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Trichy", "Salem", "Tiruppur", "Erode", "Vellore", "Kanchipuram"],
+  "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Khammam", "Rangareddy", "Medchal-Malkajgiri"],
+  "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool", "Kakinada", "Chittoor", "Anantapur", "Kadapa", "Eluru"],
+  "Madhya Pradesh": ["Bhopal", "Indore", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Rewa"],
+  "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Gandhinagar", "Anand"]
+};
+
 const BUSINESS_TYPES = ["Retailer", "Wholesaler", "Exporter"];
 
 const PRODUCT_CATEGORIES = [
@@ -34,6 +47,7 @@ export default function StoreRegistrationPage() {
       storeName: "Sambalpur Handloom Emporium",
       ownerName: "Ramesh Chandra Meher",
       contactNumber: "+91 94380 12345",
+      whatsappNumber: "+91 94380 12345",
       emailAddress: "ramesh@samaleswaristore.com",
       address: "Gole Bazar Main Road, opposite Town Hall",
       stateRegion: "Odisha",
@@ -119,6 +133,7 @@ export default function StoreRegistrationPage() {
     storeName: "",
     ownerName: "",
     contactNumber: "",
+    whatsappNumber: "",
     emailAddress: "",
     address: "",
     stateRegion: INDIAN_STATES[0],
@@ -147,7 +162,14 @@ export default function StoreRegistrationPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value };
+      if (name === "stateRegion") {
+        const districts = DISTRICTS_MAP[value];
+        updated.districtCity = districts ? districts[0] : "";
+      }
+      return updated;
+    });
   };
 
   const handleCheckboxChange = (name: "consentAuthentic" | "consentTerms") => {
@@ -326,6 +348,7 @@ export default function StoreRegistrationPage() {
       if (!formData.storeName.trim()) return "Store Name is required.";
       if (!formData.ownerName.trim()) return "Owner/Representative Name is required.";
       if (!formData.contactNumber.trim()) return "Contact Number is required.";
+      if (!formData.whatsappNumber.trim()) return "WhatsApp Number is required.";
       if (!formData.emailAddress.trim()) return "Email Address is required.";
       if (!formData.address.trim()) return "Full Address is required.";
       if (!formData.districtCity.trim()) return "City/District is required.";
@@ -620,13 +643,24 @@ export default function StoreRegistrationPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Contact Number</label>
                       <input 
                         type="tel" 
                         name="contactNumber" 
                         value={formData.contactNumber} 
+                        onChange={handleInputChange} 
+                        placeholder="e.g. +91 98765 43210"
+                        className="w-full bg-[#051815] border border-[#C5A059]/40 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 outline-none focus:border-[#C5A059]"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">WhatsApp Number (Mandatory)</label>
+                      <input 
+                        type="tel" 
+                        name="whatsappNumber" 
+                        value={formData.whatsappNumber} 
                         onChange={handleInputChange} 
                         placeholder="e.g. +91 98765 43210"
                         className="w-full bg-[#051815] border border-[#C5A059]/40 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 outline-none focus:border-[#C5A059]"
@@ -674,14 +708,27 @@ export default function StoreRegistrationPage() {
 
                   <div className="space-y-1.5">
                     <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">City / District / Region Code</label>
-                    <input 
-                      type="text" 
-                      name="districtCity" 
-                      value={formData.districtCity} 
-                      onChange={handleInputChange} 
-                      placeholder="e.g. Sambalpur, Odisha or New Delhi, NCR"
-                      className="w-full bg-[#051815] border border-[#C5A059]/40 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 outline-none focus:border-[#C5A059]"
-                    />
+                    {DISTRICTS_MAP[formData.stateRegion] ? (
+                      <select 
+                        name="districtCity" 
+                        value={formData.districtCity} 
+                        onChange={handleInputChange}
+                        className="w-full bg-[#051815] border border-[#C5A059]/40 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#C5A059] cursor-pointer"
+                      >
+                        {DISTRICTS_MAP[formData.stateRegion].map((dist) => (
+                          <option key={dist} value={dist}>{dist}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input 
+                        type="text" 
+                        name="districtCity" 
+                        value={formData.districtCity} 
+                        onChange={handleInputChange} 
+                        placeholder="e.g. Sambalpur, Odisha or New Delhi, NCR"
+                        className="w-full bg-[#051815] border border-[#C5A059]/40 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 outline-none focus:border-[#C5A059]"
+                      />
+                    )}
                   </div>
                 </div>
               )}
