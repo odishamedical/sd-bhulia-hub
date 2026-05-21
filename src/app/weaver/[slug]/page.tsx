@@ -312,6 +312,18 @@ export default function WeaverStorePage() {
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [lang, setLang] = useState<"en" | "or">("en");
 
+  // Domain & Branding Settings Simulation States
+  const [isOwnerMode, setIsOwnerMode] = useState<boolean>(false);
+  const [domainTier, setDomainTier] = useState<string>("numeric");
+  const [subfolderInput, setSubfolderInput] = useState<string>("");
+  const [subdomainInput, setSubdomainInput] = useState<string>("");
+  const [domainSearchInput, setDomainSearchInput] = useState<string>("");
+  const [domainSearchTld, setDomainSearchTld] = useState<string>(".com");
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [searchResult, setSearchResult] = useState<{ available: boolean; domain: string; price: number; platformFee: number } | null>(null);
+  const [checkAvailabilityStatus, setCheckAvailabilityStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
+  const [activeCustomUrl, setActiveCustomUrl] = useState<string | null>(null);
+
   const isNandalal = artisan.slug === "nandalal-meher";
   const currentCatalog = isNandalal ? NANDALAL_SAREES : STANDARD_SAREES;
 
@@ -339,8 +351,19 @@ export default function WeaverStorePage() {
     checkAuth();
     window.addEventListener("sd_auth_change", checkAuth);
 
-    // Capture referral ID if land directly here
+    // Retrieve saved custom domain settings
     if (typeof window !== "undefined") {
+      const savedTier = localStorage.getItem(`sd_weaver_domain_tier_${weaverSlug}`) || "numeric";
+      const savedCustomUrl = localStorage.getItem(`sd_weaver_custom_url_${weaverSlug}`);
+      const savedSubfolder = localStorage.getItem(`sd_weaver_subfolder_${weaverSlug}`) || "";
+      const savedSubdomain = localStorage.getItem(`sd_weaver_subdomain_${weaverSlug}`) || "";
+
+      setDomainTier(savedTier);
+      setActiveCustomUrl(savedCustomUrl);
+      setSubfolderInput(savedSubfolder);
+      setSubdomainInput(savedSubdomain);
+
+      // Capture referral ID if land directly here
       const p = new URLSearchParams(window.location.search);
       const ref = p.get("ref");
       if (ref) {
@@ -349,7 +372,7 @@ export default function WeaverStorePage() {
     }
 
     return () => window.removeEventListener("sd_auth_change", checkAuth);
-  }, []);
+  }, [weaverSlug]);
 
   const handleSocialShare = (platform: "whatsapp" | "facebook") => {
     const shareUrl = `${window.location.origin}/weaver/${artisan.slug}?ref=${userUid}`;
@@ -360,6 +383,60 @@ export default function WeaverStorePage() {
     } else if (platform === "facebook") {
       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank");
     }
+  };
+
+  const handleCheckAvailability = (type: "subfolder" | "subdomain", val: string) => {
+    if (!val.trim()) return;
+    setCheckAvailabilityStatus("checking");
+    setTimeout(() => {
+      if (val.toLowerCase() === "taken" || val.toLowerCase() === "admin" || val.toLowerCase() === "bhulia") {
+        setCheckAvailabilityStatus("taken");
+      } else {
+        setCheckAvailabilityStatus("available");
+      }
+    }, 800);
+  };
+
+  const handleSearchDomain = () => {
+    if (!domainSearchInput.trim()) return;
+    setIsSearching(true);
+    setSearchResult(null);
+    setTimeout(() => {
+      setIsSearching(false);
+      const isTaken = domainSearchInput.toLowerCase() === "google" || domainSearchInput.toLowerCase() === "bhulia";
+      const domainName = `${domainSearchInput.toLowerCase().replace(/[^a-z0-9-]/g, "")}${domainSearchTld}`;
+      setSearchResult({
+        available: !isTaken,
+        domain: domainName,
+        price: domainSearchTld === ".com" ? 899 : domainSearchTld === ".in" ? 499 : 799,
+        platformFee: 1499
+      });
+    }, 1000);
+  };
+
+  const handleSaveDomainSettings = (tier: string, value: string) => {
+    let customUrl = null;
+    if (tier === "subfolder") {
+      customUrl = `bhulia.com/${value.toLowerCase().replace(/\s+/g, "")}`;
+    } else if (tier === "subdomain") {
+      customUrl = `${value.toLowerCase().replace(/\s+/g, "")}.bhulia.com`;
+    } else if (tier === "custom") {
+      customUrl = value.toLowerCase();
+    }
+
+    localStorage.setItem(`sd_weaver_domain_tier_${weaverSlug}`, tier);
+    if (customUrl) {
+      localStorage.setItem(`sd_weaver_custom_url_${weaverSlug}`, customUrl);
+    } else {
+      localStorage.removeItem(`sd_weaver_custom_url_${weaverSlug}`);
+    }
+
+    if (tier === "subfolder") localStorage.setItem(`sd_weaver_subfolder_${weaverSlug}`, value);
+    if (tier === "subdomain") localStorage.setItem(`sd_weaver_subdomain_${weaverSlug}`, value);
+
+    setDomainTier(tier);
+    setActiveCustomUrl(customUrl);
+    alert(`🎉 Branding settings updated! Your storefront URL is now: ${customUrl || `bhulia.com/weaver/${artisan.slug}`}`);
   };
 
   const bio = TRANSLATIONS[artisan.slug] || {
@@ -439,6 +516,29 @@ export default function WeaverStorePage() {
       {/* Weaver Profile Main Content */}
       <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 py-8 flex flex-col gap-8 relative z-10">
         
+        {/* Simulator View Controller Toggle */}
+        <div className="bg-[#0A3A35]/90 border border-[#C5A059]/40 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
+          <div className="flex items-center gap-3">
+            <span className="text-xl">🛠️</span>
+            <div>
+              <p className="text-xs text-gray-200">
+                <strong>Simulator Console:</strong> You are viewing this page as a <span className="text-[#C5A059] font-bold">{isOwnerMode ? "Store Owner (Weaver)" : "Public Visitor"}</span>.
+              </p>
+              <p className="text-[10px] text-gray-400 mt-0.5">
+                {isOwnerMode 
+                  ? "You have access to custom domain registry, SEO analytics, and branding configuration tools below." 
+                  : "Weavers can claim their profile to setup custom domains, standalone web addresses, and digital storefronts."}
+              </p>
+            </div>
+          </div>
+          <button 
+            onClick={() => setIsOwnerMode(!isOwnerMode)}
+            className="w-full sm:w-auto px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] hover:brightness-110 transition-all shadow cursor-pointer"
+          >
+            {isOwnerMode ? "Switch to Visitor View" : "Simulate Owner Login"}
+          </button>
+        </div>
+
         {/* Profile Card & Info */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
@@ -541,6 +641,332 @@ export default function WeaverStorePage() {
           </div>
 
         </div>
+
+        {/* Storefront Custom Domain & Branding Settings Panel (Owner View Only) */}
+        {isOwnerMode && (
+          <div className="bg-[#0B2B26]/90 border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 animate-fadeIn transition-all duration-500">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 pb-4 border-b border-[#C5A059]/20">
+              <div>
+                <h3 className="text-xl sm:text-2xl font-serif text-[#C5A059] font-bold tracking-wider">🌐 Storefront Domain & Branding Panel</h3>
+                <p className="text-xs text-gray-300 mt-1">Configure your personalized web URL to route buyers and track affiliate shares automatically.</p>
+              </div>
+              <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-2xl px-4 py-2 flex items-center gap-2 text-xs shrink-0 self-start md:self-auto">
+                <span className="text-green-400">●</span>
+                <span className="font-mono text-gray-200">
+                  Active Domain:{" "}
+                  <strong className="text-white hover:underline cursor-pointer">
+                    {activeCustomUrl ? `https://${activeCustomUrl}` : typeof window !== "undefined" ? `${window.location.origin}/weaver/${artisan.slug}` : `bhulia.com/weaver/${artisan.slug}`}
+                  </strong>
+                </span>
+              </div>
+            </div>
+
+            {/* Branding Tiers Selection cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              
+              {/* Numeric URL (Free) */}
+              <div 
+                onClick={() => setDomainTier("numeric")}
+                className={`bg-[#0A3A35]/50 border rounded-2xl p-4 cursor-pointer hover:border-[#C5A059] transition-all flex flex-col justify-between ${domainTier === "numeric" ? "border-[#C5A059] ring-1 ring-[#C5A059] bg-[#0A3A35]" : "border-[#C5A059]/20"}`}
+              >
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-xs font-bold text-gray-300 uppercase tracking-widest">Tier 1 (Free)</span>
+                    {domainTier === "numeric" && <span className="text-xs">✅</span>}
+                  </div>
+                  <h4 className="font-serif font-bold text-[#C5A059] text-sm">Default Link</h4>
+                  <p className="text-[10px] text-gray-300 mt-1 leading-relaxed">Assigned automatically on page approval.</p>
+                </div>
+                <div className="mt-4 pt-2 border-t border-[#C5A059]/10 text-xs font-semibold text-white">
+                  bhulia.com/store/1024
+                </div>
+              </div>
+
+              {/* Custom Subfolder (₹499/year) */}
+              <div 
+                onClick={() => setDomainTier("subfolder")}
+                className={`bg-[#0A3A35]/50 border rounded-2xl p-4 cursor-pointer hover:border-[#C5A059] transition-all flex flex-col justify-between ${domainTier === "subfolder" ? "border-[#C5A059] ring-1 ring-[#C5A059] bg-[#0A3A35]" : "border-[#C5A059]/20"}`}
+              >
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-xs font-bold text-gray-300 uppercase tracking-widest">Tier 2 (₹499/yr)</span>
+                    {domainTier === "subfolder" && <span className="text-xs">✅</span>}
+                  </div>
+                  <h4 className="font-serif font-bold text-[#C5A059] text-sm">Custom Subfolder</h4>
+                  <p className="text-[10px] text-gray-300 mt-1 leading-relaxed">Direct path on main site for clean sharing.</p>
+                </div>
+                <div className="mt-4 pt-2 border-t border-[#C5A059]/10 text-xs font-semibold text-white">
+                  bhulia.com/weaver-name
+                </div>
+              </div>
+
+              {/* Custom Subdomain (₹999/year) */}
+              <div 
+                onClick={() => setDomainTier("subdomain")}
+                className={`bg-[#0A3A35]/50 border rounded-2xl p-4 cursor-pointer hover:border-[#C5A059] transition-all flex flex-col justify-between ${domainTier === "subdomain" ? "border-[#C5A059] ring-1 ring-[#C5A059] bg-[#0A3A35]" : "border-[#C5A059]/20"}`}
+              >
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-xs font-bold text-gray-300 uppercase tracking-widest">Tier 3 (₹999/yr)</span>
+                    {domainTier === "subdomain" && <span className="text-xs">✅</span>}
+                  </div>
+                  <h4 className="font-serif font-bold text-[#C5A059] text-sm">Subdomain Hub</h4>
+                  <p className="text-[10px] text-gray-300 mt-1 leading-relaxed">Premium subdomain for dedicated branding.</p>
+                </div>
+                <div className="mt-4 pt-2 border-t border-[#C5A059]/10 text-xs font-semibold text-white">
+                  weaver-name.bhulia.com
+                </div>
+              </div>
+
+              {/* Standalone Domain (₹1,499/year + Registration) */}
+              <div 
+                onClick={() => setDomainTier("custom")}
+                className={`bg-[#0A3A35]/50 border rounded-2xl p-4 cursor-pointer hover:border-[#C5A059] transition-all flex flex-col justify-between ${domainTier === "custom" ? "border-[#C5A059] ring-1 ring-[#C5A059] bg-[#0A3A35]" : "border-[#C5A059]/20"}`}
+              >
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-xs font-bold text-gray-300 uppercase tracking-widest">Tier 4 (₹1499/yr+)</span>
+                    {domainTier === "custom" && <span className="text-xs">✅</span>}
+                  </div>
+                  <h4 className="font-serif font-bold text-[#C5A059] text-sm">Standalone Domain</h4>
+                  <p className="text-[10px] text-gray-300 mt-1 leading-relaxed">Full custom DNS integration (e.g. .com, .in).</p>
+                </div>
+                <div className="mt-4 pt-2 border-t border-[#C5A059]/10 text-xs font-semibold text-white">
+                  weavername.com
+                </div>
+              </div>
+
+            </div>
+
+            {/* Dynamic settings container based on the selected tier */}
+            <div className="bg-[#0A3A35]/60 border border-[#C5A059]/30 rounded-2xl p-5 sm:p-6 shadow-inner">
+              {domainTier === "numeric" && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">Tier 1: Free Default Numeric Configuration</h4>
+                  <p className="text-xs text-gray-300 leading-relaxed">
+                    Your store uses the standard URL prefix mapping. Customers can access your catalog via:
+                  </p>
+                  <div className="bg-[#051815] border border-[#C5A059]/20 rounded-xl p-3 text-xs font-mono text-gray-200">
+                    {typeof window !== "undefined" ? window.location.origin : "https://bhulia.com"}/weaver/{artisan.slug}
+                  </div>
+                  <button 
+                    onClick={() => handleSaveDomainSettings("numeric", "")}
+                    className="mt-2 bg-[#C5A059] text-[#0A1021] hover:brightness-110 transition-all font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider cursor-pointer"
+                  >
+                    Confirm Default Link Setup
+                  </button>
+                </div>
+              )}
+
+              {domainTier === "subfolder" && (
+                <div className="space-y-4">
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">Tier 2: Custom Subfolder Setup (₹499/year)</h4>
+                  <p className="text-xs text-gray-300">Choose a clean subpath on the Bhulia marketplace domain:</p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex items-center flex-1 bg-[#051815] border border-[#C5A059]/30 rounded-xl px-3 py-2">
+                      <span className="text-xs text-gray-400 font-mono select-none">bhulia.com/</span>
+                      <input 
+                        type="text" 
+                        placeholder="nandalal" 
+                        value={subfolderInput}
+                        onChange={(e) => {
+                          setSubfolderInput(e.target.value);
+                          setCheckAvailabilityStatus("idle");
+                        }}
+                        className="bg-transparent border-0 outline-none text-xs text-white flex-1 font-mono placeholder-gray-600 pl-0.5 ml-0.5"
+                      />
+                    </div>
+                    <button 
+                      onClick={() => handleCheckAvailability("subfolder", subfolderInput)}
+                      disabled={checkAvailabilityStatus === "checking"}
+                      className="px-5 py-2.5 rounded-xl border border-[#C5A059] text-xs font-bold text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors uppercase tracking-wider shrink-0 cursor-pointer"
+                    >
+                      {checkAvailabilityStatus === "checking" ? "Checking..." : "Check Availability"}
+                    </button>
+                  </div>
+
+                  {checkAvailabilityStatus === "available" && (
+                    <div className="text-xs text-green-400 font-medium flex items-center gap-1.5 animate-fadeIn">
+                      <span>✅</span>
+                      <span>Name 'bhulia.com/{subfolderInput}' is available! Click save below to proceed.</span>
+                    </div>
+                  )}
+
+                  {checkAvailabilityStatus === "taken" && (
+                    <div className="text-xs text-red-400 font-medium flex items-center gap-1.5 animate-fadeIn">
+                      <span>❌</span>
+                      <span>Sorry, 'bhulia.com/{subfolderInput}' is already taken or restricted.</span>
+                    </div>
+                  )}
+
+                  {checkAvailabilityStatus === "available" && (
+                    <button 
+                      onClick={() => handleSaveDomainSettings("subfolder", subfolderInput)}
+                      className="bg-[#C5A059] text-[#0A1021] hover:brightness-110 transition-all font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider mt-2 cursor-pointer"
+                    >
+                      Buy & Configure Subfolder (₹499)
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {domainTier === "subdomain" && (
+                <div className="space-y-4">
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">Tier 3: Dedicated Subdomain Configuration (₹999/year)</h4>
+                  <p className="text-xs text-gray-300">Set up a high-end subdomain prefix for absolute brand distinction:</p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex items-center flex-1 bg-[#051815] border border-[#C5A059]/30 rounded-xl px-3 py-2">
+                      <input 
+                        type="text" 
+                        placeholder="nandalal" 
+                        value={subdomainInput}
+                        onChange={(e) => {
+                          setSubdomainInput(e.target.value);
+                          setCheckAvailabilityStatus("idle");
+                        }}
+                        className="bg-transparent border-0 outline-none text-xs text-white flex-1 font-mono placeholder-gray-600 text-right pr-0.5 mr-0.5"
+                      />
+                      <span className="text-xs text-gray-400 font-mono select-none">.bhulia.com</span>
+                    </div>
+                    <button 
+                      onClick={() => handleCheckAvailability("subdomain", subdomainInput)}
+                      disabled={checkAvailabilityStatus === "checking"}
+                      className="px-5 py-2.5 rounded-xl border border-[#C5A059] text-xs font-bold text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors uppercase tracking-wider shrink-0 cursor-pointer"
+                    >
+                      {checkAvailabilityStatus === "checking" ? "Checking..." : "Check Availability"}
+                    </button>
+                  </div>
+
+                  {checkAvailabilityStatus === "available" && (
+                    <div className="text-xs text-green-400 font-medium flex items-center gap-1.5 animate-fadeIn">
+                      <span>✅</span>
+                      <span>Subdomain '{subdomainInput}.bhulia.com' is available! Click save below to proceed.</span>
+                    </div>
+                  )}
+
+                  {checkAvailabilityStatus === "taken" && (
+                    <div className="text-xs text-red-400 font-medium flex items-center gap-1.5 animate-fadeIn">
+                      <span>❌</span>
+                      <span>Sorry, the subdomain '{subdomainInput}.bhulia.com' is already registered.</span>
+                    </div>
+                  )}
+
+                  {checkAvailabilityStatus === "available" && (
+                    <button 
+                      onClick={() => handleSaveDomainSettings("subdomain", subdomainInput)}
+                      className="bg-[#C5A059] text-[#0A1021] hover:brightness-110 transition-all font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider mt-2 cursor-pointer"
+                    >
+                      Buy & Configure Subdomain (₹999)
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {domainTier === "custom" && (
+                <div className="space-y-4">
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">Tier 4: Standalone Custom Domain Registration (₹1,499/year Platform + Registry Fee)</h4>
+                  <p className="text-xs text-gray-300 leading-relaxed">
+                    Search and register a standalone domain name (like `.com` or `.in`) directly through the Bhulia Registrar API. We will handle dynamic SSL certificates and route traffic to your storefront page automatically.
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex items-center flex-1 bg-[#051815] border border-[#C5A059]/30 rounded-xl px-3 py-2">
+                      <input 
+                        type="text" 
+                        placeholder="nandalalhandloom" 
+                        value={domainSearchInput}
+                        onChange={(e) => {
+                          setDomainSearchInput(e.target.value);
+                          setSearchResult(null);
+                        }}
+                        className="bg-transparent border-0 outline-none text-xs text-white flex-1 font-mono placeholder-gray-600 pl-0.5 ml-0.5"
+                      />
+                      <select 
+                        value={domainSearchTld} 
+                        onChange={(e) => {
+                          setDomainSearchTld(e.target.value);
+                          setSearchResult(null);
+                        }}
+                        className="bg-[#0A3A35] border-0 text-[#C5A059] text-xs font-mono font-bold outline-none cursor-pointer rounded px-1.5 py-0.5 ml-2"
+                      >
+                        <option value=".com">.com</option>
+                        <option value=".in">.in</option>
+                        <option value=".co.in">.co.in</option>
+                        <option value=".org">.org</option>
+                      </select>
+                    </div>
+                    <button 
+                      onClick={handleSearchDomain}
+                      disabled={isSearching}
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] text-xs font-bold hover:brightness-110 transition-all uppercase tracking-wider shrink-0 cursor-pointer"
+                    >
+                      {isSearching ? "Searching API..." : "Search Domain"}
+                    </button>
+                  </div>
+
+                  {isSearching && (
+                    <div className="flex items-center gap-2 text-xs text-gray-400 font-mono animate-pulse">
+                      <span className="w-3 h-3 rounded-full border border-gray-400 border-t-transparent animate-spin"></span>
+                      <span>Querying WHOIS global DNS database registry...</span>
+                    </div>
+                  )}
+
+                  {searchResult && searchResult.available && (
+                    <div className="bg-[#051815] border border-[#C5A059]/40 rounded-xl p-4 space-y-3 animate-fadeIn text-xs">
+                      <div className="flex justify-between items-center text-green-400 font-semibold border-b border-[#C5A059]/20 pb-2">
+                        <span>🎉 Domain "{searchResult.domain}" is AVAILABLE!</span>
+                        <span className="bg-[#C5A059]/20 border border-green-500/50 px-2 py-0.5 rounded text-[10px] tracking-widest text-[#C5A059]">READY</span>
+                      </div>
+                      
+                      <div className="space-y-1.5 text-gray-300 font-mono text-[11px]">
+                        <div className="flex justify-between">
+                          <span>Domain Registration Fee ({domainSearchTld}):</span>
+                          <span className="text-white">₹{searchResult.price} / year</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Bhulia Cloud SSL & Routing:</span>
+                          <span className="text-white">₹{searchResult.platformFee} / year</span>
+                        </div>
+                        <div className="flex justify-between border-t border-[#C5A059]/10 pt-1.5 font-bold text-xs">
+                          <span className="text-[#C5A059]">Total First Year Cost:</span>
+                          <span className="text-white">₹{searchResult.price + searchResult.platformFee}</span>
+                        </div>
+                      </div>
+
+                      <div className="pt-2 flex items-center gap-2">
+                        <input type="checkbox" id="auth_dns" defaultChecked className="rounded border-[#C5A059]/30 bg-[#0A3A35] accent-[#C5A059]" />
+                        <label htmlFor="auth_dns" className="text-[10px] text-gray-300 cursor-pointer select-none">
+                          Authorize Bhulia.com to configure automatic cloud DNS, free SSL certificates, and nameservers.
+                        </label>
+                      </div>
+
+                      <button 
+                        onClick={() => handleSaveDomainSettings("custom", searchResult.domain)}
+                        className="w-full bg-[#C5A059] text-[#0A1021] hover:brightness-110 transition-all font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider cursor-pointer"
+                      >
+                        Book & Bind Domain Setup (₹{searchResult.price + searchResult.platformFee})
+                      </button>
+                    </div>
+                  )}
+
+                  {searchResult && !searchResult.available && (
+                    <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-xs text-red-400 font-medium animate-fadeIn">
+                      ❌ Sorry, "{searchResult.domain}" is already registered. Try searching for a different name.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Custom Affiliate Tracking alert note */}
+            <div className="bg-[#051815]/80 border border-[#C5A059]/20 rounded-xl p-3 text-[10px] sm:text-xs text-gray-300 flex items-start gap-2.5">
+              <span>💡</span>
+              <p className="leading-relaxed">
+                <strong>Viral Commission Note:</strong> Any shared affiliate links will automatically adapt to your chosen branding. For example, share links like <code className="text-[#C5A059] font-bold font-mono">https://{activeCustomUrl || `bhulia.com/weaver/${artisan.slug}`}?ref=USER_ID</code> will still capture tracking and calculate payouts accurately.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Saree Catalog Header */}
         <div id="catalog" className="space-y-4 pt-6 border-t border-[#C5A059]/20">
