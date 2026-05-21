@@ -27,6 +27,44 @@ export default function StoreRegistrationPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [bypassValidation, setBypassValidation] = useState(false);
+
+  const handleAutofillStore = () => {
+    setFormData({
+      storeName: "Sambalpur Handloom Emporium",
+      ownerName: "Ramesh Chandra Meher",
+      contactNumber: "+91 94380 12345",
+      emailAddress: "ramesh@samaleswaristore.com",
+      address: "Gole Bazar Main Road, opposite Town Hall",
+      stateRegion: "Odisha",
+      districtCity: "Sambalpur",
+      businessTypes: ["Retailer", "Wholesaler"],
+      govIdFileName: "ramesh_pan.jpg",
+      govIdFilePreview: "https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?w=100&auto=format&fit=crop&q=80",
+      gstNumber: "21AAAAA1111A1Z1",
+      giCertFileName: "gi_saree_cert_012.pdf",
+      giCertFilePreview: "https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?w=100&auto=format&fit=crop&q=80",
+      productCategories: ["Sambalpuri Saree", "Ikat Dress Material", "Sambalpuri Fabrics"],
+      logoFileName: "emporium_logo.png",
+      logoFilePreview: "https://images.unsplash.com/photo-1516841273335-e39b37888115?w=100&auto=format&fit=crop&q=80",
+      storeImages: [
+        { name: "store_front.jpg", preview: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&auto=format&fit=crop&q=80" },
+        { name: "product_rack.jpg", preview: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=120&auto=format&fit=crop&q=80" },
+        { name: "loom_details.jpg", preview: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=120&auto=format&fit=crop&q=80" }
+      ],
+      priceRangeMin: "4500",
+      priceRangeMax: "28000",
+      currency: "INR",
+      bankAccountName: "Sambalpur Handloom Emporium Current Account",
+      bankAccountNo: "50200012345678",
+      bankIfsc: "HDFC0000080",
+      bankName: "HDFC Bank Ltd",
+      upiId: "samalemporium@hdfc",
+      consentAuthentic: true,
+      consentTerms: true
+    });
+    alert("⚡ Mock Store details populated successfully!");
+  };
 
   // Auth & UI States
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
@@ -283,6 +321,7 @@ export default function StoreRegistrationPage() {
   // STEP VALIDATION
   const validateStep = () => {
     setValidationError(null);
+    if (bypassValidation) return null;
     if (currentStep === 1) {
       if (!formData.storeName.trim()) return "Store Name is required.";
       if (!formData.ownerName.trim()) return "Owner/Representative Name is required.";
@@ -483,6 +522,37 @@ export default function StoreRegistrationPage() {
       {/* Main Registration Layout */}
       <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 py-12 flex-1 flex flex-col justify-center">
         
+        {/* Super Admin Bypass Tester Control Panel */}
+        {!formSubmitted && (
+          <div className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-3 shadow-xl">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">⚡</span>
+              <div>
+                <p className="text-xs font-bold text-[#C5A059] uppercase tracking-wider">Super Admin Sandbox Control</p>
+                <p className="text-[10px] text-gray-300">Quickly test form pages and domain steps without validation constraints.</p>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <button 
+                type="button"
+                onClick={handleAutofillStore}
+                className="flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#0B2B26] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors cursor-pointer"
+              >
+                Autofill Mock Data
+              </button>
+              <button 
+                type="button"
+                onClick={() => {
+                  setBypassValidation(!bypassValidation);
+                }}
+                className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-colors cursor-pointer ${bypassValidation ? "bg-red-500/20 border-red-500 text-red-300" : "bg-[#0B2B26] border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10"}`}
+              >
+                {bypassValidation ? "Bypass: ON" : "Bypass Validation"}
+              </button>
+            </div>
+          </div>
+        )}
+
         {!formSubmitted ? (
           <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8 relative">
             

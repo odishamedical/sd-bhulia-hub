@@ -32,6 +32,43 @@ export default function WeaverRegistrationPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [bypassValidation, setBypassValidation] = useState(false);
+
+  const handleAutofillWeaver = () => {
+    setFormData({
+      fullName: "Nandalal Meher",
+      businessName: "Maa Samaleswari Handlooms",
+      contactNumber: "+91 94371 00000",
+      emailAddress: "nandalal@bhulia.com",
+      address: "Meher Pada, Barpali",
+      district: "Bargarh",
+      weaverId: "COOP-8821-BGH",
+      govIdFile: null,
+      govIdFileName: "nandalal_aadhaar.jpg",
+      experienceYears: "35",
+      specializations: ["Sarees", "Fabrics", "Dress Material"],
+      primaryCategory: "Sambalpuri Saree",
+      productDescription: "Award-winning double ikat weave with intricate shell borders and traditional organic dye cotton yarn.",
+      priceMin: "8500",
+      priceMax: "45000",
+      currency: "INR",
+      availableStock: "12",
+      productImages: [
+        { name: "saree_profile.jpg", type: "image/jpeg" },
+        { name: "loom_setup.jpg", type: "image/jpeg" },
+        { name: "border_detail.jpg", type: "image/jpeg" }
+      ],
+      gstNumber: "21AAAAM1024A1Z0",
+      giCertFile: null,
+      giCertFileName: "gi_cert_bargarh_042.pdf",
+      bankAccountNo: "909010023456789",
+      bankIfsc: "UTIB0000100",
+      bankName: "Axis Bank Ltd",
+      consentAuthentic: true,
+      consentTerms: true
+    });
+    alert("⚡ Mock Weaver details populated successfully!");
+  };
 
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
@@ -138,6 +175,7 @@ export default function WeaverRegistrationPage() {
 
   const validateStep = () => {
     setValidationError(null);
+    if (bypassValidation) return null;
     if (currentStep === 1) {
       if (!formData.fullName.trim()) return "Full Name is required.";
       if (!formData.businessName.trim()) return "Business or Weaver Group Name is required.";
@@ -277,6 +315,37 @@ export default function WeaverRegistrationPage() {
       {/* Main Container */}
       <div className="flex-1 max-w-[800px] w-full mx-auto px-4 py-12 flex flex-col justify-center">
         
+        {/* Super Admin Bypass Tester Control Panel */}
+        {!formSubmitted && (
+          <div className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-3 shadow-xl">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">⚡</span>
+              <div>
+                <p className="text-xs font-bold text-[#C5A059] uppercase tracking-wider">Super Admin Sandbox Control</p>
+                <p className="text-[10px] text-gray-300">Quickly test form pages and domain steps without validation constraints.</p>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <button 
+                type="button"
+                onClick={handleAutofillWeaver}
+                className="flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#0B2B26] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors cursor-pointer"
+              >
+                Autofill Mock Data
+              </button>
+              <button 
+                type="button"
+                onClick={() => {
+                  setBypassValidation(!bypassValidation);
+                }}
+                className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-colors cursor-pointer ${bypassValidation ? "bg-red-500/20 border-red-500 text-red-300" : "bg-[#0B2B26] border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10"}`}
+              >
+                {bypassValidation ? "Bypass: ON" : "Bypass Validation"}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Progress Stepper Indicator */}
         {!formSubmitted && (
           <div className="mb-10 w-full">
