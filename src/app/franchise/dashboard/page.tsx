@@ -494,7 +494,10 @@ export default function FranchiseDashboard() {
             </div>
           </div>
 
-          <div className="text-center pt-2">
+          <div className="text-center pt-2 flex flex-col gap-2">
+            <Link href="/register-franchise" className="text-xs text-[#C5A059] hover:underline uppercase tracking-widest font-bold">
+              📝 Apply for a New Franchise Hub
+            </Link>
             <Link href="/" className="text-xs text-gray-400 hover:text-[#C5A059] transition-colors uppercase tracking-widest font-bold">
               ← Back to Marketplace Home
             </Link>

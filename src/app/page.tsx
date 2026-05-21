@@ -420,7 +420,7 @@ export default function Home() {
               { title: "Weavers Onboarding", desc: "List your traditional pit looms, mint GI-Tagged sarees, and receive direct D2C escrow payouts.", icon: "🧵", btn: "Apply as Weaver", href: "/register-weaver" },
               { title: "Store Owners Gateway", desc: "Register your Primary Weaving Cooperative Society (PWCS) or master boutique for global Spree sync.", icon: "🏛️", btn: "Apply as Store Owner", href: "/register-store" },
               { title: "Wholesalers Portal", desc: "Access bulk B2B handloom requisitions, custom Ikat commissioning lots, and tax-exempt export billing.", icon: "📦", btn: "Apply as Wholesaler", href: "#" },
-              { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise", href: "/franchise/dashboard" }
+              { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise", href: "/register-franchise" }
             ].map((gate, idx) => (
               <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl p-4 sm:p-5 flex flex-col justify-between group hover:border-[#C5A059] transition-all shadow-xl">
                 <div>
