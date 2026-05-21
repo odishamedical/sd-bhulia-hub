@@ -104,9 +104,9 @@ export const DEFAULT_STORE: StoreListing = {
 };
 
 export const STORE_CATALOG_SAREES = [
-  { id: "SAR-S101", title: "Maa Samaleswari Cotton Pasapalli", category: "Cotton Classics", desc: "Cooperative woven dense checker-board cotton saree with traditional phoda border.", price: "₹ 5,299", weave: "Pasapalli Cotton", time: "Barpali Hub Stock", img: "/bhulia-hero.png" },
-  { id: "SAR-S102", title: "Sonepur Royal Zari Bomkai Pata", category: "Silk Masterpieces", desc: "Gold zari extra-weft thread work on pure silk mulberry weave.", price: "₹ 18,500", weave: "Bomkai Pata", time: "Sonepur Town Stock", img: "/bhulia-hero.png" },
-  { id: "SAR-S103", title: "Bijepur Natural Dye Cotton Ikat", category: "Cotton Classics", desc: "Organic madder root red and indigo dyed geometric bandha pattern.", price: "₹ 5,899", weave: "Vegetable Dye Cotton", time: "Bijepur Workshop Stock", img: "/bhulia-hero.png" },
-  { id: "SAR-S104", title: "Traditional Sonepuri Pasapalli Silk", category: "Silk Masterpieces", desc: "Premium handloomed silk with contrast double ikat checks.", price: "₹ 16,800", weave: "Pasapalli Pata", time: "Sonepur Town Stock", img: "/bhulia-hero.png" },
-  { id: "SAR-S105", title: "Barpali Phoda Kumbha Cotton Saree", category: "Cotton Classics", desc: "Fine cotton with red spires on border using hand-pulled kumbha style.", price: "₹ 7,500", weave: "Phoda Kumbha Cotton", time: "Barpali Hub Stock", img: "/bhulia-hero.png" }
+  { id: "SAR-S101", title: "Maa Samaleswari Cotton Pasapalli", category: "Cotton Classics", desc: "Cooperative woven dense checker-board cotton saree with traditional phoda border.", price: "₹ 5,299", weave: "Pasapalli Cotton", time: "Barpali Hub Stock", img: "/saree_pasapalli_cotton.png" },
+  { id: "SAR-S102", title: "Sonepur Royal Zari Bomkai Pata", category: "Silk Masterpieces", desc: "Gold zari extra-weft thread work on pure silk mulberry weave.", price: "₹ 18,500", weave: "Bomkai Pata", time: "Sonepur Town Stock", img: "/saree_bomkai_silk.png" },
+  { id: "SAR-S103", title: "Bijepur Natural Dye Cotton Ikat", category: "Cotton Classics", desc: "Organic madder root red and indigo dyed geometric bandha pattern.", price: "₹ 5,899", weave: "Vegetable Dye Cotton", time: "Bijepur Workshop Stock", img: "/saree_pasapalli_cotton.png" },
+  { id: "SAR-S104", title: "Traditional Sonepuri Pasapalli Silk", category: "Silk Masterpieces", desc: "Premium handloomed silk with contrast double ikat checks.", price: "₹ 16,800", weave: "Pasapalli Pata", time: "Sonepur Town Stock", img: "/saree_bomkai_silk.png" },
+  { id: "SAR-S105", title: "Barpali Phoda Kumbha Cotton Saree", category: "Cotton Classics", desc: "Fine cotton with red spires on border using hand-pulled kumbha style.", price: "₹ 7,500", weave: "Phoda Kumbha Cotton", time: "Barpali Hub Stock", img: "/saree_phoda_kumbha.png" }
 ];
