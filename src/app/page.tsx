@@ -98,6 +98,53 @@ export default function Home() {
   return (
     <main className="relative flex-1 w-full bg-[#051815] text-white font-sans flex flex-col min-h-screen">
       
+      {/* Developer Toolbar for testing */}
+      <div className="relative z-50 bg-[#0B2B26] border-b border-[#C5A059] px-4 py-2 text-center flex flex-wrap items-center justify-center gap-3 text-[10px] uppercase font-mono tracking-widest text-[#C5A059]">
+        <span>🛠️ Dev Sandbox Logins:</span>
+        <button onClick={() => {
+          localStorage.setItem("sd_current_user_email", "franchise@bhulia.com");
+          localStorage.setItem("sd_current_user_name", "Bargarh Phygital Hub Manager");
+          localStorage.setItem("sd_current_user_role", "franchisee");
+          localStorage.setItem("sd_current_user_uid", "FRA-001");
+          localStorage.setItem("sd_current_user_avatar", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80");
+          window.dispatchEvent(new Event("sd_auth_change"));
+        }} className="px-2 py-0.5 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-white rounded cursor-pointer">
+          FRA-001 (Franchise)
+        </button>
+        <button onClick={() => {
+          localStorage.setItem("sd_current_user_email", "weaver@bhulia.com");
+          localStorage.setItem("sd_current_user_name", "Nandalal Meher");
+          localStorage.setItem("sd_current_user_role", "weaver");
+          localStorage.setItem("sd_current_user_uid", "weaver_nandalal");
+          localStorage.setItem("sd_current_user_avatar", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80");
+          window.dispatchEvent(new Event("sd_auth_change"));
+        }} className="px-2 py-0.5 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-white rounded cursor-pointer">
+          Weaver
+        </button>
+        <button onClick={() => {
+          localStorage.setItem("sd_current_user_email", "admin@bhulia.com");
+          localStorage.setItem("sd_current_user_name", "Bhulia Central Admin");
+          localStorage.setItem("sd_current_user_role", "super_admin");
+          localStorage.setItem("sd_current_user_uid", "sd_super_admin_custom_uid");
+          localStorage.setItem("sd_current_user_avatar", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80");
+          window.dispatchEvent(new Event("sd_auth_change"));
+        }} className="px-2 py-0.5 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-white rounded cursor-pointer">
+          Super Admin
+        </button>
+        {userRole && (
+          <button onClick={() => {
+            localStorage.removeItem("sd_current_user_email");
+            localStorage.removeItem("sd_current_user_name");
+            localStorage.removeItem("sd_current_user_role");
+            localStorage.removeItem("sd_current_user_uid");
+            localStorage.removeItem("sd_current_user_avatar");
+            window.dispatchEvent(new Event("sd_auth_change"));
+          }} className="px-2 py-0.5 bg-red-950/40 border border-red-500 text-red-300 rounded cursor-pointer">
+            Clear Login
+          </button>
+        )}
+      </div>
+
       {/* Background Gold Glows & Ikat Texture */}
       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #C5A059 1px, transparent 0)', backgroundSize: '48px 48px' }} />
       <div className="absolute top-0 left-0 w-[40%] h-[40%] bg-[#C5A059]/10 blur-[160px] rounded-full pointer-events-none z-0" />
@@ -373,7 +420,7 @@ export default function Home() {
               { title: "Weavers Onboarding", desc: "List your traditional pit looms, mint GI-Tagged sarees, and receive direct D2C escrow payouts.", icon: "🧵", btn: "Apply as Weaver", href: "/register-weaver" },
               { title: "Store Owners Gateway", desc: "Register your Primary Weaving Cooperative Society (PWCS) or master boutique for global Spree sync.", icon: "🏛️", btn: "Apply as Store Owner", href: "/register-store" },
               { title: "Wholesalers Portal", desc: "Access bulk B2B handloom requisitions, custom Ikat commissioning lots, and tax-exempt export billing.", icon: "📦", btn: "Apply as Wholesaler", href: "#" },
-              { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise", href: "#" }
+              { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise", href: "/franchise/dashboard" }
             ].map((gate, idx) => (
               <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl p-4 sm:p-5 flex flex-col justify-between group hover:border-[#C5A059] transition-all shadow-xl">
                 <div>

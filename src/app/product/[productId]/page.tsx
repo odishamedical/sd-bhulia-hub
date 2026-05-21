@@ -4,143 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-
-interface SareeDetail {
-  id: string;
-  slug: string;
-  title: string;
-  category: string;
-  desc: string;
-  longDesc: string;
-  price: string;
-  mrp: string;
-  weave: string;
-  time: string;
-  cluster: string;
-  village: string;
-  yarnType: string;
-  isGI: boolean;
-  escrowStatus: string;
-  rating: string;
-  img: string;
-}
-
-const PRODUCT_DATABASE: SareeDetail[] = [
-  {
-    id: "SAR-N101",
-    slug: "dasrajpur-royal-pasapalli-double-ikat-pata",
-    title: "Dasrajpur Royal Pasapalli Double Ikat Pata Saree",
-    category: "Double Ikat Silk",
-    desc: "Flawless mathematical alignment where both warp and weft silk threads are tie-dyed before mounting on the pit loom.",
-    longDesc: "This masterpiece represents the absolute pinnacle of Odishan double ikat (Bandhakala) weaving. Both the warp and weft pure mulberry silk threads are bound and dyed with mathematical precision on graphs before mounting on the loom. The iconic checkered Pasapalli design reflects royalty and pristine symmetry, perfect for heirloom collection.",
-    price: "₹ 34,500",
-    mrp: "₹ 42,000",
-    weave: "Double Ikat Pata",
-    time: "45 Days Handweaving",
-    cluster: "Sonepur Cluster",
-    village: "Dasrajpur, Sonepur",
-    yarnType: "3-Ply Mulberry Silk (Silk Mark Gold)",
-    isGI: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
-    rating: "5.0 (18 Reviews)",
-    img: "/bhulia-hero.png"
-  },
-  {
-    id: "SAR-N102",
-    slug: "sonepur-temple-spire-&-conch-double-ikat-silk",
-    title: "Sonepur Temple Spire & Conch Double Ikat Silk Saree",
-    category: "Double Ikat Silk",
-    desc: "Intricate temple borders and conch shell motifs tie-dyed with absolute micro-millimeter precision across the silk matrix.",
-    longDesc: "Woven over 52 days of intensive manual craftsmanship in Sonepur, this premium silk saree exhibits the sacred Shankha (conch shell) and Phoda Kumbha (temple spire) motifs. Features an intense royal purple body with deep gold borders that shimmer elegantly in natural light.",
-    price: "₹ 38,000",
-    mrp: "₹ 46,000",
-    weave: "Double Ikat Pata",
-    time: "52 Days Handweaving",
-    cluster: "Sonepur Cluster",
-    village: "Dasrajpur, Sonepur",
-    yarnType: "3-Ply Mulberry Silk (Silk Mark Gold)",
-    isGI: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
-    rating: "5.0 (12 Reviews)",
-    img: "/bhulia-hero.png"
-  },
-  {
-    id: "SAR-N103",
-    slug: "traditional-machha-(fish)-motif-single-ikat-pata",
-    title: "Traditional Machha (Fish) Motif Single Ikat Pata Saree",
-    category: "Single Ikat Silk",
-    desc: "Vibrant everyday luxury silk saree featuring classic Odishan fish wealth motifs along the rich pallu.",
-    longDesc: "Featuring the Machha (fish) motif, which symbolizes fertility, wealth, and prosperity in Odishan folklore. This single ikat silk pata saree is lightweight, comfortable, and finished with a shimmering copper-green border.",
-    price: "₹ 18,500",
-    mrp: "₹ 24,000",
-    weave: "Single Ikat Pata",
-    time: "22 Days Handweaving",
-    cluster: "Sonepur Cluster",
-    village: "Dasrajpur, Sonepur",
-    yarnType: "2-Ply Mulberry Silk",
-    isGI: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
-    rating: "4.9 (24 Reviews)",
-    img: "/bhulia-hero.png"
-  },
-  {
-    id: "SAR-101",
-    slug: "royal-pasapalli-mercerized-cotton-ikat",
-    title: "Royal Pasapalli Mercerized Cotton Ikat Saree",
-    category: "Cotton Classics",
-    desc: "Handspun, high-density traditional cotton weave featuring flawless mathematical symmetry.",
-    longDesc: "Crafted using 100% pure high-density mercerized cotton for exceptional breathability and crisp fall. Features the timeless chess-board block pattern with temple design accents along the borders.",
-    price: "₹ 12,500",
-    mrp: "₹ 18,000",
-    weave: "Cotton Double Ikat",
-    time: "18 Days Handweaving",
-    cluster: "Bargarh Cluster",
-    village: "Barpali, Bargarh",
-    yarnType: "100/2s Mercerized Cotton",
-    isGI: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
-    rating: "4.9 (32 Reviews)",
-    img: "/bhulia-hero.png"
-  },
-  {
-    id: "SAR-102",
-    slug: "subarnapur-extra-weft-mulberry-silk-bomkai",
-    title: "Subarnapur Extra-Weft Mulberry Silk Bomkai Saree",
-    category: "Silk Masterpieces",
-    desc: "Heavy 3-ply Mulberry silk Bomkai sarees featuring rich extra-weft gold thread work.",
-    longDesc: "Using the traditional Jala wooden frame attachment, the weaver manually lifts individual silk threads to interlace intricate extra-weft patterns across the pallu, producing a rich gold texture.",
-    price: "₹ 24,800",
-    mrp: "₹ 32,000",
-    weave: "Bomkai Extra-Weft",
-    time: "25 Days Handweaving",
-    cluster: "Sonepur Cluster",
-    village: "Sonepur Town",
-    yarnType: "3-Ply Mulberry Silk (Silk Mark Gold)",
-    isGI: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
-    rating: "5.0 (9 Reviews)",
-    img: "/bhulia-hero.png"
-  },
-  {
-    id: "SAR-103",
-    slug: "traditional-phoda-kumbha-border-cotton-saree",
-    title: "Traditional Phoda Kumbha Border Cotton Saree",
-    category: "Cotton Classics",
-    desc: "High-twist handspun yarn offering exceptional breathability and comfort.",
-    longDesc: "Handwoven in Barpali village using organic dyes and high-twist handspun cotton yarns. Features the iconic triangular temple border (Phoda Kumbha) requiring double shuttle interlacing.",
-    price: "₹ 8,900",
-    mrp: "₹ 12,500",
-    weave: "Single Ikat Cotton",
-    time: "12 Days Handweaving",
-    cluster: "Bargarh Cluster",
-    village: "Barpali, Bargarh",
-    yarnType: "80s Handspun Cotton",
-    isGI: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
-    rating: "4.8 (15 Reviews)",
-    img: "/bhulia-hero.png"
-  }
-];
+import { MASTER_PRODUCTS, Product as SareeDetail } from "@/lib/products";
+import { MASTER_FRANCHISES } from "@/app/franchise/data";
 
 const DEFAULT_PRODUCT: SareeDetail = {
   id: "SAR-999",
@@ -159,7 +24,8 @@ const DEFAULT_PRODUCT: SareeDetail = {
   isGI: true,
   escrowStatus: "100% Escrow Protected Payouts Enabled",
   rating: "4.9 (5 Reviews)",
-  img: "/bhulia-hero.png"
+  img: "/bhulia-hero.png",
+  inStock: true
 };
 
 export default function ProductDetailPage() {
@@ -167,7 +33,7 @@ export default function ProductDetailPage() {
   const rawId = typeof params?.productId === "string" ? params.productId : "dasrajpur-royal-pasapalli-double-ikat-pata";
   const productSlug = rawId.toLowerCase();
 
-  const product = PRODUCT_DATABASE.find(
+  const product = MASTER_PRODUCTS.find(
     (p) => p.slug === productSlug || p.id.toLowerCase() === productSlug
   ) || {
     ...DEFAULT_PRODUCT,
@@ -183,6 +49,7 @@ export default function ProductDetailPage() {
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
   const [orderStep, setOrderStep] = useState<number>(1);
+  const [referrerName, setReferrerName] = useState<string | null>(null);
   const [orderForm, setOrderForm] = useState({
     fullName: "",
     mobile: "",
@@ -219,8 +86,21 @@ export default function ProductDetailPage() {
     if (typeof window !== "undefined") {
       const p = new URLSearchParams(window.location.search);
       const ref = p.get("ref");
-      if (ref) {
-        localStorage.setItem("sd_referral_id", ref);
+      const refId = ref || localStorage.getItem("sd_referral_id");
+      if (refId) {
+        localStorage.setItem("sd_referral_id", refId);
+        // Set persistent cookie (30 days)
+        document.cookie = `sd_referral_id=${refId}; path=/; max-age=${30 * 24 * 60 * 60};`;
+        
+        // Find matching franchisee
+        const matched = MASTER_FRANCHISES.find(
+          (f) => f.id.toLowerCase() === refId.toLowerCase() || f.slug.toLowerCase() === refId.toLowerCase()
+        );
+        if (matched) {
+          setReferrerName(matched.name);
+        } else {
+          setReferrerName("Bhulia Associate (" + refId + ")");
+        }
       }
     }
 
@@ -244,6 +124,45 @@ export default function ProductDetailPage() {
     setTimeout(() => {
       setIsOrdering(false);
       setOrderStep(2); // Success Step
+
+      // Record the order details
+      const referralId = localStorage.getItem("sd_referral_id");
+      const newOrder = {
+        orderId: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+        productName: product.title,
+        productPrice: product.price,
+        quantity: selectedQuantity,
+        customerName: orderForm.fullName,
+        customerPhone: orderForm.mobile,
+        customerAddress: `${orderForm.address}, Pin: ${orderForm.pincode}`,
+        referralId: referralId || null,
+        proxyBuyerId: null,
+        paymentMode: orderForm.paymentMode,
+        paymentStatus: "Escrow Locked",
+        logisticsStatus: "Pending Weaver Handover",
+        leg1LabelGenerated: false,
+        leg2LabelGenerated: false,
+        qcStatus: "Pending Sourcing",
+        timestamp: new Date().toISOString()
+      };
+
+      const existingOrders = JSON.parse(localStorage.getItem("sd_all_orders") || "[]");
+      existingOrders.push(newOrder);
+      localStorage.setItem("sd_all_orders", JSON.stringify(existingOrders));
+
+      // Trigger a dynamic local notification event
+      if (referralId) {
+        const notifications = JSON.parse(localStorage.getItem("sd_franchise_notifications") || "[]");
+        notifications.push({
+          id: `NOTIF-${Math.floor(1000 + Math.random() * 9000)}`,
+          referralId: referralId,
+          title: "New Referral Sale!",
+          message: `Referral sale of ${selectedQuantity}x ${product.title} by ${orderForm.fullName} completed. Earned commission.`,
+          timestamp: new Date().toISOString(),
+          read: false
+        });
+        localStorage.setItem("sd_franchise_notifications", JSON.stringify(notifications));
+      }
     }, 2000);
   };
 
@@ -311,6 +230,15 @@ export default function ProductDetailPage() {
               </a>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Shopper Referral Alert Bar */}
+      {referrerName && (
+        <div className="bg-[#C5A059] text-[#051815] py-2.5 px-4 text-center text-xs font-bold uppercase tracking-wider shadow-inner flex justify-center items-center gap-2 z-30">
+          <span>✨</span>
+          <span>Shopping curated collection referred by <strong>{referrerName}</strong> — Authenticity Escrow Protected</span>
+          <span>✨</span>
         </div>
       )}
 
