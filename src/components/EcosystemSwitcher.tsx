@@ -143,6 +143,19 @@ export default function EcosystemSwitcher() {
     return refCode ? `https://sd-auth-center.vercel.app?ref=${refCode}` : "https://sd-auth-center.vercel.app";
   };
 
+  const getProjectUrl = (baseUrl: string) => {
+    if (!userEmail) return baseUrl;
+    const url = new URL(baseUrl);
+    url.searchParams.set("sso_email", userEmail);
+    if (userName) url.searchParams.set("sso_name", userName);
+    if (userAvatar) url.searchParams.set("sso_avatar", userAvatar);
+    if (typeof window !== "undefined") {
+      const role = localStorage.getItem("sd_current_user_role");
+      if (role) url.searchParams.set("sso_role", role);
+    }
+    return url.toString();
+  };
+
   return (
     <div className="relative inline-block text-left z-50 font-sans">
       <button
@@ -184,7 +197,7 @@ export default function EcosystemSwitcher() {
               {projects.map((project) => (
                 <a
                   key={project.name}
-                  href={project.url}
+                  href={getProjectUrl(project.url)}
                   onClick={() => setIsOpen(false)}
                   className="flex items-start gap-3 p-3 md:p-2.5 rounded-xl hover:bg-white/5 active:bg-white/10 transition-all group"
                 >
