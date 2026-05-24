@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SsoBridge from "@/components/SsoBridge";
+import GlobalHeader from "@/components/GlobalHeader";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bhulia.com"),
@@ -39,6 +40,7 @@ export default function RootLayout({
     <html lang="en" className="h-full bg-[#0A2520]">
       <body className="font-sans min-h-full flex flex-col bg-[#0A2520] text-white overflow-x-hidden">
         <SsoBridge />
+        <GlobalHeader activeProject="Sambalpuri Hub" />
         {children}
       </body>
     </html>
