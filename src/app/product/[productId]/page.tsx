@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MASTER_PRODUCTS, Product as SareeDetail } from "@/lib/products";
 import { MASTER_FRANCHISES } from "@/app/franchise/data";
+import ProfileBlockerModal from "../../../components/ProfileBlockerModal";
 
 const DEFAULT_PRODUCT: SareeDetail = {
   id: "SAR-999",
@@ -59,6 +60,7 @@ export default function ProductDetailPage() {
     paymentMode: "escrow"
   });
   const [isOrdering, setIsOrdering] = useState<boolean>(false);
+  const [showProfileBlocker, setShowProfileBlocker] = useState(false);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -121,6 +123,15 @@ export default function ProductDetailPage() {
 
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const userEmail = localStorage.getItem("sd_current_user_email");
+    const isProfileComplete = localStorage.getItem("sd_current_user_profile_complete") === "true";
+
+    if (!userEmail || !isProfileComplete) {
+      setShowProfileBlocker(true);
+      return;
+    }
+
     setIsOrdering(true);
     setTimeout(() => {
       setIsOrdering(false);
@@ -389,6 +400,9 @@ export default function ProductDetailPage() {
           <span className="text-[10px] font-mono text-gray-400">© 2026 Bhulia.com. All Rights Reserved.</span>
         </div>
       </footer>
+      {showProfileBlocker && (
+        <ProfileBlockerModal onClose={() => setShowProfileBlocker(false)} />
+      )}
     </main>
   );
 }
