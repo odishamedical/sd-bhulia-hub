@@ -65,9 +65,28 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
   const [inviteName, setInviteName] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const AUTH_KEYS = [
+    "sd_current_user_email","sd_current_user_name","sd_current_user_avatar",
+    "sd_current_user_role","sd_current_user_uid","sd_current_user_profile_complete",
+  ];
+
   const checkAuth = () => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
+
+      // ── SIGNOUT INTERCEPTION ─────────────────────────────────────────────
+      // When sd-auth-center redirects back after sign-out, it appends ?sd_signout=1
+      // We MUST clear OUR localStorage here (localStorage is domain-scoped, the
+      // /signout page on auth-center.vercel.app cannot clear sd-bhulia-hub's storage).
+      if (params.get("sd_signout") === "1") {
+        AUTH_KEYS.forEach((k) => localStorage.removeItem(k));
+        sessionStorage.clear();
+        setUserEmail(null); setUserName(null); setUserAvatar(null); setUserRole(null);
+        // Strip the param from the URL so refreshing doesn't keep signing out
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+      }
+      // ─────────────────────────────────────────────────────────────────────
       
       const ssoEmail = params.get("sso_email");
       const ssoName = params.get("sso_name");
@@ -126,6 +145,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
       setIsAdminMode(isAd);
     }
   };
+
 
   useEffect(() => {
     checkAuth();
