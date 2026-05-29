@@ -17,7 +17,24 @@ export interface Product {
   rating: string;
   img: string;
   inStock: boolean;
+  img2?: string;
+  img3?: string;
+  img4?: string;
+  // Handloom attributes
+  sareeType?: "Cotton" | "Silk(pata)" | "Mix Pata(silk)";
+  manufacturingProcess?: "Single Ikat(bandha)" | "Double Ikat(double bandha)" | "Bomkei";
+  designType?: "Pasapali(saptapar)" | "Traditional Design" | "Modern Design";
+  weaverName?: string;
+  designerName?: string;
+  creatorName?: string;
+  threadType?: "80 Count" | "100 Count" | "120 Count" | string;
+  colorUse?: string;
+  weavingDuration?: string;
+  length?: string;
+  hasBlouse?: boolean;
+  isBhuliaVerified?: boolean;
 }
+
 
 export const MASTER_PRODUCTS: Product[] = [
   {

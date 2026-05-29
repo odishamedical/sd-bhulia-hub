@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import EcosystemSwitcher from "../../components/EcosystemSwitcher";
 import Link from "next/link";
+import { addWeaver } from "@/lib/db-hooks";
 
 const GI_DISTRICTS = [
   "Bargarh",
@@ -67,7 +68,8 @@ export default function WeaverRegistrationPage() {
       bankIfsc: "UTIB0000100",
       bankName: "Axis Bank Ltd",
       consentAuthentic: true,
-      consentTerms: true
+      consentTerms: true,
+      tier: "Silver"
     });
     alert("⚡ Mock Weaver details populated successfully!");
   };
@@ -136,7 +138,8 @@ export default function WeaverRegistrationPage() {
     bankIfsc: "",
     bankName: "",
     consentAuthentic: false,
-    consentTerms: false
+    consentTerms: false,
+    tier: "Silver" as "Silver" | "Gold" | "Diamond"
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -300,10 +303,39 @@ export default function WeaverRegistrationPage() {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.consentAuthentic || !formData.consentTerms) {
       setValidationError("You must agree to the authenticity statement and marketplace terms.");
+      return;
+    }
+
+    const uniqueId = "weaver-" + Math.floor(1000 + Math.random() * 9000);
+    const assignedSlug = formData.tier === "Silver"
+      ? uniqueId
+      : formData.fullName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+    const payload = {
+      slug: assignedSlug,
+      title: formData.fullName,
+      desc: formData.productDescription || "Master weaver of authentic Sambalpuri handlooms.",
+      img: formData.productImages[0]?.preview || "https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=800&q=80",
+      badge: `${formData.tier} Weaver`,
+      phone: formData.contactNumber,
+      whatsapp: formData.whatsappNumber,
+      address: formData.address,
+      tier: formData.tier,
+      status: "pending_approval" as const,
+      layoutConfig: {
+        sidebarPosition: "Left" as const,
+        heroEnabled: true,
+        gridStyle: "3-Column" as const
+      }
+    };
+
+    const res = await addWeaver(payload, uniqueId);
+    if (!res.success) {
+      setValidationError("Error submitting application. Please try again.");
       return;
     }
 
@@ -311,9 +343,9 @@ export default function WeaverRegistrationPage() {
     const submissions = JSON.parse(localStorage.getItem("sd_weaver_applications") || "[]");
     submissions.push({
       ...formData,
-      id: "APP-" + Date.now(),
+      id: uniqueId,
       appliedAt: new Date().toISOString(),
-      status: "pending_verification"
+      status: "pending_approval"
     });
     localStorage.setItem("sd_weaver_applications", JSON.stringify(submissions));
 
@@ -485,6 +517,33 @@ export default function WeaverRegistrationPage() {
                   <div className="border-b border-[#C5A059]/25 pb-3">
                     <h3 className="text-lg font-serif font-bold text-[#C5A059]">Section 1: Contact & District Details</h3>
                     <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">Tell us about you and your weaving business</p>
+                  </div>
+
+                  {/* Tier Selection */}
+                  <div className="space-y-2 mb-4">
+                    <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block">Select Weaving Tier</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {[
+                        { id: "Silver", name: "Silver (Free)", price: "Free", desc: "Simple profile, hidden phone, automatic URL." },
+                        { id: "Gold", name: "Gold (Rs 1,500/yr)", price: "Rs 1,500", desc: "Custom URL choice, upload 5 images, verified seal." },
+                        { id: "Diamond", name: "Diamond (Rs 2,000/yr)", price: "Rs 2,000", desc: "Gold features + place products in stores." }
+                      ].map((t) => {
+                        const selected = formData.tier === t.id;
+                        return (
+                          <div 
+                            key={t.id}
+                            onClick={() => setFormData(prev => ({ ...prev, tier: t.id as any }))}
+                            className={`border rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between ${selected ? "bg-[#0A3A35] border-[#C5A059] text-white" : "border-[#C5A059]/20 bg-[#051815]/50 text-gray-300 hover:border-[#C5A059]"}`}
+                          >
+                            <div>
+                              <p className="text-xs font-bold text-[#C5A059]">{t.name}</p>
+                              <p className="text-[10px] text-gray-300 mt-1 leading-relaxed">{t.desc}</p>
+                            </div>
+                            <span className="text-[10px] font-mono text-[#C5A059] font-bold mt-2 block">{t.price}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

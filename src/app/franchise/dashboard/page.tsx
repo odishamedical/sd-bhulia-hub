@@ -21,6 +21,7 @@ export default function FranchiseDashboard() {
   const [userUid, setUserUid] = useState<string>("");
   const [userName, setUserName] = useState<string | null>(null);
   const [activeFranchise, setActiveFranchise] = useState<FranchiseListing | null>(null);
+  const [liveFranchiseData, setLiveFranchiseData] = useState<any | null>(null);
 
   // General dashboard UI states
   const [activeTab, setActiveTab] = useState<"overview" | "curation" | "proxy" | "orders" | "settings">("overview");
@@ -98,6 +99,41 @@ export default function FranchiseDashboard() {
     window.addEventListener("sd_auth_change", checkAuth);
     return () => window.removeEventListener("sd_auth_change", checkAuth);
   }, []);
+
+  // Listen to live data in Firestore for this franchise promoter
+  useEffect(() => {
+    if (!activeFranchise?.id) return;
+    
+    let unsub: any = null;
+    const fetchLiveFranchise = async () => {
+      try {
+        const { db } = await import("@/lib/firebase");
+        const { doc, onSnapshot, query, collection, where } = await import("firebase/firestore");
+        
+        unsub = onSnapshot(doc(db, "franchises", activeFranchise.id), (docSnap) => {
+          if (docSnap.exists()) {
+            setLiveFranchiseData({ id: docSnap.id, ...docSnap.data() });
+          } else {
+            const q = query(collection(db, "franchises"), where("slug", "==", activeFranchise.slug || activeFranchise.id.toLowerCase()));
+            const unsubQuery = onSnapshot(q, (snapshot) => {
+              if (!snapshot.empty) {
+                const d = snapshot.docs[0];
+                setLiveFranchiseData({ id: d.id, ...d.data() });
+              }
+            });
+            unsub = unsubQuery;
+          }
+        });
+      } catch (err) {
+        console.error("Error setting up live franchise listener:", err);
+      }
+    };
+    
+    fetchLiveFranchise();
+    return () => {
+      if (unsub) unsub();
+    };
+  }, [activeFranchise?.id]);
 
   // Load orders, notifications, wallet balance, and curation details
   useEffect(() => {
@@ -582,6 +618,14 @@ export default function FranchiseDashboard() {
                   <span className="font-mono font-bold text-white">{activeFranchise.id}</span>
                 </div>
                 <div className="flex justify-between">
+                  <span className="text-gray-400">Franchise Tier:</span>
+                  <span className="font-bold text-[#C5A059] uppercase tracking-wider">{liveFranchiseData?.tier || "Silver"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Live Page Visits:</span>
+                  <span className="font-bold text-white">{liveFranchiseData?.invitedCount || 0} Visits</span>
+                </div>
+                <div className="flex justify-between">
                   <span className="text-gray-400">WhatsApp Contact:</span>
                   <span className="font-bold text-white">{activeFranchise.contactDetails?.whatsapp}</span>
                 </div>
@@ -677,13 +721,13 @@ export default function FranchiseDashboard() {
                 
                 <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl p-5 shadow-xl">
                   <span className="text-[9px] uppercase tracking-widest text-[#C5A059] font-bold block mb-1">Referral Sales Count</span>
-                  <p className="text-2xl font-black text-white font-mono">{totalReferralSales}</p>
+                  <p className="text-2xl font-black text-white font-mono">{liveFranchiseData?.totalSales ?? totalReferralSales}</p>
                   <p className="text-[10px] text-gray-400 mt-2 font-sans">Completed sales via 30-day tracking cookie.</p>
                 </div>
 
                 <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl p-5 shadow-xl">
                   <span className="text-[9px] uppercase tracking-widest text-[#C5A059] font-bold block mb-1">Referral Commission</span>
-                  <p className="text-2xl font-black text-white font-mono">₹ {totalReferralCommission.toLocaleString()}</p>
+                  <p className="text-2xl font-black text-white font-mono">₹ {(liveFranchiseData?.commissionEarned ?? totalReferralCommission).toLocaleString()}</p>
                   <span className="text-[9px] font-mono text-green-400 font-semibold mt-2 block">Rate: 5% of checkout values</span>
                 </div>
 

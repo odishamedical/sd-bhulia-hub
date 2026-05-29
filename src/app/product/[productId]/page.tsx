@@ -5,44 +5,17 @@ import Image from "next/image";
 import EcosystemSwitcher from "../../../components/EcosystemSwitcher";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { MASTER_PRODUCTS, Product as SareeDetail } from "@/lib/products";
+import { useProductBySlug, useProducts, addOrder } from "@/lib/db-hooks";
 import { MASTER_FRANCHISES } from "@/app/franchise/data";
 import ProfileBlockerModal from "../../../components/ProfileBlockerModal";
 
-const DEFAULT_PRODUCT: SareeDetail = {
-  id: "SAR-999",
-  slug: "genuine-sambalpuri-handloom-saree",
-  title: "Genuine Sambalpuri Handloom Saree",
-  category: "Heritage Collection",
-  desc: "Authentic GI-Tagged Sambalpuri handloom direct from the village pit loom.",
-  longDesc: "A premium handwoven saree utilizing authentic Odishan tie-dye ikat craft. Features beautiful temple borders and custom motifs.",
-  price: "₹ 15,900",
-  mrp: "₹ 21,000",
-  weave: "Ikat Handloom",
-  time: "20 Days Handweaving",
-  cluster: "Odisha Handloom Belt",
-  village: "Artisan Village",
-  yarnType: "Pure Mercerized Handloom Yarn",
-  isGI: true,
-  escrowStatus: "100% Escrow Protected Payouts Enabled",
-  rating: "4.9 (5 Reviews)",
-  img: "/bhulia-hero.png",
-  inStock: true
-};
-
 export default function ProductDetailPage() {
   const params = useParams();
-  const rawId = typeof params?.productId === "string" ? params.productId : "dasrajpur-royal-pasapalli-double-ikat-pata";
+  const rawId = typeof params?.productId === "string" ? params.productId : "";
   const productSlug = rawId.toLowerCase();
 
-  const product = MASTER_PRODUCTS.find(
-    (p) => p.slug === productSlug || p.id.toLowerCase() === productSlug
-  ) || {
-    ...DEFAULT_PRODUCT,
-    id: productSlug.toUpperCase(),
-    slug: productSlug,
-    title: productSlug.replace(/-/g, " ").toUpperCase(),
-  };
+  const { product, loading: productLoading } = useProductBySlug(productSlug);
+  const { products, loading: allProductsLoading } = useProducts();
 
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
@@ -61,6 +34,13 @@ export default function ProductDetailPage() {
   });
   const [isOrdering, setIsOrdering] = useState<boolean>(false);
   const [showProfileBlocker, setShowProfileBlocker] = useState(false);
+  const [activeImg, setActiveImg] = useState<string>("");
+
+  useEffect(() => {
+    if (product) {
+      setActiveImg(product.img);
+    }
+  }, [product]);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -111,6 +91,7 @@ export default function ProductDetailPage() {
   }, []);
 
   const handleSocialShare = (platform: "whatsapp" | "facebook") => {
+    if (!product) return;
     const shareUrl = `${window.location.origin}/product/${product.slug}?ref=${userUid}`;
     const message = `Check out this gorgeous authentic GI-Tagged ${product.title} from Bhulia Hub! Direct weaver-to-consumer escrow purchase. ${shareUrl}`;
 
@@ -121,8 +102,10 @@ export default function ProductDetailPage() {
     }
   };
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!product) return;
 
     const userEmail = localStorage.getItem("sd_current_user_email");
     const isProfileComplete = localStorage.getItem("sd_current_user_profile_complete") === "true";
@@ -133,36 +116,36 @@ export default function ProductDetailPage() {
     }
 
     setIsOrdering(true);
-    setTimeout(() => {
-      setIsOrdering(false);
+    const referralId = localStorage.getItem("sd_referral_id");
+    const newOrder = {
+      orderId: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+      productName: product.title,
+      productPrice: product.price,
+      quantity: selectedQuantity,
+      customerName: orderForm.fullName,
+      customerPhone: orderForm.mobile,
+      customerAddress: `${orderForm.address}, Pin: ${orderForm.pincode}`,
+      referralId: referralId || null,
+      proxyBuyerId: null,
+      paymentMode: orderForm.paymentMode,
+      paymentStatus: "Escrow Locked",
+      logisticsStatus: "Pending Weaver Handover",
+      qcStatus: "Pending Sourcing" as const,
+      timestamp: new Date().toISOString()
+    };
+
+    const res = await addOrder(newOrder);
+    setIsOrdering(false);
+
+    if (res.success) {
       setOrderStep(2); // Success Step
 
-      // Record the order details
-      const referralId = localStorage.getItem("sd_referral_id");
-      const newOrder = {
-        orderId: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
-        productName: product.title,
-        productPrice: product.price,
-        quantity: selectedQuantity,
-        customerName: orderForm.fullName,
-        customerPhone: orderForm.mobile,
-        customerAddress: `${orderForm.address}, Pin: ${orderForm.pincode}`,
-        referralId: referralId || null,
-        proxyBuyerId: null,
-        paymentMode: orderForm.paymentMode,
-        paymentStatus: "Escrow Locked",
-        logisticsStatus: "Pending Weaver Handover",
-        leg1LabelGenerated: false,
-        leg2LabelGenerated: false,
-        qcStatus: "Pending Sourcing",
-        timestamp: new Date().toISOString()
-      };
-
+      // Record local fallback
       const existingOrders = JSON.parse(localStorage.getItem("sd_all_orders") || "[]");
-      existingOrders.push(newOrder);
+      existingOrders.push({ ...newOrder, id: res.id });
       localStorage.setItem("sd_all_orders", JSON.stringify(existingOrders));
 
-      // Trigger a dynamic local notification event
+      // Trigger local notification fallback
       if (referralId) {
         const notifications = JSON.parse(localStorage.getItem("sd_franchise_notifications") || "[]");
         notifications.push({
@@ -175,7 +158,9 @@ export default function ProductDetailPage() {
         });
         localStorage.setItem("sd_franchise_notifications", JSON.stringify(notifications));
       }
-    }, 2000);
+    } else {
+      alert("Error placing escrow order. Please try again.");
+    }
   };
 
   return (
@@ -245,14 +230,70 @@ export default function ProductDetailPage() {
       {/* Main product showcase page layout */}
       <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 py-8 flex flex-col gap-8 relative z-10">
         
-        {/* Product Details Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Left Side: Large image & trust badges */}
-          <div className="lg:col-span-6 space-y-6">
+        {productLoading ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-pulse">
+            <div className="lg:col-span-6 h-[500px] bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl"></div>
+            <div className="lg:col-span-6 space-y-6">
+              <div className="h-[300px] bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl"></div>
+              <div className="h-[200px] bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl"></div>
+            </div>
+          </div>
+        ) : !product ? (
+          <div className="space-y-12">
+            <div className="text-center py-16 bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl shadow-[0_0_40px_rgba(197,160,89,0.15)] relative overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#C5A059]/10 via-transparent to-transparent pointer-events-none"></div>
+              <span className="text-5xl mb-4 block">🔍</span>
+              <h2 className="text-3xl font-serif font-bold text-white mb-3">Product Not Available</h2>
+              <p className="text-gray-300 max-w-lg mx-auto font-sans leading-relaxed text-sm mb-6">
+                The handcrafted masterpiece you are looking for has either been sold or is no longer listed in our inventory. Please explore our other authentic Sambalpuri collections below.
+              </p>
+              <Link href="/" className="inline-flex items-center justify-center bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-lg">
+                Browse Full Catalog
+              </Link>
+            </div>
+
+            <div className="space-y-6">
+              <h3 className="text-2xl font-serif font-bold text-[#C5A059] flex items-center gap-3">
+                <span className="w-8 h-px bg-[#C5A059]"></span>
+                Discover More Heritage Sarees
+                <span className="flex-1 h-px bg-gradient-to-r from-[#C5A059] to-transparent"></span>
+              </h3>
+              
+              <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6">
+                {allProductsLoading ? (
+                  [...Array(5)].map((_, i) => (
+                    <div key={i} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl h-[380px] animate-pulse"></div>
+                  ))
+                ) : products.slice(0, 5).map((item, idx) => (
+                  <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
+                    <div className="relative w-full h-48 sm:h-64 overflow-hidden bg-[#0B2B26] rounded-t-xl">
+                      <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
+                        {item.id}
+                      </div>
+                    </div>
+                    <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
+                      <div>
+                        <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.title}</h4>
+                        <p className="text-base font-serif font-bold text-[#C5A059]">{item.price}</p>
+                      </div>
+                      <Link href={`/product/${item.slug}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
+                        View Details
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {/* Left Side: Large image & trust badges */}
+            <div className="lg:col-span-6 space-y-6">
             <div className="relative w-full h-[320px] sm:h-[500px] rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl bg-[#0B2B26] p-0.5">
               <div className="relative w-full h-full rounded-[22px] overflow-hidden">
-                <Image src={product.img} alt={product.title} fill className="object-cover" />
+                <Image src={activeImg || product.img} alt={product.title} fill className="object-cover animate-fadeIn" />
               </div>
               
               {product.isGI && (
@@ -260,6 +301,37 @@ export default function ProductDetailPage() {
                   ✓ GI-TAG VERIFIED ARTISAN MASTERPIECE
                 </div>
               )}
+
+              {product.isBhuliaVerified && (
+                <div className="absolute bottom-4 right-4 z-20 flex flex-col items-center justify-center p-2 rounded-2xl bg-gradient-to-b from-[#FFF5C0] via-[#D4AF37] via-[#C5A059] to-[#8A5A00] border-2 border-[#FFF0A5] shadow-[0_12px_30px_rgba(0,0,0,0.85),inset_0_3px_4px_rgba(255,255,255,0.9)] w-24 h-24 transform rotate-12 animate-pulse" style={{ animationDuration: '3s' }}>
+                  <span className="text-[8px] font-serif font-black tracking-widest text-[#0A1021] uppercase leading-none mb-1 text-center">
+                    BHULIA.COM
+                  </span>
+                  <span className="text-[10px] font-serif font-black tracking-wider text-[#0A1021] uppercase leading-none text-center">
+                    VERIFIED
+                  </span>
+                  <span className="text-[7px] font-mono text-[#0A1021] uppercase tracking-widest mt-1">
+                    ✓ PREMIUM
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Product Gallery Thumbnails */}
+            <div className="grid grid-cols-4 gap-3 mt-4">
+              {[product.img, product.img2, product.img3, product.img4].filter(Boolean).map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveImg(image || "")}
+                  className={`relative aspect-square rounded-2xl overflow-hidden border bg-[#0B2B26] p-0.5 transition-all cursor-pointer ${
+                    activeImg === image ? "border-[#C5A059] ring-1 ring-[#C5A059]/40" : "border-[#C5A059]/20 hover:border-[#C5A059]/50"
+                  }`}
+                >
+                  <div className="relative w-full h-full rounded-xl overflow-hidden">
+                    <Image src={image || ""} alt={`Thumbnail ${index + 1}`} fill className="object-cover" />
+                  </div>
+                </button>
+              ))}
             </div>
 
             {/* Sharing widgets */}
@@ -291,34 +363,58 @@ export default function ProductDetailPage() {
                 <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#C5A059] leading-tight">{product.title}</h2>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-yellow-400 font-bold">★★★★★</span>
-                  <span className="text-xs text-gray-300">({product.rating})</span>
+                  <span className="text-xs text-gray-300">({product.rating || "5.0 (New Listing)"})</span>
                 </div>
               </div>
 
               {/* Pricing section */}
               <div className="flex items-baseline gap-4 border-t border-b border-[#C5A059]/20 py-4">
                 <span className="text-3xl font-serif font-bold text-[#C5A059]">{product.price}</span>
-                <span className="text-sm text-gray-400 line-through">{product.mrp}</span>
-                <span className="text-xs text-green-400 font-bold">Save 18% Direct Weaver Price</span>
+                <span className="text-sm text-gray-400 line-through">{product.mrp || `₹ ${(parseFloat(product.price.replace(/[^0-9]/g, '')) * 1.2).toLocaleString('en-IN')}`}</span>
+                <span className="text-xs text-green-400 font-bold">Direct Weaver Price</span>
               </div>
 
               {/* Weaver Specs details */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
                   <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Weaving Cluster</span>
-                  <span className="text-xs font-semibold text-white">{product.village}, {product.cluster}</span>
+                  <span className="text-xs font-semibold text-white">{product.village || "Dasrajpur"}, {product.cluster || "Sonepur Cluster"}</span>
                 </div>
                 <div>
-                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Time of Weave</span>
-                  <span className="text-xs font-semibold text-[#C5A059]">{product.time}</span>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Weaving Duration</span>
+                  <span className="text-xs font-semibold text-[#C5A059]">{product.weavingDuration || product.time || "35 Days"}</span>
                 </div>
                 <div>
-                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Yarn Quality</span>
-                  <span className="text-xs font-semibold text-white">{product.yarnType}</span>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Saree Type</span>
+                  <span className="text-xs font-semibold text-white">{product.sareeType || product.category || "Silk(pata)"}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Manufacturing Process</span>
+                  <span className="text-xs font-semibold text-white">{product.manufacturingProcess || product.weave || "Double Ikat(double bandha)"}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Design Theme</span>
+                  <span className="text-xs font-semibold text-white">{product.designType || "Pasapali(saptapar)"}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Thread Type</span>
+                  <span className="text-xs font-semibold text-white">{product.threadType || product.yarnType || "100 Count"}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Color Palette</span>
+                  <span className="text-xs font-semibold text-white">{product.colorUse || "Organic Dyes"}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Weaver / Designer</span>
+                  <span className="text-xs font-semibold text-white">{product.weaverName || "Master Weaver"} / {product.designerName || "Traditional"}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Length & Blouse</span>
+                  <span className="text-xs font-semibold text-white">{product.length || "6.2 Meters"} {product.hasBlouse ? "(With Blouse)" : "(No Blouse)"}</span>
                 </div>
                 <div>
                   <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Escrow Protocol</span>
-                  <span className="text-xs font-semibold text-green-400">{product.escrowStatus}</span>
+                  <span className="text-xs font-semibold text-green-400">{product.escrowStatus || "100% Escrow Protected"}</span>
                 </div>
               </div>
 
@@ -387,6 +483,7 @@ export default function ProductDetailPage() {
           </div>
 
         </div>
+        )}
 
       </div>
 

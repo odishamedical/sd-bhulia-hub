@@ -5,6 +5,7 @@ import Image from "next/image";
 import EcosystemSwitcher from "../../../components/EcosystemSwitcher";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useWeaverBySlug, useProducts } from "@/lib/db-hooks";
 
 // Bilingual translations mapped by artisan slug
 const TRANSLATIONS: Record<string, {
@@ -65,6 +66,7 @@ interface ArtisanListing {
   specialtyTags: string[];
   seoDescription: string;
   img: string;
+  heroImg?: string;
   isClaimed: boolean;
   claimStatus?: "verified" | "pending" | "unverified";
   biodata?: {
@@ -295,17 +297,50 @@ const STANDARD_SAREES = [
 
 export default function WeaverStorePage() {
   const params = useParams();
-  const rawSlug = typeof params?.slug === "string" ? params.slug : "nandalal-meher";
+  const rawSlug = typeof params?.slug === "string" ? params.slug : "";
   const weaverSlug = rawSlug.toLowerCase();
 
-  const foundArtisan = MASTER_ARTISANS.find((a) => a.slug === weaverSlug || a.id.toLowerCase() === weaverSlug) || {
-    ...DEFAULT_ARTISAN,
-    id: weaverSlug.toUpperCase(),
-    slug: weaverSlug,
-    name: `Master Weaver Store (${weaverSlug.replace(/-/g, " ")})`,
-  };
+  const { weaver: liveWeaver, loading: weaverLoading } = useWeaverBySlug(weaverSlug);
+  const { products: liveProducts, loading: productsLoading } = useProducts();
 
-  const [artisan, setArtisan] = useState<ArtisanListing>(foundArtisan);
+  const foundArtisan = MASTER_ARTISANS.find((a) => a.slug === weaverSlug || a.id.toLowerCase() === weaverSlug);
+  
+  const artisan: ArtisanListing | null = liveWeaver ? {
+    id: liveWeaver.id,
+    slug: liveWeaver.slug,
+    name: liveWeaver.title,
+    cluster: liveWeaver.desc.includes("Sonepur") ? "Sonepur Cluster" : (liveWeaver.desc.includes("Bargarh") ? "Bargarh Cluster" : "Odisha Cluster"),
+    village: liveWeaver.desc.includes("Dasrajpur") ? "Dasrajpur, Sonepur" : (liveWeaver.desc.includes("Laumunda") ? "Laumunda, Bargarh" : "Handloom Village"),
+    category: "heritage",
+    loomCount: 15,
+    giTagNumber: foundArtisan?.giTagNumber || "GI-Cert: #OD-" + Math.floor(1000 + Math.random() * 9000),
+    specialtyTags: [liveWeaver.badge, "Traditional Ikat"],
+    seoDescription: liveWeaver.desc,
+    img: liveWeaver.img,
+    isClaimed: true,
+    claimStatus: "verified",
+    biodata: {
+      artisanTitle: foundArtisan?.biodata?.artisanTitle || "Master Weaver",
+      legacyEst: foundArtisan?.biodata?.legacyEst || "Est. Heritage Loom",
+      shortStory: foundArtisan?.biodata?.shortStory || liveWeaver.desc,
+      awardHighlights: foundArtisan?.biodata?.awardHighlights || ["🏆 Handloom Excellence"],
+      masterpieceMotifs: foundArtisan?.biodata?.masterpieceMotifs || ["✨ Traditional Ikat", "✨ Handwoven Silk"],
+      detailedBiography: foundArtisan?.biodata?.detailedBiography || liveWeaver.desc,
+    }
+  } : null;
+
+  const sidebarPosition = liveWeaver?.layoutConfig?.sidebarPosition || "Left";
+  const heroEnabled = liveWeaver?.layoutConfig?.heroEnabled ?? true;
+  const gridStyle = liveWeaver?.layoutConfig?.gridStyle || "3-Column";
+
+  const weaverProducts = liveProducts.filter(p => 
+    p.weaverName === artisan?.name || 
+    p.weaverName === liveWeaver?.title || 
+    (p.weaverName && artisan?.name && p.weaverName.toLowerCase().includes(artisan.name.toLowerCase().replace("master weaver ", "").trim()))
+  );
+  
+  const displayProducts = weaverProducts.length > 0 ? weaverProducts : liveProducts.slice(0, 3);
+
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -324,9 +359,6 @@ export default function WeaverStorePage() {
   const [searchResult, setSearchResult] = useState<{ available: boolean; domain: string; price: number; platformFee: number } | null>(null);
   const [checkAvailabilityStatus, setCheckAvailabilityStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [activeCustomUrl, setActiveCustomUrl] = useState<string | null>(null);
-
-  const isNandalal = artisan.slug === "nandalal-meher";
-  const currentCatalog = isNandalal ? NANDALAL_SAREES : STANDARD_SAREES;
 
   useEffect(() => {
     const checkAuth = () => {
@@ -376,6 +408,7 @@ export default function WeaverStorePage() {
   }, [weaverSlug]);
 
   const handleSocialShare = (platform: "whatsapp" | "facebook") => {
+    if (!artisan) return;
     const shareUrl = `${window.location.origin}/weaver/${artisan.slug}?ref=${userUid}`;
     const message = `Explore the master weaver profile for ${artisan.name}. Saree order checkout secured with escrow payouts. ${shareUrl}`;
 
@@ -437,11 +470,11 @@ export default function WeaverStorePage() {
 
     setDomainTier(tier);
     setActiveCustomUrl(customUrl);
-    alert(`🎉 Branding settings updated! Your storefront URL is now: ${customUrl || `bhulia.com/weaver/${artisan.slug}`}`);
+    alert(`🎉 Branding settings updated! Your storefront URL is now: ${customUrl || `bhulia.com/weaver/${weaverSlug}`}`);
   };
 
-  const bio = TRANSLATIONS[artisan.slug] || {
-    en: { bio1: artisan.biodata?.shortStory || artisan.seoDescription, bio2: artisan.biodata?.detailedBiography.substring(0, 150) + "..." },
+  const bio = (artisan && TRANSLATIONS[artisan.slug]) || {
+    en: { bio1: artisan?.biodata?.shortStory || artisan?.seoDescription || "Master weaver of authentic Sambalpuri handlooms.", bio2: artisan?.biodata?.detailedBiography.substring(0, 150) + "..." },
     or: { bio1: "ଓଡ଼ିଶାର ହସ୍ତତନ୍ତ ବୁଣାକାର ସମିତିର ଅଧୀନରେ ଥିବା ଏହି ବୁଣାକାର ନିଜର ଶାଢ଼ୀ ପାଇଁ ବହୁ ପରିଚିତ।", bio2: "ଏହି ଶାଢ଼ୀ ଅତ୍ୟନ୍ତ ପରିଶ୍ରମ ଓ ଗାଣିତିକ ସମତୁଲତା ସହ ପ୍ରସ୍ତୁତ କରାଯାଇଛି।" }
   };
 
@@ -505,6 +538,26 @@ export default function WeaverStorePage() {
       {/* Weaver Profile Main Content */}
       <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 py-8 flex flex-col gap-8 relative z-10">
         
+        {weaverLoading ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch animate-pulse">
+            <div className="lg:col-span-4 h-[600px] bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl"></div>
+            <div className="lg:col-span-8 h-[600px] bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl"></div>
+          </div>
+        ) : !artisan ? (
+          <div className="space-y-12">
+            <div className="text-center py-16 bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl shadow-[0_0_40px_rgba(197,160,89,0.15)] relative overflow-hidden">
+              <span className="text-5xl mb-4 block">🚫</span>
+              <h2 className="text-3xl font-serif font-bold text-white mb-3">Weaver Not Found</h2>
+              <p className="text-gray-300 max-w-lg mx-auto font-sans leading-relaxed text-sm mb-6">
+                We could not locate this verified artisan profile. They may be pending verification or the link has changed.
+              </p>
+              <Link href="/" className="inline-flex items-center justify-center bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-lg">
+                View All Artisans
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <>
         {/* Simulator View Controller Toggle */}
         <div className="bg-[#0A3A35]/90 border border-[#C5A059]/40 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
           <div className="flex items-center gap-3">
@@ -528,11 +581,24 @@ export default function WeaverStorePage() {
           </button>
         </div>
 
+        {/* 1. Dynamic Hero Banner */}
+        {heroEnabled && artisan && (
+          <div className="relative w-full h-48 sm:h-64 rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl mb-6 bg-[#0B2B26]">
+            <Image src={artisan.heroImg || artisan.img} alt="Loom Heritage Banner" fill className="object-cover opacity-60" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#010a08] via-[#051815]/90 to-transparent"></div>
+            <div className="absolute inset-0 p-6 sm:p-10 flex flex-col justify-end">
+              <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold">Odishan Pit Loom Master</span>
+              <h2 className="text-2xl sm:text-4xl font-serif font-bold text-white mt-1 uppercase tracking-wider">{artisan.name}</h2>
+              <p className="text-xs text-gray-300 font-mono mt-1.5">{artisan.giTagNumber} • {artisan.village}, {artisan.cluster}</p>
+            </div>
+          </div>
+        )}
+
         {/* Profile Card & Info */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* Left Block: Profile Image & Loom Details */}
-          <div className="lg:col-span-4 bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 flex flex-col justify-between shadow-xl">
+          <div className={`bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 flex flex-col justify-between shadow-xl ${sidebarPosition === "Hidden" ? "hidden" : "lg:col-span-4"} ${sidebarPosition === "Right" ? "lg:order-2" : "lg:order-1"}`}>
             <div className="space-y-6">
               <div className="relative w-full h-80 rounded-2xl overflow-hidden border-2 border-[#C5A059]/50 shadow-lg bg-[#051815]">
                 <Image src={artisan.img} alt={artisan.name} fill className="object-cover" />
@@ -573,7 +639,7 @@ export default function WeaverStorePage() {
           </div>
 
           {/* Right Block: Biography & Award Showcase */}
-          <div className="lg:col-span-8 bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-xl text-white">
+          <div className={`bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-xl text-white ${sidebarPosition === "Hidden" ? "lg:col-span-12" : "lg:col-span-8"} ${sidebarPosition === "Right" ? "lg:order-1" : "lg:order-2"}`}>
             <div className="space-y-6">
               <div className="flex justify-between items-start gap-4">
                 <div>
@@ -959,12 +1025,16 @@ export default function WeaverStorePage() {
 
         {/* Saree Catalog Header */}
         <div id="catalog" className="space-y-4 pt-6 border-t border-[#C5A059]/20">
-          <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Available Pit Loom Catalog</h3>
-          <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Reserve handloom pieces directly from this artisan - escrow protection activated</p>
+          <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Current Available Masterpieces</h3>
+          <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Reserve handloom pieces directly from this artisan cluster - escrow protection activated</p>
 
           {/* Saree Catalog Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
-            {currentCatalog.map((saree) => (
+          <div className={`grid grid-cols-2 gap-4 sm:gap-6 ${gridStyle === "2-Column" ? "lg:grid-cols-2 xl:grid-cols-2" : "lg:grid-cols-3 xl:grid-cols-3"}`}>
+            {productsLoading ? (
+               [...Array(3)].map((_, i) => (
+                 <div key={i} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl h-[420px] animate-pulse"></div>
+               ))
+            ) : displayProducts.map((saree) => (
               <div key={saree.id} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5 text-white">
                 <div className="relative w-full h-56 sm:h-72 overflow-hidden bg-[#0B2B26] rounded-t-xl">
                   <Image src={saree.img} alt={saree.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
@@ -991,20 +1061,20 @@ export default function WeaverStorePage() {
                   {/* Share buttons on cards */}
                   <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-[#C5A059]/10">
                     <button onClick={() => {
-                      const shareUrl = `${window.location.origin}/product/${encodeURIComponent(saree.title.toLowerCase().replace(/\s+/g, "-"))}?ref=${userUid}`;
+                      const shareUrl = `${window.location.origin}/product/${saree.slug}?ref=${userUid}`;
                       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent("Check out this " + saree.title + ": " + shareUrl)}`, "_blank");
                     }} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📲 Share</span>
                     </button>
                     <button onClick={() => {
-                      const shareUrl = `${window.location.origin}/product/${encodeURIComponent(saree.title.toLowerCase().replace(/\s+/g, "-"))}?ref=${userUid}`;
+                      const shareUrl = `${window.location.origin}/product/${saree.slug}?ref=${userUid}`;
                       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank");
                     }} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📘 Share</span>
                     </button>
                   </div>
 
-                  <Link href={`/product/${encodeURIComponent(saree.title.toLowerCase().replace(/\s+/g, "-"))}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all text-center block">
+                  <Link href={`/product/${saree.slug}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all text-center block">
                     View Details
                   </Link>
                 </div>
@@ -1012,6 +1082,8 @@ export default function WeaverStorePage() {
             ))}
           </div>
         </div>
+        </>
+        )}
 
       </div>
 

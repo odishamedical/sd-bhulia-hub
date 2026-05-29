@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import EcosystemSwitcher from "../../components/EcosystemSwitcher";
 import Link from "next/link";
+import { addStore } from "@/lib/db-hooks";
 
 const INDIAN_STATES = [
   "Odisha", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", 
@@ -102,7 +103,8 @@ export default function StoreRegistrationPage() {
       bankName: "HDFC Bank Ltd",
       upiId: "samalemporium@hdfc",
       consentAuthentic: true,
-      consentTerms: true
+      consentTerms: true,
+      tier: "Silver"
     });
     alert("⚡ Mock Store details populated successfully!");
   };
@@ -184,7 +186,8 @@ export default function StoreRegistrationPage() {
     bankName: "",
     upiId: "",
     consentAuthentic: false,
-    consentTerms: false
+    consentTerms: false,
+    tier: "Silver" as "Silver" | "Gold" | "Diamond"
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -421,23 +424,48 @@ export default function StoreRegistrationPage() {
     setCurrentStep((prev) => prev - 1);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.consentAuthentic || !formData.consentTerms) {
       setValidationError("You must consent to all authentication and terms policies before submitting.");
       return;
     }
 
+    const uniqueId = "store-" + Math.floor(1000 + Math.random() * 9000);
+    const assignedSlug = formData.tier === "Silver"
+      ? uniqueId
+      : formData.storeName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+    const payload = {
+      slug: assignedSlug,
+      title: formData.storeName,
+      desc: `Authentic Sambalpuri handloom showroom operated by ${formData.ownerName}.`,
+      img: formData.logoFilePreview || (formData.storeImages[0]?.preview) || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80",
+      badge: `${formData.tier} Store`,
+      phone: formData.contactNumber,
+      whatsapp: formData.whatsappNumber,
+      address: formData.address,
+      tier: formData.tier,
+      status: "pending_approval" as const,
+      productLimit: formData.tier === "Silver" ? 0 : (formData.tier === "Gold" ? 5 : 9999)
+    };
+
+    const res = await addStore(payload, uniqueId);
+    if (!res.success) {
+      setValidationError("Error submitting application. Please try again.");
+      return;
+    }
+
     // Save submission state to local storage simulation
     const activeApplications = JSON.parse(localStorage.getItem("sd_store_applications") || "[]");
-    const payload = {
+    const localPayload = {
       ...formData,
-      id: `STR-${Date.now()}`,
+      id: uniqueId,
       appliedAt: new Date().toISOString(),
-      status: "pending_bhulia_verification",
-      assignedUrl: activeCustomUrl || `bhulia.com/store/${Math.floor(1000 + Math.random() * 9000)}`
+      status: "pending_approval",
+      assignedUrl: activeCustomUrl || `bhulia.com/store/${uniqueId}`
     };
-    activeApplications.push(payload);
+    activeApplications.push(localPayload);
     localStorage.setItem("sd_store_applications", JSON.stringify(activeApplications));
 
     setFormSubmitted(true);
@@ -633,6 +661,34 @@ export default function StoreRegistrationPage() {
               {/* STEP 1: Personal & Business Info */}
               {currentStep === 1 && (
                 <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* Tier Selection */}
+                  <div className="space-y-2 mb-4">
+                    <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Select Store Tier</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {[
+                        { id: "Silver", name: "Silver (Free)", price: "Free", desc: "Simple page, one store image, hidden phone, automatic URL." },
+                        { id: "Gold", name: "Gold (Rs 2,000/yr)", price: "Rs 2,000", desc: "Custom URL choice, upload store/product desc, verified seal." },
+                        { id: "Diamond", name: "Diamond (Paid)", price: "Rs 3,000 / Rs 5,000", desc: "Gold features + upload 25 products (Rs 3k) or Unlimited (Rs 5k)." }
+                      ].map((t) => {
+                        const selected = formData.tier === t.id;
+                        return (
+                          <div 
+                            key={t.id}
+                            onClick={() => setFormData(prev => ({ ...prev, tier: t.id as any }))}
+                            className={`border rounded-xl p-3.5 cursor-pointer transition-all flex flex-col justify-between ${selected ? "bg-[#0A3A35] border-[#C5A059] text-white" : "border-[#C5A059]/20 bg-[#051815]/50 text-gray-300 hover:border-[#C5A059]"}`}
+                          >
+                            <div>
+                              <p className="text-xs font-bold text-[#C5A059]">{t.name}</p>
+                              <p className="text-[10px] text-gray-300 mt-1 leading-relaxed">{t.desc}</p>
+                            </div>
+                            <span className="text-[10px] font-mono text-[#C5A059] font-bold mt-2 block">{t.price}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Store Name</label>

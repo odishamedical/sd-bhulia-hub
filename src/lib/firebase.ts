@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, where, getDocs, serverTimestamp } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, where, getDocs, serverTimestamp, updateDoc, increment } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBhuliaHubMasterKey092834710293847",
@@ -13,4 +13,4 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 
-export { app, db, doc, getDoc, setDoc, onSnapshot, collection, query, where, getDocs, serverTimestamp };
+export { app, db, doc, getDoc, setDoc, onSnapshot, collection, query, where, getDocs, serverTimestamp, updateDoc, increment };

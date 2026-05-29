@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import EcosystemSwitcher from "../../components/EcosystemSwitcher";
 import Link from "next/link";
+import { addFranchise } from "@/lib/db-hooks";
 
 const INDIAN_STATES = [
   "Odisha", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", 
@@ -101,7 +102,8 @@ export default function FranchiseRegistrationPage() {
     bankName: "",
     securityDepositTxn: "",
     consentAuthentic: false,
-    consentTerms: false
+    consentTerms: false,
+    tier: "Silver" as "Silver" | "Gold" | "Diamond"
   });
 
   // Sync auth state on load
@@ -185,7 +187,8 @@ export default function FranchiseRegistrationPage() {
       bankName: "State Bank of India",
       securityDepositTxn: "TXN-9023419082",
       consentAuthentic: true,
-      consentTerms: true
+      consentTerms: true,
+      tier: "Silver"
     });
     setSubfolderInput("bargarh-hub");
     setActiveCustomUrl("bhulia.com/bargarh-hub");
@@ -359,23 +362,49 @@ export default function FranchiseRegistrationPage() {
     setCurrentStep((prev) => prev - 1);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.consentAuthentic || !formData.consentTerms) {
       setValidationError("You must consent to all quality standard audits and terms before submitting.");
       return;
     }
 
+    const uniqueId = "franchise-" + Math.floor(1000 + Math.random() * 9000);
+    const assignedSlug = formData.tier === "Silver"
+      ? uniqueId
+      : formData.hubName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+    const payload = {
+      slug: assignedSlug,
+      name: formData.hubName,
+      city: `${formData.districtCity}, ${formData.stateRegion}`,
+      phone: formData.contactNumber,
+      whatsapp: formData.whatsappNumber,
+      address: formData.address,
+      img: formData.logoFilePreview || (formData.hubImages[0]?.preview) || "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
+      tier: formData.tier,
+      status: "pending_approval" as const,
+      invitedCount: 0,
+      totalSales: 0,
+      commissionEarned: 0
+    };
+
+    const res = await addFranchise(payload, uniqueId);
+    if (!res.success) {
+      setValidationError("Error submitting application. Please try again.");
+      return;
+    }
+
     // Save details locally in localStorage simulation
     const activeApplications = JSON.parse(localStorage.getItem("sd_franchise_applications") || "[]");
-    const payload = {
+    const localPayload = {
       ...formData,
-      id: `FRA-${Date.now()}`,
+      id: uniqueId,
       appliedAt: new Date().toISOString(),
-      status: "pending_bhulia_verification",
-      assignedUrl: activeCustomUrl || `bhulia.com/${formData.hubName.toLowerCase().replace(/[^a-z0-9-]/g, "")}`
+      status: "pending_approval",
+      assignedUrl: activeCustomUrl || `bhulia.com/${assignedSlug}`
     };
-    activeApplications.push(payload);
+    activeApplications.push(localPayload);
     localStorage.setItem("sd_franchise_applications", JSON.stringify(activeApplications));
 
     setFormSubmitted(true);
@@ -570,6 +599,34 @@ export default function FranchiseRegistrationPage() {
               {/* STEP 1: Personal & Hub Info */}
               {currentStep === 1 && (
                 <div className="space-y-5">
+                  
+                  {/* Tier Selection */}
+                  <div className="space-y-2 mb-4">
+                    <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Select Franchise Tier</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {[
+                        { id: "Silver", name: "Silver (Paid)", price: "Rs 1,000", desc: "Track invitees, commission dashboard. Upgrade to Gold on 50 sales." },
+                        { id: "Gold", name: "Gold (Paid)", price: "Rs 2,000", desc: "Select up to 10 products on custom page, custom choice URL." },
+                        { id: "Diamond", name: "Diamond (Paid)", price: "Rs 4,000", desc: "Display unlimited products, categorized grid layout, verified seal." }
+                      ].map((t) => {
+                        const selected = formData.tier === t.id;
+                        return (
+                          <div 
+                            key={t.id}
+                            onClick={() => setFormData(prev => ({ ...prev, tier: t.id as any }))}
+                            className={`border rounded-xl p-3.5 cursor-pointer transition-all flex flex-col justify-between ${selected ? "bg-[#0A3A35] border-[#C5A059] text-white" : "border-[#C5A059]/20 bg-[#051815]/50 text-gray-300 hover:border-[#C5A059]"}`}
+                          >
+                            <div>
+                              <p className="text-xs font-bold text-[#C5A059]">{t.name}</p>
+                              <p className="text-[10px] text-gray-300 mt-1 leading-relaxed">{t.desc}</p>
+                            </div>
+                            <span className="text-[10px] font-mono text-[#C5A059] font-bold mt-2 block">{t.price}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Proposed Hub Name</label>

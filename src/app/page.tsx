@@ -4,8 +4,16 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import EcosystemSwitcher from "../components/EcosystemSwitcher";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useProducts, useWeavers } from "../lib/db-hooks";
 
 export default function Home() {
+  const { products, loading: productsLoading } = useProducts();
+  const { weavers, loading: weaversLoading } = useWeavers();
+
+  const cottonSambalpuri = products.filter(p => p.category === "Cotton Classics");
+  const pataSambalpuri = products.filter(p => p.category === "Silk Masterpieces");
+  const cottonBomkai = products.filter(p => p.weave.includes("Bomkai"));
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -47,6 +55,8 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
+  const router = useRouter();
+
   useEffect(() => {
     const checkAuth = () => {
       const email = localStorage.getItem("sd_current_user_email");
@@ -60,6 +70,26 @@ export default function Home() {
         setUserAvatar(avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80");
         setUserRole(role || "user");
         setUserUid(uid);
+        // ---- Role‑based redirect ----
+        if (role) {
+          const lower = role.toLowerCase();
+          if (["admin", "manager", "staff"].includes(lower)) {
+            window.location.href = "https://sd-auth-center.vercel.app/launcher";
+          } else if (["vendor", "franchise", "weaver", "store", "shop"].includes(lower)) {
+            router.replace("/admin");
+          }
+        }
+        // ---- General user fallback ----
+        if (!role || role.toLowerCase() === "user") {
+          const redirectUri = new URLSearchParams(window.location.search).get("redirect_uri");
+          if (redirectUri) {
+            router.replace(redirectUri);
+            // clean URL to avoid repeat redirects
+            const cleanUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+          }
+        }
+        // ---------------------------
       } else {
         setUserName(null);
         setUserAvatar(null);
@@ -67,21 +97,51 @@ export default function Home() {
       }
     };
 
+
+
     checkAuth();
     window.addEventListener("sd_auth_change", checkAuth);
     return () => window.removeEventListener("sd_auth_change", checkAuth);
   }, []);
 
-  // Capture Referral ID from URL parameters
+  // Capture Referral ID from URL parameters and log promoter visit
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const ref = params.get("ref");
-      if (ref) {
-        localStorage.setItem("sd_referral_id", ref);
-        console.log("Captured Referral ID:", ref);
+    const trackReferral = async () => {
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        // Preserve original page before auth redirect
+        const redirectPath = params.get('redirect_uri');
+        if (redirectPath) {
+          sessionStorage.setItem('sd_post_login_path', redirectPath);
+        }
+        const ssoEmail = params.get('sso_email');
+        const ssoName = params.get('sso_name');
+        const ssoAvatar = params.get('sso_avatar');
+        const ssoRole = params.get('sso_role');
+        const ssoProfileComplete = params.get('sso_profile_complete');
+        const ref = params.get("ref");
+        if (ref) {
+          localStorage.setItem("sd_referral_id", ref);
+          console.log("Captured Referral ID:", ref);
+          
+          const hasLoggedVisit = sessionStorage.getItem(`sd_ref_logged_${ref}`);
+          if (!hasLoggedVisit) {
+            try {
+              const { db, doc, updateDoc, increment } = await import("../lib/firebase");
+              const docRef = doc(db, "franchises", ref);
+              await updateDoc(docRef, {
+                invitedCount: increment(1)
+              });
+              sessionStorage.setItem(`sd_ref_logged_${ref}`, "true");
+              console.log("Logged visit for promoter:", ref);
+            } catch (err) {
+              console.error("Error updating tracking stats in Firestore:", err);
+            }
+          }
+        }
       }
-    }
+    };
+    trackReferral();
   }, []);
 
   // Dynamic Social Share Handler with Affiliate Tracking ID
@@ -99,52 +159,7 @@ export default function Home() {
   return (
     <main className="relative flex-1 w-full bg-[#051815] text-white font-sans flex flex-col min-h-screen">
       
-      {/* Developer Toolbar for testing */}
-      <div className="relative z-50 bg-[#0B2B26] border-b border-[#C5A059] px-4 py-2 text-center flex flex-wrap items-center justify-center gap-3 text-[10px] uppercase font-mono tracking-widest text-[#C5A059]">
-        <span>🛠️ Dev Sandbox Logins:</span>
-        <button onClick={() => {
-          localStorage.setItem("sd_current_user_email", "franchise@bhulia.com");
-          localStorage.setItem("sd_current_user_name", "Bargarh Phygital Hub Manager");
-          localStorage.setItem("sd_current_user_role", "franchisee");
-          localStorage.setItem("sd_current_user_uid", "FRA-001");
-          localStorage.setItem("sd_current_user_avatar", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80");
-          window.dispatchEvent(new Event("sd_auth_change"));
-        }} className="px-2 py-0.5 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-white rounded cursor-pointer">
-          FRA-001 (Franchise)
-        </button>
-        <button onClick={() => {
-          localStorage.setItem("sd_current_user_email", "weaver@bhulia.com");
-          localStorage.setItem("sd_current_user_name", "Nandalal Meher");
-          localStorage.setItem("sd_current_user_role", "weaver");
-          localStorage.setItem("sd_current_user_uid", "weaver_nandalal");
-          localStorage.setItem("sd_current_user_avatar", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80");
-          window.dispatchEvent(new Event("sd_auth_change"));
-        }} className="px-2 py-0.5 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-white rounded cursor-pointer">
-          Weaver
-        </button>
-        <button onClick={() => {
-          localStorage.setItem("sd_current_user_email", "admin@bhulia.com");
-          localStorage.setItem("sd_current_user_name", "Bhulia Central Admin");
-          localStorage.setItem("sd_current_user_role", "super_admin");
-          localStorage.setItem("sd_current_user_uid", "sd_super_admin_custom_uid");
-          localStorage.setItem("sd_current_user_avatar", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80");
-          window.dispatchEvent(new Event("sd_auth_change"));
-        }} className="px-2 py-0.5 bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-white rounded cursor-pointer">
-          Super Admin
-        </button>
-        {userRole && (
-          <button onClick={() => {
-            localStorage.removeItem("sd_current_user_email");
-            localStorage.removeItem("sd_current_user_name");
-            localStorage.removeItem("sd_current_user_role");
-            localStorage.removeItem("sd_current_user_uid");
-            localStorage.removeItem("sd_current_user_avatar");
-            window.dispatchEvent(new Event("sd_auth_change"));
-          }} className="px-2 py-0.5 bg-red-950/40 border border-red-500 text-red-300 rounded cursor-pointer">
-            Clear Login
-          </button>
-        )}
-      </div>
+
 
       {/* Background Gold Glows & Ikat Texture */}
       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #C5A059 1px, transparent 0)', backgroundSize: '48px 48px' }} />
@@ -328,37 +343,12 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-            {[
-              { 
-                title: "Master Weaver Nandalal Meher", 
-                desc: "Award-winning master weaver from Dasrajpur, Sonepur. Preserving the rare mathematical alignment of authentic double ikat silk Pata.", 
-                img: "/nandalal_meher.jpg", 
-                badge: "Bhulia Verified Sambalpuri Master Weaver",
-                link: "/weaver/nandalal-meher" 
-              },
-              { 
-                title: "Creative Weaver Rabindra Meher", 
-                desc: "Master of Sambalpuri Pata from Dasrajpur, Sonepur. Specializing in intricate Double Ikat, Pasapalli, Nabakothi, and narrative Sachitra silk canvases.", 
-                img: "/rabindra_meher.jpg", 
-                badge: "Bhulia Verified Sambalpuri Master Weaver",
-                link: "/weaver/rabindra-meher" 
-              },
-              { 
-                title: "Master Artisan Nagarjuna Meher", 
-                desc: "Legendary master weaver from Dasrajpur, Sonepur. Devoted to handloom excellence since childhood, producing premium double ikat and narrative silk masterpieces.", 
-                img: "/nagarjuna_meher.png", 
-                badge: "Bhulia Verified Sambalpuri Master Weaver",
-                link: "/weaver/nagarjuna-meher" 
-              },
-              { 
-                title: "Master Weaver Ravi Meher", 
-                desc: "Visionary Graph Artist from Lumunda, Bargarh. Merging architectural precision with Bandha Kala to create Pasapali and Sachipar masterpieces.", 
-                img: "/ravi_meher_v3.png", 
-                badge: "Bhulia Verified Sambalpuri Master Weaver",
-                link: "/weaver/ravi-meher" 
-              }
-            ].map((dir, idx) => (
-              <Link key={idx} href={dir.link} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all shadow-xl cursor-pointer block">
+            {weaversLoading ? (
+              [...Array(4)].map((_, i) => (
+                <div key={i} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl h-[380px] animate-pulse"></div>
+              ))
+            ) : weavers.map((dir, idx) => (
+              <Link key={idx} href={`/weaver/${dir.slug}`} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all shadow-xl cursor-pointer block">
                 <div>
                   {/* Image Thumbnail (100% Clean & Unobstructed Face) */}
                   <div className="relative w-full h-48 overflow-hidden bg-[#051815]">
@@ -379,7 +369,7 @@ export default function Home() {
                           Bhulia Verified
                         </span>
                         <span className="text-[11px] sm:text-xs font-serif font-black tracking-wider text-[#0A1021] uppercase leading-none drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)] text-center">
-                          Sambalpuri Master Weaver
+                          {dir.badge.replace("Bhulia Verified ", "")}
                         </span>
                       </div>
                     </div>
@@ -439,48 +429,46 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6">
-            {[
-              { id: "GI-8492", name: "Traditional Red Cotton Ikat", vendor: "Pata Weaver Group", price: "₹ 4,899", img: "/bhulia-hero.png", ticket: "👁️ 18 Connoisseurs Viewing E.g. 1 Saree Left" },
-              { id: "GI-7738", name: "Royal Blue Cotton Pasapalli", vendor: "Maa Samaleswari Handlooms", price: "₹ 5,299", img: "/bhulia-hero.png", ticket: "🛡️ 100% GI-Tag Verified E.g. Barpali Loom" },
-              { id: "GI-6639", name: "Maroon & Black Cotton Bomkai", vendor: "Maa Samaleswari Handlooms", price: "₹ 5,899", img: "/bhulia-hero.png", ticket: "⏱️ Weaving Ends in 3 Days E.g. Reserve Now" },
-              { id: "GI-5528", name: "Emerald Green Cotton Bandha", vendor: "Maa Samaleswari Handlooms", price: "₹ 4,999", img: "/bhulia-hero.png", ticket: "🔥 High Demand E.g. 12 Sold This Week" },
-              { id: "GI-4419", name: "Mustard Yellow Cotton Ikat", vendor: "Pata Weaver Group", price: "₹ 5,499", img: "/bhulia-hero.png", ticket: "✨ Handspun Cotton E.g. Organic Dye" }
-            ].map((item, idx) => (
+            {productsLoading ? (
+              [...Array(5)].map((_, i) => (
+                <div key={i} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl h-[380px] animate-pulse"></div>
+              ))
+            ) : cottonSambalpuri.map((item, idx) => (
               <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
                 <div className="relative w-full h-48 sm:h-64 overflow-hidden bg-[#0B2B26] rounded-t-xl">
-                  <Image src={item.img} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
                     {item.id}
                   </div>
                   <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#0B2B26] to-transparent p-3 pt-8">
-                    <p className="text-[9px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.vendor}</p>
+                    <p className="text-[9px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.cluster}</p>
                   </div>
                 </div>
 
                 <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
                   <div>
-                    <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.name}</h4>
+                    <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.title}</h4>
                     <p className="text-base font-serif font-bold text-[#C5A059]">{item.price}</p>
                   </div>
 
                   {/* Social Share Affiliate Buttons */}
                   <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-[#C5A059]/20">
-                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                    <button onClick={() => handleSocialShare("whatsapp", item.title)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📲 Share</span>
                     </button>
-                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                    <button onClick={() => handleSocialShare("facebook", item.title)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📘 Share</span>
                     </button>
                   </div>
 
-                  <Link href={`/product/${encodeURIComponent(item.name.toLowerCase().replace(/\s+/g, "-"))}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
+                  <Link href={`/product/${item.slug}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
                     View Details
                   </Link>
                 </div>
 
                 {/* Bottom Ticket */}
                 <div className="bg-[#0A2520] px-3 py-1.5 border-t border-[#C5A059]/20 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
-                  <span className="truncate">{item.ticket}</span>
+                  <span className="truncate">{item.escrowStatus || "🛡️ 100% GI-Tag Verified"}</span>
                 </div>
               </div>
             ))}
@@ -527,48 +515,46 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6">
-            {[
-              { id: "GI-9921", name: "Royal Crimson Pata Silk", vendor: "Pata Weaver Group", price: "₹ 14,899", img: "/bhulia-hero.png", ticket: "✨ Silk Mark Gold E.g. 3ply Mulberry Yarn" },
-              { id: "GI-9832", name: "Midnight Blue Silk Pasapalli", vendor: "Maa Samaleswari Handlooms", price: "₹ 16,299", img: "/bhulia-hero.png", ticket: "🛡️ 100% GI-Tag Verified E.g. Sonepur Loom" },
-              { id: "GI-9743", name: "Bridal Red & Gold Silk Bomkai", vendor: "Maa Samaleswari Handlooms", price: "₹ 18,899", img: "/bhulia-hero.png", ticket: "👁️ 24 Connoisseurs Viewing E.g. 1 Left" },
-              { id: "GI-9654", name: "Peacock Green Silk Bandha", vendor: "Maa Samaleswari Handlooms", price: "₹ 15,999", img: "/bhulia-hero.png", ticket: "🔥 High Demand E.g. 8 Sold This Week" },
-              { id: "GI-9565", name: "Pure Tussar Silk Ikat Saree", vendor: "Pata Weaver Group", price: "₹ 17,499", img: "/bhulia-hero.png", ticket: "⏱️ Weaving Ends in 2 Days E.g. Reserve" }
-            ].map((item, idx) => (
+            {productsLoading ? (
+              [...Array(5)].map((_, i) => (
+                <div key={i} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl h-[380px] animate-pulse"></div>
+              ))
+            ) : pataSambalpuri.map((item, idx) => (
               <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
                 <div className="relative w-full h-48 sm:h-64 overflow-hidden bg-[#0B2B26] rounded-t-xl">
-                  <Image src={item.img} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
                     {item.id}
                   </div>
                   <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#0B2B26] to-transparent p-3 pt-8">
-                    <p className="text-[9px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.vendor}</p>
+                    <p className="text-[9px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.cluster}</p>
                   </div>
                 </div>
 
                 <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
                   <div>
-                    <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.name}</h4>
+                    <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.title}</h4>
                     <p className="text-base font-serif font-bold text-[#C5A059]">{item.price}</p>
                   </div>
 
                   {/* Social Share Affiliate Buttons */}
                   <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-[#C5A059]/20">
-                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                    <button onClick={() => handleSocialShare("whatsapp", item.title)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📲 Share</span>
                     </button>
-                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                    <button onClick={() => handleSocialShare("facebook", item.title)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📘 Share</span>
                     </button>
                   </div>
 
-                  <Link href={`/product/${encodeURIComponent(item.name.toLowerCase().replace(/\s+/g, "-"))}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
+                  <Link href={`/product/${item.slug}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
                     View Details
                   </Link>
                 </div>
 
                 {/* Bottom Ticket */}
                 <div className="bg-[#0A2520] px-3 py-1.5 border-t border-[#C5A059]/20 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
-                  <span className="truncate">{item.ticket}</span>
+                  <span className="truncate">{item.escrowStatus || "🛡️ 100% GI-Tag Verified"}</span>
                 </div>
               </div>
             ))}
@@ -615,48 +601,46 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6">
-            {[
-              { id: "GI-8812", name: "Yellow & Red Cotton Bomkai", vendor: "Maa Samaleswari Handlooms", price: "₹ 5,699", img: "/bhulia-hero.png", ticket: "🔥 High Demand E.g. 14 Sold This Week" },
-              { id: "GI-8823", name: "Forest Green Cotton Bomkai", vendor: "Pata Weaver Group", price: "₹ 5,899", img: "/bhulia-hero.png", ticket: "🛡️ 100% GI-Tag Verified E.g. Bargarh Loom" },
-              { id: "GI-8834", name: "Black & Gold Cotton Bomkai", vendor: "Maa Samaleswari Handlooms", price: "₹ 6,299", img: "/bhulia-hero.png", ticket: "👁️ 15 Connoisseurs Viewing E.g. 2 Left" },
-              { id: "GI-8845", name: "Maroon Tribal Border Bomkai", vendor: "Pata Weaver Group", price: "₹ 5,999", img: "/bhulia-hero.png", ticket: "✨ Extra-Weft Border E.g. Pure Cotton" },
-              { id: "GI-8856", name: "Orange & Black Cotton Bomkai", vendor: "Maa Samaleswari Handlooms", price: "₹ 5,499", img: "/bhulia-hero.png", ticket: "⏱️ Weaving Ends in 4 Days E.g. Reserve" }
-            ].map((item, idx) => (
+            {productsLoading ? (
+              [...Array(5)].map((_, i) => (
+                <div key={i} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl h-[380px] animate-pulse"></div>
+              ))
+            ) : cottonBomkai.map((item, idx) => (
               <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
                 <div className="relative w-full h-48 sm:h-64 overflow-hidden bg-[#0B2B26] rounded-t-xl">
-                  <Image src={item.img} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
                     {item.id}
                   </div>
                   <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#0B2B26] to-transparent p-3 pt-8">
-                    <p className="text-[9px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.vendor}</p>
+                    <p className="text-[9px] text-[#C5A059] uppercase tracking-widest font-bold">Sold by: {item.cluster}</p>
                   </div>
                 </div>
 
                 <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
                   <div>
-                    <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.name}</h4>
+                    <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.title}</h4>
                     <p className="text-base font-serif font-bold text-[#C5A059]">{item.price}</p>
                   </div>
 
                   {/* Social Share Affiliate Buttons */}
                   <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-[#C5A059]/20">
-                    <button onClick={() => handleSocialShare("whatsapp", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                    <button onClick={() => handleSocialShare("whatsapp", item.title)} className="flex items-center justify-center gap-1 py-1.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📲 Share</span>
                     </button>
-                    <button onClick={() => handleSocialShare("facebook", item.name)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
+                    <button onClick={() => handleSocialShare("facebook", item.title)} className="flex items-center justify-center gap-1 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-lg font-bold text-[9px] uppercase tracking-wider transition-colors cursor-pointer">
                       <span>📘 Share</span>
                     </button>
                   </div>
 
-                  <Link href={`/product/${encodeURIComponent(item.name.toLowerCase().replace(/\s+/g, "-"))}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
+                  <Link href={`/product/${item.slug}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
                     View Details
                   </Link>
                 </div>
 
                 {/* Bottom Ticket */}
-                <div className="bg-[#0A2520] px-3 py-1.5 border-t border-[#C5A059]/20 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1.5 text-center leading-tight">
-                  <span className="truncate">{item.ticket}</span>
+                <div className="bg-[#0A2520] px-3 py-1.5 border-t border-[#C5A059]/20 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
+                  <span className="truncate">{item.escrowStatus || "🛡️ 100% GI-Tag Verified"}</span>
                 </div>
               </div>
             ))}
