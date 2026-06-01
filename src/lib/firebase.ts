@@ -3,12 +3,12 @@ import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, where
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBhuliaHubMasterKey092834710293847",
+  apiKey: "AIzaSyBUpo-Mc3aDs38LtkjgmUxSQNCVzg9XK2o",
   authDomain: "sd-bhulia.firebaseapp.com",
   projectId: "sd-bhulia",
   storageBucket: "sd-bhulia.firebasestorage.app",
-  messagingSenderId: "849201928374",
-  appId: "1:849201928374:web:b8c9d0e1f2a3b4c5d6e7f8"
+  messagingSenderId: "847168799219",
+  appId: "1:847168799219:web:58c134aaa139274f831286"
 };
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
