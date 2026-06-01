@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import EcosystemSwitcher from "../../../components/EcosystemSwitcher";
+import UserMenu from "@/components/UserMenu";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useProductBySlug, useProducts, addOrder } from "@/lib/db-hooks";
@@ -188,7 +188,7 @@ export default function ProductDetailPage() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <EcosystemSwitcher />
+            <UserMenu />
 
             <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all">
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

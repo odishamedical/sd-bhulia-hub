@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import EcosystemSwitcher from "../../components/EcosystemSwitcher";
+import UserMenu from "@/components/UserMenu";
 import Link from "next/link";
 import { addWeaver } from "@/lib/db-hooks";
 
@@ -141,6 +141,29 @@ export default function WeaverRegistrationPage() {
     consentTerms: false,
     tier: "Silver" as "Silver" | "Gold" | "Diamond"
   });
+
+  
+  // Draft Logic
+  useEffect(() => {
+    const savedDraft = localStorage.getItem('sd_bhulia_weaver_draft');
+    if (savedDraft) {
+      try {
+        const parsed = JSON.parse(savedDraft);
+        if (confirm('We found an unsaved draft. Do you want to resume?')) {
+          setFormData(parsed);
+        } else {
+          localStorage.removeItem('sd_bhulia_weaver_draft');
+        }
+      } catch (e) {
+        console.error('Failed to parse draft');
+      }
+    }
+  }, []);
+
+  const handleSaveDraft = () => {
+    localStorage.setItem('sd_bhulia_weaver_draft', JSON.stringify(formData));
+    alert('Draft saved successfully! You can safely close this page and return later.');
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -315,11 +338,17 @@ export default function WeaverRegistrationPage() {
       ? uniqueId
       : formData.fullName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
+    let finalImg = formData.productImages[0]?.preview || "https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=800&q=80";
+    if (finalImg.length > 500000) {
+      finalImg = "https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=800&q=80";
+      console.warn("Image too large for demo database. Using placeholder.");
+    }
+
     const payload = {
       slug: assignedSlug,
       title: formData.fullName,
       desc: formData.productDescription || "Master weaver of authentic Sambalpuri handlooms.",
-      img: formData.productImages[0]?.preview || "https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=800&q=80",
+      img: finalImg,
       badge: `${formData.tier} Weaver`,
       phone: formData.contactNumber,
       whatsapp: formData.whatsappNumber,
@@ -381,9 +410,16 @@ export default function WeaverRegistrationPage() {
 
           {/* Right Side: User Menu / Sign In / Register (Desktop) & Mobile Hamburger */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <EcosystemSwitcher />
+            <UserMenu />
 
             {/* Mobile Hamburger Button */}
+            <button
+              type="button"
+              onClick={handleSaveDraft}
+              className="bg-[#0A3A35] text-[#C5A059] px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs border border-[#C5A059]/40 hover:bg-[#0D4B45] transition-all shrink-0"
+            >
+              Save Draft
+            </button>
             <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0 shadow">
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileNavOpen ? (
@@ -420,37 +456,6 @@ export default function WeaverRegistrationPage() {
       {/* Main Container */}
       <div className="flex-1 max-w-[800px] w-full mx-auto px-4 py-12 flex flex-col justify-center">
         
-        {/* Super Admin Bypass Tester Control Panel */}
-        {!formSubmitted && (
-          <div className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-3 shadow-xl">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">⚡</span>
-              <div>
-                <p className="text-xs font-bold text-[#C5A059] uppercase tracking-wider">Super Admin Sandbox Control</p>
-                <p className="text-[10px] text-gray-300">Quickly test form pages and domain steps without validation constraints.</p>
-              </div>
-            </div>
-            <div className="flex gap-2 w-full sm:w-auto">
-              <button 
-                type="button"
-                onClick={handleAutofillWeaver}
-                className="flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#0B2B26] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors cursor-pointer"
-              >
-                Autofill Mock Data
-              </button>
-              <button 
-                type="button"
-                onClick={() => {
-                  setBypassValidation(!bypassValidation);
-                }}
-                className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-colors cursor-pointer ${bypassValidation ? "bg-red-500/20 border-red-500 text-red-300" : "bg-[#0B2B26] border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10"}`}
-              >
-                {bypassValidation ? "Bypass: ON" : "Bypass Validation"}
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* Progress Stepper Indicator */}
         {!formSubmitted && (
           <div className="mb-10 w-full">
@@ -750,14 +755,31 @@ export default function WeaverRegistrationPage() {
                     <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold">Primary Product Category</label>
                     <select 
                       name="primaryCategory"
-                      value={formData.primaryCategory}
-                      onChange={handleInputChange}
+                      value={PRODUCT_CATEGORIES.includes(formData.primaryCategory) ? formData.primaryCategory : "Other (Custom)"}
+                      onChange={(e) => {
+                         if (e.target.value !== "Other (Custom)") {
+                            handleInputChange(e);
+                         } else {
+                            setFormData(prev => ({ ...prev, primaryCategory: "" }));
+                         }
+                      }}
                       className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-sm focus:border-[#C5A059] focus:outline-none"
                     >
                       {PRODUCT_CATEGORIES.map((cat) => (
                         <option key={cat} value={cat}>{cat}</option>
                       ))}
+                      <option value="Other (Custom)">Other (Custom)</option>
                     </select>
+                    {!PRODUCT_CATEGORIES.includes(formData.primaryCategory) && (
+                      <input 
+                        type="text" 
+                        name="primaryCategory"
+                        value={formData.primaryCategory}
+                        onChange={handleInputChange}
+                        placeholder="Enter custom product category..."
+                        className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-sm focus:border-[#C5A059] focus:outline-none mt-2"
+                      />
+                    )}
                   </div>
 
                   <div className="space-y-1">
@@ -1039,20 +1061,38 @@ export default function WeaverRegistrationPage() {
                 </button>
 
                 {currentStep < 5 ? (
-                  <button
-                    type="button"
-                    onClick={nextStep}
-                    className="bhulia-gold-button px-6 py-2.5 text-[#0A1021] font-bold text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all"
-                  >
-                    Continue
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveDraft}
+                      className="bg-[#0A3A35] text-[#C5A059] px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs border border-[#C5A059]/40 hover:bg-[#0D4B45] transition-all shrink-0"
+                    >
+                      Save Draft
+                    </button>
+                    <button
+                      type="button"
+                      onClick={nextStep}
+                      className="bhulia-gold-button px-6 py-2.5 text-[#0A1021] font-bold text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all"
+                    >
+                      Continue
+                    </button>
+                  </div>
                 ) : (
-                  <button
-                    type="submit"
-                    className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-8 py-2.5 font-bold text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)]"
-                  >
-                    Submit Application
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveDraft}
+                      className="bg-[#0A3A35] text-[#C5A059] px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs border border-[#C5A059]/40 hover:bg-[#0D4B45] transition-all shrink-0"
+                    >
+                      Save Draft
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-8 py-2.5 font-bold text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)]"
+                    >
+                      Submit Application
+                    </button>
+                  </div>
                 )}
               </div>
 

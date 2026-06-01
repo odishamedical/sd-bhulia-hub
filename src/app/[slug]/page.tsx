@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import EcosystemSwitcher from "../../components/EcosystemSwitcher";
+import UserMenu from "@/components/UserMenu";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { MASTER_STORES } from "@/app/store/data";
@@ -216,7 +216,7 @@ export default function DynamicSlugPage() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <EcosystemSwitcher />
+            <UserMenu />
           </div>
         </div>
       </header>

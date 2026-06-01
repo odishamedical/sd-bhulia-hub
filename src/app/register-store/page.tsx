@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import EcosystemSwitcher from "../../components/EcosystemSwitcher";
+import UserMenu from "@/components/UserMenu";
 import Link from "next/link";
 import { addStore } from "@/lib/db-hooks";
 
@@ -189,6 +189,29 @@ export default function StoreRegistrationPage() {
     consentTerms: false,
     tier: "Silver" as "Silver" | "Gold" | "Diamond"
   });
+
+  
+  // Draft Logic
+  useEffect(() => {
+    const savedDraft = localStorage.getItem('sd_bhulia_store_draft');
+    if (savedDraft) {
+      try {
+        const parsed = JSON.parse(savedDraft);
+        if (confirm('We found an unsaved draft. Do you want to resume?')) {
+          setFormData(parsed);
+        } else {
+          localStorage.removeItem('sd_bhulia_store_draft');
+        }
+      } catch (e) {
+        console.error('Failed to parse draft');
+      }
+    }
+  }, []);
+
+  const handleSaveDraft = () => {
+    localStorage.setItem('sd_bhulia_store_draft', JSON.stringify(formData));
+    alert('Draft saved successfully! You can safely close this page and return later.');
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -436,11 +459,17 @@ export default function StoreRegistrationPage() {
       ? uniqueId
       : formData.storeName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
+    let finalImg = formData.logoFilePreview || (formData.storeImages[0]?.preview) || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80";
+    if (finalImg.length > 500000) {
+      finalImg = "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80";
+      console.warn("Image too large for demo database. Using placeholder.");
+    }
+
     const payload = {
       slug: assignedSlug,
       title: formData.storeName,
       desc: `Authentic Sambalpuri handloom showroom operated by ${formData.ownerName}.`,
-      img: formData.logoFilePreview || (formData.storeImages[0]?.preview) || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80",
+      img: finalImg,
       badge: `${formData.tier} Store`,
       phone: formData.contactNumber,
       whatsapp: formData.whatsappNumber,
@@ -497,8 +526,15 @@ export default function StoreRegistrationPage() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <EcosystemSwitcher />
+            <UserMenu />
 
+            <button
+              type="button"
+              onClick={handleSaveDraft}
+              className="bg-[#0A3A35] text-[#C5A059] px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs border border-[#C5A059]/40 hover:bg-[#0D4B45] transition-all shrink-0"
+            >
+              Save Draft
+            </button>
             <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all">
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileNavOpen ? (
@@ -588,37 +624,6 @@ export default function StoreRegistrationPage() {
       {/* Main Registration Layout */}
       <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 py-12 flex-1 flex flex-col justify-center">
         
-        {/* Super Admin Bypass Tester Control Panel */}
-        {!formSubmitted && (
-          <div className="bg-[#0A3A35]/80 border border-[#C5A059]/40 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-3 shadow-xl">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">⚡</span>
-              <div>
-                <p className="text-xs font-bold text-[#C5A059] uppercase tracking-wider">Super Admin Sandbox Control</p>
-                <p className="text-[10px] text-gray-300">Quickly test form pages and domain steps without validation constraints.</p>
-              </div>
-            </div>
-            <div className="flex gap-2 w-full sm:w-auto">
-              <button 
-                type="button"
-                onClick={handleAutofillStore}
-                className="flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#0B2B26] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors cursor-pointer"
-              >
-                Autofill Mock Data
-              </button>
-              <button 
-                type="button"
-                onClick={() => {
-                  setBypassValidation(!bypassValidation);
-                }}
-                className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-colors cursor-pointer ${bypassValidation ? "bg-red-500/20 border-red-500 text-red-300" : "bg-[#0B2B26] border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10"}`}
-              >
-                {bypassValidation ? "Bypass: ON" : "Bypass Validation"}
-              </button>
-            </div>
-          </div>
-        )}
-
         {!formSubmitted ? (
           <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8 relative">
             
@@ -837,6 +842,7 @@ export default function StoreRegistrationPage() {
                         <span className="text-2xl">📁</span>
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-white">Upload Document File</p>
+            <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max file size: <span className="text-[#C5A059]">500KB</span></p>
                           <p className="text-[10px] text-gray-400">PDF, PNG, JPG up to 10MB</p>
                         </div>
                         <input 
@@ -893,6 +899,7 @@ export default function StoreRegistrationPage() {
                         <span className="text-2xl">📁</span>
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-white">Upload Certificate File</p>
+            <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max file size: <span className="text-[#C5A059]">500KB</span></p>
                           <p className="text-[10px] text-gray-400">PDF, PNG, JPG up to 10MB</p>
                         </div>
                         <input 
@@ -950,6 +957,49 @@ export default function StoreRegistrationPage() {
                         );
                       })}
                     </div>
+                    {/* Add Custom Category */}
+                    <div className="mt-3 flex gap-2">
+                      <input 
+                        type="text" 
+                        placeholder="Add your own custom product type..." 
+                        id="customCategoryInput"
+                        className="flex-1 bg-[#051815] border border-[#C5A059]/40 rounded-xl px-4 py-2 text-xs text-white placeholder-gray-600 outline-none focus:border-[#C5A059]"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const val = e.currentTarget.value;
+                            if (val && val.trim()) {
+                              toggleProductCategory(val.trim());
+                              e.currentTarget.value = '';
+                            }
+                          }
+                        }}
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          const el = document.getElementById('customCategoryInput') as HTMLInputElement;
+                          if (el && el.value.trim()) {
+                            toggleProductCategory(el.value.trim());
+                            el.value = '';
+                          }
+                        }}
+                        className="px-4 py-2 bg-[#0B2B26] border border-[#C5A059]/50 text-[#C5A059] text-[10px] font-bold uppercase tracking-wider rounded-xl hover:bg-[#C5A059]/10"
+                      >
+                        + Add
+                      </button>
+                    </div>
+                    {/* Show Custom Added Categories */}
+                    {formData.productCategories.filter(c => !PRODUCT_CATEGORIES.includes(c)).length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {formData.productCategories.filter(c => !PRODUCT_CATEGORIES.includes(c)).map(cat => (
+                          <div key={cat} className="flex items-center gap-2 bg-[#0A3A35] border border-[#C5A059] rounded-xl px-3 py-1.5">
+                            <span className="text-[11px] font-semibold text-white">{cat}</span>
+                            <button type="button" onClick={() => toggleProductCategory(cat)} className="text-red-400 hover:text-red-300 ml-1">✕</button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* Logo Image Upload & Camera */}
@@ -960,6 +1010,7 @@ export default function StoreRegistrationPage() {
                       <div className="bg-[#051815]/50 border border-[#C5A059]/20 rounded-2xl p-4 flex flex-col justify-center items-center gap-3 relative text-center">
                         <span className="text-xl">📁</span>
                         <p className="text-xs font-bold text-white">Upload Logo File</p>
+            <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max file size: <span className="text-[#C5A059]">500KB</span></p>
                         <input 
                           type="file" 
                           accept="image/*"
@@ -977,6 +1028,7 @@ export default function StoreRegistrationPage() {
                       >
                         <span className="text-xl">📸</span>
                         <p className="text-xs font-bold text-white">Snap Logo Snapshot</p>
+            <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max file size: <span className="text-[#C5A059]">500KB</span></p>
                         {formData.logoFilePreview && (
                           <div className="relative w-12 h-12 rounded-lg border border-[#C5A059] overflow-hidden mt-1">
                             <img src={formData.logoFilePreview} className="object-cover w-full h-full" alt="Logo preview" />
@@ -996,6 +1048,7 @@ export default function StoreRegistrationPage() {
                         <span className="text-2xl">🖼️</span>
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-white">Upload Multi-Files</p>
+            <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max file size: <span className="text-[#C5A059]">500KB</span></p>
                           <p className="text-[10px] text-gray-400">Select multiple catalog photos</p>
                         </div>
                         <input 
@@ -1014,6 +1067,7 @@ export default function StoreRegistrationPage() {
                         <span className="text-2xl">📸</span>
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-white">Snap Showcase Photos</p>
+            <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max file size: <span className="text-[#C5A059]">500KB</span></p>
                           <p className="text-[10px] text-gray-400">Click to snap photo via webcam</p>
                         </div>
                       </div>
@@ -1532,15 +1586,31 @@ export default function StoreRegistrationPage() {
                 )}
 
                 {currentStep < 6 ? (
-                  <button 
-                    type="button" 
-                    onClick={handleNext} 
-                    className="px-8 py-3 rounded-xl bg-[#C5A059] hover:brightness-110 text-[#0A1021] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
-                  >
-                    Next Step →
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveDraft}
+                      className="bg-[#0A3A35] text-[#C5A059] px-6 py-3 rounded-xl font-bold uppercase tracking-wider text-xs border border-[#C5A059]/40 hover:bg-[#0D4B45] transition-all shrink-0"
+                    >
+                      Save Draft
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={handleNext} 
+                      className="px-8 py-3 rounded-xl bg-[#C5A059] hover:brightness-110 text-[#0A1021] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                    >
+                      Next Step →
+                    </button>
+                  </div>
                 ) : (
-                  <button 
+                  <button
+              type="button"
+              onClick={handleSaveDraft}
+              className="bg-[#0A3A35] text-[#C5A059] px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs border border-[#C5A059]/40 hover:bg-[#0D4B45] transition-all shrink-0"
+            >
+              Save Draft
+            </button>
+            <button 
                     type="submit" 
                     className="px-10 py-3 rounded-xl bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-lg cursor-pointer"
                   >
