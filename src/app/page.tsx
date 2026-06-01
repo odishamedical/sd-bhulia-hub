@@ -63,17 +63,6 @@ export default function Home() {
 
   const router = useRouter();
 
-  useEffect(() => {
-    // Role-based redirect if authenticated
-    if (user && userRole) {
-      const lower = userRole.toLowerCase();
-      if (["admin", "manager", "staff", "super_admin"].includes(lower)) {
-        window.location.href = "https://sd-auth-center.vercel.app/launcher";
-      } else if (["vendor", "franchise", "weaver", "store", "shop"].includes(lower)) {
-        router.replace("/admin");
-      }
-    }
-  }, [user, userRole, router]);
 
   // Capture Referral ID from URL parameters and log promoter visit
   useEffect(() => {
