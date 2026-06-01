@@ -6,6 +6,8 @@ import EcosystemSwitcher from "../components/EcosystemSwitcher";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useProducts, useWeavers } from "../lib/db-hooks";
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 export default function Home() {
   const { products, loading: productsLoading } = useProducts();
@@ -14,10 +16,14 @@ export default function Home() {
   const cottonSambalpuri = products.filter(p => p.category === "Cotton Classics");
   const pataSambalpuri = products.filter(p => p.category === "Silk Masterpieces");
   const cottonBomkai = products.filter(p => p.weave.includes("Bomkai"));
-  const [userAvatar, setUserAvatar] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string | null>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [userUid, setUserUid] = useState<string>("sd_super_admin_custom_uid");
+  const { user } = useAuth();
+  
+  const userAvatar = user?.photoURL || null;
+  const userName = user?.displayName || user?.email?.split("@")[0] || null;
+  const userRole = typeof window !== "undefined" ? localStorage.getItem("sd_current_user_role") || "user" : "user";
+  const userUid = user?.uid || "guest";
+  
+  const { cartCount, addToCart } = useCart();
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [currentSlide, setCurrentSlide] = useState<number>(0);
 
@@ -58,51 +64,16 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = () => {
-      const email = localStorage.getItem("sd_current_user_email");
-      const name = localStorage.getItem("sd_current_user_name");
-      const avatar = localStorage.getItem("sd_current_user_avatar");
-      const role = localStorage.getItem("sd_current_user_role");
-      const uid = localStorage.getItem("sd_current_user_uid") || "sd_super_admin_custom_uid";
-
-      if (email) {
-        setUserName(name || email.split("@")[0]);
-        setUserAvatar(avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80");
-        setUserRole(role || "user");
-        setUserUid(uid);
-        // ---- Role‑based redirect ----
-        if (role) {
-          const lower = role.toLowerCase();
-          if (["admin", "manager", "staff"].includes(lower)) {
-            window.location.href = "https://sd-auth-center.vercel.app/launcher";
-          } else if (["vendor", "franchise", "weaver", "store", "shop"].includes(lower)) {
-            router.replace("/admin");
-          }
-        }
-        // ---- General user fallback ----
-        if (!role || role.toLowerCase() === "user") {
-          const redirectUri = new URLSearchParams(window.location.search).get("redirect_uri");
-          if (redirectUri) {
-            router.replace(redirectUri);
-            // clean URL to avoid repeat redirects
-            const cleanUrl = window.location.origin + window.location.pathname;
-            window.history.replaceState({}, document.title, cleanUrl);
-          }
-        }
-        // ---------------------------
-      } else {
-        setUserName(null);
-        setUserAvatar(null);
-        setUserRole(null);
+    // Role-based redirect if authenticated
+    if (user && userRole) {
+      const lower = userRole.toLowerCase();
+      if (["admin", "manager", "staff", "super_admin"].includes(lower)) {
+        window.location.href = "https://sd-auth-center.vercel.app/launcher";
+      } else if (["vendor", "franchise", "weaver", "store", "shop"].includes(lower)) {
+        router.replace("/admin");
       }
-    };
-
-
-
-    checkAuth();
-    window.addEventListener("sd_auth_change", checkAuth);
-    return () => window.removeEventListener("sd_auth_change", checkAuth);
-  }, []);
+    }
+  }, [user, userRole, router]);
 
   // Capture Referral ID from URL parameters and log promoter visit
   useEffect(() => {
@@ -114,11 +85,6 @@ export default function Home() {
         if (redirectPath) {
           sessionStorage.setItem('sd_post_login_path', redirectPath);
         }
-        const ssoEmail = params.get('sso_email');
-        const ssoName = params.get('sso_name');
-        const ssoAvatar = params.get('sso_avatar');
-        const ssoRole = params.get('sso_role');
-        const ssoProfileComplete = params.get('sso_profile_complete');
         const ref = params.get("ref");
         if (ref) {
           localStorage.setItem("sd_referral_id", ref);
@@ -204,9 +170,9 @@ export default function Home() {
             <EcosystemSwitcher />
 
             {/* Cart Button */}
-            <button className="hidden sm:flex items-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0">
+            <button onClick={() => router.push('/checkout')} className="hidden sm:flex items-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-              <span>Cart (2)</span>
+              <span>Cart ({cartCount})</span>
             </button>
 
             {/* Mobile Hamburger Button */}
@@ -242,16 +208,16 @@ export default function Home() {
 
             {/* Mobile-Only Dedicated Sign In in Drawer */}
             {!userAvatar && (
-              <a href="https://sd-auth-center.vercel.app" onClick={() => setMobileNavOpen(false)} className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow">
+              <button onClick={() => window.dispatchEvent(new Event("sd_auth_login_request"))} className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow cursor-pointer">
                 <svg className="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
                 <span>Sign In / Register</span>
-              </a>
+              </button>
             )}
 
             {/* Mobile Cart Button */}
-            <button className="w-full mt-2 flex items-center justify-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shadow">
+            <button onClick={() => router.push('/checkout')} className="w-full mt-2 flex items-center justify-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shadow">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-              <span>View Cart (2 Items)</span>
+              <span>View Cart ({cartCount} Items)</span>
             </button>
           </div>
         </div>
@@ -461,9 +427,14 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <Link href={`/product/${item.slug}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
-                    View Details
-                  </Link>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button onClick={() => addToCart(item)} className="bhulia-gold-button w-full py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block cursor-pointer">
+                      Add to Cart
+                    </button>
+                    <Link href={`/product/${item.slug}`} className="w-full py-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:bg-[#0D4B45] transition-all shadow-md text-center flex items-center justify-center">
+                      View Details
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Bottom Ticket */}
@@ -547,9 +518,14 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <Link href={`/product/${item.slug}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
-                    View Details
-                  </Link>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button onClick={() => addToCart(item)} className="bhulia-gold-button w-full py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block cursor-pointer">
+                      Add to Cart
+                    </button>
+                    <Link href={`/product/${item.slug}`} className="w-full py-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:bg-[#0D4B45] transition-all shadow-md text-center flex items-center justify-center">
+                      View Details
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Bottom Ticket */}
@@ -633,9 +609,14 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <Link href={`/product/${item.slug}`} className="bhulia-gold-button w-full py-2 text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block">
-                    View Details
-                  </Link>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button onClick={() => addToCart(item)} className="bhulia-gold-button w-full py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md text-center block cursor-pointer">
+                      Add to Cart
+                    </button>
+                    <Link href={`/product/${item.slug}`} className="w-full py-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] font-bold text-[10px] sm:text-xs uppercase tracking-wider rounded-xl hover:bg-[#0D4B45] transition-all shadow-md text-center flex items-center justify-center">
+                      View Details
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Bottom Ticket */}

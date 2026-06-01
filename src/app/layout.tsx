@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import SsoBridge from "@/components/SsoBridge";
-import GlobalHeader from "@/components/GlobalHeader";
-
 export const metadata: Metadata = {
   metadataBase: new URL("https://bhulia.com"),
   title: "BHULIA | Heritage Sambalpuri Marketplace",
@@ -31,6 +28,9 @@ export const metadata: Metadata = {
   },
 };
 
+import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,9 +39,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full bg-[#0A2520]">
       <body className="font-sans min-h-full flex flex-col bg-[#0A2520] text-white overflow-x-hidden">
-        <SsoBridge />
-        <GlobalHeader activeProject="Sambalpuri Hub" />
-        {children}
+        <AuthProvider>
+          <CartProvider>
+            {children}
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

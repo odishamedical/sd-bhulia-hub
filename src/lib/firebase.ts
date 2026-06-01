@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, where, getDocs, serverTimestamp, updateDoc, increment } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBhuliaHubMasterKey092834710293847",
@@ -12,5 +13,7 @@ const firebaseConfig = {
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 
-export { app, db, doc, getDoc, setDoc, onSnapshot, collection, query, where, getDocs, serverTimestamp, updateDoc, increment };
+export { app, db, auth, googleProvider, doc, getDoc, setDoc, onSnapshot, collection, query, where, getDocs, serverTimestamp, updateDoc, increment };
