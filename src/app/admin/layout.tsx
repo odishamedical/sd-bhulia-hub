@@ -84,7 +84,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content Area */}
       <main className="flex-1 overflow-x-hidden flex flex-col h-screen overflow-y-auto bg-[url('/noise.png')] bg-repeat opacity-95">
         <header className="sticky top-0 z-40 bg-[#0B2B26]/95 backdrop-blur-sm border-b border-[#C5A059]/30 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-sm font-bold text-gray-200 uppercase tracking-widest hidden sm:block">Live Database Sync Active</h2>
+          <div className="flex items-center gap-4">
+            <h2 className="text-sm font-bold text-gray-200 uppercase tracking-widest hidden sm:block">Live Database Sync Active</h2>
+            <Link href="/" className="px-3 py-1.5 border border-[#C5A059]/50 text-[#C5A059] text-[10px] font-bold uppercase tracking-wider rounded-lg hover:bg-[#C5A059]/10 transition-colors hidden sm:flex items-center gap-1.5">
+              <span>Public Store</span>
+              <span className="text-lg leading-none">↗</span>
+            </Link>
+          </div>
           <div className="flex items-center gap-3">
             <span className="text-[10px] text-gray-400 font-mono">odishamedical@gmail.com</span>
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#996515] to-[#C5A059] border border-[#C5A059] shadow-[0_0_10px_rgba(197,160,89,0.5)]"></div>
