@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import EcosystemSwitcher from "../components/EcosystemSwitcher";
+import UserMenu from "../components/UserMenu";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useProducts, useWeavers } from "../lib/db-hooks";
@@ -167,7 +167,7 @@ export default function Home() {
 
           {/* Right Side: User Menu / Sign In / Register (Desktop) & Mobile Hamburger */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <EcosystemSwitcher />
+            <UserMenu />
 
             {/* Desktop Sign In / Register Button (Visible when logged out) */}
             {!userAvatar && (
