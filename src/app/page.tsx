@@ -16,7 +16,7 @@ export default function Home() {
   const cottonSambalpuri = products.filter(p => p.category === "Cotton Classics");
   const pataSambalpuri = products.filter(p => p.category === "Silk Masterpieces");
   const cottonBomkai = products.filter(p => p.weave.includes("Bomkai"));
-  const { user } = useAuth();
+  const { user, loginWithGoogle } = useAuth();
   
   const userAvatar = user?.photoURL || null;
   const userName = user?.displayName || user?.email?.split("@")[0] || null;
@@ -170,8 +170,8 @@ export default function Home() {
             <UserMenu />
 
             {/* Desktop Sign In / Register Button (Visible when logged out) */}
-            {!userAvatar && (
-              <button onClick={() => window.dispatchEvent(new Event("sd_auth_login_request"))} className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow cursor-pointer hover:brightness-110 transition-all">
+            {!user && (
+              <button onClick={() => loginWithGoogle()} className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow cursor-pointer hover:brightness-110 transition-all">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
                 <span>Sign In</span>
               </button>
