@@ -1603,19 +1603,21 @@ export default function StoreRegistrationPage() {
                     </button>
                   </div>
                 ) : (
-                  <button
-              type="button"
-              onClick={handleSaveDraft}
-              className="bg-[#0A3A35] text-[#C5A059] px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs border border-[#C5A059]/40 hover:bg-[#0D4B45] transition-all shrink-0"
-            >
-              Save Draft
-            </button>
-            <button 
-                    type="submit" 
-                    className="px-10 py-3 rounded-xl bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-lg cursor-pointer"
-                  >
-                    Submit Application
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveDraft}
+                      className="bg-[#0A3A35] text-[#C5A059] px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs border border-[#C5A059]/40 hover:bg-[#0D4B45] transition-all shrink-0"
+                    >
+                      Save Draft
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="px-10 py-3 rounded-xl bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-lg cursor-pointer"
+                    >
+                      Submit Application
+                    </button>
+                  </div>
                 )}
               </div>
 
