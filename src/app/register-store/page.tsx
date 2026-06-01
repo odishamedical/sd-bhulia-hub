@@ -1010,7 +1010,7 @@ export default function StoreRegistrationPage() {
                       <div className="bg-[#051815]/50 border border-[#C5A059]/20 rounded-2xl p-4 flex flex-col justify-center items-center gap-3 relative text-center">
                         <span className="text-xl">📁</span>
                         <p className="text-xs font-bold text-white">Upload Logo File</p>
-            <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max file size: <span className="text-[#C5A059]">500KB</span></p>
+                        <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max size: <span className="text-[#C5A059]">500KB</span><br/><span className="text-[#C5A059]/70 font-normal">Ideal: 1:1 Square (e.g. 400x400)</span></p>
                         <input 
                           type="file" 
                           accept="image/*"
@@ -1028,7 +1028,7 @@ export default function StoreRegistrationPage() {
                       >
                         <span className="text-xl">📸</span>
                         <p className="text-xs font-bold text-white">Snap Logo Snapshot</p>
-            <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max file size: <span className="text-[#C5A059]">500KB</span></p>
+                        <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max size: <span className="text-[#C5A059]">500KB</span><br/><span className="text-[#C5A059]/70 font-normal">Ideal: 1:1 Square (e.g. 400x400)</span></p>
                         {formData.logoFilePreview && (
                           <div className="relative w-12 h-12 rounded-lg border border-[#C5A059] overflow-hidden mt-1">
                             <img src={formData.logoFilePreview} className="object-cover w-full h-full" alt="Logo preview" />
@@ -1048,7 +1048,7 @@ export default function StoreRegistrationPage() {
                         <span className="text-2xl">🖼️</span>
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-white">Upload Multi-Files</p>
-            <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max file size: <span className="text-[#C5A059]">500KB</span></p>
+                          <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max size: <span className="text-[#C5A059]">500KB</span><br/><span className="text-[#C5A059]/70 font-normal">Ideal: 16:9 Landscape (e.g. 1200x675)</span></p>
                           <p className="text-[10px] text-gray-400">Select multiple catalog photos</p>
                         </div>
                         <input 
@@ -1067,7 +1067,7 @@ export default function StoreRegistrationPage() {
                         <span className="text-2xl">📸</span>
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-white">Snap Showcase Photos</p>
-            <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max file size: <span className="text-[#C5A059]">500KB</span></p>
+                          <p className="text-[10px] text-gray-400 mt-1 text-center font-semibold">Max size: <span className="text-[#C5A059]">500KB</span><br/><span className="text-[#C5A059]/70 font-normal">Ideal: 16:9 Landscape (e.g. 1200x675)</span></p>
                           <p className="text-[10px] text-gray-400">Click to snap photo via webcam</p>
                         </div>
                       </div>
