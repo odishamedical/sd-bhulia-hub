@@ -736,7 +736,6 @@ export default function FranchiseRegistrationPage() {
                       </select>
                     </div>
                   </div>
-                  </div>
 
                   {/* ID Proof file upload and live camera section */}
                   <div className="border border-[#C5A059]/30 rounded-2xl p-5 bg-black/10 space-y-4">
