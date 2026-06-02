@@ -30,6 +30,7 @@ export const metadata: Metadata = {
 
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export default function RootLayout({
   children,
@@ -41,7 +42,10 @@ export default function RootLayout({
       <body className="font-sans min-h-full flex flex-col bg-[#0A2520] text-white overflow-x-hidden">
         <AuthProvider>
           <CartProvider>
-            {children}
+            <div className="flex-1 pb-16 lg:pb-0 flex flex-col min-h-screen">
+              {children}
+            </div>
+            <MobileBottomNav />
           </CartProvider>
         </AuthProvider>
       </body>
