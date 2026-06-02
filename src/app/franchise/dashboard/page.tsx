@@ -100,11 +100,16 @@ export default function FranchiseDashboard() {
                   id: doc.id,
                   slug: data.slug,
                   name: data.name,
-                  promoterName: data.representativeName || data.name,
-                  image: data.img || MASTER_FRANCHISES[0].image,
-                  location: data.city,
-                  tier: data.tier,
-                  metrics: MASTER_FRANCHISES[0].metrics
+                  region: data.stateRegion || "Unknown",
+                  city: data.city,
+                  phygitalOutletsCount: 0,
+                  referralsTracked: data.invitedCount || 0,
+                  totalCommissionPaid: "₹ " + (data.commissionEarned || 0),
+                  specialtyTags: [],
+                  description: "",
+                  img: data.img || MASTER_FRANCHISES[0].img,
+                  outletsList: [],
+                  subscriptionTier: data.subscriptionTier || "free"
                 });
               }
             });
