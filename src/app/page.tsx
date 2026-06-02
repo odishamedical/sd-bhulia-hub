@@ -291,7 +291,7 @@ export default function Home() {
                       {categoryProducts.slice(0, 4).map(p => (
                         <Link href={`/product/${p.title.toLowerCase().replace(/\s+/g, "-")}`} key={p.id} className={`${cardStyle} p-4 flex flex-col justify-between group hover:border-[#C5A059] transition-all`}>
                           <div className="relative w-full aspect-square rounded-xl overflow-hidden mb-3">
-                            <Image src={p.images?.[0] || "/bhulia-hero.png"} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform" />
+                            <Image src={(p as any).images?.[0] || (p as any).image || "/bhulia-hero.png"} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform" />
                           </div>
                           <h4 className="text-sm font-bold text-white line-clamp-2">{p.title}</h4>
                           <p className="text-[#C5A059] font-bold mt-2">{p.price}</p>
