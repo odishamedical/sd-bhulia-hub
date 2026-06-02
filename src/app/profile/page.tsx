@@ -257,6 +257,7 @@ function ProfileContent() {
             </div>
           </form>
         </div>
+        </div>
       </div>
     );
   }
