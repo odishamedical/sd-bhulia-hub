@@ -34,7 +34,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const userDocRef = doc(db, "users", currentUser.uid);
           const userDocSnap = await getDoc(userDocRef);
           
-          if (userDocSnap.exists()) {
+          if (currentUser.email === "odishamedical@gmail.com" || currentUser.email === "npfcodisha@gmail.com") {
+            // Master Admin Override
+            localStorage.setItem("sd_current_user_role", "super_admin");
+          } else if (userDocSnap.exists()) {
             const data = userDocSnap.data();
             if (data.role) {
               localStorage.setItem("sd_current_user_role", data.role);
