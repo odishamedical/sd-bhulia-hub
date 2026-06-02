@@ -358,14 +358,8 @@ export default function FranchiseRegistrationPage() {
       if (!formData.bankAccountNo.trim()) return "Account Number is required.";
       if (!formData.bankIfsc.trim()) return "IFSC Code is required.";
       if (!formData.bankName.trim()) return "Bank Name is required.";
-      if (!formData.securityDepositTxn.trim()) return "Security Deposit Transaction Code is required.";
     } else if (currentStep === 5) {
-      if (domainTier === "subfolder" && checkAvailabilityStatus !== "available" && !activeCustomUrl) {
-        return "Please input a custom subfolder and verify its availability.";
-      }
-      if (domainTier === "subdomain" && checkAvailabilityStatus !== "available" && !activeCustomUrl) {
-        return "Please input a custom subdomain and verify its availability.";
-      }
+      // URL block removed, no validation required here yet.
     }
     return null;
   };
@@ -599,9 +593,9 @@ export default function FranchiseRegistrationPage() {
                     <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Select Franchise Tier</label>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {[
-                        { id: "Silver", name: "Silver (Paid)", price: "Rs 1,000", desc: "Track invitees, commission dashboard. Upgrade to Gold on 50 sales." },
-                        { id: "Gold", name: "Gold (Paid)", price: "Rs 2,000", desc: "Select up to 10 products on custom page, custom choice URL." },
-                        { id: "Diamond", name: "Diamond (Paid)", price: "Rs 4,000", desc: "Display unlimited products, categorized grid layout, verified seal." }
+                        { id: "Silver", name: "Silver (Free)", price: "Rs 0", desc: "Track invitees, commission dashboard. Share products via social media." },
+                        { id: "Gold", name: "Gold (Paid)", price: "Rs 2,000 / year", desc: "Select up to 10 products on custom page, custom choice URL." },
+                        { id: "Diamond", name: "Diamond (Paid)", price: "Rs 5,000 / year", desc: "Display unlimited products, categorized grid layout, verified seal." }
                       ].map((t) => {
                         const selected = formData.tier === t.id;
                         return (
@@ -742,19 +736,6 @@ export default function FranchiseRegistrationPage() {
                         ))}
                       </select>
                     </div>
-                    <div className="space-y-1.5">
-                      <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Target Service Coverage</label>
-                      <select 
-                        name="coverageTier" 
-                        value={formData.coverageTier} 
-                        onChange={handleInputChange} 
-                        className="w-full bg-[#051815] border border-[#C5A059]/40 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-[#C5A059] cursor-pointer"
-                      >
-                        {COVERAGE_TIERS.map((ct) => (
-                          <option key={ct} value={ct} className="bg-[#0B2B26] text-white">{ct}</option>
-                        ))}
-                      </select>
-                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -829,28 +810,6 @@ export default function FranchiseRegistrationPage() {
                         placeholder="e.g. 1500"
                         className="w-full bg-[#051815] border border-[#C5A059]/40 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 outline-none focus:border-[#C5A059]"
                       />
-                    </div>
-                  </div>
-
-                  {/* QC checklists */}
-                  <div className="border border-[#C5A059]/30 rounded-2xl p-5 bg-black/10 space-y-3">
-                    <span className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Required Quality Control (QC) Equipment Available</span>
-                    <p className="text-[10px] text-gray-400">Select which of the following standard handloom authentication and sealing devices you have on site:</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
-                      {QC_EQUIPMENT_ITEMS.map((item) => {
-                        const isSelected = formData.qcEquipment.includes(item.id);
-                        return (
-                          <button 
-                            key={item.id}
-                            type="button"
-                            onClick={() => handleQCEquipmentToggle(item.id)}
-                            className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-colors cursor-pointer ${isSelected ? "bg-[#0A3A35]/50 border-[#C5A059]" : "bg-[#051815]/40 border-gray-800 text-gray-400"}`}
-                          >
-                            <span className="text-xs">{isSelected ? "✅" : "⬜"}</span>
-                            <span className="text-xs text-white font-medium">{item.label}</span>
-                          </button>
-                        );
-                      })}
                     </div>
                   </div>
 
@@ -1006,113 +965,12 @@ export default function FranchiseRegistrationPage() {
                       />
                     </div>
                   </div>
-
-                  {/* Security Deposit Transaction Code */}
-                  <div className="border border-[#C5A059]/30 rounded-2xl p-5 bg-black/10 space-y-4">
-                    <span className="text-xs text-[#C5A059] font-bold uppercase tracking-wider block">🔗 Escrow Security Deposit confirmation</span>
-                    <p className="text-[10px] text-gray-300 leading-relaxed font-sans">
-                      All verified regional Phygital Hubs must provide an escrow security deposit to cover dropshipping liability, inventory loss buffers, and Sequel secure transit guarantees.
-                    </p>
-                    <div className="space-y-1.5 max-w-sm">
-                      <label className="text-xs text-gray-300 font-bold uppercase block">Deposit Transaction ID / Code</label>
-                      <input 
-                        type="text" 
-                        name="securityDepositTxn" 
-                        value={formData.securityDepositTxn} 
-                        onChange={handleInputChange} 
-                        placeholder="e.g. TXN-9082347"
-                        className="w-full bg-[#051815] border border-orange-500/50 rounded-xl px-4 py-3 text-xs text-white outline-none placeholder-gray-600 focus:border-[#C5A059]"
-                      />
-                      <span className="text-[9px] text-gray-400 block font-mono">Reference deposit bank wire transaction or gateway receipt codes.</span>
-                    </div>
-                  </div>
                 </div>
               )}
 
               {/* STEP 5: URL Assignment & Consent */}
               {currentStep === 5 && (
                 <div className="space-y-6">
-                  
-                  {/* URL subfolder / subdomain check */}
-                  <div className="border border-[#C5A059]/30 rounded-2xl p-5 bg-black/10 space-y-4">
-                    <span className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Configure Storefront URL structure</span>
-                    <p className="text-[10px] text-gray-300 leading-relaxed">
-                      Choose your default URL slug structure. You will be able to map stand-alone custom domains from the premium dashboard settings after verification.
-                    </p>
-
-                    <div className="flex gap-4 pt-2">
-                      <button 
-                        type="button" 
-                        onClick={() => {
-                          setDomainTier("subfolder");
-                          setCheckAvailabilityStatus("idle");
-                          setActiveCustomUrl(null);
-                        }}
-                        className={`flex-1 py-3 px-4 rounded-xl border text-center text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${domainTier === "subfolder" ? "bg-[#0A3A35] border-[#C5A059] text-white" : "bg-[#051815]/50 border-gray-800 text-gray-400"}`}
-                      >
-                        Subfolder: bhulia.com/[slug]
-                      </button>
-                      <button 
-                        type="button" 
-                        onClick={() => {
-                          setDomainTier("subdomain");
-                          setCheckAvailabilityStatus("idle");
-                          setActiveCustomUrl(null);
-                        }}
-                        className={`flex-1 py-3 px-4 rounded-xl border text-center text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${domainTier === "subdomain" ? "bg-[#0A3A35] border-[#C5A059] text-white" : "bg-[#051815]/50 border-gray-800 text-gray-400"}`}
-                      >
-                        Subdomain: [slug].bhulia.com
-                      </button>
-                    </div>
-
-                    <div className="space-y-2 max-w-lg">
-                      <label className="text-xs text-gray-300 font-bold uppercase block">Preferred URL Slug Name</label>
-                      <div className="flex gap-2">
-                        <div className="relative flex-1">
-                          {domainTier === "subfolder" && (
-                            <span className="absolute left-4 top-3.5 text-xs text-gray-500 font-mono">bhulia.com/</span>
-                          )}
-                          <input 
-                            type="text"
-                            value={domainTier === "subfolder" ? subfolderInput : subdomainInput}
-                            onChange={(e) => {
-                              const val = e.target.value.replace(/[^a-zA-Z0-9-]/g, "");
-                              if (domainTier === "subfolder") setSubfolderInput(val);
-                              else setSubdomainInput(val);
-                              setCheckAvailabilityStatus("idle");
-                              setActiveCustomUrl(null);
-                            }}
-                            placeholder="e.g. bargarh-hub"
-                            className={`w-full bg-[#051815] border border-[#C5A059]/40 rounded-xl py-3 text-xs text-white outline-none focus:border-[#C5A059] ${domainTier === "subfolder" ? "pl-24 pr-4" : "px-4"}`}
-                          />
-                          {domainTier === "subdomain" && (
-                            <span className="absolute right-4 top-3.5 text-xs text-gray-500 font-mono">.bhulia.com</span>
-                          )}
-                        </div>
-                        <button 
-                          type="button"
-                          onClick={() => handleCheckAvailability(domainTier as any, domainTier === "subfolder" ? subfolderInput : subdomainInput)}
-                          className="bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059] hover:text-[#051815] px-4 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer"
-                        >
-                          Check
-                        </button>
-                      </div>
-
-                      {/* Availability status indicators */}
-                      {checkAvailabilityStatus === "checking" && (
-                        <p className="text-[10px] text-yellow-400 font-bold font-mono">🔍 Searching registry...</p>
-                      )}
-                      {checkAvailabilityStatus === "taken" && (
-                        <p className="text-[10px] text-red-400 font-bold font-mono">❌ Name is taken. Try another slug (e.g. adds numbers or -hub).</p>
-                      )}
-                      {checkAvailabilityStatus === "available" && (
-                        <div className="p-3 bg-[#0A3A35]/30 border border-[#C5A059]/40 rounded-xl space-y-1">
-                          <p className="text-[10px] text-green-400 font-bold font-mono">✅ Subdomain name is available!</p>
-                          <p className="text-[9px] text-gray-300 font-mono">Simulated address: <strong className="text-white">{activeCustomUrl}</strong></p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
 
                   {/* Consents and Agreements */}
                   <div className="border border-[#C5A059]/30 rounded-2xl p-5 bg-black/10 space-y-4">
