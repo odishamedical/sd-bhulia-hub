@@ -164,7 +164,8 @@ function ProfileContent() {
     setLoading(true);
     const uid = user?.uid || localStorage.getItem("sd_current_user_uid") || "demo_user";
     try {
-      const storageRef = ref(db.app.storage ? require('firebase/storage').getStorage() : null, `users/${uid}/profile.jpg`);
+      const { storage } = await import('@/lib/firebase');
+      const storageRef = ref(storage, `users/${uid}/profile.jpg`);
       await uploadBytes(storageRef, croppedBlob);
       const downloadURL = await getDownloadURL(storageRef);
       await updateDoc(doc(db, "users", uid), { customPhotoUrl: downloadURL });
