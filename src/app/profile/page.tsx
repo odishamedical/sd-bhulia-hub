@@ -281,22 +281,22 @@ function ProfileContent() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mt-12">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-0 lg:gap-8 mt-6 lg:mt-12">
           {/* Sidebar Tabs */}
-          <div className="lg:col-span-1 space-y-2">
-            <button onClick={() => setActiveTab("orders")} className={`w-full text-left px-5 py-4 rounded-2xl font-bold uppercase tracking-wider text-xs transition-all ${activeTab === "orders" ? "bg-[#C5A059] text-[#0A1021] shadow-lg" : "bg-[#051815] text-gray-300 hover:bg-[#0A3A35] border border-[#C5A059]/20"}`}>
+          <div className="lg:col-span-1 flex flex-row lg:flex-col overflow-x-auto hide-scrollbar border-b border-[#C5A059]/30 lg:border-none lg:space-y-2 z-10 relative">
+            <button onClick={() => setActiveTab("orders")} className={`flex-shrink-0 whitespace-nowrap px-5 py-3 lg:py-4 lg:rounded-2xl font-bold uppercase tracking-wider text-xs transition-all ${activeTab === "orders" ? "bg-[#051815] text-[#C5A059] lg:bg-[#C5A059] lg:text-[#0A1021] border-t border-l border-r border-[#C5A059]/30 lg:border-none rounded-t-xl" : "text-gray-400 hover:text-gray-200 lg:text-gray-300 lg:bg-[#051815] lg:border lg:border-[#C5A059]/20 lg:rounded-2xl"}`}>
               📦 My Orders
             </button>
-            <button onClick={() => setActiveTab("addresses")} className={`w-full text-left px-5 py-4 rounded-2xl font-bold uppercase tracking-wider text-xs transition-all ${activeTab === "addresses" ? "bg-[#C5A059] text-[#0A1021] shadow-lg" : "bg-[#051815] text-gray-300 hover:bg-[#0A3A35] border border-[#C5A059]/20"}`}>
+            <button onClick={() => setActiveTab("addresses")} className={`flex-shrink-0 whitespace-nowrap px-5 py-3 lg:py-4 lg:rounded-2xl font-bold uppercase tracking-wider text-xs transition-all ${activeTab === "addresses" ? "bg-[#051815] text-[#C5A059] lg:bg-[#C5A059] lg:text-[#0A1021] border-t border-l border-r border-[#C5A059]/30 lg:border-none rounded-t-xl" : "text-gray-400 hover:text-gray-200 lg:text-gray-300 lg:bg-[#051815] lg:border lg:border-[#C5A059]/20 lg:rounded-2xl"}`}>
               📍 Address Book
             </button>
-            <button onClick={() => setActiveTab("partnership")} className={`w-full text-left px-5 py-4 rounded-2xl font-bold uppercase tracking-wider text-xs transition-all ${activeTab === "partnership" ? "bg-[#C5A059] text-[#0A1021] shadow-lg" : "bg-[#051815] text-gray-300 hover:bg-[#0A3A35] border border-[#C5A059]/20"}`}>
+            <button onClick={() => setActiveTab("partnership")} className={`flex-shrink-0 whitespace-nowrap px-5 py-3 lg:py-4 lg:rounded-2xl font-bold uppercase tracking-wider text-xs transition-all ${activeTab === "partnership" ? "bg-[#051815] text-[#C5A059] lg:bg-[#C5A059] lg:text-[#0A1021] border-t border-l border-r border-[#C5A059]/30 lg:border-none rounded-t-xl" : "text-gray-400 hover:text-gray-200 lg:text-gray-300 lg:bg-[#051815] lg:border lg:border-[#C5A059]/20 lg:rounded-2xl"}`}>
               🤝 Partnerships
             </button>
           </div>
 
           {/* RIGHT COLUMN - CONTENT */}
-          <div className="lg:col-span-3 bg-[#051815] rounded-3xl border border-[#C5A059]/30 p-6 md:p-8 shadow-2xl min-h-[500px]">
+          <div className="lg:col-span-3 bg-[#051815] rounded-b-3xl rounded-tr-3xl lg:rounded-tl-3xl border-x border-b border-[#C5A059]/30 lg:border-t p-6 md:p-8 shadow-2xl min-h-[500px] -mt-px lg:mt-0 relative z-0">
             
             {activeTab === "orders" && (
               <div className="space-y-6">
