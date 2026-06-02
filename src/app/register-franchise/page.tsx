@@ -348,7 +348,6 @@ export default function FranchiseRegistrationPage() {
       if (!formData.districtCity.trim()) return "City/District is required.";
     } else if (currentStep === 2) {
       if (!formData.govIdFileName) return "Please upload or capture a Government ID Proof.";
-      if (!formData.gstNumber.trim()) return "GST Number is required for Franchise hubs.";
     } else if (currentStep === 3) {
       if (!formData.hubStorageSize.trim()) return "Proposed storage warehouse size is required.";
       if (formData.hubImages.length < 3) return "Please upload or capture at least 3 warehouse/hub facility images.";
@@ -737,19 +736,6 @@ export default function FranchiseRegistrationPage() {
                       </select>
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">GST IN Number</label>
-                      <input 
-                        type="text" 
-                        name="gstNumber" 
-                        value={formData.gstNumber} 
-                        onChange={handleInputChange} 
-                        placeholder="e.g. 21ABCDE1234A1Z5"
-                        className="w-full bg-[#051815] border border-[#C5A059]/40 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 outline-none focus:border-[#C5A059]"
-                      />
-                    </div>
                   </div>
 
                   {/* ID Proof file upload and live camera section */}

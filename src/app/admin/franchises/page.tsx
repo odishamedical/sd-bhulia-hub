@@ -155,6 +155,18 @@ export default function AdminFranchisesPage() {
                       ₹ {(franchise.commissionEarned || 0).toLocaleString('en-IN')}
                     </td>
                     <td className="px-6 py-4 text-right space-x-4">
+                      {franchise.status === "pending_approval" && (
+                        <button 
+                          onClick={async () => {
+                             if (confirm(`Approve franchise "${franchise.name}"?`)) {
+                               await updateDocumentStatus("franchises", franchise.id, { status: "approved" });
+                             }
+                          }}
+                          className="text-green-400 hover:text-green-300 font-bold text-xs uppercase tracking-wider cursor-pointer"
+                        >
+                          Approve
+                        </button>
+                      )}
                       <a 
                         href={`/franchise/${franchise.slug}`}
                         target="_blank"
@@ -213,9 +225,9 @@ export default function AdminFranchisesPage() {
                 <div>
                   <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Franchise Tier</label>
                   <select value={tier} onChange={e => setTier(e.target.value as any)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
-                    <option value="Silver">Silver Tier (₹1000 / 5% Commission)</option>
-                    <option value="Gold">Gold Tier (₹2000 / Choice Page)</option>
-                    <option value="Diamond">Diamond Tier (₹4000 / Grid display)</option>
+                    <option value="Silver">Silver Tier (Free)</option>
+                    <option value="Gold">Gold Tier (₹2000)</option>
+                    <option value="Diamond">Diamond Tier (₹5000)</option>
                   </select>
                 </div>
                 <div>
