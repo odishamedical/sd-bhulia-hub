@@ -82,13 +82,34 @@ export default function FranchiseDashboard() {
         setUserUid(uid);
         setUserName(name || email.split("@")[0]);
 
-        // Find appropriate franchise
-        // If super_admin, default to FRA-001 for operational display
+        // Set fallback first
         const matched = MASTER_FRANCHISES.find(
           (f) => f.id.toLowerCase() === uid.toLowerCase() || f.slug.toLowerCase() === uid.toLowerCase()
         ) || MASTER_FRANCHISES[0];
-        
         setActiveFranchise(matched);
+
+        // Fetch real franchise asynchronously
+        import("@/lib/firebase").then(({ db }) => {
+          import("firebase/firestore").then(({ query, collection, where, getDocs }) => {
+            const q = query(collection(db, "franchises"), where("userId", "==", uid));
+            getDocs(q).then((snap) => {
+              if (!snap.empty) {
+                const doc = snap.docs[0];
+                const data = doc.data();
+                setActiveFranchise({
+                  id: doc.id,
+                  slug: data.slug,
+                  name: data.name,
+                  promoterName: data.representativeName || data.name,
+                  image: data.img || MASTER_FRANCHISES[0].image,
+                  location: data.city,
+                  tier: data.tier,
+                  metrics: MASTER_FRANCHISES[0].metrics
+                });
+              }
+            });
+          });
+        });
       } else {
         setUserRole(null);
         setUserUid("");

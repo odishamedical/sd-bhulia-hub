@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { db } from "@/lib/firebase";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -104,10 +104,25 @@ function ProfileContent() {
       }
 
       try {
-        const apps = JSON.parse(localStorage.getItem("sd_franchise_applications") || "[]");
-        setFranchiseApps(apps);
+        const q = query(collection(db, "franchises"), where("userId", "==", uid));
+        const snapshot = await getDocs(q);
+        const apps: any[] = [];
+        snapshot.forEach(doc => {
+          apps.push({ id: doc.id, ...doc.data() });
+        });
+
+        const localApps = JSON.parse(localStorage.getItem("sd_franchise_applications") || "[]");
+        const combined = [...apps];
+        
+        localApps.forEach((la: any) => {
+          if (!combined.find(ca => ca.id === la.id)) {
+             combined.push(la);
+          }
+        });
+        
+        setFranchiseApps(combined);
       } catch (e) {
-        console.warn("Could not load franchise apps");
+        console.warn("Could not load franchise apps", e);
       }
       
       setLoading(false);

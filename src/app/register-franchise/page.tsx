@@ -349,7 +349,6 @@ export default function FranchiseRegistrationPage() {
     } else if (currentStep === 2) {
       if (!formData.govIdFileName) return "Please upload or capture a Government ID Proof.";
     } else if (currentStep === 3) {
-      if (!formData.hubStorageSize.trim()) return "Proposed storage warehouse size is required.";
       if (formData.hubImages.length < 3) return "Please upload or capture at least 3 warehouse/hub facility images.";
       if (!formData.logoFileName) return "Proposed Hub Logo is required.";
     } else if (currentStep === 4) {
@@ -430,7 +429,9 @@ export default function FranchiseRegistrationPage() {
       status: "pending_approval" as const,
       invitedCount: 0,
       totalSales: 0,
-      commissionEarned: 0
+      commissionEarned: 0,
+      userId: localStorage.getItem("sd_current_user_uid") || "demo_user",
+      userEmail: localStorage.getItem("sd_current_user_email") || ""
     };
 
     try {
@@ -790,7 +791,8 @@ export default function FranchiseRegistrationPage() {
                 <div className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Proposed Hub Size (Sq. Ft.)</label>
+                      <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Proposed Hub Size (Sq. Ft.) <span className="text-gray-500 font-normal normal-case">(Optional)</span></label>
+                      <p className="text-[10px] text-[#C5A059] mb-2">If you have a physical office please specify the size.</p>
                       <input 
                         type="number" 
                         name="hubStorageSize" 
