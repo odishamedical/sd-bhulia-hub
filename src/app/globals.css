@@ -21,24 +21,65 @@
 @layer base {
   body {
     background-color: #051815;
+    background-image: 
+      radial-gradient(ellipse at top, rgba(197, 160, 89, 0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at bottom, rgba(11, 43, 38, 0.8) 0%, transparent 80%);
+    background-attachment: fixed;
     color: #FFFFFF;
     -webkit-font-smoothing: antialiased;
   }
 }
 
 @layer components {
-  /* Premium Dark Heritage Green Card */
+  /* Premium Dark Heritage Green Card with Inner Frame */
   .bhulia-premium-card {
     background-color: #0B2B26;
-    border: 1px solid rgba(197, 160, 89, 0.4);
+    border: 1px solid rgba(197, 160, 89, 0.3);
     border-radius: 1rem;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    box-shadow: 
+      inset 0 0 0 1px #051815,
+      inset 0 0 0 2px rgba(197, 160, 89, 0.15),
+      0 10px 25px -5px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
   }
   
   .bhulia-premium-card:hover {
     border-color: #C5A059;
-    box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
+    box-shadow: 
+      inset 0 0 0 1px #051815,
+      inset 0 0 0 2px rgba(197, 160, 89, 0.3),
+      0 20px 30px -10px rgba(0, 0, 0, 0.6);
+  }
+
+  /* 3D Metallic Plaque (Replaces flat buttons) */
+  .bhulia-plaque {
+    background: linear-gradient(145deg, #E6C875 0%, #C5A059 40%, #996515 80%, #6E450E 100%);
+    color: #0A1021;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 0.5rem;
+    box-shadow: 
+      inset 0 2px 4px rgba(255, 255, 255, 0.5),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+      0 4px 10px rgba(0, 0, 0, 0.5),
+      0 0 0 1px #5C3D0A;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+  }
+
+  .bhulia-plaque:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+    box-shadow: 
+      inset 0 2px 5px rgba(255, 255, 255, 0.6), 
+      inset 0 -2px 4px rgba(0, 0, 0, 0.4), 
+      0 6px 15px rgba(0, 0, 0, 0.6),
+      0 0 0 1px #5C3D0A;
+  }
+  
+  .bhulia-plaque:active {
+    transform: translateY(0);
   }
   
   /* Gold Gradient Text */

@@ -301,16 +301,16 @@ export default function Home() {
               { title: "Wholesalers Portal", desc: "Access bulk B2B handloom requisitions, custom Ikat commissioning lots, and tax-exempt export billing.", icon: "📦", btn: "Apply as Wholesaler", href: "#" },
               { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise", href: "/register-franchise" }
             ].map((gate, idx) => (
-              <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl p-4 sm:p-5 flex flex-col justify-between group hover:border-[#C5A059] transition-all shadow-xl">
+              <div key={idx} className="bhulia-premium-card p-4 sm:p-5 flex flex-col justify-between group">
                 <div>
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#0A3A35] border border-[#C5A059]/30 flex items-center justify-center text-xl sm:text-2xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300 shadow">
-                    {gate.icon}
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#051815] border border-[#C5A059]/40 flex items-center justify-center text-xl sm:text-2xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300 shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),_0_0_10px_rgba(197,160,89,0.3)]">
+                    <span className="drop-shadow-[0_0_8px_rgba(197,160,89,0.8)]">{gate.icon}</span>
                   </div>
                   <h4 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-[#C5A059] transition-colors">{gate.title}</h4>
                   <p className="text-xs text-gray-300 leading-relaxed font-sans">{gate.desc}</p>
                 </div>
-                <Link href={gate.href} className="w-full mt-6 py-3 bg-[#0A3A35] border border-[#C5A059]/50 hover:border-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021] text-xs font-bold uppercase tracking-widest text-[#C5A059] rounded-xl transition-all shadow-md cursor-pointer text-center block">
-                  {gate.btn} →
+                <Link href={gate.href} className="bhulia-plaque w-full mt-6 py-3 rounded-xl block text-center flex items-center justify-center gap-2">
+                  {gate.btn} <span className="opacity-70 font-sans">»</span>
                 </Link>
               </div>
             ))}
