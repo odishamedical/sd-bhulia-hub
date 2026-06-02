@@ -55,7 +55,24 @@ export default function UserMenu() {
           </div>
 
           <div className="p-2 space-y-1">
-            <button onClick={() => { setIsOpen(false); router.push('/admin'); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-all text-left group">
+            <button 
+              onClick={() => { 
+                setIsOpen(false); 
+                const role = localStorage.getItem("sd_current_user_role");
+                if (role === "super_admin") {
+                  router.push('/admin'); 
+                } else if (role === "franchisee") {
+                  router.push('/franchise/dashboard');
+                } else if (role === "store") {
+                  router.push('/store/dashboard');
+                } else if (role === "weaver") {
+                  router.push('/weaver/dashboard');
+                } else {
+                  router.push('/profile');
+                }
+              }} 
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-all text-left group"
+            >
               <span className="text-lg">🎛️</span>
               <div className="flex-1">
                 <span className="block text-xs font-bold text-gray-200 group-hover:text-[#C5A059] transition-colors">Dashboard</span>

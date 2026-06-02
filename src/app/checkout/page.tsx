@@ -1,16 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { addOrder } from "../../lib/db-hooks";
+import { db } from "../../lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function CheckoutPage() {
   const { cart, cartTotal, removeFromCart, clearCart } = useCart();
   const { user } = useAuth();
   const router = useRouter();
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
   const [shippingDetails, setShippingDetails] = useState({
     fullName: user?.displayName || "",
@@ -21,6 +24,45 @@ export default function CheckoutPage() {
     state: "",
     pincode: "",
   });
+
+  useEffect(() => {
+    const checkProfileComplete = async () => {
+      const uid = user?.uid || localStorage.getItem("sd_current_user_uid");
+      if (!uid) {
+        setLoadingProfile(false);
+        return;
+      }
+      try {
+        const userDoc = await getDoc(doc(db, "users", uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          if (!data.phone || !data.addresses || data.addresses.length === 0) {
+            router.push("/profile?intent=checkout");
+            return;
+          } else {
+            // Pre-fill shipping details with default address
+            const defaultAddr = data.addresses.find((a: any) => a.isDefault) || data.addresses[0];
+            setShippingDetails({
+              fullName: data.name || user?.displayName || "",
+              email: user?.email || "",
+              phone: data.phone || "",
+              address: defaultAddr.localAddress || "",
+              city: defaultAddr.district || "",
+              state: defaultAddr.state || "",
+              pincode: defaultAddr.pinCode || "",
+            });
+          }
+        } else {
+          router.push("/profile?intent=checkout");
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      setLoadingProfile(false);
+    };
+    checkProfileComplete();
+  }, [user, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -107,6 +149,14 @@ export default function CheckoutPage() {
       alert("Payment failed to initialize.");
     }
   };
+
+  if (loadingProfile) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 mt-12 text-center min-h-[60vh]">
+        <div className="animate-pulse text-[#C5A059] font-mono text-sm">Verifying Checkout Eligibility...</div>
+      </div>
+    );
+  }
 
   if (cart.length === 0) {
     return (

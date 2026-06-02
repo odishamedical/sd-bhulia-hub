@@ -11,20 +11,27 @@ interface ProfileBlockerModalProps {
 export default function ProfileBlockerModal({ onClose, actionName = "perform this action", originHub }: ProfileBlockerModalProps) {
   const handleCompleteProfile = () => {
     if (typeof window !== "undefined") {
-      const currentUrl = window.location.href;
-      const authCenterBase = window.location.hostname === "localhost" 
-        ? "http://localhost:3000" 
-        : "https://sd-auth-center.vercel.app";
-      
-      const inviteRef = sessionStorage.getItem("sd_invite_ref") || "";
-      const inviteName = sessionStorage.getItem("sd_invite_name") || "";
-      
-      const params = new URLSearchParams();
-      params.set("redirect_uri", currentUrl);
-      if (inviteRef) params.set("ref", inviteRef);
-      if (inviteName) params.set("invite_name", inviteName);
-      
-      window.location.href = `${authCenterBase}?${params.toString()}`;
+      const email = localStorage.getItem("sd_current_user_email");
+      if (email) {
+        // User is logged in but profile is incomplete
+        window.location.href = `/profile?intent=checkout`;
+      } else {
+        // User is not logged in, go to auth center
+        const currentUrl = window.location.href;
+        const authCenterBase = window.location.hostname === "localhost" 
+          ? "http://localhost:3000" 
+          : "https://sd-auth-center.vercel.app";
+        
+        const inviteRef = sessionStorage.getItem("sd_invite_ref") || "";
+        const inviteName = sessionStorage.getItem("sd_invite_name") || "";
+        
+        const params = new URLSearchParams();
+        params.set("redirect_uri", currentUrl);
+        if (inviteRef) params.set("ref", inviteRef);
+        if (inviteName) params.set("invite_name", inviteName);
+        
+        window.location.href = `${authCenterBase}?${params.toString()}`;
+      }
     }
   };
 
