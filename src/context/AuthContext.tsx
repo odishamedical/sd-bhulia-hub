@@ -25,12 +25,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        // Only set default user role if it hasn't been set by auth center yet
-        if (!localStorage.getItem("sd_current_user_role")) {
-          localStorage.setItem("sd_current_user_role", "user");
+        try {
+          const { doc, getDoc } = await import("firebase/firestore");
+          const { db } = await import("../lib/firebase");
+          const userDocRef = doc(db, "users", currentUser.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          
+          if (userDocSnap.exists()) {
+            const data = userDocSnap.data();
+            if (data.role) {
+              localStorage.setItem("sd_current_user_role", data.role);
+            } else {
+              localStorage.setItem("sd_current_user_role", "user");
+            }
+          } else {
+            // Default to user if no document exists yet
+            localStorage.setItem("sd_current_user_role", "user");
+          }
+        } catch (error) {
+          console.error("Error fetching user role from Firestore:", error);
+          if (!localStorage.getItem("sd_current_user_role")) {
+            localStorage.setItem("sd_current_user_role", "user");
+          }
         }
       }
       setLoading(false);
