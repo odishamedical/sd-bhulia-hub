@@ -206,15 +206,22 @@ function ProfileContent() {
                     <input required value={otherCountry} onChange={e => setOtherCountry(e.target.value)} type="text" className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="e.g. Canada" />
                   </div>
                 )}
-                <div>
-                  <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">State/Region *</label>
-                  <select required value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]">
-                    <option value="">Select State</option>
-                    {INDIAN_STATES.map(s => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
+                {country === "India" ? (
+                  <div>
+                    <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">State/Region *</label>
+                    <select required value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]">
+                      <option value="">Select State</option>
+                      {INDIAN_STATES.map(s => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                ) : country ? (
+                  <div>
+                    <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">State/Region *</label>
+                    <input required value={state} onChange={e => setState(e.target.value)} type="text" className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="e.g. Nairobi" />
+                  </div>
+                ) : null}
 
                 {state === "Odisha" ? (
                   <div>
@@ -226,9 +233,9 @@ function ProfileContent() {
                       ))}
                     </select>
                   </div>
-                ) : state && country === "India" ? (
+                ) : state ? (
                   <div>
-                    <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">District/City *</label>
+                    <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">City/District *</label>
                     <input required value={district} onChange={e => setDistrict(e.target.value)} type="text" className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]" />
                   </div>
                 ) : null}
