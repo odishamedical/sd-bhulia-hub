@@ -339,7 +339,15 @@ export default function WeaverStorePage() {
     (p.weaverName && artisan?.name && p.weaverName.toLowerCase().includes(artisan.name.toLowerCase().replace("master weaver ", "").trim()))
   );
   
-  const displayProducts = weaverProducts.length > 0 ? weaverProducts : liveProducts.slice(0, 3);
+  const tier = (artisan as any)?.subscriptionTier || "free";
+  
+  let baseProducts = weaverProducts.length > 0 ? weaverProducts : liveProducts.slice(0, 3);
+  if (tier === "free") {
+    baseProducts = [];
+  } else if (tier === "paid_1") {
+    baseProducts = baseProducts.slice(0, 10);
+  }
+  const displayProducts = baseProducts;
 
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
@@ -994,6 +1002,13 @@ export default function WeaverStorePage() {
           <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Reserve handloom pieces directly from this artisan cluster - escrow protection activated</p>
 
           {/* Saree Catalog Grid */}
+          {displayProducts.length === 0 && !productsLoading ? (
+            <div className="bg-[#0B2B26]/50 border border-dashed border-[#C5A059]/40 rounded-3xl p-12 text-center">
+              <span className="text-4xl mb-4 block">📦</span>
+              <h4 className="text-xl font-serif text-[#C5A059] font-bold mb-2">Catalog Unavailable</h4>
+              <p className="text-sm text-gray-300">This artisan has not uploaded any products or their storefront catalog is currently inactive.</p>
+            </div>
+          ) : (
           <div className={`grid grid-cols-2 gap-4 sm:gap-6 ${gridStyle === "2-Column" ? "lg:grid-cols-2 xl:grid-cols-2" : "lg:grid-cols-3 xl:grid-cols-3"}`}>
             {productsLoading ? (
                [...Array(3)].map((_, i) => (
@@ -1046,6 +1061,7 @@ export default function WeaverStorePage() {
               </div>
             ))}
           </div>
+          )}
         </div>
         </>
         )}

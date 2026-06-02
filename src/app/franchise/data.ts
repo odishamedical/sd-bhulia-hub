@@ -17,6 +17,7 @@ export interface FranchiseListing {
     whatsapp: string;
     email: string;
   };
+  subscriptionTier?: "free" | "paid_1" | "paid_3";
 }
 
 export const MASTER_FRANCHISES: FranchiseListing[] = [

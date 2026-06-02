@@ -140,10 +140,36 @@ export default function DynamicSlugPage() {
     );
   }
 
+  // Check if current user is the owner of this franchise page
+  const isOwner = userRole === "super_admin" || (userRole === "franchisee" && (userUid === franchise.id || userUid === "sd_sso_custom_uid"));
+  
+  const tier = franchise.subscriptionTier || "free";
+
+  // Enforce Free Tier Block for public visitors
+  if (tier === "free" && !isOwner) {
+    return (
+      <div className="min-h-screen bg-[#051815] text-white flex flex-col items-center justify-center font-sans p-6 text-center">
+        <div className="text-5xl mb-4">🔒</div>
+        <h2 className="text-2xl font-serif text-[#C5A059] font-bold mb-2">Storefront Not Active</h2>
+        <p className="text-sm text-gray-300 max-w-md mb-6 leading-relaxed">
+          This franchise has not yet activated their public storefront. Please check back later.
+        </p>
+        <Link href="/" className="bg-[#C5A059] text-[#0A1021] px-6 py-3 text-xs font-bold uppercase tracking-widest rounded-xl hover:brightness-110 transition-all">
+          Return to Marketplace Home
+        </Link>
+      </div>
+    );
+  }
+
   // Filter curated products that exist and are active
-  const filteredProducts = MASTER_PRODUCTS.filter(
+  let filteredProducts = MASTER_PRODUCTS.filter(
     (p) => p.inStock && curatedProductIds.includes(p.id)
   );
+
+  // Enforce Tier limits (Paid 1 = max 10 products, Free = Mockup limited to 10)
+  if (tier === "free" || tier === "paid_1") {
+    filteredProducts = filteredProducts.slice(0, 10);
+  }
 
   // Group products by category
   const productsByCategory: { [category: string]: Product[] } = {};
@@ -155,8 +181,7 @@ export default function DynamicSlugPage() {
     productsByCategory[catName].push(p);
   });
 
-  // Check if current user is the owner of this franchise page (e.g. FRA-001 matches userUid)
-  const isOwner = userRole === "super_admin" || (userRole === "franchisee" && (userUid === franchise.id || userUid === "sd_sso_custom_uid"));
+  // isOwner is already defined above
 
   const toggleCuration = (productId: string) => {
     let updated;
