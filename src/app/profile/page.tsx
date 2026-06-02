@@ -7,6 +7,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import Header from "../../components/Header";
 
 const INDIAN_STATES = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", 
@@ -44,12 +45,14 @@ function ProfileContent() {
   const [addresses, setAddresses] = useState<any[]>([]);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [country, setCountry] = useState("India");
+  const [otherCountry, setOtherCountry] = useState("");
   const [state, setState] = useState("");
   const [district, setDistrict] = useState("");
   const [localAddress, setLocalAddress] = useState("");
   const [pinCode, setPinCode] = useState("");
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orders, setOrders] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) {
@@ -98,7 +101,7 @@ function ProfileContent() {
     
     const newAddress = {
       id: Date.now().toString(),
-      country,
+      country: country === "Other" ? otherCountry : country,
       state,
       district,
       localAddress,
@@ -133,17 +136,6 @@ function ProfileContent() {
     setIsSubmitting(false);
   };
 
-  // Mock Orders Data
-  const mockOrders = [
-    {
-      id: "ORD-928174",
-      date: "May 28, 2026",
-      total: "₹ 12,500",
-      status: "Shipped",
-      items: ["Royal Pasapalli Mercerized Cotton Ikat Saree"]
-    }
-  ];
-
   if (loading) {
     return <div className="min-h-screen bg-[#0A2520] flex justify-center items-center"><div className="animate-pulse text-[#C5A059] font-mono text-sm">Loading Profile...</div></div>;
   }
@@ -153,10 +145,12 @@ function ProfileContent() {
   // ==========================================
   if (!profileComplete || showAddressForm) {
     return (
-      <div className="min-h-screen bg-[#0A2520] py-12 px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto bg-[#051815] rounded-3xl border border-[#C5A059]/30 p-6 md:p-10 shadow-2xl">
-          <div className="text-center mb-10">
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-[#C5A059]">
+      <div className="min-h-screen bg-[#0A2520] flex flex-col">
+        <Header />
+        <div className="py-12 px-4 sm:px-6 flex-1">
+          <div className="max-w-3xl mx-auto bg-[#051815] rounded-3xl border border-[#C5A059]/30 p-6 md:p-10 shadow-2xl">
+            <div className="text-center mb-10">
+              <h1 className="text-2xl md:text-3xl font-serif font-bold text-[#C5A059]">
               {profileComplete ? "Add New Delivery Address" : "Complete Your Profile"}
             </h1>
             <p className="text-gray-400 text-sm mt-2">
@@ -198,26 +192,29 @@ function ProfileContent() {
                   <select required value={country} onChange={e => { setCountry(e.target.value); setState(""); setDistrict(""); }} className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]">
                     <option value="">Select Country</option>
                     <option value="India">India</option>
+                    <option value="USA">USA</option>
+                    <option value="UAE">UAE</option>
+                    <option value="UK">UK / England</option>
+                    <option value="Australia">Australia</option>
+                    <option value="France">France</option>
                     <option value="Other">Other</option>
                   </select>
                 </div>
-
-                {country === "India" ? (
+                {country === "Other" && (
                   <div>
-                    <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">State *</label>
-                    <select required value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]">
-                      <option value="">Select State</option>
-                      {INDIAN_STATES.map(s => (
-                        <option key={s} value={s}>{s}</option>
-                      ))}
-                    </select>
+                    <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Enter Your Country *</label>
+                    <input required value={otherCountry} onChange={e => setOtherCountry(e.target.value)} type="text" className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="e.g. Canada" />
                   </div>
-                ) : country === "Other" ? (
-                  <div>
-                    <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">State/Region *</label>
-                    <input required value={state} onChange={e => setState(e.target.value)} type="text" className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]" />
-                  </div>
-                ) : null}
+                )}
+                <div>
+                  <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">State/Region *</label>
+                  <select required value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]">
+                    <option value="">Select State</option>
+                    {INDIAN_STATES.map(s => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
 
                 {state === "Odisha" ? (
                   <div>
@@ -265,13 +262,14 @@ function ProfileContent() {
   }
 
   // ==========================================
-  // COMPLETE PROFILE / PRIVATE DASHBOARD VIEW
+  // DASHBOARD VIEW
   // ==========================================
   return (
-    <div className="min-h-screen bg-[#0A2520] py-10 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="min-h-screen bg-[#051815] text-white font-sans flex flex-col">
+      <Header />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 w-full flex-1">
         
-        {/* Header */}
+        {/* Profile Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-serif font-bold text-[#C5A059]">Welcome, {name}</h1>
@@ -282,7 +280,7 @@ function ProfileContent() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mt-12">
           {/* Sidebar Tabs */}
           <div className="lg:col-span-1 space-y-2">
             <button onClick={() => setActiveTab("orders")} className={`w-full text-left px-5 py-4 rounded-2xl font-bold uppercase tracking-wider text-xs transition-all ${activeTab === "orders" ? "bg-[#C5A059] text-[#0A1021] shadow-lg" : "bg-[#051815] text-gray-300 hover:bg-[#0A3A35] border border-[#C5A059]/20"}`}>
@@ -296,34 +294,35 @@ function ProfileContent() {
             </button>
           </div>
 
-          {/* Main Content Area */}
-          <div className="lg:col-span-3 bg-[#051815] rounded-3xl border border-[#C5A059]/30 p-6 md:p-8 shadow-2xl min-h-[500px]">
+          {/* RIGHT COLUMN - CONTENT */}
+          <div className="col-span-12 md:col-span-8 lg:col-span-9 bg-[#0A2520] rounded-2xl border border-[#C5A059]/20 p-6 md:p-8">
             
-            {/* Orders Tab */}
             {activeTab === "orders" && (
               <div className="space-y-6">
-                <h2 className="text-xl font-serif font-bold text-[#C5A059] border-b border-[#C5A059]/20 pb-4">Order History & Tracking</h2>
+                <h2 className="text-xl font-bold font-serif text-[#C5A059] border-b border-[#C5A059]/20 pb-4">Order History & Tracking</h2>
                 
-                {mockOrders.length === 0 ? (
-                  <div className="text-center py-12 text-gray-400">
-                    <span className="text-4xl mb-4 block">🛍️</span>
-                    <p>You have not placed any orders yet.</p>
+                {orders.length === 0 ? (
+                  <div className="text-center py-10 bg-[#051815] rounded-xl border border-[#C5A059]/10">
+                    <p className="text-gray-400 text-sm">You have no active orders yet.</p>
+                    <Link href="/" className="mt-4 inline-block px-6 py-2 border border-[#C5A059]/40 text-[#C5A059] text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#C5A059]/10 transition-colors">Start Shopping</Link>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {mockOrders.map(order => (
-                      <div key={order.id} className="bg-[#0A2520] border border-[#C5A059]/20 rounded-2xl p-5 flex flex-col md:flex-row justify-between gap-4">
-                        <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <span className="text-sm font-bold text-white">{order.id}</span>
-                            <span className="px-2 py-1 bg-green-500/20 text-green-400 border border-green-500/30 rounded text-[10px] uppercase font-bold tracking-widest">{order.status}</span>
+                    {orders.map((order, idx) => (
+                      <div key={idx} className="bg-[#051815] border border-[#C5A059]/30 rounded-xl p-5 hover:border-[#C5A059]/50 transition-colors">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <span className="font-bold text-white text-sm">{order.id}</span>
+                            <span className="ml-3 px-2 py-0.5 bg-[#0D4B45] text-[#4ADE80] text-[10px] font-bold uppercase rounded">{order.status}</span>
+                            <p className="text-gray-400 text-xs mt-1">Placed on: {order.date}</p>
                           </div>
-                          <p className="text-xs text-gray-400 mb-1">Placed on: {order.date}</p>
-                          <p className="text-sm text-gray-300 font-serif">{order.items.join(", ")}</p>
+                          <div className="text-right">
+                            <span className="text-[#C5A059] font-bold">{order.total}</span>
+                          </div>
                         </div>
-                        <div className="md:text-right flex flex-col justify-between">
-                          <p className="text-lg font-bold text-[#C5A059]">{order.total}</p>
-                          <button className="text-xs text-[#C5A059] hover:underline uppercase tracking-widest font-bold mt-2">Track Package →</button>
+                        <div className="border-t border-[#C5A059]/10 pt-4 flex justify-between items-center">
+                          <p className="text-sm text-gray-300">{order.items[0]} {order.items.length > 1 && `+ ${order.items.length - 1} more`}</p>
+                          <button className="text-xs font-bold text-[#C5A059] hover:text-white transition-colors uppercase tracking-wider">Track Package →</button>
                         </div>
                       </div>
                     ))}
