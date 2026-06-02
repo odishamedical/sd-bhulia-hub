@@ -385,53 +385,7 @@ export default function WeaverRegistrationPage() {
     <main className="relative flex-1 w-full bg-[#051815] text-white font-sans flex flex-col min-h-screen">
       
       {/* Top Sticky Header */}
-      <header className="sticky top-0 w-full z-50 bg-[#0B2B26] border-b border-[#C5A059]/40 px-4 sm:px-6 py-3 sm:py-4 shadow-lg flex flex-col gap-3">
-        <div className="flex justify-between items-center gap-2 w-full">
-          {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0">
-            <div className="relative w-8 sm:w-14 h-8 sm:h-14 rounded-full overflow-hidden border border-[#C5A059] sm:border-2 shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
-              <Image src="/bhulia_logo_final.jpg" alt="Bhulia Gold Logo" fill className="object-cover" />
-            </div>
-            <div className="min-w-0">
-              <Link href="/">
-                <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wider text-[#C5A059] leading-none hover:opacity-80 transition-opacity">BHULIA.COM</h1>
-              </Link>
-              <p className="hidden sm:block text-[11px] text-gray-300 font-medium tracking-wide mt-1 truncate">Sambalpuri Saree, Direct from Weavers</p>
-            </div>
-          </div>
-
-          {/* Center: Dedicated Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-gray-200">
-            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Home</Link>
-            <Link href="/#weaver-boutiques" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Boutiques</Link>
-            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
-            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
-          </nav>
-
-          {/* Right Side: User Menu / Sign In / Register (Desktop) & Mobile Hamburger */}
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <UserMenu />
-
-            {/* Mobile Hamburger Button */}
-            <button
-              type="button"
-              onClick={handleSaveDraft}
-              className="bg-[#0A3A35] text-[#C5A059] px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs border border-[#C5A059]/40 hover:bg-[#0D4B45] transition-all shrink-0"
-            >
-              Save Draft
-            </button>
-            <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0 shadow">
-              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {mobileNavOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header>
+      
 
       {/* Mobile Navigation Drawer */}
       {mobileNavOpen && (
@@ -1104,15 +1058,7 @@ export default function WeaverRegistrationPage() {
       </div>
 
       {/* Global Footer */}
-      <footer className="w-full bg-[#051815] border-t border-[#C5A059]/40 text-white py-8 px-6 mt-auto">
-        <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div>
-            <h3 className="text-sm font-serif font-bold tracking-widest text-[#C5A059] uppercase mb-1">Shyam Dash Global Network</h3>
-            <p className="text-[10px] text-gray-400 uppercase tracking-widest">Sovereign Cooperative Ecosystem</p>
-          </div>
-          <span className="text-[10px] font-mono text-gray-400">© 2026 Bhulia.com. All Rights Reserved.</span>
-        </div>
-      </footer>
+      
 
       {/* Camera UI Overlay Modal */}
       {cameraActive && (

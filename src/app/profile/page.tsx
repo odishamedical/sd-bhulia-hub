@@ -187,7 +187,7 @@ function ProfileContent() {
   if (!profileComplete || showAddressForm) {
     return (
       <div className="min-h-screen bg-[#0A2520] flex flex-col">
-        <Header />
+        
         <div className="py-12 px-4 sm:px-6 flex-1">
           <div className="max-w-3xl mx-auto bg-[#051815] rounded-3xl border border-[#C5A059]/30 p-6 md:p-10 shadow-2xl">
             <div className="text-center mb-10">
@@ -315,7 +315,7 @@ function ProfileContent() {
   // ==========================================
   return (
     <div className="min-h-screen bg-[#051815] text-white font-sans flex flex-col">
-      <Header />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 w-full flex-1">
         
         {/* Profile Header */}
