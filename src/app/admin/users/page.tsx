@@ -1,12 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function AdminUsersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // MVP Empty State
-  const users: any[] = [];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        const usersList: any[] = [];
+        querySnapshot.forEach((doc) => {
+          usersList.push({ id: doc.id, ...doc.data() });
+        });
+        setUsers(usersList);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+      setLoading(false);
+    };
+
+    fetchUsers();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -35,30 +54,38 @@ export default function AdminUsersPage() {
               </tr>
             </thead>
             <tbody>
-              {/* Default Super Admin View */}
-              <tr className="border-b border-[#C5A059]/10 hover:bg-[#0A3A35]/50 transition-colors">
-                <td className="px-6 py-4 font-medium">
-                  <div className="text-white font-serif">Master Admin</div>
-                  <div className="text-[10px] text-gray-400 mt-1 font-mono">odishamedical@gmail.com</div>
-                </td>
-                <td className="px-6 py-4">
-                  <span className="bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-3 py-1 rounded text-[10px] uppercase tracking-widest font-bold">
-                    Super Admin
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-xs font-mono">Just now</td>
-                <td className="px-6 py-4 text-right text-gray-500 text-xs italic">
-                  Protected
-                </td>
-              </tr>
-              {users.length === 0 ? (
+              {loading ? (
                 <tr>
                   <td colSpan={4} className="px-6 py-8 text-center text-gray-400 font-mono text-xs">
-                    No other users registered in the system.
+                    Loading users...
+                  </td>
+                </tr>
+              ) : users.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-8 text-center text-gray-400 font-mono text-xs">
+                    No users registered in the system.
                   </td>
                 </tr>
               ) : (
-                <></>
+                users.map((user) => (
+                  <tr key={user.id} className="border-b border-[#C5A059]/10 hover:bg-[#0A3A35]/50 transition-colors">
+                    <td className="px-6 py-4 font-medium">
+                      <div className="text-white font-serif">{user.name || "Unknown"}</div>
+                      <div className="text-[10px] text-gray-400 mt-1 font-mono">{user.email || user.id}</div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-3 py-1 rounded text-[10px] uppercase tracking-widest font-bold">
+                        {user.role || "user"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-xs font-mono">
+                      {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Active"}
+                    </td>
+                    <td className="px-6 py-4 text-right text-gray-500 text-xs italic">
+                      {user.role === "super_admin" ? "Protected" : "Standard"}
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>

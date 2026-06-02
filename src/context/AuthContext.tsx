@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(currentUser);
       if (currentUser) {
         try {
-          const { doc, getDoc } = await import("firebase/firestore");
+          const { doc, getDoc, setDoc } = await import("firebase/firestore");
           const { db } = await import("../lib/firebase");
           const userDocRef = doc(db, "users", currentUser.uid);
           const userDocSnap = await getDoc(userDocRef);
@@ -37,6 +37,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           if (currentUser.email === "odishamedical@gmail.com" || currentUser.email === "npfcodisha@gmail.com") {
             // Master Admin Override
             localStorage.setItem("sd_current_user_role", "super_admin");
+            
+            // Auto-register super admin if they don't exist
+            if (!userDocSnap.exists()) {
+              await setDoc(userDocRef, {
+                email: currentUser.email,
+                name: currentUser.displayName || currentUser.email.split("@")[0],
+                role: "super_admin",
+                createdAt: new Date().toISOString()
+              });
+            }
           } else if (userDocSnap.exists()) {
             const data = userDocSnap.data();
             if (data.role) {
@@ -45,7 +55,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               localStorage.setItem("sd_current_user_role", "user");
             }
           } else {
-            // Default to user if no document exists yet
+            // Auto-register new general user
+            await setDoc(userDocRef, {
+              email: currentUser.email,
+              name: currentUser.displayName || currentUser.email?.split("@")[0] || "Unknown User",
+              role: "user",
+              createdAt: new Date().toISOString()
+            });
             localStorage.setItem("sd_current_user_role", "user");
           }
         } catch (error) {
