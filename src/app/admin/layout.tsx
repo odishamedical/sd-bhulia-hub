@@ -13,7 +13,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const email = localStorage.getItem("sd_current_user_email");
     const role = localStorage.getItem("sd_current_user_role");
 
-    if (email === "odishamedical@gmail.com" || role === "super_admin") {
+    if (role === "super_admin") {
       setIsAdmin(true);
     } else {
       setIsAdmin(false);
