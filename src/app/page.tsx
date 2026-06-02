@@ -9,6 +9,17 @@ import { useRouter } from "next/navigation";
 import { useProducts, useWeavers } from "../lib/db-hooks";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { db } from "../lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+
+interface CMSRow {
+  id: string;
+  type: "hero" | "gateways" | "products" | "banner";
+  title?: string;
+  category?: string;
+  bannerText?: string;
+  themeStyle?: string;
+}
 
 export default function Home() {
   const { products, loading: productsLoading } = useProducts();
@@ -27,6 +38,23 @@ export default function Home() {
   const { cartCount, addToCart } = useCart();
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [currentSlide, setCurrentSlide] = useState<number>(0);
+  
+  // CMS State
+  const [cmsLayout, setCmsLayout] = useState<{ dynamicEnabled: boolean, rows: CMSRow[] } | null>(null);
+
+  useEffect(() => {
+    const fetchCms = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, "platform_settings", "cms_homepage"));
+        if (docSnap.exists()) {
+          setCmsLayout(docSnap.data() as any);
+        }
+      } catch (err) {
+        console.error("Error fetching CMS layout", err);
+      }
+    };
+    fetchCms();
+  }, []);
 
   const heroSlides = [
     {
@@ -236,7 +264,59 @@ export default function Home() {
 
         </div>
 
-        {/* 2. Explore Master Weaver Flagship Boutiques */}
+        {/* --- DYNAMIC CMS RENDERER --- */}
+        {cmsLayout?.dynamicEnabled ? (
+          <div className="space-y-8 md:space-y-12">
+            {cmsLayout.rows.map(row => {
+              if (row.type === "products") {
+                const categoryProducts = products.filter(p => p.category === row.category || p.weave === row.category || p.category.toLowerCase().includes(row.category?.toLowerCase() || ""));
+                
+                // Theme Logic
+                const isModern = row.themeStyle === "modern";
+                const isVintage = row.themeStyle === "vintage";
+                
+                const titleColor = isVintage ? "text-amber-500 font-serif italic drop-shadow" : isModern ? "text-white font-sans font-bold" : "text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059]";
+                const cardStyle = isVintage ? "bg-[#1A1A1A] border-2 border-amber-900 shadow-inner rounded-none" : isModern ? "bg-zinc-900 border border-zinc-700 rounded-3xl" : "bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl";
+
+                return (
+                  <div key={row.id} className="space-y-4 scroll-mt-24">
+                    <div>
+                      <div className="flex items-center gap-4 mb-1">
+                        <h3 className={`text-xl md:text-3xl tracking-wider ${titleColor}`}>{row.title || "Products"}</h3>
+                        <div className="flex-1 h-[1px] bg-gradient-to-r from-[#C5A059]/60 to-transparent"></div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                      {categoryProducts.length === 0 ? <p className="text-gray-400 text-xs">No products in this category.</p> : null}
+                      {categoryProducts.slice(0, 4).map(p => (
+                        <Link href={`/product/${p.title.toLowerCase().replace(/\s+/g, "-")}`} key={p.id} className={`${cardStyle} p-4 flex flex-col justify-between group hover:border-[#C5A059] transition-all`}>
+                          <div className="relative w-full aspect-square rounded-xl overflow-hidden mb-3">
+                            <Image src={p.images?.[0] || "/bhulia-hero.png"} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform" />
+                          </div>
+                          <h4 className="text-sm font-bold text-white line-clamp-2">{p.title}</h4>
+                          <p className="text-[#C5A059] font-bold mt-2">{p.price}</p>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+              
+              if (row.type === "banner") {
+                return (
+                  <div key={row.id} className="bg-gradient-to-r from-[#0A3A35] to-[#051815] border-y border-[#C5A059]/30 py-8 px-4 text-center">
+                    <h3 className="text-2xl md:text-4xl font-serif font-bold text-[#C5A059] uppercase tracking-widest">{row.bannerText}</h3>
+                  </div>
+                );
+              }
+
+              return null; // Hero and Gateways are already hardcoded at the top for now
+            })}
+          </div>
+        ) : (
+          /* --- STATIC LEGACY RENDERER --- */
+          <>
+            {/* 2. Explore Master Weaver Flagship Boutiques */}
         <div id="weaver-boutiques" className="space-y-3 md:space-y-4 scroll-mt-24">
           <div>
             <div className="flex items-center gap-4 mb-1">
@@ -638,11 +718,13 @@ export default function Home() {
             </div>
           </div>
 
-        </div>
+          </div>
+          </>
+        )}
 
       </div>
 
-      {/* 7. Global Ecosystem Continuous Footer Bar */}
+      {/* Global Footer Area */}
       <footer className="w-full bg-[#051815] border-t border-[#C5A059]/40 text-white py-8 px-6 z-50 relative shadow-[0_-4_30px_rgba(0,0,0,0.6)] mt-auto font-sans">
         <div className="max-w-[1400px] mx-auto flex flex-col gap-6 md:gap-8">
           
