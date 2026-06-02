@@ -1567,7 +1567,6 @@ export default function FranchiseDashboard() {
             </div>
 
           </div>
-          </div>
         </div>
       )}
 
