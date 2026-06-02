@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MASTER_STORES, DEFAULT_STORE, STORE_CATALOG_SAREES } from "../data";
+import { db } from "@/lib/firebase";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 
 export default function StoreDetailPage() {
   const params = useParams();
@@ -19,11 +21,32 @@ export default function StoreDetailPage() {
   };
 
   const [userUid, setUserUid] = useState<string>("sd_super_admin_custom_uid");
+  const [liveStoreData, setLiveStoreData] = useState<any>(null);
 
   useEffect(() => {
     const uid = localStorage.getItem("sd_current_user_uid") || "sd_super_admin_custom_uid";
     setUserUid(uid);
-  }, []);
+
+    const fetchLiveStore = async () => {
+      try {
+        // Try by ID first
+        let docSnap = await getDoc(doc(db, "franchises", store.id));
+        if (docSnap.exists()) {
+          setLiveStoreData(docSnap.data());
+          return;
+        }
+        // Try by slug
+        const q = query(collection(db, "franchises"), where("slug", "==", store.slug));
+        const querySnap = await getDocs(q);
+        if (!querySnap.empty) {
+          setLiveStoreData(querySnap.docs[0].data());
+        }
+      } catch(err) {
+        console.error(err);
+      }
+    };
+    fetchLiveStore();
+  }, [store.id, store.slug]);
 
   const handleSocialShare = (platform: "whatsapp" | "facebook") => {
     const shareUrl = `${window.location.origin}/store/${store.slug}?ref=${userUid}`;
@@ -150,6 +173,30 @@ export default function StoreDetailPage() {
         </div>
 
       </div>
+
+      {/* Workspace Identity Images */}
+      {liveStoreData?.workspaceImages && liveStoreData.workspaceImages.length > 0 && (
+        <div className="space-y-4 pt-6 border-t border-[#C5A059]/20">
+          <div>
+            <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Workspace Identity</h3>
+            <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Behind the scenes at {store.name}</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {liveStoreData.workspaceImages.map((img: any, idx: number) => (
+              <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden shadow-lg p-2">
+                <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden border border-[#C5A059]/20 bg-[#051815]">
+                  <Image src={img.url} alt="Workspace" fill className="object-cover hover:scale-105 transition-transform duration-500" />
+                </div>
+                {img.description && (
+                  <p className="text-center text-xs text-gray-300 font-bold uppercase tracking-widest mt-3 mb-1">
+                    {img.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Saree Catalog Spotlight Grid */}
       <div className="space-y-6 pt-6 border-t border-[#C5A059]/20">

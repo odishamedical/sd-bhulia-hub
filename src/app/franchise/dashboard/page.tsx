@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { MASTER_FRANCHISES, FranchiseListing } from "@/app/franchise/data";
 import { MASTER_PRODUCTS, Product } from "@/lib/products";
+import WorkspaceIdentity from "./WorkspaceIdentity";
+import ListProduct from "./ListProduct";
 
 // State and Districts data for prefilled dropdown
 const STATE_DISTRICTS: { [state: string]: string[] } = {
@@ -24,7 +26,7 @@ export default function FranchiseDashboard() {
   const [liveFranchiseData, setLiveFranchiseData] = useState<any | null>(null);
 
   // General dashboard UI states
-  const [activeTab, setActiveTab] = useState<"overview" | "curation" | "proxy" | "orders" | "settings">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "curation" | "proxy" | "orders" | "settings" | "workspace" | "list_product">("overview");
   const [notifications, setNotifications] = useState<any[]>([]);
   const [allOrders, setAllOrders] = useState<any[]>([]);
   const [walletBalance, setWalletBalance] = useState<number>(45000);
@@ -680,6 +682,26 @@ export default function FranchiseDashboard() {
             >
               <span>🛒</span>
               <span>Buy for Customer</span>
+            </button>
+
+            <button 
+              onClick={() => setActiveTab("workspace")}
+              className={`w-full py-3 px-4 rounded-2xl text-left text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-3 cursor-pointer ${
+                activeTab === "workspace" ? "bg-[#C5A059] text-[#0A1021] shadow-lg" : "text-gray-300 hover:bg-[#0A3A35] hover:text-white"
+              }`}
+            >
+              <span>📸</span>
+              <span>Workspace Identity</span>
+            </button>
+
+            <button 
+              onClick={() => setActiveTab("list_product")}
+              className={`w-full py-3 px-4 rounded-2xl text-left text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-3 cursor-pointer ${
+                activeTab === "list_product" ? "bg-[#C5A059] text-[#0A1021] shadow-lg" : "text-gray-300 hover:bg-[#0A3A35] hover:text-white"
+              }`}
+            >
+              <span>➕</span>
+              <span>List New Product</span>
             </button>
 
             <button 
@@ -1534,6 +1556,16 @@ export default function FranchiseDashboard() {
 
           </div>
         </div>
+      )}
+
+      {/* TAB: WORKSPACE IDENTITY */}
+      {activeTab === "workspace" && activeFranchise && (
+        <WorkspaceIdentity franchiseId={activeFranchise.id} />
+      )}
+
+      {/* TAB: LIST PRODUCT */}
+      {activeTab === "list_product" && activeFranchise && (
+        <ListProduct franchiseId={activeFranchise.id} />
       )}
 
       {/* CUSTOM DOMAIN PREVIEW MODAL */}

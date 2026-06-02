@@ -418,6 +418,20 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
+              {/* Sold By Section (B2B Directory Link) */}
+              <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-[#C5A059] font-bold block mb-0.5">Sold By</span>
+                  <span className="text-sm font-bold text-white uppercase">{product.sellerId || "Verified Bhulia Hub"}</span>
+                </div>
+                <Link 
+                  href={`/store/${product.sellerId || "maa-samaleswari-weavers"}`}
+                  className="px-4 py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg hover:brightness-110"
+                >
+                  View Store & Workspace
+                </Link>
+              </div>
+
               {/* Detailed Description */}
               <div className="space-y-2 border-t border-[#C5A059]/20 pt-4 text-gray-200">
                 <h3 className="text-xs uppercase tracking-widest text-[#C5A059] font-bold">Artisan Masterpiece Story</h3>
