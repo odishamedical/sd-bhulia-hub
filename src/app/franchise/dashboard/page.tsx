@@ -26,7 +26,7 @@ export default function FranchiseDashboard() {
   const [liveFranchiseData, setLiveFranchiseData] = useState<any | null>(null);
 
   // General dashboard UI states
-  const [activeTab, setActiveTab] = useState<"overview" | "curation" | "proxy" | "orders" | "settings" | "workspace" | "list_product">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "curation" | "proxy" | "orders" | "settings" | "workspace" | "list_product" | "upgrade">("overview");
   const [notifications, setNotifications] = useState<any[]>([]);
   const [allOrders, setAllOrders] = useState<any[]>([]);
   const [walletBalance, setWalletBalance] = useState<number>(45000);
@@ -723,6 +723,18 @@ export default function FranchiseDashboard() {
               <span>⭐</span>
               <span>Premium Sandbox Settings</span>
             </button>
+            
+            {(!liveFranchiseData?.subscriptionTier || liveFranchiseData?.subscriptionTier === "free" || liveFranchiseData?.subscriptionTier === "paid_1") && (
+              <button 
+                onClick={() => setActiveTab("upgrade")}
+                className={`w-full mt-4 py-3 px-4 rounded-2xl text-left text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-3 cursor-pointer border border-[#C5A059]/40 ${
+                  activeTab === "upgrade" ? "bg-[#C5A059] text-[#0A1021] shadow-[0_0_15px_rgba(197,160,89,0.5)]" : "bg-gradient-to-r from-[#C5A059]/10 to-[#996515]/10 text-[#C5A059] hover:bg-[#C5A059]/20"
+                }`}
+              >
+                <span>🚀</span>
+                <span>Upgrade Preview Showcase</span>
+              </button>
+            )}
           </nav>
         </aside>
 
@@ -1554,6 +1566,75 @@ export default function FranchiseDashboard() {
 
             </div>
 
+          </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB: UPGRADE PREVIEW SHOWCASE */}
+      {activeTab === "upgrade" && activeFranchise && (
+        <div className="bg-[#0B2B26] border-2 border-[#C5A059] shadow-[0_0_40px_rgba(197,160,89,0.15)] rounded-3xl p-6 sm:p-10 space-y-8 animate-fadeIn text-center relative overflow-hidden">
+          <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #C5A059 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+          
+          <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+            <span className="text-6xl block mb-2">💎</span>
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white uppercase tracking-wider">
+              Unlock Your <span className="text-[#C5A059]">Infinite</span> Storefront
+            </h2>
+            <p className="text-sm text-gray-300 font-sans leading-relaxed">
+              You are currently on a limited tier. Upgrade now to unlock a fully white-labeled public storefront, unlimited catalog capacity, custom domain routing, and priority escrow logistics.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left my-8">
+              <div className="bg-[#051815] border border-[#C5A059]/30 rounded-2xl p-5 shadow-lg space-y-3">
+                <h4 className="text-sm font-bold text-[#C5A059] uppercase tracking-widest border-b border-[#C5A059]/20 pb-2">Current Tier Limits</h4>
+                <ul className="space-y-2 text-xs text-gray-400 font-mono">
+                  <li>❌ Public Storefront Restricted</li>
+                  <li>❌ Limited to 10 Products</li>
+                  <li>❌ Subdomain Not Available</li>
+                  <li>❌ Standard Logistics SLA</li>
+                </ul>
+              </div>
+              <div className="bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-[#C5A059] rounded-2xl p-5 shadow-lg space-y-3 relative overflow-hidden">
+                <div className="absolute top-0 right-0 bg-[#C5A059] text-[#0A1021] text-[9px] font-bold px-2 py-1 uppercase tracking-widest rounded-bl-lg">Recommended</div>
+                <h4 className="text-sm font-bold text-white uppercase tracking-widest border-b border-[#C5A059]/40 pb-2">Premium Unlimited</h4>
+                <ul className="space-y-2 text-xs text-green-300 font-mono">
+                  <li>✅ Fully Custom Public Storefront</li>
+                  <li>✅ Unlimited Masterpiece Catalog</li>
+                  <li>✅ Advanced Custom Domain Routing</li>
+                  <li>✅ BVC Secure Shield Priority Escrow</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-[#C5A059]/20">
+              <button 
+                onClick={async () => {
+                  if (confirm("This is a demo payment gateway! Proceed to instantly upgrade your tier to Premium Unlimited?")) {
+                    try {
+                      const { db } = await import("@/lib/firebase");
+                      const { doc, updateDoc } = await import("firebase/firestore");
+                      const ref = doc(db, "franchises", activeFranchise.id);
+                      await updateDoc(ref, {
+                        subscriptionTier: "paid_3",
+                        tier: "Premium"
+                      });
+                      alert("Payment Successful! Your tier has been upgraded to Premium (paid_3). Returning to overview...");
+                      setActiveTab("overview");
+                    } catch (e) {
+                      console.error(e);
+                      alert("Error updating tier.");
+                    }
+                  }
+                }}
+                className="w-full sm:w-auto px-10 py-4 rounded-xl font-bold uppercase tracking-widest bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] hover:brightness-125 transition-all shadow-xl cursor-pointer text-sm"
+              >
+                Pay ₹9,999 to Activate Premium
+              </button>
+              <p className="text-[10px] text-gray-500 font-mono mt-3 uppercase tracking-widest">
+                Mock Payment Gateway - For Demonstration Purposes
+              </p>
+            </div>
           </div>
         </div>
       )}
