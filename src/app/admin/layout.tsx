@@ -73,7 +73,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span>👥</span> Users
           </Link>
           <Link href="/admin/cms" className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${pathname?.includes("/admin/cms") ? "bg-[#C5A059] text-[#0A1021]" : "text-gray-300 hover:bg-[#0A3A35] hover:text-[#C5A059]"}`}>
-            <span>⚙️</span> CMS Settings
+            <span>⚙️</span> Layout Settings
+          </Link>
+          <Link href="/admin/pages" className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${pathname?.includes("/admin/pages") ? "bg-[#C5A059] text-[#0A1021]" : "text-gray-300 hover:bg-[#0A3A35] hover:text-[#C5A059]"}`}>
+            <span>📄</span> Static Pages
           </Link>
         </nav>
 
