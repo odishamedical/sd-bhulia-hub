@@ -239,7 +239,10 @@ export default function Home() {
         {/* 2. Explore Master Weaver Flagship Boutiques */}
         <div id="weaver-boutiques" className="space-y-3 md:space-y-4 scroll-mt-24">
           <div>
-            <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore Master Weaver Flagships</h3>
+            <div className="flex items-center gap-4 mb-1">
+              <h3 className="text-xl md:text-3xl font-serif font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] drop-shadow-[0_0_8px_rgba(197,160,89,0.3)] whitespace-nowrap">Explore Master Weaver Flagships</h3>
+              <div className="flex-1 h-[1px] bg-gradient-to-r from-[#C5A059]/60 to-transparent shadow-[0_0_8px_rgba(197,160,89,0.5)]"></div>
+            </div>
             <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
           </div>
 
@@ -290,7 +293,10 @@ export default function Home() {
         {/* 3. Operational Onboarding Gateways (Sovereign Pillars 4-Column Grid) */}
         <div className="space-y-3 md:space-y-4">
           <div>
-            <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Operational Onboarding Gateways</h3>
+            <div className="flex items-center gap-4 mb-1">
+              <h3 className="text-xl md:text-2xl font-serif font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] drop-shadow-[0_0_8px_rgba(197,160,89,0.3)] whitespace-nowrap">Operational Onboarding Gateways</h3>
+              <div className="flex-1 h-[1px] bg-gradient-to-r from-[#C5A059]/60 to-transparent shadow-[0_0_8px_rgba(197,160,89,0.5)]"></div>
+            </div>
             <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest">Select your dedicated operational pillar to initiate secure, verified onboarding</p>
           </div>
 
@@ -321,7 +327,10 @@ export default function Home() {
         <div id="cotton-sambalpuri" className="space-y-3 md:space-y-4">
           <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Cotton Sambalpuri Sarees</h3>
+              <div className="flex items-center gap-4">
+                <h3 className="text-xl md:text-3xl font-serif font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] drop-shadow-[0_0_8px_rgba(197,160,89,0.3)] whitespace-nowrap">Cotton Sambalpuri Sarees</h3>
+                <div className="flex-1 h-[1px] bg-gradient-to-r from-[#C5A059]/60 to-transparent shadow-[0_0_8px_rgba(197,160,89,0.5)]"></div>
+              </div>
               <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1 font-semibold">Breathable, traditional daily luxury direct from grassroots pit looms</p>
             </div>
             <button className="hidden sm:block px-4 py-2 bg-[#0B2B26] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
@@ -412,7 +421,10 @@ export default function Home() {
         <div id="pata-sambalpuri" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
           <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Pata Sambalpuri Sarees (Pure Silk)</h3>
+              <div className="flex items-center gap-4">
+                <h3 className="text-xl md:text-3xl font-serif font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] drop-shadow-[0_0_8px_rgba(197,160,89,0.3)] whitespace-nowrap">Pata Sambalpuri Sarees (Pure Silk)</h3>
+                <div className="flex-1 h-[1px] bg-gradient-to-r from-[#C5A059]/60 to-transparent shadow-[0_0_8px_rgba(197,160,89,0.5)]"></div>
+              </div>
               <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1 font-semibold">Exquisite Mulberry & Tussar silk masterpieces for weddings and royal connoisseurs</p>
             </div>
             <button className="hidden sm:block px-4 py-2 bg-[#0B2B26] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
@@ -503,7 +515,10 @@ export default function Home() {
         <div id="cotton-bomkai" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
           <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-3 md:pb-4">
             <div>
-              <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Cotton Bomkai</h3>
+              <div className="flex items-center gap-4">
+                <h3 className="text-xl md:text-3xl font-serif font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] drop-shadow-[0_0_8px_rgba(197,160,89,0.3)] whitespace-nowrap">Cotton Bomkai</h3>
+                <div className="flex-1 h-[1px] bg-gradient-to-r from-[#C5A059]/60 to-transparent shadow-[0_0_8px_rgba(197,160,89,0.5)]"></div>
+              </div>
               <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1 font-semibold">Intricate extra-weft thread work on comfortable cotton bases</p>
             </div>
             <button className="hidden sm:block px-4 py-2 bg-[#0B2B26] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] text-xs font-bold uppercase tracking-widest rounded-lg transition-all cursor-pointer">
@@ -569,7 +584,10 @@ export default function Home() {
           {/* Explore by Category E.g. Span 5 */}
           <div className="lg:col-span-5 bg-[#0B2B26] border border-[#C5A059]/30 rounded-3xl p-8 flex flex-col justify-between shadow-xl space-y-6">
             <div>
-              <h3 className="text-xl md:text-2xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Explore by Category</h3>
+              <div className="flex items-center gap-4 mb-1">
+                <h3 className="text-xl md:text-2xl font-serif font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] drop-shadow-[0_0_8px_rgba(197,160,89,0.3)] whitespace-nowrap">Explore by Category</h3>
+                <div className="flex-1 h-[1px] bg-gradient-to-r from-[#C5A059]/60 to-transparent shadow-[0_0_8px_rgba(197,160,89,0.5)]"></div>
+              </div>
               <p className="text-xs text-gray-300 uppercase tracking-widest">Curated collections of authentic weaves</p>
             </div>
 
