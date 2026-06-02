@@ -387,9 +387,28 @@ export default function FranchiseRegistrationPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationError(null);
+    
+    // Also validate step 5 before submitting
+    const step5Error = validateStep();
+    if (step5Error) {
+      setValidationError(step5Error);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
     if (!formData.consentAuthentic || !formData.consentTerms) {
       setValidationError("You must consent to all quality standard audits and terms before submitting.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
+    }
+
+    // Double check that we have minimum details
+    if (!formData.hubName || !formData.representativeName || !formData.contactNumber) {
+       setValidationError("Please fill in all mandatory fields in Step 1 (Hub Name, Representative Name, Contact).");
+       setCurrentStep(1);
+       window.scrollTo({ top: 0, behavior: "smooth" });
+       return;
     }
 
     const uniqueId = "franchise-" + Math.floor(1000 + Math.random() * 9000);
@@ -403,24 +422,34 @@ export default function FranchiseRegistrationPage() {
       console.warn("Image too large for demo database. Using placeholder.");
     }
 
+    const subscriptionTier = formData.tier === "Silver" ? "free" : formData.tier === "Gold" ? "paid_1" : "paid_3";
+
     const payload = {
       slug: assignedSlug,
-      name: formData.hubName,
-      city: `${formData.districtCity}, ${formData.stateRegion}`,
-      phone: formData.contactNumber,
-      whatsapp: formData.whatsappNumber,
-      address: formData.address,
+      name: formData.hubName || "Unnamed Hub",
+      city: `${formData.districtCity || 'Unknown'}, ${formData.stateRegion || 'Unknown'}`,
+      phone: formData.contactNumber || "N/A",
+      whatsapp: formData.whatsappNumber || "N/A",
+      address: formData.address || "N/A",
       img: finalImg,
       tier: formData.tier,
+      subscriptionTier: subscriptionTier,
       status: "pending_approval" as const,
       invitedCount: 0,
       totalSales: 0,
       commissionEarned: 0
     };
 
-    const res = await addFranchise(payload, uniqueId);
-    if (!res.success) {
-      setValidationError("Error submitting application. Please try again.");
+    try {
+      const res = await addFranchise(payload, uniqueId);
+      if (!res.success) {
+        setValidationError("Database Error submitting application. Please try again.");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+    } catch (err: any) {
+      setValidationError("Network or Server error submitting application: " + err.message);
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
