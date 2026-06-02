@@ -272,9 +272,18 @@ function ProfileContent() {
         
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-serif font-bold text-[#C5A059]">Welcome, {name}</h1>
-            <p className="text-gray-300 text-sm mt-1">Manage your orders, addresses, and partnerships from this private dashboard.</p>
+          <div className="flex items-center gap-4">
+            {user?.photoURL ? (
+              <img src={user.photoURL} alt="Profile" className="w-14 h-14 md:w-16 md:h-16 rounded-full border-2 border-[#C5A059] shadow-lg object-cover" />
+            ) : (
+              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full border-2 border-[#C5A059] bg-[#0A3A35] flex items-center justify-center text-xl font-bold text-[#C5A059] shadow-lg">
+                {name ? name.charAt(0).toUpperCase() : "U"}
+              </div>
+            )}
+            <div>
+              <h1 className="text-2xl md:text-3xl font-serif font-bold text-[#C5A059]">Welcome, {name}</h1>
+              <p className="text-gray-300 text-xs md:text-sm mt-1">Manage your orders, addresses, and partnerships.</p>
+            </div>
           </div>
           <Link href="/" className="px-6 py-2 border border-[#C5A059]/40 text-[#C5A059] font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-[#C5A059]/10 transition-colors inline-block text-center">
             Continue Shopping
