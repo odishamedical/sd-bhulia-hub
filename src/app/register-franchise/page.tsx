@@ -446,17 +446,21 @@ export default function FranchiseRegistrationPage() {
       return;
     }
 
-    // Save details locally in localStorage simulation
-    const activeApplications = JSON.parse(localStorage.getItem("sd_franchise_applications") || "[]");
-    const localPayload = {
-      ...formData,
-      id: uniqueId,
-      appliedAt: new Date().toISOString(),
-      status: "pending_approval",
-      assignedUrl: activeCustomUrl || `bhulia.com/${assignedSlug}`
-    };
-    activeApplications.push(localPayload);
-    localStorage.setItem("sd_franchise_applications", JSON.stringify(activeApplications));
+    try {
+      // Save details locally in localStorage simulation
+      const activeApplications = JSON.parse(localStorage.getItem("sd_franchise_applications") || "[]");
+      const localPayload = {
+        ...formData,
+        id: uniqueId,
+        appliedAt: new Date().toISOString(),
+        status: "pending_approval",
+        assignedUrl: activeCustomUrl || `bhulia.com/${assignedSlug}`
+      };
+      activeApplications.push(localPayload);
+      localStorage.setItem("sd_franchise_applications", JSON.stringify(activeApplications));
+    } catch (e) {
+      console.warn("Could not save to localStorage", e);
+    }
 
     setFormSubmitted(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1057,7 +1061,7 @@ export default function FranchiseRegistrationPage() {
             </div>
 
             <p className="text-xs text-gray-300 leading-relaxed font-sans">
-              Thank you for applying as a regional drop-off terminal. Your Representative registration details and Security deposit transaction reference (<span className="font-mono text-white font-bold">{formData.securityDepositTxn}</span>) have been logged in the platform registry.
+              Thank you for applying as a regional drop-off terminal. Your Representative registration details have been logged in the platform registry.
             </p>
 
             <div className="bg-[#051815] border border-[#C5A059]/20 rounded-2xl p-4 text-left space-y-2.5 text-xs">
