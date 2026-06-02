@@ -155,6 +155,7 @@ export default function FranchiseRegistrationPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    if (validationError) setValidationError(null);
     setFormData((prev) => {
       const updated = { ...prev, [name]: value };
       if (name === "stateRegion") {
@@ -166,6 +167,7 @@ export default function FranchiseRegistrationPage() {
   };
 
   const handleCheckboxChange = (name: "consentAuthentic" | "consentTerms") => {
+    if (validationError) setValidationError(null);
     setFormData((prev) => ({ ...prev, [name]: !prev[name] }));
   };
 
@@ -222,6 +224,7 @@ export default function FranchiseRegistrationPage() {
   // File Upload Handler (Base64 conversion)
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, fieldName: "govId" | "logo") => {
     if (e.target.files && e.target.files.length > 0) {
+      if (validationError) setValidationError(null);
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.onloadend = () => {
