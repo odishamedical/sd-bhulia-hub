@@ -296,7 +296,7 @@ function ProfileContent() {
           </div>
 
           {/* RIGHT COLUMN - CONTENT */}
-          <div className="col-span-12 md:col-span-8 lg:col-span-9 bg-[#0A2520] rounded-2xl border border-[#C5A059]/20 p-6 md:p-8">
+          <div className="lg:col-span-3 bg-[#051815] rounded-3xl border border-[#C5A059]/30 p-6 md:p-8 shadow-2xl min-h-[500px]">
             
             {activeTab === "orders" && (
               <div className="space-y-6">
