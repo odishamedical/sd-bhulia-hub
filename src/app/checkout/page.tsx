@@ -126,7 +126,7 @@ export default function CheckoutPage() {
             }
             clearCart();
             alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
-            router.push("/admin"); // Redirect to user dashboard after success
+            router.push("/dashboard"); // Redirect to user dashboard after success
           } catch (error) {
             console.error("Order save failed", error);
             alert("Payment successful but failed to save order. Contact support.");

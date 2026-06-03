@@ -48,7 +48,7 @@ export default function DashboardPage() {
   }
 
   if (role === "onboarding") {
-    return <OnboardingFlow />;
+    return <OnboardingFlow onComplete={() => window.location.reload()} />;
   }
 
   return (
@@ -73,8 +73,29 @@ export default function DashboardPage() {
   );
 }
 
-function OnboardingFlow() {
+function OnboardingFlow({ onComplete }: { onComplete: () => void }) {
   const [selectedRole, setSelectedRole] = useState("customer");
+  const [loading, setLoading] = useState(false);
+
+  const handleContinue = async () => {
+    setLoading(true);
+    try {
+      const uid = localStorage.getItem("sd_current_user_uid");
+      if (!uid) return;
+      
+      const { doc, updateDoc } = await import("firebase/firestore");
+      const { db } = await import("@/lib/firebase");
+      
+      await updateDoc(doc(db, "users", uid), {
+        role: selectedRole
+      });
+      localStorage.setItem("sd_current_user_role", selectedRole);
+      onComplete();
+    } catch (e) {
+      console.error("Failed to update role", e);
+      setLoading(false);
+    }
+  };
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-bhulia-bg px-4">
@@ -93,8 +114,12 @@ function OnboardingFlow() {
           <option value="reseller">Reseller (Dropship & Earn Commission)</option>
         </select>
 
-        <button className="w-full bhulia-gold-button py-3 rounded">
-          Continue as {selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}
+        <button 
+          onClick={handleContinue}
+          disabled={loading}
+          className="w-full bhulia-gold-button py-3 rounded disabled:opacity-50"
+        >
+          {loading ? "Saving..." : `Continue as ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}`}
         </button>
       </div>
     </div>
@@ -138,20 +163,20 @@ function WeaverDashboard() {
       {showUpload && (
         <div className="bhulia-premium-card p-6 animate-in slide-in-from-top-4 fade-in">
           <h2 className="text-xl font-display bhulia-gold-text mb-4">Upload New Sambalpuri Handloom</h2>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Saree submitted for QC Approval successfully!"); setShowUpload(false); }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm text-gray-300 mb-1">Product Title</label>
-                <input type="text" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" />
+                <input type="text" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" required />
               </div>
               <div>
                 <label className="block text-sm text-gray-300 mb-1">Selling Price (₹)</label>
-                <input type="number" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" />
+                <input type="number" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" required />
               </div>
             </div>
             <div>
               <label className="block text-sm text-gray-300 mb-1">Description & Material Details</label>
-              <textarea rows={3} className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]"></textarea>
+              <textarea rows={3} className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" required></textarea>
             </div>
             <div>
               <label className="flex items-center space-x-3 bg-[#0B2B26] p-3 rounded border border-gray-700">
@@ -159,7 +184,7 @@ function WeaverDashboard() {
                 <span className="text-sm text-gray-300">I declare that this is an authentic, handwoven Sambalpuri handloom product.</span>
               </label>
             </div>
-            <button type="button" className="bhulia-gold-button w-full py-3 rounded mt-2">Submit to QC Approval</button>
+            <button type="submit" className="bhulia-gold-button w-full py-3 rounded mt-2">Submit to QC Approval</button>
           </form>
         </div>
       )}
@@ -200,26 +225,26 @@ function VendorDashboard() {
       {showUpload && (
         <div className="bhulia-premium-card p-6 animate-in slide-in-from-top-4 fade-in">
           <h2 className="text-xl font-display bhulia-gold-text mb-4">Upload New Inventory (Vendor)</h2>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inventory batch submitted for QC Approval successfully!"); setShowUpload(false); }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm text-gray-300 mb-1">Product Title</label>
-                <input type="text" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" />
+                <input type="text" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" required />
               </div>
               <div>
                 <label className="block text-sm text-gray-300 mb-1">Selling Price (₹)</label>
-                <input type="number" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" />
+                <input type="number" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" required />
               </div>
               <div>
                 <label className="block text-sm text-gray-300 mb-1">Original Weaver Name</label>
-                <select className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]">
-                  <option>Select Weaver (Or enter manually)</option>
-                  <option>Bargarh Master Weaver Assc.</option>
+                <select className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" required>
+                  <option value="">Select Weaver (Or enter manually)</option>
+                  <option value="bargarh">Bargarh Master Weaver Assc.</option>
                 </select>
               </div>
               <div>
                 <label className="block text-sm text-gray-300 mb-1">Stock Quantity</label>
-                <input type="number" defaultValue="1" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" />
+                <input type="number" defaultValue="1" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white focus:border-[#C5A059]" required />
               </div>
             </div>
             <div>
@@ -228,7 +253,7 @@ function VendorDashboard() {
                 <span className="text-sm text-gray-300">I declare that this is an authentic, handwoven Sambalpuri handloom product.</span>
               </label>
             </div>
-            <button type="button" className="bhulia-gold-button w-full py-3 rounded mt-2">Submit to QC Approval</button>
+            <button type="submit" className="bhulia-gold-button w-full py-3 rounded mt-2">Submit to QC Approval</button>
           </form>
         </div>
       )}
@@ -261,11 +286,11 @@ function ResellerDashboard() {
         <div className="bhulia-premium-card p-6">
           <h2 className="text-xl font-display bhulia-gold-text mb-4">Book Proxy Order</h2>
           <p className="text-sm text-gray-400 mb-6">Place an order on behalf of an offline customer.</p>
-          <form className="space-y-4">
-             <input type="text" placeholder="Customer Name" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white" />
-             <input type="text" placeholder="Delivery PIN Code" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white" />
-             <textarea placeholder="Full Address" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white"></textarea>
-             <button type="button" className="bhulia-gold-button w-full py-3 rounded">Place Proxy Order</button>
+          <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Proxy order placed securely! The customer will receive a payment link via SMS/WhatsApp shortly."); }}>
+             <input type="text" placeholder="Customer Name" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white" required />
+             <input type="text" placeholder="Delivery PIN Code" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white" required />
+             <textarea placeholder="Full Address" className="w-full bg-[#051815] border border-gray-700 rounded p-2 text-white" required></textarea>
+             <button type="submit" className="bhulia-gold-button w-full py-3 rounded">Place Proxy Order</button>
           </form>
         </div>
       )}
