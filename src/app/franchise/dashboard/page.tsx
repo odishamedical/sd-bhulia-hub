@@ -96,6 +96,13 @@ export default function FranchiseDashboard() {
               if (!snap.empty) {
                 const doc = snap.docs[0];
                 const data = doc.data();
+                
+                // Self-healing: if they have an approved franchise, ensure they can access the dashboard
+                if (data.status === "approved" && role !== "super_admin") {
+                  setUserRole("franchisee");
+                  localStorage.setItem("sd_current_user_role", "franchisee");
+                }
+                
                 setActiveFranchise({
                   id: doc.id,
                   slug: data.slug,
