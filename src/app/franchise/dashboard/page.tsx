@@ -746,13 +746,71 @@ export default function FranchiseDashboard() {
             <div className="bg-white border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
               <div>
                 <h3 className="text-xl font-bold text-gray-900">Verification & Bank Details</h3>
-                <p className="text-sm text-gray-500 mt-1">Upload KYC documents to receive payouts.</p>
+                <p className="text-sm text-gray-500 mt-1">Submit your KYC and bank information to receive your automated commission payouts.</p>
               </div>
-              <div className="bg-orange-50 border border-dashed border-orange-200 rounded-2xl p-8 text-center max-w-xl mx-auto">
-                <span className="text-3xl block mb-3">📄</span>
-                <h4 className="font-bold text-gray-900 mb-1">Upload Documents</h4>
-                <p className="text-xs text-gray-500 mb-6">Aadhaar, PAN, and canceled cheque.</p>
-                <button className="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl shadow-sm hover:border-[#E57138]">Choose Files</button>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
+                {/* Left Side: Bank Details Form */}
+                <div className="space-y-4">
+                  <h4 className="font-bold text-gray-900 border-b border-gray-100 pb-2">Payout Bank Account</h4>
+                  
+                  <div>
+                    <label className="text-xs font-bold text-gray-700 block mb-1">Account Holder Name *</label>
+                    <input type="text" placeholder="As per bank records" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none" />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-gray-700 block mb-1">Bank Name *</label>
+                      <input type="text" placeholder="e.g. State Bank of India" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-gray-700 block mb-1">Account Type *</label>
+                      <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none">
+                        <option>Savings Account</option>
+                        <option>Current Account</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-gray-700 block mb-1">Account Number *</label>
+                    <input type="password" placeholder="Enter account number" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none mb-2" />
+                    <input type="text" placeholder="Confirm account number" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none" />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-gray-700 block mb-1">IFSC Code *</label>
+                      <input type="text" placeholder="e.g. SBIN0001234" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none uppercase" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-gray-700 block mb-1">Bank Branch</label>
+                      <input type="text" placeholder="Branch Name" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none" />
+                    </div>
+                  </div>
+                  
+                  <button className="mt-4 px-6 py-3 w-full bg-[#E57138] hover:bg-[#D56128] text-white font-bold text-sm rounded-xl transition-colors">
+                    Save Bank Details
+                  </button>
+                </div>
+
+                {/* Right Side: KYC Document Upload */}
+                <div className="space-y-4">
+                  <h4 className="font-bold text-gray-900 border-b border-gray-100 pb-2">KYC Documents</h4>
+                  
+                  <div className="bg-orange-50 border border-dashed border-orange-200 rounded-2xl p-8 text-center flex flex-col items-center justify-center h-[300px]">
+                    <span className="text-4xl block mb-4">📄</span>
+                    <h4 className="font-bold text-gray-900 mb-1">Upload Identity Proof</h4>
+                    <p className="text-xs text-gray-500 mb-6 max-w-[200px] leading-relaxed">
+                      Please upload clear copies of your Aadhaar Card, PAN Card, and a canceled cheque.
+                    </p>
+                    <button className="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl shadow-sm hover:border-[#E57138] transition-colors">
+                      Choose Files
+                    </button>
+                    <span className="text-[10px] text-gray-400 mt-4 block">Max file size: 5MB per document. JPG, PNG, or PDF.</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
