@@ -490,7 +490,7 @@ export default function FranchiseDashboard() {
     // Simulate domain mapping
     const url = premiumEnabled
       ? (customDomain ? `https://${customDomain}` : `https://${customSubdomain}`)
-      : `${window.location.origin}/${activeFranchise.slug}`;
+      : `${window.location.origin}/franchise/${activeFranchise.slug}`;
 
     setSandboxSimulatedUrl(url);
     setShowSandboxPreview(true);
