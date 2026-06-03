@@ -184,6 +184,34 @@ export default function FranchiseDashboard() {
     } catch(err) { console.error(err); }
   };
 
+  const handleCategoryChange = (productId: string, val: string) => {
+    const updated = { ...productCategories, [productId]: val };
+    setProductCategories(updated);
+  };
+
+  const handleSaveSandbox = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeFranchise) return;
+    try {
+      const { db } = await import("@/lib/firebase");
+      const { doc, updateDoc } = await import("firebase/firestore");
+      await updateDoc(doc(db, "franchises", activeFranchise.id), {
+        premiumEnabled,
+        customSubdomain,
+        customDomain
+      });
+      alert("Sandbox settings saved!");
+    } catch(err) { console.error(err); }
+  };
+
+  const handleLaunchSandboxPreview = () => {
+    if (customSubdomain) {
+      window.open(`http://${customSubdomain}`, "_blank");
+    } else {
+      alert("Please configure a subdomain first.");
+    }
+  };
+
   const handleSubmitProxyOrder = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeFranchise) return;
