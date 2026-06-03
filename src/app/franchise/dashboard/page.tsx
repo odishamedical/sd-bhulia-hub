@@ -269,11 +269,10 @@ export default function FranchiseDashboard() {
     window.dispatchEvent(new Event("sd_auth_change"));
   };
 
-  // Mark all notifications as read
-  const handleMarkNotificationsRead = () => {
-    const updated = notifications.map(n => ({ ...n, read: true }));
-    setNotifications(updated);
-    localStorage.setItem("sd_franchise_notifications", JSON.stringify(updated));
+  // Clear all notifications
+  const handleClearNotifications = () => {
+    setNotifications([]);
+    localStorage.setItem("sd_franchise_notifications", JSON.stringify([]));
   };
 
   // State prefill selection triggers district prefill
@@ -802,10 +801,10 @@ export default function FranchiseDashboard() {
                     <p className="text-xs text-gray-300 mt-1">Captures direct referrals, order status updates, and verification events.</p>
                   </div>
                   <button 
-                    onClick={handleMarkNotificationsRead}
+                    onClick={handleClearNotifications}
                     className="text-[10px] bg-[#0A3A35] hover:bg-[#C5A059] border border-[#C5A059]/50 text-[#C5A059] hover:text-[#051815] px-2.5 py-1.5 rounded-lg uppercase transition-all font-bold cursor-pointer"
                   >
-                    Clear Unread
+                    Clear All
                   </button>
                 </div>
 
