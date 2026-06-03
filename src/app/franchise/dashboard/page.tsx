@@ -258,7 +258,25 @@ export default function FranchiseDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F4F6F9] text-gray-900 font-sans flex justify-center">
+    <main className="min-h-screen bg-[#F4F6F9] text-gray-900 font-sans flex flex-col items-center">
+      
+      {/* STICKY TOP BRANDING HEADER */}
+      <header className="sticky top-0 w-full bg-white border-b border-gray-100 shadow-sm z-50 px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="relative w-10 h-10 rounded-full overflow-hidden shadow-sm">
+            <Image src="/bhulia_logo_final.jpg" alt="Bhulia Logo" fill className="object-cover" />
+          </div>
+          <div>
+            <span className="font-black text-xl tracking-tight text-gray-900 leading-none">BHULIA <span className="font-normal text-gray-600">Reseller Hub</span></span>
+          </div>
+        </div>
+        <div className="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-600">
+          <Link href="/" className="hover:text-[#E57138] transition-colors">Home</Link>
+          <Link href="/#products" className="hover:text-[#E57138] transition-colors">Products</Link>
+          <Link href="/support" className="hover:text-[#E57138] transition-colors">Support</Link>
+        </div>
+      </header>
+
       <div className="max-w-[1500px] w-full px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-8">
         
         {/* LEFT SIDEBAR - WHITE SAAS STYLE */}
