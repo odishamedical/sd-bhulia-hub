@@ -101,20 +101,60 @@ export default function FranchiseDetailPage() {
   const rawSlug = typeof params?.slug === "string" ? params.slug : "bargarh-phygital-hub";
   const franchiseSlug = rawSlug.toLowerCase();
 
-  const franchise = MASTER_FRANCHISES.find((f) => f.slug === franchiseSlug || f.id.toLowerCase() === franchiseSlug) || {
+  const initialFranchise = MASTER_FRANCHISES.find((f) => f.slug === franchiseSlug || f.id.toLowerCase() === franchiseSlug) || {
     ...DEFAULT_FRANCHISE,
     id: franchiseSlug.toUpperCase(),
     slug: franchiseSlug,
     name: `Franchise Hub (${franchiseSlug.replace(/-/g, " ")})`,
   };
 
+  const [franchise, setFranchise] = useState<FranchiseListing>(initialFranchise);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [userUid, setUserUid] = useState<string>("sd_super_admin_custom_uid");
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
+  const [loadingRealData, setLoadingRealData] = useState<boolean>(true);
 
   useEffect(() => {
+    const fetchLiveFranchise = async () => {
+      try {
+        const { db } = await import("@/lib/firebase");
+        const { query, collection, where, getDocs } = await import("firebase/firestore");
+        const q = query(collection(db, "franchises"), where("slug", "==", franchiseSlug));
+        const snap = await getDocs(q);
+        
+        if (!snap.empty) {
+          const doc = snap.docs[0];
+          const data = doc.data();
+          setFranchise({
+            id: doc.id,
+            slug: data.slug,
+            name: data.name,
+            region: data.city ? data.city.split(", ").pop() : "Unknown",
+            city: data.city,
+            phygitalOutletsCount: 0,
+            referralsTracked: data.invitedCount || 0,
+            totalCommissionPaid: "₹ " + (data.commissionEarned || 0),
+            specialtyTags: ["Local Distribution", "Referral Tracking"],
+            description: data.description || initialFranchise.description,
+            img: data.img || initialFranchise.img,
+            outletsList: ["Main Hub Terminal"],
+            contactDetails: {
+              address: data.city,
+              phone: data.phone || "N/A",
+              whatsapp: data.phone || "N/A",
+              email: "contact@bhulia.com"
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load live franchise data:", err);
+      } finally {
+        setLoadingRealData(false);
+      }
+    };
+    fetchLiveFranchise();
     const checkAuth = () => {
       const email = localStorage.getItem("sd_current_user_email");
       const name = localStorage.getItem("sd_current_user_name");
