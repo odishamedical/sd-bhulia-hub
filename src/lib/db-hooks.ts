@@ -183,6 +183,30 @@ export function useFranchises() {
   return { franchises, loading };
 }
 
+export function useOrders() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const q = query(collection(db, "orders"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data: Order[] = [];
+      snapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() } as Order);
+      });
+      setOrders(data);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching orders: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return { orders, loading };
+}
+
 export function useProductBySlug(slug: string) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);

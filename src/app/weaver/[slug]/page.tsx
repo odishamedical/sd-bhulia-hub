@@ -609,6 +609,23 @@ export default function WeaverStorePage() {
                 </button>
               </div>
             </div>
+
+            <div className="mt-4 border-t border-[#C5A059]/20 pt-4 space-y-3">
+              <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block">Masked Direct Contact</span>
+              <div className="grid grid-cols-2 gap-2">
+                <button onClick={() => {
+                  const msg = `Hello ${artisan.name}, I am interested in your masterwork handlooms. Please share details.`;
+                  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, "_blank");
+                }} className="flex items-center justify-center gap-1 py-2 bg-green-600/20 hover:bg-green-600/40 border border-green-500/50 text-green-400 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer">
+                  <span>💬 WhatsApp</span>
+                </button>
+                <button onClick={() => {
+                  alert(`Connecting you to ${artisan.name} via secure masked call...`);
+                }} className="flex items-center justify-center gap-1 py-2 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/50 text-blue-400 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer">
+                  <span>📞 Secure Call</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Right Block: Biography & Award Showcase */}

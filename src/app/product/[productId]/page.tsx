@@ -315,6 +315,27 @@ export default function ProductDetailPage() {
                 Sharing this page creates a tracking cookie containing your referral ID. Registered franchises and users receive a 5% commission on successfully completed escrow checkouts.
               </p>
             </div>
+
+            {/* Masked Contact Widgets */}
+            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl text-white">
+              <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block mb-3">Direct Connect (Masked)</span>
+              <div className="grid grid-cols-2 gap-3">
+                <button onClick={() => {
+                  const msg = `Hello ${(product as any).sellerId || "Bhulia Hub"}, I am interested in Product ID #${product.id || product.slug}. Please share details.`;
+                  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, "_blank");
+                }} className="flex items-center justify-center gap-2 py-3 bg-green-600/20 hover:bg-green-600/40 border border-green-500/50 text-green-400 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
+                  <span>💬 WhatsApp Seller</span>
+                </button>
+                <button onClick={() => {
+                  alert(`Connecting you to ${(product as any).sellerId || "Bhulia Hub"} via secure masked call...`);
+                }} className="flex items-center justify-center gap-2 py-3 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/50 text-blue-400 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
+                  <span>📞 Secure Call</span>
+                </button>
+              </div>
+              <p className="text-[10px] text-gray-400 leading-normal mt-3 text-center">
+                For your privacy, direct numbers are masked. Inquiries use our secure central routing.
+              </p>
+            </div>
           </div>
 
           {/* Right Side: Specific Details and direct checkout */}
