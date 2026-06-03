@@ -467,17 +467,266 @@ export default function FranchiseDashboard() {
             </div>
           )}
 
-          {/* ADD OTHER TABS RENDERERS HERE (Proxy, Curation, etc.) using Light Theme styling */}
-          {/* For brevity of rewrite, other tabs use standard white card styling */}
-          {activeTab !== "overview" && (
-             <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 min-h-[500px] flex items-center justify-center">
-                <div className="text-center">
-                  <span className="text-4xl">🚧</span>
-                  <h3 className="text-xl font-bold text-gray-900 mt-4">Tab Content Migrated</h3>
-                  <p className="text-gray-500 mt-2">The layout for {activeTab} is currently adapting to the light theme constraints.</p>
-                  <button onClick={() => setActiveTab("overview")} className="mt-6 text-[#E57138] font-bold hover:underline">← Go back to Dashboard</button>
+          {activeTab === "curation" && activeFranchise && (
+            <div className="bg-white border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">Store Curation Editor</h3>
+                <p className="text-sm text-gray-500 mt-1">Select products to appear on your unique storefront.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {MASTER_PRODUCTS.map((prod) => {
+                  const isChecked = curatedIds.includes(prod.id);
+                  return (
+                    <div key={prod.id} className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${isChecked ? "bg-orange-50 border-orange-200" : "bg-white border-gray-200"}`}>
+                      <div className="flex gap-4">
+                        <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-gray-100">
+                          <Image src={prod.img} alt={prod.title} fill className="object-cover" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-bold text-sm text-gray-900 truncate">{prod.title}</h4>
+                          <p className="text-xs text-gray-500 mt-0.5">{prod.weave} • {prod.price}</p>
+                          <div className="mt-2 flex items-center gap-2">
+                            <input type="checkbox" id={`dashboard-curate-${prod.id}`} checked={isChecked} onChange={() => handleToggleCuration(prod.id)} className="w-4 h-4 accent-[#E57138] cursor-pointer" />
+                            <label htmlFor={`dashboard-curate-${prod.id}`} className="text-xs text-gray-700 cursor-pointer font-bold select-none">{isChecked ? "✓ Curated in Storefront" : "Add to Storefront"}</label>
+                          </div>
+                        </div>
+                      </div>
+                      {isChecked && (
+                        <div className="mt-3 pt-3 border-t border-orange-200/50">
+                          <label className="text-[10px] uppercase tracking-widest text-gray-500 font-bold block mb-1">Custom Shelf Category</label>
+                          <input type="text" value={productCategories[prod.id] || ""} onChange={(e) => handleCategoryChange(prod.id, e.target.value)} placeholder="e.g. Silk Masterpieces" className="w-full bg-white border border-orange-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-[#E57138]" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "proxy" && activeFranchise && (
+            <div className="bg-white border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+              <div className="flex justify-between items-center max-w-md mx-auto border-b border-gray-100 pb-4">
+                <div className="flex flex-col items-center">
+                  <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${proxyStep >= 1 ? "bg-[#E57138] text-white" : "bg-gray-100 text-gray-400"}`}>1</span>
+                  <span className="text-[10px] uppercase tracking-wider text-gray-500 mt-1 font-bold">Saree & Qty</span>
                 </div>
-             </div>
+                <div className="flex-1 h-0.5 bg-gray-200 mx-2"></div>
+                <div className="flex flex-col items-center">
+                  <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${proxyStep >= 2 ? "bg-[#E57138] text-white" : "bg-gray-100 text-gray-400"}`}>2</span>
+                  <span className="text-[10px] uppercase tracking-wider text-gray-500 mt-1 font-bold">Client Info</span>
+                </div>
+                <div className="flex-1 h-0.5 bg-gray-200 mx-2"></div>
+                <div className="flex flex-col items-center">
+                  <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${proxyStep >= 3 ? "bg-[#E57138] text-white" : "bg-gray-100 text-gray-400"}`}>3</span>
+                  <span className="text-[10px] uppercase tracking-wider text-gray-500 mt-1 font-bold">Done</span>
+                </div>
+              </div>
+
+              {proxyStep === 1 && (
+                <div className="space-y-6 max-w-xl mx-auto">
+                  <div className="text-center">
+                    <h3 className="text-xl font-bold text-gray-900">Select Products for Proxy Order</h3>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-gray-500 font-bold block mb-1">Select Saree</label>
+                      <select value={proxyForm.productId} onChange={e => setProxyForm({ ...proxyForm, productId: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#E57138]">
+                        <option value="">-- Choose Product --</option>
+                        {MASTER_PRODUCTS.map(p => <option key={p.id} value={p.id}>{p.title} ({p.price})</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-gray-500 font-bold block mb-1">Select Quantity</label>
+                      <select value={proxyForm.quantity} onChange={e => setProxyForm({ ...proxyForm, quantity: Number(e.target.value) })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#E57138]">
+                        {[1, 2, 3, 4, 5].map(q => <option key={q} value={q}>{q} Units</option>)}
+                      </select>
+                    </div>
+                    {proxyForm.productId && (
+                      <div className="bg-orange-50 p-4 rounded-2xl border border-orange-100 space-y-2">
+                        <div className="flex justify-between text-sm font-bold text-gray-900">
+                          <span>Total Escrow Cost:</span>
+                          <span className="text-[#E57138]">₹ {((Number(MASTER_PRODUCTS.find(p => p.id === proxyForm.productId)?.price.replace(/[^\d]/g, "") || 0)) * proxyForm.quantity).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex justify-end pt-4">
+                    <button onClick={() => proxyForm.productId ? setProxyStep(2) : alert("Select a saree first.")} className="px-6 py-3 bg-[#E57138] hover:bg-[#D56128] text-white font-bold text-sm rounded-xl transition-colors">Next: Customer Address →</button>
+                  </div>
+                </div>
+              )}
+
+              {proxyStep === 2 && (
+                <form onSubmit={handleSubmitProxyOrder} className="space-y-5 max-w-2xl mx-auto">
+                  <div className="text-center mb-6">
+                    <h3 className="text-xl font-bold text-gray-900">Client & Shipping Information</h3>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-gray-700 block mb-1">Customer Full Name *</label>
+                      <input required type="text" value={proxyForm.customerName} onChange={e => setProxyForm({ ...proxyForm, customerName: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-gray-700 block mb-1">WhatsApp Number *</label>
+                      <input required type="tel" value={proxyForm.customerWhatsapp} onChange={e => setProxyForm({ ...proxyForm, customerWhatsapp: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-700 block mb-1">Delivery Address *</label>
+                    <textarea required rows={2} value={proxyForm.customerAddress} onChange={e => setProxyForm({ ...proxyForm, customerAddress: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none" />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-gray-700 block mb-1">State</label>
+                      <select value={proxyForm.customerState} onChange={e => handleStateChange(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none">
+                        {Object.keys(STATE_DISTRICTS).map(st => <option key={st} value={st}>{st}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-gray-700 block mb-1">District</label>
+                      <select value={proxyForm.customerDistrict} onChange={e => setProxyForm({ ...proxyForm, customerDistrict: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none">
+                        {(STATE_DISTRICTS[proxyForm.customerState] || []).map(dt => <option key={dt} value={dt}>{dt}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200">
+                    <span className="text-xs font-bold text-gray-900 block mb-3">Choose Payout Method</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <label className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl cursor-pointer hover:border-[#E57138]">
+                        <input type="radio" name="paymentMode" value="Wallet" checked={proxyForm.paymentMode === "Wallet"} onChange={e => setProxyForm({ ...proxyForm, paymentMode: e.target.value })} className="w-4 h-4 accent-[#E57138]" />
+                        <div><span className="text-sm font-bold block">Reseller Wallet</span><span className="text-xs text-gray-500">Balance: ₹ {walletBalance.toLocaleString()}</span></div>
+                      </label>
+                      <label className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl cursor-pointer hover:border-[#E57138]">
+                        <input type="radio" name="paymentMode" value="Invoice" checked={proxyForm.paymentMode === "Invoice"} onChange={e => setProxyForm({ ...proxyForm, paymentMode: e.target.value })} className="w-4 h-4 accent-[#E57138]" />
+                        <div><span className="text-sm font-bold block">Send Invoice</span><span className="text-xs text-gray-500">To client's WhatsApp</span></div>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="flex justify-between pt-4">
+                    <button type="button" onClick={() => setProxyStep(1)} className="px-6 py-3 bg-gray-100 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-200 transition-colors">← Back</button>
+                    <button type="submit" disabled={isSubmittingProxy} className="px-8 py-3 bg-[#E57138] text-white font-bold text-sm rounded-xl hover:bg-[#D56128] transition-colors disabled:opacity-50">{isSubmittingProxy ? "Processing..." : "Complete Order ✓"}</button>
+                  </div>
+                </form>
+              )}
+              {proxyStep === 3 && proxyOrderSuccess && (
+                <div className="text-center py-10 space-y-4">
+                  <span className="text-5xl">🎉</span>
+                  <h3 className="text-2xl font-bold text-gray-900">Order Confirmed!</h3>
+                  <p className="text-gray-500 max-w-md mx-auto">Order {proxyOrderSuccess.orderId} for {proxyOrderSuccess.customerName} has been successfully placed.</p>
+                  <div className="flex justify-center gap-4 mt-6">
+                    <button onClick={() => { setProxyForm({...proxyForm, productId:""}); setProxyOrderSuccess(null); setProxyStep(1); }} className="px-6 py-3 bg-[#E57138] text-white font-bold rounded-xl">Book Another</button>
+                    <button onClick={() => setActiveTab("orders")} className="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl">View in Ledger</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === "orders" && activeFranchise && (
+            <div className="bg-white border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">Logistics Ledger</h3>
+                <p className="text-sm text-gray-500 mt-1">Track referrals and proxy client orders.</p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm border-collapse">
+                  <thead>
+                    <tr className="border-b border-gray-200 text-gray-500 uppercase tracking-wider text-xs">
+                      <th className="py-3 px-2 font-semibold">Order ID</th>
+                      <th className="py-3 px-2 font-semibold">Product</th>
+                      <th className="py-3 px-2 font-semibold">Client</th>
+                      <th className="py-3 px-2 font-semibold">Status</th>
+                      <th className="py-3 px-2 font-semibold text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {activeFranchiseOrders.length === 0 ? (
+                      <tr><td colSpan={5} className="py-8 text-center text-gray-400">No orders registered yet.</td></tr>
+                    ) : (
+                      activeFranchiseOrders.map((order, idx) => (
+                        <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                          <td className="py-4 px-2 font-mono font-bold text-gray-900">{order.orderId}</td>
+                          <td className="py-4 px-2">
+                            <span className="font-bold text-gray-900 block">{order.productName}</span>
+                            <span className="text-xs text-gray-500">Qty: {order.quantity}</span>
+                          </td>
+                          <td className="py-4 px-2">
+                            <span className="font-semibold text-gray-900 block">{order.customerName}</span>
+                            <span className="text-xs text-gray-500">{order.customerPhone || order.customerWhatsapp}</span>
+                          </td>
+                          <td className="py-4 px-2">
+                            <span className="text-green-600 font-bold block text-xs">{order.paymentStatus}</span>
+                            <span className="text-gray-500 text-xs">{order.logisticsStatus}</span>
+                          </td>
+                          <td className="py-4 px-2 text-right">
+                            <button onClick={() => {
+                              // We don't have handleOpenLogistics logic implemented in the mock UI right now, so we can just alert it for this minimal version
+                              alert("Logistics Modal opening for " + order.orderId);
+                            }} className="px-3 py-1.5 bg-blue-50 text-blue-600 font-bold text-xs rounded-lg hover:bg-blue-100 transition-colors">QC / Label</button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "settings" && activeFranchise && (
+            <div className="bg-white border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 max-w-2xl">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">Premium Sandbox</h3>
+                <p className="text-sm text-gray-500 mt-1">Configure your custom domain routing.</p>
+              </div>
+              <form onSubmit={handleSaveSandbox} className="space-y-6">
+                <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200 flex items-center justify-between">
+                  <div>
+                    <span className="text-sm font-bold text-gray-900 block">Premium Status</span>
+                    <p className="text-xs text-gray-500">Enable custom DNS integrations.</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" checked={premiumEnabled} onChange={e => setPremiumEnabled(e.target.checked)} className="sr-only peer" />
+                    <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#E57138]"></div>
+                  </label>
+                </div>
+                {premiumEnabled && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-xs font-bold text-gray-700 block mb-1">Custom Subdomain</label>
+                      <div className="flex items-center bg-white border border-gray-200 rounded-xl overflow-hidden px-3">
+                        <input type="text" value={customSubdomain.replace(".bhulia.com", "")} onChange={e => setCustomSubdomain(`${e.target.value.toLowerCase().replace(/\s+/g, "-")}.bhulia.com`)} className="w-full bg-transparent py-2.5 text-sm text-gray-900 focus:outline-none" />
+                        <span className="text-sm font-mono text-gray-500">.bhulia.com</span>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-gray-700 block mb-1">External Domain</label>
+                      <input type="text" value={customDomain} onChange={e => setCustomDomain(e.target.value.toLowerCase())} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#E57138]" placeholder="e.g. myboutique.in" />
+                    </div>
+                  </div>
+                )}
+                <div className="flex gap-4 pt-4">
+                  <button type="submit" className="px-6 py-3 bg-[#E57138] text-white font-bold rounded-xl text-sm">Save Settings</button>
+                  <button type="button" onClick={handleLaunchSandboxPreview} className="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl text-sm hover:bg-gray-200">Preview Storefront</button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {activeTab === "verification" && (
+            <div className="bg-white border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">Verification & Bank Details</h3>
+                <p className="text-sm text-gray-500 mt-1">Upload KYC documents to receive payouts.</p>
+              </div>
+              <div className="bg-orange-50 border border-dashed border-orange-200 rounded-2xl p-8 text-center max-w-xl mx-auto">
+                <span className="text-3xl block mb-3">📄</span>
+                <h4 className="font-bold text-gray-900 mb-1">Upload Documents</h4>
+                <p className="text-xs text-gray-500 mb-6">Aadhaar, PAN, and canceled cheque.</p>
+                <button className="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl shadow-sm hover:border-[#E57138]">Choose Files</button>
+              </div>
+            </div>
           )}
 
         </div>
