@@ -28,6 +28,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
+        // Globally set the cookie for Next.js Middleware
+        document.cookie = `bhulia-auth-token=${currentUser.uid}; path=/; max-age=86400`;
+        
         try {
           const { doc, getDoc, setDoc } = await import("firebase/firestore");
           const { db } = await import("../lib/firebase");
@@ -103,6 +106,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.removeItem("sd_current_user_email");
       localStorage.removeItem("sd_current_user_name");
       localStorage.removeItem("sd_current_user_uid");
+      document.cookie = "bhulia-auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
     } catch (error) {
       console.error("Logout failed:", error);
     }

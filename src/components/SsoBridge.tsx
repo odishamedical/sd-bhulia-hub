@@ -23,6 +23,7 @@ export default function SsoBridge() {
         localStorage.setItem("sd_current_user_avatar", avatar);
         localStorage.setItem("sd_current_user_role", role);
         localStorage.setItem("sd_current_user_uid", "sd_super_admin_custom_uid");
+        document.cookie = `bhulia-auth-token=sd_super_admin_custom_uid; path=/; max-age=86400`;
 
         window.dispatchEvent(new Event("sd_auth_change"));
       } else if (ssoEmail) {
@@ -36,6 +37,7 @@ export default function SsoBridge() {
         localStorage.setItem("sd_current_user_avatar", avatar);
         localStorage.setItem("sd_current_user_role", role);
         localStorage.setItem("sd_current_user_uid", "sd_sso_custom_uid");
+        document.cookie = `bhulia-auth-token=sd_sso_custom_uid; path=/; max-age=86400`;
 
         window.dispatchEvent(new Event("sd_auth_change"));
       }
