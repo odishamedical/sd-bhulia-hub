@@ -37,6 +37,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           if (currentUser.email === "odishamedical@gmail.com" || currentUser.email === "npfcodisha@gmail.com") {
             // Master Admin Override
             localStorage.setItem("sd_current_user_role", "super_admin");
+            localStorage.setItem("sd_current_user_uid", currentUser.uid);
+            localStorage.setItem("sd_current_user_email", currentUser.email);
+            localStorage.setItem("sd_current_user_name", currentUser.displayName || currentUser.email.split("@")[0]);
             
             // Auto-register super admin if they don't exist
             if (!userDocSnap.exists()) {
@@ -54,21 +57,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             } else {
               localStorage.setItem("sd_current_user_role", "user");
             }
+            localStorage.setItem("sd_current_user_uid", currentUser.uid);
+            localStorage.setItem("sd_current_user_email", currentUser.email || "");
+            localStorage.setItem("sd_current_user_name", currentUser.displayName || data.name || "");
           } else {
             // Auto-register new general user
+            const userName = currentUser.displayName || currentUser.email?.split("@")[0] || "Unknown User";
             await setDoc(userDocRef, {
               email: currentUser.email,
-              name: currentUser.displayName || currentUser.email?.split("@")[0] || "Unknown User",
+              name: userName,
               role: "user",
               createdAt: new Date().toISOString()
             });
             localStorage.setItem("sd_current_user_role", "user");
+            localStorage.setItem("sd_current_user_uid", currentUser.uid);
+            localStorage.setItem("sd_current_user_email", currentUser.email || "");
+            localStorage.setItem("sd_current_user_name", userName);
           }
         } catch (error) {
           console.error("Error fetching user role from Firestore:", error);
           if (!localStorage.getItem("sd_current_user_role")) {
             localStorage.setItem("sd_current_user_role", "user");
           }
+          localStorage.setItem("sd_current_user_uid", currentUser.uid);
+          localStorage.setItem("sd_current_user_email", currentUser.email || "");
         }
       }
       setLoading(false);
