@@ -8,10 +8,18 @@ import { MASTER_PRODUCTS, Product } from "@/lib/products";
 
 // State and Districts data for prefilled dropdown
 const STATE_DISTRICTS: { [state: string]: string[] } = {
-  Odisha: ["Bargarh", "Sonepur (Subarnapur)", "Sambalpur", "Balangir", "Boudh", "Cuttack", "Bhubaneswar (Khorda)", "Puri"],
-  "West Bengal": ["Bankura", "Purulia", "Murshidabad", "Hooghly", "Nadia"],
-  "Andhra Pradesh": ["Anantapur (Dharmavaram)", "Guntur (Mangalagiri)", "Nellore", "Chittoor"],
-  Telangana: ["Pochampally (Yadadri)", "Gadwal", "Narayanpet"],
+  Odisha: [
+    "Angul", "Balangir", "Balasore", "Bargarh", "Bhadrak", "Boudh", "Cuttack", "Deogarh", "Dhenkanal", "Gajapati",
+    "Ganjam", "Jagatsinghpur", "Jajpur", "Jharsuguda", "Kalahandi", "Kandhamal", "Kendrapara", "Kendujhar (Keonjhar)",
+    "Khordha", "Koraput", "Malkangiri", "Mayurbhanj", "Nabarangpur", "Nayagarh", "Nuapada", "Puri", "Rayagada",
+    "Sambalpur", "Sonepur (Subarnapur)", "Sundargarh"
+  ],
+  "West Bengal": ["Bankura", "Purulia", "Murshidabad", "Hooghly", "Nadia", "Kolkata", "Howrah"],
+  "Andhra Pradesh": ["Anantapur (Dharmavaram)", "Guntur (Mangalagiri)", "Nellore", "Chittoor", "Visakhapatnam"],
+  Telangana: ["Pochampally (Yadadri)", "Gadwal", "Narayanpet", "Hyderabad"],
+  Maharashtra: ["Mumbai", "Pune", "Nagpur", "Nashik", "Aurangabad"],
+  Karnataka: ["Bengaluru", "Mysuru", "Hubballi", "Mangaluru"],
+  Delhi: ["New Delhi", "North Delhi", "South Delhi"],
   Global: ["International Outpost / Global Hub"]
 };
 
@@ -33,7 +41,7 @@ export default function FranchiseDashboard() {
   const [proxyStep, setProxyStep] = useState<number>(1);
   const [proxyForm, setProxyForm] = useState({
     productId: "", quantity: 1, customerName: "", customerPhone: "", customerWhatsapp: "",
-    customerEmail: "", customerAddress: "", customerState: "Odisha", customerDistrict: "Bargarh", paymentMode: "Wallet",
+    customerEmail: "", customerAddress: "", customerCountry: "India", customerState: "Odisha", customerDistrict: "Bargarh", customerPincode: "", paymentMode: "Wallet",
   });
   const [isSubmittingProxy, setIsSubmittingProxy] = useState<boolean>(false);
   const [proxyOrderSuccess, setProxyOrderSuccess] = useState<any | null>(null);
@@ -592,42 +600,59 @@ export default function FranchiseDashboard() {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-bold text-gray-700 block mb-1">Customer Full Name *</label>
-                      <input required type="text" value={proxyForm.customerName} onChange={e => setProxyForm({ ...proxyForm, customerName: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none" />
+                      <label className="text-xs font-bold text-black block mb-1">Customer Full Name *</label>
+                      <input required type="text" value={proxyForm.customerName} onChange={e => setProxyForm({ ...proxyForm, customerName: e.target.value })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none" />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-gray-700 block mb-1">WhatsApp Number *</label>
-                      <input required type="tel" value={proxyForm.customerWhatsapp} onChange={e => setProxyForm({ ...proxyForm, customerWhatsapp: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none" />
+                      <label className="text-xs font-bold text-black block mb-1">WhatsApp Number *</label>
+                      <input required type="tel" value={proxyForm.customerWhatsapp} onChange={e => setProxyForm({ ...proxyForm, customerWhatsapp: e.target.value })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none" />
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-gray-700 block mb-1">Delivery Address *</label>
-                    <textarea required rows={2} value={proxyForm.customerAddress} onChange={e => setProxyForm({ ...proxyForm, customerAddress: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none" />
+                    <label className="text-xs font-bold text-black block mb-1">Delivery Address *</label>
+                    <textarea required rows={2} value={proxyForm.customerAddress} onChange={e => setProxyForm({ ...proxyForm, customerAddress: e.target.value })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none" />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-bold text-gray-700 block mb-1">State</label>
-                      <select value={proxyForm.customerState} onChange={e => handleStateChange(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none">
+                      <label className="text-xs font-bold text-black block mb-1">Country</label>
+                      <select value={proxyForm.customerCountry} onChange={e => setProxyForm({ ...proxyForm, customerCountry: e.target.value })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none">
+                        <option value="India">India</option>
+                        <option value="USA">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="UAE">UAE</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-black block mb-1">PIN Code *</label>
+                      <input required type="text" placeholder="e.g. 768028" value={proxyForm.customerPincode} onChange={e => setProxyForm({ ...proxyForm, customerPincode: e.target.value })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-black block mb-1">State</label>
+                      <select value={proxyForm.customerState} onChange={e => handleStateChange(e.target.value)} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none">
                         {Object.keys(STATE_DISTRICTS).map(st => <option key={st} value={st}>{st}</option>)}
                       </select>
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-gray-700 block mb-1">District</label>
-                      <select value={proxyForm.customerDistrict} onChange={e => setProxyForm({ ...proxyForm, customerDistrict: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#E57138] focus:outline-none">
+                      <label className="text-xs font-bold text-black block mb-1">District</label>
+                      <select value={proxyForm.customerDistrict} onChange={e => setProxyForm({ ...proxyForm, customerDistrict: e.target.value })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none">
                         {(STATE_DISTRICTS[proxyForm.customerState] || []).map(dt => <option key={dt} value={dt}>{dt}</option>)}
                       </select>
                     </div>
                   </div>
-                  <div className="bg-gray-50 p-5 rounded-2xl border border-gray-200">
-                    <span className="text-xs font-bold text-gray-900 block mb-3">Choose Payout Method</span>
+                  <div className="bg-white p-5 rounded-2xl border-2 border-gray-200">
+                    <span className="text-sm font-bold text-black block mb-3">Choose Payout Method</span>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <label className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl cursor-pointer hover:border-[#E57138]">
+                      <label className="flex items-center gap-3 p-3 bg-white border-2 border-gray-300 rounded-xl cursor-pointer hover:border-[#E57138]">
                         <input type="radio" name="paymentMode" value="Wallet" checked={proxyForm.paymentMode === "Wallet"} onChange={e => setProxyForm({ ...proxyForm, paymentMode: e.target.value })} className="w-4 h-4 accent-[#E57138]" />
-                        <div><span className="text-sm font-bold block">Reseller Wallet</span><span className="text-xs text-gray-500">Balance: ₹ {walletBalance.toLocaleString()}</span></div>
+                        <div><span className="text-sm font-bold block text-black">Reseller Wallet</span><span className="text-xs text-gray-700 font-bold">Balance: ₹ {walletBalance.toLocaleString()}</span></div>
                       </label>
-                      <label className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl cursor-pointer hover:border-[#E57138]">
+                      <label className="flex items-center gap-3 p-3 bg-white border-2 border-gray-300 rounded-xl cursor-pointer hover:border-[#E57138]">
                         <input type="radio" name="paymentMode" value="Invoice" checked={proxyForm.paymentMode === "Invoice"} onChange={e => setProxyForm({ ...proxyForm, paymentMode: e.target.value })} className="w-4 h-4 accent-[#E57138]" />
-                        <div><span className="text-sm font-bold block">Send Invoice</span><span className="text-xs text-gray-500">To client's WhatsApp</span></div>
+                        <div><span className="text-sm font-bold block text-black">Send Invoice</span><span className="text-xs text-gray-700 font-bold">To client's WhatsApp</span></div>
                       </label>
                     </div>
                   </div>
