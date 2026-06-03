@@ -189,28 +189,7 @@ export default function FranchiseDashboard() {
       if (savedOrders) {
         setAllOrders(JSON.parse(savedOrders));
       } else {
-        // Seed default order for validation
-        const sampleOrders = [
-          {
-            orderId: "ORD-839201",
-            productName: "Dasrajpur Royal Pasapalli Double Ikat Pata Saree",
-            productPrice: "₹ 34,500",
-            quantity: 1,
-            customerName: "Kishore Chandra Meher",
-            customerPhone: "+91 94371 88291",
-            customerWhatsapp: "919437188291",
-            customerAddress: "Main Street Plot 12, Attabira, Bargarh, Odisha, Pin: 768027",
-            referralId: activeFranchise.id,
-            proxyBuyerId: null,
-            paymentMode: "escrow",
-            paymentStatus: "Escrow Locked",
-            logisticsStatus: "Pending Weaver Handover",
-            leg1LabelGenerated: false,
-            leg2LabelGenerated: false,
-            qcStatus: "Pending Sourcing",
-            timestamp: new Date(Date.now() - 4 * 3600000).toISOString()
-          }
-        ];
+        const sampleOrders: any[] = [];
         localStorage.setItem("sd_all_orders", JSON.stringify(sampleOrders));
         setAllOrders(sampleOrders);
       }
@@ -226,8 +205,8 @@ export default function FranchiseDashboard() {
         {
           id: "NOTIF-001",
           referralId: activeFranchise.id,
-          title: "System Online",
-          message: `Franchise Portal connected successfully to the Bhulia Spree ledger. Ready to track referrals for ${activeFranchise.name}.`,
+          title: "Dashboard Activated",
+          message: `Welcome to your Reseller Partner Dashboard. Your store is now online and ready to track commissions.`,
           timestamp: new Date().toISOString(),
           read: false
         }
@@ -819,8 +798,8 @@ export default function FranchiseDashboard() {
               <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl space-y-4">
                 <div className="flex justify-between items-center border-b border-[#C5A059]/20 pb-3">
                   <div>
-                    <h3 className="text-base font-serif font-bold text-[#C5A059]">Live Operations Alert Feed</h3>
-                    <p className="text-xs text-gray-400 mt-0.5">Captures Mode A direct referrals, order status updates, and verification events.</p>
+                    <h3 className="text-xl font-serif font-bold text-[#C5A059]">Activity Notifications</h3>
+                    <p className="text-xs text-gray-300 mt-1">Captures direct referrals, order status updates, and verification events.</p>
                   </div>
                   <button 
                     onClick={handleMarkNotificationsRead}
