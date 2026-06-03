@@ -26,7 +26,7 @@ export default function FranchiseDashboard() {
   const [liveFranchiseData, setLiveFranchiseData] = useState<any | null>(null);
 
   // General dashboard UI states
-  const [activeTab, setActiveTab] = useState<"overview" | "curation" | "proxy" | "orders" | "settings" | "workspace" | "list_product" | "upgrade">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "curation" | "proxy" | "orders" | "settings" | "workspace" | "list_product" | "upgrade" | "verification">("overview");
   const [notifications, setNotifications] = useState<any[]>([]);
   const [allOrders, setAllOrders] = useState<any[]>([]);
   const [walletBalance, setWalletBalance] = useState<number>(45000);
@@ -724,7 +724,17 @@ export default function FranchiseDashboard() {
               }`}
             >
               <span>📸</span>
-              <span>Workspace Identity</span>
+              <span>Storefront Branding</span>
+            </button>
+
+            <button 
+              onClick={() => setActiveTab("verification")}
+              className={`w-full py-3 px-4 rounded-2xl text-left text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-3 cursor-pointer ${
+                activeTab === "verification" ? "bg-[#C5A059] text-[#0A1021] shadow-lg" : "text-gray-300 hover:bg-[#0A3A35] hover:text-white"
+              }`}
+            >
+              <span>🛡️</span>
+              <span>Verification & Bank</span>
             </button>
 
             <button 
@@ -1395,6 +1405,26 @@ export default function FranchiseDashboard() {
                   </button>
                 </div>
               </form>
+            </div>
+          )}
+
+          {/* TAB: VERIFICATION */}
+          {activeTab === "verification" && (
+            <div className="space-y-6">
+              <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl space-y-6">
+                <div>
+                  <h2 className="text-xl font-serif font-bold text-[#C5A059]">Account Verification & Bank Details</h2>
+                  <p className="text-xs text-gray-300 mt-1">Upload your KYC documents and bank details to receive commission payouts.</p>
+                </div>
+                
+                <div className="bg-[#051815] p-5 rounded-2xl border border-dashed border-[#C5A059]/40 text-center">
+                  <p className="text-[#C5A059] text-xs font-bold uppercase tracking-widest mb-2">Document Upload Gateway</p>
+                  <p className="text-gray-400 text-[10px] mb-4">Please upload a clear copy of your Aadhaar or PAN card, along with a canceled cheque.</p>
+                  <button className="px-6 py-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#C5A059]/10 transition-colors">
+                    Upload Documents
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 

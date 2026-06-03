@@ -94,9 +94,9 @@ export default function WorkspaceIdentity({ franchiseId }: WorkspaceIdentityProp
   return (
     <div className="space-y-6">
       <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl">
-        <h2 className="text-xl font-serif font-bold text-[#C5A059] mb-2">Workspace Identity</h2>
+        <h2 className="text-xl font-serif font-bold text-[#C5A059] mb-2">Storefront Branding</h2>
         <p className="text-xs text-gray-300 leading-relaxed mb-6">
-          Upload up to 3 images of your Loom, Retail Shop, or Office to build trust with buyers. These images are shown publicly when buyers visit your store profile.
+          Upload up to 3 cover images or logos to build trust with buyers. These images are shown publicly when buyers visit your store profile.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

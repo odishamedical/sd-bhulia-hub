@@ -94,7 +94,7 @@ export default function AdminFranchisesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#C5A059]">Franchise Partners</h1>
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#C5A059]">Reseller Partners</h1>
           <p className="text-gray-300 text-xs mt-1">Manage promoter dashboards, phygital hubs, page visits, and referral sales.</p>
         </div>
         <button 
@@ -115,6 +115,7 @@ export default function AdminFranchisesPage() {
                 <tr>
                   <th className="px-6 py-4">Promoter</th>
                   <th className="px-6 py-4">Name & Slug</th>
+                  <th className="px-6 py-4">Applicant Email</th>
                   <th className="px-6 py-4">City Location</th>
                   <th className="px-6 py-4">Tier Level</th>
                   <th className="px-6 py-4">Page Visits</th>
@@ -134,6 +135,9 @@ export default function AdminFranchisesPage() {
                     <td className="px-6 py-4 font-medium">
                       <div className="text-white font-serif">{franchise.name}</div>
                       <div className="text-[10px] text-gray-400 mt-1 font-mono">/franchise/{franchise.slug}</div>
+                    </td>
+                    <td className="px-6 py-4 text-xs">
+                      <div className="text-white break-all">{franchise.userEmail || "Unknown Email"}</div>
                     </td>
                     <td className="px-6 py-4 text-xs">{franchise.city}</td>
                     <td className="px-6 py-4">
