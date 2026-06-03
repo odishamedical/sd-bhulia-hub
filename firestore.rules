@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isOwner(userId) || request.auth.token.admin == true;
+      allow write: if isOwner(userId) || request.auth.token.admin == true;
+    }
+    
+    // Products Collection
+    match /products/{productId} {
+      // Anyone can view approved products
+      allow read: if resource.data.status == 'approved' || (isAuthenticated() && resource.data.ownerId == request.auth.uid) || request.auth.token.admin == true;
+      allow create: if isAuthenticated() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if isOwner(resource.data.ownerId) || request.auth.token.admin == true;
+      allow delete: if request.auth.token.admin == true;
+    }
+    
+    // Storefronts Collection
+    match /storefronts/{userId} {
+      allow read: if true; // Publicly visible
+      allow write: if isOwner(userId) || request.auth.token.admin == true;
+    }
+    
+    // Reseller Curation
+    match /resellerCuration/{resellerId} {
+      allow read: if true; // Publicly visible so customers can see curated items
+      allow write: if isOwner(resellerId) || request.auth.token.admin == true;
+    }
+    
+    // Orders
+    match /orders/{orderId} {
+      allow read: if isOwner(resource.data.customerId) || isOwner(resource.data.ownerId) || isOwner(resource.data.resellerId) || request.auth.token.admin == true;
+      allow create: if isAuthenticated();
+      allow update: if request.auth.token.admin == true; // Only admin/hub can update order status
+    }
+    
+    // Wallets
+    match /wallets/{userId} {
+      allow read: if isOwner(userId) || request.auth.token.admin == true;
+      allow write: if request.auth.token.admin == true; // Only system/admin can modify balances
+    }
+    
+    // Verification Requests
+    match /verificationRequests/{userId} {
+      allow read: if isOwner(userId) || request.auth.token.admin == true;
+      allow create, update: if isOwner(userId);
+      allow delete: if request.auth.token.admin == true;
+    }
+  }
+}
