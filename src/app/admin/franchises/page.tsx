@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useFranchises, addFranchise, deleteFranchise, updateDocumentStatus } from "@/lib/db-hooks";
+import { useFranchises, addFranchise, deleteFranchise, updateDocumentStatus, approveFranchiseAndUserRole } from "@/lib/db-hooks";
 import ImageUploader from "@/components/ImageUploader";
 
 export default function AdminFranchisesPage() {
@@ -159,7 +159,7 @@ export default function AdminFranchisesPage() {
                         <button 
                           onClick={async () => {
                              if (confirm(`Approve franchise "${franchise.name}"?`)) {
-                               await updateDocumentStatus("franchises", franchise.id, { status: "approved" });
+                               await approveFranchiseAndUserRole(franchise.id, franchise.userId);
                              }
                           }}
                           className="text-green-400 hover:text-green-300 font-bold text-xs uppercase tracking-wider cursor-pointer"

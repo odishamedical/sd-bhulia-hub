@@ -388,6 +388,22 @@ export async function updateDocumentStatus(collectionName: "weavers" | "stores" 
   }
 }
 
+export async function approveFranchiseAndUserRole(franchiseId: string, userId: string) {
+  try {
+    const franchiseRef = doc(db, "franchises", franchiseId);
+    await updateDoc(franchiseRef, { status: "approved" });
+    
+    if (userId && userId !== "demo_user") {
+      const userRef = doc(db, "users", userId);
+      await updateDoc(userRef, { role: "franchisee" });
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("Error approving franchise:", error);
+    return { success: false, error };
+  }
+}
+
 export async function addOrder(order: Partial<Omit<Order, 'id'>>) {
   try {
     const docRef = doc(collection(db, "orders"));
