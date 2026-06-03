@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import UserMenu from "./UserMenu";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -13,6 +13,12 @@ export default function Header() {
   const { cartCount } = useCart();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Hide the global public header on the dashboard page so we don't get double headers
+  if (pathname?.startsWith("/franchise/dashboard")) {
+    return null;
+  }
 
   return (
     <>

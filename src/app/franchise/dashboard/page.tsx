@@ -600,14 +600,9 @@ export default function FranchiseDashboard() {
           {/* Active Franchise Metadata Display */}
           {activeFranchise && (
             <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-5 shadow-xl space-y-4">
-              <div className="relative w-full h-32 rounded-2xl overflow-hidden border border-[#C5A059]/30">
-                <Image src={activeFranchise.img} alt={activeFranchise.name} fill className="object-cover" />
-                <div className="absolute inset-0 bg-[#051815]/60 flex items-end p-3">
-                  <div>
-                    <h3 className="font-serif font-bold text-[#C5A059] text-sm leading-tight">{activeFranchise.name}</h3>
-                    <p className="text-[9px] uppercase tracking-widest text-gray-300 mt-0.5">{activeFranchise.region}</p>
-                  </div>
-                </div>
+              <div className="pb-3 border-b border-[#C5A059]/20">
+                <h3 className="font-serif font-bold text-[#C5A059] text-base leading-tight">{activeFranchise.name}</h3>
+                <p className="text-[10px] uppercase tracking-widest text-gray-300 mt-1">{activeFranchise.region}</p>
               </div>
 
               <div className="space-y-2.5 text-xs text-gray-300">
