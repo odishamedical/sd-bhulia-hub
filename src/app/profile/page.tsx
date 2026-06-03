@@ -465,8 +465,8 @@ function ProfileContent() {
                       {franchiseApps.map((app: any) => (
                         <div key={app.id} className="bg-[#051815] border border-[#C5A059]/20 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                           <div>
-                            <p className="font-bold text-white text-sm">{app.hubName}</p>
-                            <p className="text-[10px] text-gray-400 font-mono mt-1">Tier: {app.tier} | Applied: {new Date(app.appliedAt).toLocaleDateString()}</p>
+                            <p className="font-bold text-white text-sm">{app.hubName || app.name}</p>
+                            <p className="text-[10px] text-gray-400 font-mono mt-1">Tier: {app.tier} | Applied: {app.appliedAt ? new Date(app.appliedAt).toLocaleDateString() : "Recently"}</p>
                           </div>
                           <Link href="/franchise/dashboard" className="px-5 py-2.5 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] font-bold text-xs uppercase tracking-wider rounded-lg hover:brightness-110 shadow-lg text-center whitespace-nowrap">
                             Access Dashboard →

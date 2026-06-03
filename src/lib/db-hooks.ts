@@ -59,6 +59,8 @@ export interface Franchise {
   invitedCount: number;
   totalSales: number;
   commissionEarned: number;
+  userId?: string;
+  userEmail?: string;
   pendingChanges?: any;
 }
 
@@ -388,7 +390,7 @@ export async function updateDocumentStatus(collectionName: "weavers" | "stores" 
   }
 }
 
-export async function approveFranchiseAndUserRole(franchiseId: string, userId: string) {
+export async function approveFranchiseAndUserRole(franchiseId: string, userId?: string) {
   try {
     const franchiseRef = doc(db, "franchises", franchiseId);
     await updateDoc(franchiseRef, { status: "approved" });
