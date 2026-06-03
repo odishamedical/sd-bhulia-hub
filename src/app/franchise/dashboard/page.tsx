@@ -107,7 +107,7 @@ export default function FranchiseDashboard() {
                   id: doc.id,
                   slug: data.slug,
                   name: data.name,
-                  region: data.stateRegion || "Unknown",
+                  region: data.city ? data.city.split(", ").pop() : "Unknown",
                   city: data.city,
                   phygitalOutletsCount: 0,
                   referralsTracked: data.invitedCount || 0,
