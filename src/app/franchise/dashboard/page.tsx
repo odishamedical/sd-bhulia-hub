@@ -172,81 +172,48 @@ export default function FranchiseDashboard() {
 
   // Load orders, notifications, wallet balance, and curation details
   useEffect(() => {
-    if (!activeFranchise) return;
-
-    // Load Wallet Balance
-    const savedWallet = localStorage.getItem(`sd_wallet_${activeFranchise.id}`);
-    if (savedWallet) {
-      setWalletBalance(Number(savedWallet));
-    } else {
-      localStorage.setItem(`sd_wallet_${activeFranchise.id}`, "45000");
-      setWalletBalance(45000);
+    if (!activeFranchise?.id) return;
+    
+    if (liveFranchiseData) {
+       setWalletBalance(liveFranchiseData.walletBalance || 0);
+       setCuratedIds(liveFranchiseData.curatedIds || MASTER_PRODUCTS.slice(0, 4).map(p => p.id));
+       setProductCategories(liveFranchiseData.productCategories || {});
+       setPremiumEnabled(liveFranchiseData.premiumEnabled || false);
+       setCustomDomain(liveFranchiseData.customDomain || "");
+       setCustomSubdomain(liveFranchiseData.customSubdomain || `${liveFranchiseData.slug}.bhulia.com`);
     }
 
-    // Load Orders
-    const loadOrders = () => {
-      const savedOrders = localStorage.getItem("sd_all_orders");
-      if (savedOrders) {
-        setAllOrders(JSON.parse(savedOrders));
-      } else {
-        const sampleOrders: any[] = [];
-        localStorage.setItem("sd_all_orders", JSON.stringify(sampleOrders));
-        setAllOrders(sampleOrders);
+    let unsubOrders: any = null;
+    let unsubNotifs: any = null;
+
+    const setupLiveListeners = async () => {
+      try {
+        const { db } = await import("@/lib/firebase");
+        const { collection, query, onSnapshot, orderBy } = await import("firebase/firestore");
+        
+        const ordersQuery = query(collection(db, "franchises", activeFranchise.id, "orders"), orderBy("timestamp", "desc"));
+        unsubOrders = onSnapshot(ordersQuery, (snap) => {
+          const fetchedOrders = snap.docs.map(d => ({ ...d.data(), id: d.id }));
+          setAllOrders(fetchedOrders);
+        });
+
+        const notifsQuery = query(collection(db, "franchises", activeFranchise.id, "notifications"), orderBy("timestamp", "desc"));
+        unsubNotifs = onSnapshot(notifsQuery, (snap) => {
+          const fetchedNotifs = snap.docs.map(d => ({ ...d.data(), id: d.id }));
+          setNotifications(fetchedNotifs);
+        });
+      } catch (err) {
+        console.error("Error setting up live collections:", err);
       }
     };
-    loadOrders();
 
-    // Load Notifications
-    const savedNotifs = localStorage.getItem("sd_franchise_notifications");
-    if (savedNotifs) {
-      setNotifications(JSON.parse(savedNotifs));
-    } else {
-      const defaultNotifs = [
-        {
-          id: "NOTIF-001",
-          referralId: activeFranchise.id,
-          title: "Dashboard Activated",
-          message: `Welcome to your Reseller Partner Dashboard. Your store is now online and ready to track commissions.`,
-          timestamp: new Date().toISOString(),
-          read: false
-        }
-      ];
-      localStorage.setItem("sd_franchise_notifications", JSON.stringify(defaultNotifs));
-      setNotifications(defaultNotifs);
-    }
+    setupLiveListeners();
 
-    // Load Curations
-    const savedCuration = localStorage.getItem(`sd_curation_${activeFranchise.id}`);
-    if (savedCuration) {
-      setCuratedIds(JSON.parse(savedCuration));
-    } else {
-      const defaults = MASTER_PRODUCTS.slice(0, 4).map(p => p.id);
-      setCuratedIds(defaults);
-      localStorage.setItem(`sd_curation_${activeFranchise.id}`, JSON.stringify(defaults));
-    }
-
-    // Load Curation Categories
-    const savedCats = localStorage.getItem(`sd_categories_${activeFranchise.id}`);
-    if (savedCats) {
-      setProductCategories(JSON.parse(savedCats));
-    } else {
-      const defaults: { [id: string]: string } = {};
-      MASTER_PRODUCTS.forEach(p => {
-        defaults[p.id] = p.category;
-      });
-      setProductCategories(defaults);
-      localStorage.setItem(`sd_categories_${activeFranchise.id}`, JSON.stringify(defaults));
-    }
-
-    // Load Premium status
-    const prem = localStorage.getItem(`sd_premium_status_${activeFranchise.id}`) === "true";
-    const dom = localStorage.getItem(`sd_custom_domain_${activeFranchise.id}`) || "";
-    const sub = localStorage.getItem(`sd_subdomain_${activeFranchise.id}`) || `${activeFranchise.slug}.bhulia.com`;
-    setPremiumEnabled(prem);
-    setCustomDomain(dom);
-    setCustomSubdomain(sub);
-
-  }, [activeFranchise]);
+    return () => {
+      if (unsubOrders) unsubOrders();
+      if (unsubNotifs) unsubNotifs();
+    };
+  }, [activeFranchise?.id, liveFranchiseData]);
 
   // Handle Mock Logins
   const handleMockLogin = (role: string, uid: string, name: string) => {
@@ -270,9 +237,18 @@ export default function FranchiseDashboard() {
   };
 
   // Clear all notifications
-  const handleClearNotifications = () => {
-    setNotifications([]);
-    localStorage.setItem("sd_franchise_notifications", JSON.stringify([]));
+  const handleClearNotifications = async () => {
+    if (!activeFranchise) return;
+    try {
+      const { db } = await import("@/lib/firebase");
+      const { collection, getDocs, deleteDoc, doc } = await import("firebase/firestore");
+      const notifsRef = collection(db, "franchises", activeFranchise.id, "notifications");
+      const snap = await getDocs(notifsRef);
+      const deletePromises = snap.docs.map(d => deleteDoc(doc(db, "franchises", activeFranchise.id, "notifications", d.id)));
+      await Promise.all(deletePromises);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // State prefill selection triggers district prefill
@@ -286,7 +262,7 @@ export default function FranchiseDashboard() {
   };
 
   // Catalog curation toggle
-  const handleToggleCuration = (productId: string) => {
+  const handleToggleCuration = async (productId: string) => {
     if (!activeFranchise) return;
     let updated;
     if (curatedIds.includes(productId)) {
@@ -295,15 +271,25 @@ export default function FranchiseDashboard() {
       updated = [...curatedIds, productId];
     }
     setCuratedIds(updated);
-    localStorage.setItem(`sd_curation_${activeFranchise.id}`, JSON.stringify(updated));
+    
+    try {
+      const { db } = await import("@/lib/firebase");
+      const { doc, updateDoc } = await import("firebase/firestore");
+      await updateDoc(doc(db, "franchises", activeFranchise.id), { curatedIds: updated });
+    } catch(err) { console.error(err); }
   };
 
   // Category change for curation
-  const handleCategoryChange = (productId: string, value: string) => {
+  const handleCategoryChange = async (productId: string, value: string) => {
     if (!activeFranchise) return;
     const updated = { ...productCategories, [productId]: value };
     setProductCategories(updated);
-    localStorage.setItem(`sd_categories_${activeFranchise.id}`, JSON.stringify(updated));
+    
+    try {
+      const { db } = await import("@/lib/firebase");
+      const { doc, updateDoc } = await import("firebase/firestore");
+      await updateDoc(doc(db, "franchises", activeFranchise.id), { productCategories: updated });
+    } catch(err) { console.error(err); }
   };
 
   // Submit proxy purchase
@@ -338,59 +324,55 @@ export default function FranchiseDashboard() {
 
     setIsSubmittingProxy(true);
 
-    setTimeout(() => {
-      // Deduct wallet if paid via wallet
-      let newBalance = walletBalance;
-      if (proxyForm.paymentMode === "Wallet") {
-        newBalance = walletBalance - totalPrice;
-        setWalletBalance(newBalance);
-        localStorage.setItem(`sd_wallet_${activeFranchise.id}`, String(newBalance));
-      }
+    setTimeout(async () => {
+      try {
+        const { db } = await import("@/lib/firebase");
+        const { doc, collection, addDoc, updateDoc } = await import("firebase/firestore");
+        
+        if (proxyForm.paymentMode === "Wallet") {
+          const newBalance = walletBalance - totalPrice;
+          await updateDoc(doc(db, "franchises", activeFranchise.id), { walletBalance: newBalance });
+        }
 
-      // Record Order
-      const newOrder = {
-        orderId: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
-        productName: selectedProduct.title,
-        productPrice: selectedProduct.price,
-        quantity: proxyForm.quantity,
-        customerName: proxyForm.customerName,
-        customerPhone: proxyForm.customerPhone || proxyForm.customerWhatsapp,
-        customerWhatsapp: proxyForm.customerWhatsapp,
-        customerAddress: `${proxyForm.customerAddress}, ${proxyForm.customerDistrict}, ${proxyForm.customerState}`,
-        referralId: null,
-        proxyBuyerId: activeFranchise.id,
-        paymentMode: proxyForm.paymentMode === "Wallet" ? "Franchise Wallet" : "Generated B2B Invoice",
-        paymentStatus: proxyForm.paymentMode === "Wallet" ? "Paid (Debited)" : "Invoice Sent / Awaiting Wire",
-        logisticsStatus: "Pending Weaver Handover",
-        leg1LabelGenerated: false,
-        leg2LabelGenerated: false,
-        qcStatus: "Pending Sourcing",
-        timestamp: new Date().toISOString()
-      };
+        const newOrder = {
+          orderId: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+          productName: selectedProduct.title,
+          productPrice: selectedProduct.price,
+          quantity: proxyForm.quantity,
+          customerName: proxyForm.customerName,
+          customerPhone: proxyForm.customerPhone || proxyForm.customerWhatsapp,
+          customerWhatsapp: proxyForm.customerWhatsapp,
+          customerAddress: `${proxyForm.customerAddress}, ${proxyForm.customerDistrict}, ${proxyForm.customerState}`,
+          referralId: null,
+          proxyBuyerId: activeFranchise.id,
+          paymentMode: proxyForm.paymentMode === "Wallet" ? "Franchise Wallet" : "Generated B2B Invoice",
+          paymentStatus: proxyForm.paymentMode === "Wallet" ? "Paid (Debited)" : "Invoice Sent / Awaiting Wire",
+          logisticsStatus: "Pending Weaver Handover",
+          leg1LabelGenerated: false,
+          leg2LabelGenerated: false,
+          qcStatus: "Pending Sourcing",
+          timestamp: new Date().toISOString()
+        };
 
-      const updatedOrders = [newOrder, ...allOrders];
-      setAllOrders(updatedOrders);
-      localStorage.setItem("sd_all_orders", JSON.stringify(updatedOrders));
+        await addDoc(collection(db, "franchises", activeFranchise.id, "orders"), newOrder);
 
-      // Notification
-      const updatedNotifs = [
-        {
-          id: `NOTIF-${Math.floor(1000 + Math.random() * 9000)}`,
+        await addDoc(collection(db, "franchises", activeFranchise.id, "notifications"), {
           referralId: activeFranchise.id,
           title: "Proxy Order Placed",
           message: `Proxy purchase of ${proxyForm.quantity}x ${selectedProduct.title} for ${proxyForm.customerName} registered.`,
           timestamp: new Date().toISOString(),
           read: false
-        },
-        ...notifications
-      ];
-      setNotifications(updatedNotifs);
-      localStorage.setItem("sd_franchise_notifications", JSON.stringify(updatedNotifs));
+        });
 
-      setProxyOrderSuccess(newOrder);
-      setIsSubmittingProxy(false);
-      setProxyStep(3); // success screen
-    }, 1500);
+        setProxyOrderSuccess(newOrder);
+        setIsSubmittingProxy(false);
+        setProxyStep(3);
+      } catch (err) {
+        console.error(err);
+        setIsSubmittingProxy(false);
+        alert("Failed to submit order to database.");
+      }
+    }, 500);
   };
 
   // Launch logistics label generation
@@ -413,53 +395,56 @@ export default function FranchiseDashboard() {
     }
 
     setIsUpdatingQC(true);
-    setTimeout(() => {
-      const updated = allOrders.map(o => {
-        if (o.orderId === selectedOrderForLogistics.orderId) {
-          return {
-            ...o,
+    setTimeout(async () => {
+      try {
+        const { db } = await import("@/lib/firebase");
+        const { doc, collection, addDoc, updateDoc } = await import("firebase/firestore");
+        
+        if (selectedOrderForLogistics.id) {
+          await updateDoc(doc(db, "franchises", activeFranchise.id, "orders", selectedOrderForLogistics.id), {
             qcStatus: "QC Passed",
             logisticsStatus: "QC Approved & In Hub Transit",
             leg1LabelGenerated: true,
             leg2LabelGenerated: true
-          };
+          });
         }
-        return o;
-      });
-      setAllOrders(updated);
-      localStorage.setItem("sd_all_orders", JSON.stringify(updated));
 
-      // Trigger notification
-      const updatedNotifs = [
-        {
-          id: `NOTIF-${Math.floor(1000 + Math.random() * 9000)}`,
+        await addDoc(collection(db, "franchises", activeFranchise.id, "notifications"), {
           referralId: activeFranchise.id,
           title: "QC Certification Approved",
           message: `Logistics Leg 1 & 2 Labels created for Order ${selectedOrderForLogistics.orderId}. Handloom certified.`,
           timestamp: new Date().toISOString(),
           read: false
-        },
-        ...notifications
-      ];
-      setNotifications(updatedNotifs);
-      localStorage.setItem("sd_franchise_notifications", JSON.stringify(updatedNotifs));
+        });
 
-      setSelectedOrderForLogistics(null);
-      setIsUpdatingQC(false);
-      alert("Quality check passed successfully! Dual-leg shipping labels have been certified and generated.");
-    }, 1000);
+        setSelectedOrderForLogistics(null);
+        setIsUpdatingQC(false);
+        alert("Quality check passed successfully! Dual-leg shipping labels have been certified and generated.");
+      } catch (err) {
+        console.error(err);
+        setIsUpdatingQC(false);
+      }
+    }, 500);
   };
 
   // Save Sandbox Settings
-  const handleSaveSandbox = (e: React.FormEvent) => {
+  const handleSaveSandbox = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeFranchise) return;
 
-    localStorage.setItem(`sd_premium_status_${activeFranchise.id}`, String(premiumEnabled));
-    localStorage.setItem(`sd_custom_domain_${activeFranchise.id}`, customDomain);
-    localStorage.setItem(`sd_subdomain_${activeFranchise.id}`, customSubdomain);
-
-    alert("Premium Sandbox settings updated successfully!");
+    try {
+      const { db } = await import("@/lib/firebase");
+      const { doc, updateDoc } = await import("firebase/firestore");
+      await updateDoc(doc(db, "franchises", activeFranchise.id), { 
+        premiumEnabled,
+        customDomain,
+        customSubdomain
+      });
+      alert("Premium Sandbox settings updated successfully in Live Database!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save settings.");
+    }
   };
 
   const handleLaunchSandboxPreview = () => {
