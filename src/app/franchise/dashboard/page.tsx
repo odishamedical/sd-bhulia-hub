@@ -8,19 +8,19 @@ import { MASTER_PRODUCTS, Product } from "@/lib/products";
 
 // State and Districts data for prefilled dropdown
 const STATE_DISTRICTS: { [state: string]: string[] } = {
+  "Andaman and Nicobar Islands": [], "Andhra Pradesh": [], "Arunachal Pradesh": [], "Assam": [], "Bihar": [], 
+  "Chandigarh": [], "Chhattisgarh": [], "Dadra and Nagar Haveli and Daman and Diu": [], "Delhi": [], "Goa": [], 
+  "Gujarat": [], "Haryana": [], "Himachal Pradesh": [], "Jammu and Kashmir": [], "Jharkhand": [], "Karnataka": [], 
+  "Kerala": [], "Ladakh": [], "Lakshadweep": [], "Madhya Pradesh": [], "Maharashtra": [], "Manipur": [], 
+  "Meghalaya": [], "Mizoram": [], "Nagaland": [],
   Odisha: [
     "Angul", "Balangir", "Balasore", "Bargarh", "Bhadrak", "Boudh", "Cuttack", "Deogarh", "Dhenkanal", "Gajapati",
     "Ganjam", "Jagatsinghpur", "Jajpur", "Jharsuguda", "Kalahandi", "Kandhamal", "Kendrapara", "Kendujhar (Keonjhar)",
     "Khordha", "Koraput", "Malkangiri", "Mayurbhanj", "Nabarangpur", "Nayagarh", "Nuapada", "Puri", "Rayagada",
     "Sambalpur", "Sonepur (Subarnapur)", "Sundargarh"
   ],
-  "West Bengal": ["Bankura", "Purulia", "Murshidabad", "Hooghly", "Nadia", "Kolkata", "Howrah"],
-  "Andhra Pradesh": ["Anantapur (Dharmavaram)", "Guntur (Mangalagiri)", "Nellore", "Chittoor", "Visakhapatnam"],
-  Telangana: ["Pochampally (Yadadri)", "Gadwal", "Narayanpet", "Hyderabad"],
-  Maharashtra: ["Mumbai", "Pune", "Nagpur", "Nashik", "Aurangabad"],
-  Karnataka: ["Bengaluru", "Mysuru", "Hubballi", "Mangaluru"],
-  Delhi: ["New Delhi", "North Delhi", "South Delhi"],
-  Global: ["International Outpost / Global Hub"]
+  "Puducherry": [], "Punjab": [], "Rajasthan": [], "Sikkim": [], "Tamil Nadu": [], "Telangana": [], 
+  "Tripura": [], "Uttar Pradesh": [], "Uttarakhand": [], "West Bengal": []
 };
 
 export default function FranchiseDashboard() {
@@ -41,7 +41,7 @@ export default function FranchiseDashboard() {
   const [proxyStep, setProxyStep] = useState<number>(1);
   const [proxyForm, setProxyForm] = useState({
     productId: "", quantity: 1, customerName: "", customerPhone: "", customerWhatsapp: "",
-    customerEmail: "", customerAddress: "", customerCountry: "India", customerState: "Odisha", customerDistrict: "Bargarh", customerPincode: "", paymentMode: "Wallet",
+    customerEmail: "", customerAddress: "", customerCountry: "India", customerCountryOther: "", customerState: "Odisha", customerDistrict: "Bargarh", customerPincode: "", paymentMode: "Wallet",
   });
   const [isSubmittingProxy, setIsSubmittingProxy] = useState<boolean>(false);
   const [proxyOrderSuccess, setProxyOrderSuccess] = useState<any | null>(null);
@@ -615,32 +615,47 @@ export default function FranchiseDashboard() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-xs font-bold text-black block mb-1">Country</label>
-                      <select value={proxyForm.customerCountry} onChange={e => setProxyForm({ ...proxyForm, customerCountry: e.target.value })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none">
-                        <option value="India">India</option>
-                        <option value="USA">United States</option>
-                        <option value="UK">United Kingdom</option>
-                        <option value="UAE">UAE</option>
-                        <option value="Australia">Australia</option>
-                        <option value="Other">Other</option>
-                      </select>
+                      <div className="flex gap-2">
+                        <select value={proxyForm.customerCountry} onChange={e => setProxyForm({ ...proxyForm, customerCountry: e.target.value })} className={`${proxyForm.customerCountry === 'Other' ? 'w-1/3' : 'w-full'} bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none`}>
+                          <option value="India">India</option>
+                          <option value="USA">United States</option>
+                          <option value="UK">United Kingdom</option>
+                          <option value="UAE">UAE</option>
+                          <option value="Australia">Australia</option>
+                          <option value="Other">Other</option>
+                        </select>
+                        {proxyForm.customerCountry === 'Other' && (
+                          <input required type="text" placeholder="Enter Country Name" value={proxyForm.customerCountryOther} onChange={e => setProxyForm({ ...proxyForm, customerCountryOther: e.target.value })} className="w-2/3 bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none" />
+                        )}
+                      </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-black block mb-1">PIN Code *</label>
+                      <label className="text-xs font-bold text-black block mb-1">PIN / ZIP Code *</label>
                       <input required type="text" placeholder="e.g. 768028" value={proxyForm.customerPincode} onChange={e => setProxyForm({ ...proxyForm, customerPincode: e.target.value })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none" />
                     </div>
                   </div>
+                  
+                  {/* Dynamic State & District Fields based on Country */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-bold text-black block mb-1">State</label>
-                      <select value={proxyForm.customerState} onChange={e => handleStateChange(e.target.value)} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none">
-                        {Object.keys(STATE_DISTRICTS).map(st => <option key={st} value={st}>{st}</option>)}
-                      </select>
+                      <label className="text-xs font-bold text-black block mb-1">State / Province</label>
+                      {proxyForm.customerCountry === 'India' ? (
+                        <select value={proxyForm.customerState} onChange={e => handleStateChange(e.target.value)} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none">
+                          {Object.keys(STATE_DISTRICTS).sort().map(st => <option key={st} value={st}>{st}</option>)}
+                        </select>
+                      ) : (
+                        <input required type="text" placeholder="State / Province" value={proxyForm.customerState} onChange={e => setProxyForm({ ...proxyForm, customerState: e.target.value, customerDistrict: "" })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none" />
+                      )}
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-black block mb-1">District</label>
-                      <select value={proxyForm.customerDistrict} onChange={e => setProxyForm({ ...proxyForm, customerDistrict: e.target.value })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none">
-                        {(STATE_DISTRICTS[proxyForm.customerState] || []).map(dt => <option key={dt} value={dt}>{dt}</option>)}
-                      </select>
+                      <label className="text-xs font-bold text-black block mb-1">District / City</label>
+                      {proxyForm.customerCountry === 'India' && STATE_DISTRICTS[proxyForm.customerState] && STATE_DISTRICTS[proxyForm.customerState].length > 0 ? (
+                        <select value={proxyForm.customerDistrict} onChange={e => setProxyForm({ ...proxyForm, customerDistrict: e.target.value })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none">
+                          {STATE_DISTRICTS[proxyForm.customerState].map(dt => <option key={dt} value={dt}>{dt}</option>)}
+                        </select>
+                      ) : (
+                        <input required type="text" placeholder="District / City Name" value={proxyForm.customerDistrict} onChange={e => setProxyForm({ ...proxyForm, customerDistrict: e.target.value })} className="w-full bg-white border-2 border-gray-400 rounded-xl px-4 py-2.5 text-sm text-black focus:border-[#E57138] focus:outline-none" />
+                      )}
                     </div>
                   </div>
                   <div className="bg-white p-5 rounded-2xl border-2 border-gray-200">
