@@ -557,7 +557,7 @@ export default function FranchiseDashboard() {
                 <h1 className="text-lg sm:text-xl font-serif font-bold tracking-wider text-[#C5A059] leading-none hover:opacity-80 transition-opacity">BHULIA.COM</h1>
               </Link>
               <p className="text-[10px] text-gray-300 font-medium tracking-wide mt-1 uppercase">
-                {userRole === "super_admin" ? "Central Admin Panel" : "Franchise Terminal"}
+                {userRole === "super_admin" ? "Central Admin Panel" : "Reseller Dashboard"}
               </p>
             </div>
           </div>
@@ -565,11 +565,11 @@ export default function FranchiseDashboard() {
           {/* Quick Stats on Header */}
           <div className="hidden md:flex items-center gap-6">
             <div className="text-center">
-              <span className="text-[8px] uppercase tracking-widest text-gray-400 block">Simulated Balance</span>
+              <span className="text-[8px] uppercase tracking-widest text-gray-400 block">Wallet Balance</span>
               <span className="text-xs font-bold text-green-400 font-mono">₹ {walletBalance.toLocaleString()}</span>
             </div>
             <div className="text-center">
-              <span className="text-[8px] uppercase tracking-widest text-gray-400 block">Hub Node</span>
+              <span className="text-[8px] uppercase tracking-widest text-gray-400 block">Region</span>
               <span className="text-xs font-bold text-[#C5A059]">{activeFranchise?.city}</span>
             </div>
           </div>
