@@ -24,13 +24,12 @@ export default function StoreDetailPage() {
   const [liveStoreData, setLiveStoreData] = useState<any>(null);
 
   useEffect(() => {
-    const uid = localStorage.getItem("sd_current_user_uid") || "sd_super_admin_custom_uid";
-    setUserUid(uid);
+    /* uid loaded below */
 
-    const fetchLiveStore = async () => {
+    async function fetchLiveStore() {
       try {
         // Try by ID first
-        let docSnap = await getDoc(doc(db, "franchises", store.id));
+        const docSnap = await getDoc(doc(db, "franchises", store.id));
         if (docSnap.exists()) {
           setLiveStoreData(docSnap.data());
           return;

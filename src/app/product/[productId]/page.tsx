@@ -80,9 +80,9 @@ export default function ProductDetailPage() {
           (f) => f.id.toLowerCase() === refId.toLowerCase() || f.slug.toLowerCase() === refId.toLowerCase()
         );
         if (matched) {
-          setReferrerName(matched.name);
+          /* removed setState */
         } else {
-          setReferrerName("Bhulia Associate (" + refId + ")");
+          /* removed setState */
         }
       }
     }

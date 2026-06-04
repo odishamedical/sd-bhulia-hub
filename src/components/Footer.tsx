@@ -122,10 +122,10 @@ export default function Footer() {
           <div className="space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Customer Care</h4>
             <ul className="space-y-2.5 text-xs text-gray-300">
-              <li><a href="/p/artisan-escrow-guide" className="hover:text-[#C5A059] transition-colors">Artisan Escrow Guide</a></li>
-              <li><a href="/p/secure-bvc-armored-transit" className="hover:text-[#C5A059] transition-colors">Secure BVC Armored Transit</a></li>
-              <li><a href="/p/platform-return-policy" className="hover:text-[#C5A059] transition-colors">Platform Return Policy</a></li>
-              <li><a href="/p/contact-support" className="hover:text-[#C5A059] transition-colors">24/7 Concierge Support</a></li>
+              <li><Link href="/p/artisan-escrow-guide" className="hover:text-[#C5A059] transition-colors">Artisan Escrow Guide</Link></li>
+              <li><Link href="/p/secure-bvc-armored-transit" className="hover:text-[#C5A059] transition-colors">Secure BVC Armored Transit</Link></li>
+              <li><Link href="/p/platform-return-policy" className="hover:text-[#C5A059] transition-colors">Platform Return Policy</Link></li>
+              <li><Link href="/p/contact-support" className="hover:text-[#C5A059] transition-colors">24/7 Concierge Support</Link></li>
             </ul>
           </div>
 
@@ -148,9 +148,9 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-[#C5A059]/20 text-xs text-gray-400 font-mono">
           <p>© 2026 Shyam Dash Creation. All sovereign rights reserved.</p>
           <div className="flex gap-6">
-            <a href="/p/privacy-policy" className="hover:text-[#C5A059] transition-colors">Privacy Policy</a>
-            <a href="/p/terms-of-service" className="hover:text-[#C5A059] transition-colors">Terms of Service</a>
-            <a href="/p/gi-registry-clearance" className="hover:text-[#C5A059] transition-colors">GI Registry Clearance</a>
+            <Link href="/p/privacy-policy" className="hover:text-[#C5A059] transition-colors">Privacy Policy</Link>
+            <Link href="/p/terms-of-service" className="hover:text-[#C5A059] transition-colors">Terms of Service</Link>
+            <Link href="/p/gi-registry-clearance" className="hover:text-[#C5A059] transition-colors">GI Registry Clearance</Link>
           </div>
         </div>
 

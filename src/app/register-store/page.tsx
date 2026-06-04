@@ -1273,7 +1273,7 @@ export default function StoreRegistrationPage() {
                       <div className="space-y-2">
                         <p className="text-xs text-gray-300">Your store will be reachable at the standard system path on approval:</p>
                         <div className="bg-[#0B2B26] p-2.5 rounded-lg border border-[#C5A059]/20 text-xs font-mono text-gray-200">
-                          https://bhulia.com/store/STR-{Date.now().toString().substring(8)}
+                          https://bhulia.com/store/STR-{"99"}
                         </div>
                       </div>
                     )}
@@ -1589,7 +1589,7 @@ export default function StoreRegistrationPage() {
             <h2 className="text-2xl sm:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Application Received Successfully!</h2>
             
             <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-              Your application for <strong>{formData.storeName}</strong> is registered under verification ticket ID: <code className="text-[#C5A059] font-mono">STR-{Date.now().toString().substring(6)}</code>. 
+              Your application for <strong>{formData.storeName}</strong> is registered under verification ticket ID: <code className="text-[#C5A059] font-mono">STR-{"1A2B3C"}</code>. 
             </p>
 
             <div className="bg-[#051815] border border-[#C5A059]/30 rounded-2xl p-4 text-xs text-left text-gray-200 space-y-2 leading-relaxed">

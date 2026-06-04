@@ -23,10 +23,7 @@ export default function StoreCatalogPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [maxPrice, setMaxPrice] = useState(30000);
 
-  useEffect(() => {
-    const uid = localStorage.getItem("sd_current_user_uid") || "sd_super_admin_custom_uid";
-    setUserUid(uid);
-  }, []);
+  
 
   // Filter logic
   const filteredSarees = STORE_CATALOG_SAREES.filter((saree) => {

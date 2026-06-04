@@ -37,7 +37,7 @@ function ProfileContent() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
 
-  const [franchiseApps, setFranchiseApps] = useState<any[]>([]);
+  const [franchiseApps, setFranchiseApps] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
   const [profileComplete, setProfileComplete] = useState(false);
   const [activeTab, setActiveTab] = useState("orders");
@@ -54,7 +54,7 @@ function ProfileContent() {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   
   // Address State
-  const [addresses, setAddresses] = useState<any[]>([]);
+  const [addresses, setAddresses] = useState<unknown[]>([]);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [country, setCountry] = useState("India");
   const [otherCountry, setOtherCountry] = useState("");
@@ -64,7 +64,7 @@ function ProfileContent() {
   const [pinCode, setPinCode] = useState("");
   
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<unknown[]>([]);
 
   useEffect(() => {
     if (!user) {
@@ -76,7 +76,7 @@ function ProfileContent() {
       }
     }
 
-    const fetchProfile = async () => {
+    async function fetchProfile() {
       const uid = user?.uid || localStorage.getItem("sd_current_user_uid") || "demo_user";
       setName(user?.displayName || localStorage.getItem("sd_current_user_name") || "");
       

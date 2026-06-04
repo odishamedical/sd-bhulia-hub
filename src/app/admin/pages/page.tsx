@@ -26,7 +26,7 @@ export default function AdminPagesCMS() {
     fetchPages();
   }, []);
 
-  const fetchPages = async () => {
+  async function fetchPages() {
     setLoading(true);
     try {
       const querySnapshot = await getDocs(collection(db, "pages"));

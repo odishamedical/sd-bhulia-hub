@@ -24,7 +24,7 @@ export default function CMSAdminPage() {
   const [layout, setLayout] = useState<CMSLayout>({ dynamicEnabled: false, rows: [] });
 
   useEffect(() => {
-    const fetchCMS = async () => {
+    async function fetchCMS() {
       try {
         const docSnap = await getDoc(doc(db, "platform_settings", "cms_homepage"));
         if (docSnap.exists()) {

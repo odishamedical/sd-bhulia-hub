@@ -43,7 +43,7 @@ export default function Home() {
   const [cmsLayout, setCmsLayout] = useState<{ dynamicEnabled: boolean, rows: CMSRow[] } | null>(null);
 
   useEffect(() => {
-    const fetchCms = async () => {
+    async function fetchCms() {
       try {
         const docSnap = await getDoc(doc(db, "platform_settings", "cms_homepage"));
         if (docSnap.exists()) {

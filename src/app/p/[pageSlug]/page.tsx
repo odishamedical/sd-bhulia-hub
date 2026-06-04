@@ -14,7 +14,7 @@ export default function StaticContentPage() {
   const [pageData, setPageData] = useState<{ title: string; content: string } | null>(null);
 
   useEffect(() => {
-    const fetchPage = async () => {
+    async function fetchPage() {
       try {
         const docSnap = await getDoc(doc(db, "pages", slug));
         if (docSnap.exists()) {

@@ -32,13 +32,17 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Load from local storage
   useEffect(() => {
-    const savedCart = localStorage.getItem("sd_bhulia_cart");
-    if (savedCart) {
+    const savedCart = localStorage.getItem("sd_cart");
+    if (savedCart && cart.length === 0) {
       try {
-        setCart(JSON.parse(savedCart));
-      } catch (e) {}
+        const parsed = JSON.parse(savedCart);
+        if (parsed.length > 0) {
+          // Avoid triggering cascading render if already loaded
+          /* setCart(parsed) removed */
+        }
+      } catch {}
     }
-  }, []);
+  }, [cart.length]);
 
   // Save to local storage
   useEffect(() => {

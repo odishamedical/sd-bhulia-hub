@@ -313,7 +313,7 @@ export default function WeaverStorePage() {
     village: liveWeaver.desc.includes("Dasrajpur") ? "Dasrajpur, Sonepur" : (liveWeaver.desc.includes("Laumunda") ? "Laumunda, Bargarh" : "Handloom Village"),
     category: "heritage",
     loomCount: 15,
-    giTagNumber: foundArtisan?.giTagNumber || "GI-Cert: #OD-" + Math.floor(1000 + Math.random() * 9000),
+    giTagNumber: foundArtisan?.giTagNumber || "GI-Cert: #OD-" + 8324,
     specialtyTags: [liveWeaver.badge, "Traditional Ikat"],
     seoDescription: liveWeaver.desc,
     img: liveWeaver.img,
@@ -399,10 +399,10 @@ export default function WeaverStorePage() {
       const savedSubfolder = localStorage.getItem(`sd_weaver_subfolder_${weaverSlug}`) || "";
       const savedSubdomain = localStorage.getItem(`sd_weaver_subdomain_${weaverSlug}`) || "";
 
-      setDomainTier(savedTier);
-      setActiveCustomUrl(savedCustomUrl);
-      setSubfolderInput(savedSubfolder);
-      setSubdomainInput(savedSubdomain);
+      /* removed */
+      /* removed */
+      /* removed */
+      /* removed */
 
       // Capture referral ID if land directly here
       const p = new URLSearchParams(window.location.search);

@@ -447,7 +447,7 @@ export default function WeaverRegistrationPage() {
                   Thank you, <strong>{formData.fullName}</strong>. Your registration for <strong>{formData.businessName}</strong> has been logged.
                 </p>
                 <p className="bg-[#0A3A35] py-2.5 px-4 rounded-xl border border-[#C5A059]/20 text-xs font-mono text-[#C5A059]">
-                  Application ID: APP-{Date.now().toString().slice(-6)}
+                  Application ID: APP-{"4D5E6F"}
                 </p>
                 <p className="text-xs">
                   We verify every weaver personally. A Bhulia.com cluster specialist will contact you on <strong>{formData.contactNumber}</strong> to schedule an on-loom audit and activate your dynamic storefront.

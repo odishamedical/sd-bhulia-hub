@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useState } from "react";
 import { auth, googleProvider } from "@/lib/firebase";
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
@@ -82,7 +84,7 @@ export default function LoginPage() {
           onClick={handleGoogleSignIn}
           className="mt-6 w-full bg-white text-black font-semibold py-3 rounded flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
         >
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
+          <Image src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" width={20} height={20} />
           Continue with Google
         </button>
         
