@@ -1,0 +1,113 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useOrders } from "@/lib/db-hooks";
+
+export default function DispatchPage() {
+  const { orders, loading } = useOrders();
+  const [dispatchQueue, setDispatchQueue] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (orders.length > 0) {
+      // Filter for orders that are "placed" or "approved" and need dispatch
+      const pendingDispatch = orders.filter(o => o.status === "placed" || o.status === "approved").map((order, idx) => ({
+        ...order,
+        awbNumber: `AWB-${Math.floor(Math.random() * 900000) + 100000}`,
+        carrier: ["Shiprocket", "Delhivery", "BlueDart"][idx % 3],
+        sla: ["24h", "48h", "Urgent"][idx % 3]
+      }));
+      setDispatchQueue(pendingDispatch);
+    }
+  }, [orders]);
+
+  const handleGenerateManifest = () => {
+    alert("Simulating Bulk Manifest Generation and printing labels for " + dispatchQueue.length + " orders.");
+  };
+
+  const handleSchedulePickup = (id: string) => {
+    alert("Scheduling Courier Pickup for Order " + id);
+  };
+
+  return (
+    <div className="space-y-6">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Active Dispatch</h1>
+          <p className="text-gray-500 mt-2 font-medium">Manage packing queue, generate AWBs, and schedule courier pickups.</p>
+        </div>
+        <button 
+          onClick={handleGenerateManifest}
+          disabled={dispatchQueue.length === 0}
+          className="px-6 py-3 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-[0_4px_14px_0_rgb(0,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.23)] hover:bg-gray-800 transition-all disabled:opacity-50 flex items-center gap-2"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Print Bulk Manifest
+        </button>
+      </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-orange-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
+          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pending Packaging</h3>
+          <p className="text-4xl font-black text-orange-600">{dispatchQueue.length}</p>
+        </div>
+        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
+          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">SLA Breaches (Urgent)</h3>
+          <p className="text-4xl font-black text-red-600">{dispatchQueue.filter(o => o.sla === "Urgent").length}</p>
+        </div>
+        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
+          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Today's Pickups Scheduled</h3>
+          <p className="text-4xl font-black text-gray-900">0</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Dispatch Queue</h2>
+        {loading ? (
+          <div className="py-20 text-center text-gray-400 font-medium">Loading dispatch data...</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="text-[10px] uppercase tracking-widest text-gray-500 border-b border-gray-100 bg-gray-50">
+                  <th className="py-4 px-4 font-bold rounded-tl-xl">Order Ref</th>
+                  <th className="py-4 px-4 font-bold">Customer Name</th>
+                  <th className="py-4 px-4 font-bold">Assigned Carrier</th>
+                  <th className="py-4 px-4 font-bold">AWB Number</th>
+                  <th className="py-4 px-4 font-bold">SLA Priority</th>
+                  <th className="py-4 px-4 font-bold text-right rounded-tr-xl">Action</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm divide-y divide-gray-50">
+                {dispatchQueue.map((item, idx) => (
+                  <tr key={idx} className="group hover:bg-gray-50 transition-colors">
+                    <td className="py-4 px-4 font-mono text-xs text-gray-500">{item.id || item.orderId}</td>
+                    <td className="py-4 px-4 font-bold text-gray-900">{item.customerName}</td>
+                    <td className="py-4 px-4 font-medium text-gray-700">{item.carrier}</td>
+                    <td className="py-4 px-4">
+                      <span className="px-3 py-1 bg-gray-100 border border-gray-200 text-gray-700 rounded-lg text-xs font-bold tracking-wider">{item.awbNumber}</span>
+                    </td>
+                    <td className="py-4 px-4">
+                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
+                        item.sla === 'Urgent' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-blue-50 text-blue-700 border-blue-200'
+                      }`}>
+                        {item.sla}
+                      </span>
+                    </td>
+                    <td className="py-4 px-4 text-right">
+                      <button onClick={() => handleSchedulePickup(item.id)} className="px-4 py-2 border-2 border-blue-100 text-blue-600 rounded-xl text-xs font-bold hover:bg-blue-50 transition-all">Schedule Pickup</button>
+                    </td>
+                  </tr>
+                ))}
+                {dispatchQueue.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="py-16 text-center text-gray-500 font-medium">All pending orders dispatched!</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
