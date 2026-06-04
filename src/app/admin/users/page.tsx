@@ -12,6 +12,7 @@ export default function UserManagementPage() {
   const [roleFilter, setRoleFilter] = useState("all");
   const [stateFilter, setStateFilter] = useState("all");
   const [districtFilter, setDistrictFilter] = useState("all");
+  const [subStatusFilter, setSubStatusFilter] = useState("all");
   const [minVolume, setMinVolume] = useState("");
   const [productIdFilter, setProductIdFilter] = useState("");
   const [showFilters, setShowFilters] = useState(true);
@@ -35,6 +36,12 @@ export default function UserManagementPage() {
   const [newUserPin, setNewUserPin] = useState("");
   const [allowDirectContact, setAllowDirectContact] = useState(false);
 
+  // SaaS Configuration State
+  const [newSubStatus, setNewSubStatus] = useState("free_trial");
+  const [newSubLimit, setNewSubLimit] = useState("10");
+  const [newSubCommission, setNewSubCommission] = useState("15");
+  const [newSubDuration, setNewSubDuration] = useState("1"); // months
+
   // Generate unified mock users from ecosystem data
   const users = useMemo(() => {
     // Weavers
@@ -43,11 +50,12 @@ export default function UserManagementPage() {
       name: w.title || `Weaver ${idx}`,
       role: "weaver",
       phone: w.phoneNumber || "N/A",
-      state: "Odisha",
-      district: ["Bargarh", "Sonepur", "Sambalpur"][idx % 3],
+      state: w.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "Odisha",
+      district: w.address?.split(",")?.[1]?.trim() || "Sambalpur",
       country: "India",
-      volume: Math.floor(Math.random() * 500000) + 50000, // Sales volume
+      volume: Math.floor(Math.random() * 500000) + 50000,
       purchasedProductIds: [],
+      subStatus: w.subscription?.status || "free_trial",
     }));
 
     // Shops/Franchises
@@ -59,8 +67,9 @@ export default function UserManagementPage() {
       state: ["Maharashtra", "Delhi", "Karnataka"][idx % 3],
       district: ["Mumbai", "New Delhi", "Bangalore"][idx % 3],
       country: "India",
-      volume: Math.floor(Math.random() * 1000000) + 100000, // Purchase volume
+      volume: Math.floor(Math.random() * 1000000) + 100000,
       purchasedProductIds: [],
+      subStatus: s.subscription?.status || "free_trial",
     }));
 
     // Extract Customers from Orders (Mocking since no useCustomers hook exists)
@@ -88,10 +97,11 @@ export default function UserManagementPage() {
       const matchDistrict = districtFilter === "all" || u.district === districtFilter;
       const matchVolume = minVolume === "" || u.volume >= parseInt(minVolume);
       const matchProduct = productIdFilter === "" || u.purchasedProductIds.includes(productIdFilter);
+      const matchSubStatus = subStatusFilter === "all" || u.subStatus === subStatusFilter;
 
-      return matchSearch && matchRole && matchState && matchDistrict && matchVolume && matchProduct;
+      return matchSearch && matchRole && matchState && matchDistrict && matchVolume && matchProduct && matchSubStatus;
     });
-  }, [users, searchTerm, roleFilter, stateFilter, districtFilter, minVolume, productIdFilter]);
+  }, [users, searchTerm, roleFilter, stateFilter, districtFilter, minVolume, productIdFilter, subStatusFilter]);
 
   const allStates = Array.from(new Set(users.map(u => u.state))).sort();
   const allDistricts = Array.from(new Set(users.map(u => u.district))).sort();
@@ -136,6 +146,16 @@ export default function UserManagementPage() {
     // Auto-generate a slug from the name (e.g., "John Doe" -> "john-doe")
     const generatedSlug = newUserName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
+    const expiryDate = new Date();
+    expiryDate.setMonth(expiryDate.getMonth() + parseInt(newSubDuration));
+
+    const subscriptionData = {
+      status: newSubStatus as "active" | "free_trial" | "expired",
+      uploadLimit: parseInt(newSubLimit),
+      commissionRate: parseInt(newSubCommission),
+      expiresAt: expiryDate.toISOString(),
+    };
+
     try {
       if (newUserRole === "weaver") {
         await addWeaver({
@@ -154,6 +174,7 @@ export default function UserManagementPage() {
             heroEnabled: true,
             gridStyle: "3-Column",
           },
+          subscription: subscriptionData,
         });
         alert(`Master Weaver Profile Generated!\nPublic Link: bhulia.com/weaver/${generatedSlug}`);
       } else if (newUserRole === "vendor") {
@@ -168,7 +189,8 @@ export default function UserManagementPage() {
           address: `${newUserAddress}, ${newUserDistrict}, ${newUserState} - ${newUserPin}`,
           tier: "Silver",
           status: "approved",
-          productLimit: newUserStockLimit === "unlimited" ? 9999 : 50,
+          productLimit: parseInt(newSubLimit),
+          subscription: subscriptionData,
         });
         alert(`B2B Vendor Profile Generated!\nPublic Link: bhulia.com/store/${generatedSlug}`);
       } else {
@@ -265,6 +287,15 @@ export default function UserManagementPage() {
                   <select value={districtFilter} onChange={e => setDistrictFilter(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
                     <option value="all">All Districts</option>
                     {allDistricts.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 mb-1.5 block">Subscription Status</label>
+                  <select value={subStatusFilter} onChange={e => setSubStatusFilter(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+                    <option value="all">All Subscriptions</option>
+                    <option value="active">Active (Paid)</option>
+                    <option value="free_trial">Free Trial</option>
+                    <option value="expired">Expired / Expiring Soon</option>
                   </select>
                 </div>
               </div>
@@ -503,21 +534,50 @@ export default function UserManagementPage() {
                 </div>
 
                 <div className="pt-4 border-t border-gray-100">
-                  <label className="text-xs font-bold text-gray-500 mb-1.5 block">Account Duration</label>
-                  <select value={newUserDuration} onChange={e => setNewUserDuration(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none mb-4">
-                    <option value="permanent">Permanent / Standard</option>
-                    <option value="temporary">Temporary (30-day trial/event access)</option>
-                  </select>
-
-                  {newUserRole !== 'customer' && (
-                    <>
-                      <label className="text-xs font-bold text-gray-500 mb-1.5 block">Stock & Inventory Limits</label>
-                      <select value={newUserStockLimit} onChange={e => setNewUserStockLimit(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
-                        <option value="limited">Limited (Up to 50 active SKUs)</option>
-                        <option value="unlimited">Unlimited (Enterprise / Certified Master Weaver)</option>
+                  <h4 className="text-sm font-bold uppercase tracking-widest text-[#C5A059] mb-4">SaaS & Revenue Configuration</h4>
+                  
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="text-xs font-bold text-gray-500 mb-1.5 block">Subscription Status</label>
+                      <select value={newSubStatus} onChange={e => setNewSubStatus(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                        <option value="free_trial">Free Trial / Promotion</option>
+                        <option value="active">Active (Paid)</option>
+                        <option value="expired">Expired / Locked</option>
                       </select>
-                    </>
-                  )}
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-gray-500 mb-1.5 block">Duration (Months)</label>
+                      <select value={newSubDuration} onChange={e => setNewSubDuration(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                        <option value="1">1 Month</option>
+                        <option value="3">3 Months</option>
+                        <option value="12">12 Months (1 Year)</option>
+                        <option value="1200">Lifetime</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-gray-500 mb-1.5 block">Product Upload Limit</label>
+                      <select value={newSubLimit} onChange={e => setNewSubLimit(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                        <option value="0">0 (Locked - View Only)</option>
+                        <option value="10">10 (Trial Limit)</option>
+                        <option value="20">20 Products</option>
+                        <option value="50">50 Products</option>
+                        <option value="9999">Unlimited (Paid)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-gray-500 mb-1.5 block">Commission Rate (%)</label>
+                      <select value={newSubCommission} onChange={e => setNewSubCommission(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                        <option value="0">0% (Zero Commission)</option>
+                        <option value="5">5% (Premium Standard)</option>
+                        <option value="10">10%</option>
+                        <option value="15">15% (Free Tier Penalty)</option>
+                        <option value="20">20%</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -25,6 +25,12 @@ export interface Weaver {
     heroEnabled: boolean;
     gridStyle: "2-Column" | "3-Column";
   };
+  subscription?: {
+    status: "active" | "free_trial" | "expired";
+    uploadLimit: number;
+    commissionRate: number;
+    expiresAt?: string;
+  };
   pendingChanges?: any;
 }
 
@@ -41,7 +47,13 @@ export interface Store {
   address: string;
   tier: "Silver" | "Gold" | "Diamond";
   status: "pending_approval" | "approved";
-  productLimit: number;
+  productLimit: number; // Legacy limit
+  subscription?: {
+    status: "active" | "free_trial" | "expired";
+    uploadLimit: number;
+    commissionRate: number;
+    expiresAt?: string;
+  };
   pendingChanges?: any;
 }
 
