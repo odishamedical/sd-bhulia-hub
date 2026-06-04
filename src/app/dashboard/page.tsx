@@ -75,7 +75,7 @@ export default function DashboardPage() {
 
   const isCustomer = role === "customer" || role === "user" || !role;
   const isSuperAdmin = role === "super_admin";
-  const displayRole = role === "franchisee" ? "reseller" : role === "store" ? "vendor" : role;
+  const displayRole = role === "franchisee" ? "reseller" : (role === "store" || role === "shop") ? "vendor" : role;
   
   // Resolve actual role mapping
   let actualRole = "customer";
