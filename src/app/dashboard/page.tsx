@@ -48,14 +48,14 @@ export default function DashboardPage() {
     return <OnboardingFlow onComplete={() => window.location.reload()} />;
   }
 
-  const isCustomer = role === "customer";
+  const isCustomer = role === "customer" || role === "user" || !role;
 
   return (
     <div className={`min-h-screen ${isCustomer ? "bg-[#EBF5FB] text-gray-900" : "bg-[#051815] text-white"} p-6 transition-colors duration-300`}>
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className={`text-3xl font-display capitalize ${isCustomer ? "text-[#1A5276]" : "bhulia-gold-text"}`}>
-            {role} Dashboard
+            {isCustomer ? "Customer" : role} Dashboard
           </h1>
           <button 
             onClick={() => auth.signOut()}
@@ -65,7 +65,7 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {role === "customer" && <CustomerDashboard />}
+        {isCustomer && <CustomerDashboard />}
         {role === "weaver" && <WeaverDashboard />}
         {role === "vendor" && <VendorDashboard />}
         {role === "reseller" && <ResellerDashboard />}
