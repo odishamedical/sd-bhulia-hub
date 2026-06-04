@@ -44,6 +44,16 @@ export default function DashboardPage() {
     );
   }
 
+  // Redirect specialized roles to their dedicated dashboards
+  if (role === "franchisee") {
+    router.replace("/franchise/dashboard");
+    return null;
+  }
+  if (role === "store") {
+    router.replace("/store/dashboard");
+    return null;
+  }
+
   if (role === "onboarding") {
     return <OnboardingFlow onComplete={() => window.location.reload()} />;
   }
