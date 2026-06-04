@@ -33,6 +33,7 @@ export interface Product {
   length?: string;
   hasBlouse?: boolean;
   isBhuliaVerified?: boolean;
+  sellerId?: string; // Links product to a specific Weaver or Shop
 }
 
 

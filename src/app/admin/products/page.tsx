@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useProducts, addProduct, deleteProduct, updateDocumentStatus } from "@/lib/db-hooks";
+import { useProducts, useWeavers, useStores, addProduct, deleteProduct, updateDocumentStatus } from "@/lib/db-hooks";
 import ImageUploader from "@/components/ImageUploader";
 
 export default function AdminProductsPage() {
   const { products, loading } = useProducts();
+  const { weavers } = useWeavers();
+  const { stores } = useStores();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
@@ -32,6 +34,7 @@ export default function AdminProductsPage() {
   const [hasBlouse, setHasBlouse] = useState(true);
   const [isGI, setIsGI] = useState(true);
   const [isBhuliaVerified, setIsBhuliaVerified] = useState(true);
+  const [sellerId, setSellerId] = useState(""); // empty string = generic bhulia hub
 
   const handleEdit = (product: any) => {
     setEditingProduct(product);
@@ -55,6 +58,7 @@ export default function AdminProductsPage() {
     setHasBlouse(product.hasBlouse ?? true);
     setIsGI(product.isGI ?? true);
     setIsBhuliaVerified(product.isBhuliaVerified ?? true);
+    setSellerId(product.sellerId || "");
     setIsModalOpen(true);
   };
 
@@ -81,6 +85,7 @@ export default function AdminProductsPage() {
     setHasBlouse(true);
     setIsGI(true);
     setIsBhuliaVerified(true);
+    setSellerId("");
   };
 
   const handleAddProduct = async (e: React.FormEvent) => {
@@ -108,6 +113,7 @@ export default function AdminProductsPage() {
       hasBlouse,
       isGI,
       isBhuliaVerified,
+      sellerId: sellerId || null,
       status: editingProduct ? (editingProduct.status || "approved") : "approved",
       escrowStatus: editingProduct ? (editingProduct.escrowStatus || "approved") : "approved"
     };
@@ -296,6 +302,22 @@ export default function AdminProductsPage() {
                   <select value={isBhuliaVerified ? "true" : "false"} onChange={e => setIsBhuliaVerified(e.target.value === "true")} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
                     <option value="true">Bhulia Verified Seal</option>
                     <option value="false">Self-Declared Listing</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Assign to Seller</label>
+                  <select value={sellerId} onChange={e => setSellerId(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
+                    <option value="">Bhulia Hub Central (No specific seller)</option>
+                    <optgroup label="Weavers">
+                      {weavers.map(w => (
+                        <option key={w.slug} value={w.slug}>{w.title || "Unknown Weaver"}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Shops / Franchises">
+                      {stores.map(s => (
+                        <option key={s.slug} value={s.slug}>{s.title || "Unknown Shop"}</option>
+                      ))}
+                    </optgroup>
                   </select>
                 </div>
               </div>
