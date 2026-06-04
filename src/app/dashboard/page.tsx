@@ -15,6 +15,7 @@ import {
 } from "@/lib/db-hooks";
 
 import DashboardLayout, { NavItem } from "@/components/DashboardLayout";
+import ImageUploader from "@/components/ImageUploader";
 
 export default function DashboardPage() {
   const [role, setRole] = useState<string | null>(null);
@@ -600,7 +601,6 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [storeName, setStoreName] = useState("");
   const [publicDesc, setPublicDesc] = useState("");
   const [storeLogo, setStoreLogo] = useState("");
-  const [storeBanner, setStoreBanner] = useState("");
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [kycType, setKycType] = useState("");
@@ -621,7 +621,6 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         title: storeName,
         desc: publicDesc,
         img: storeLogo || "/bhulia-hero.png",
-        heroImg: storeBanner,
         phone,
         whatsapp,
         kycType,
@@ -637,7 +636,6 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
           title: storeName,
           desc: publicDesc,
           img: storeLogo || "/bhulia-hero.png",
-          heroImg: storeBanner,
           phone,
           whatsapp,
           kycType,
@@ -691,7 +689,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Vendor Hub</h1>
           <p className="text-gray-500 mt-2 font-medium">Manage your retail inventory and dispatch operations.</p>
         </div>
-        <button onClick={() => onTabChange("upload")} className="bg-[#E57138] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-sm self-start md:self-auto">
+        <button onClick={() => onTabChange("products")} className="bg-[#E57138] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-sm self-start md:self-auto">
           + Add Inventory
         </button>
       </header>
@@ -727,12 +725,8 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                 <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name</label>
-                <select value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required>
-                  <option value="">Select Weaver</option>
-                  <option value="bargarh">Bargarh Cooperative</option>
-                  <option value="sonepur">Sonepur Master Weavers</option>
-                </select>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name (Optional)</label>
+                <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Stock Quantity</label>
@@ -818,17 +812,51 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             </div>
           </div>
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-            <h3 className="font-bold text-gray-900 mb-4">Bank Details</h3>
-            <p className="text-sm text-gray-500 font-medium">No bank account linked. Please add your business bank details for payouts.</p>
-            <button className="mt-6 px-6 py-2.5 border border-gray-200 text-gray-900 font-bold rounded-xl hover:bg-gray-50 transition-colors">Add Bank Account</button>
+            <h3 className="font-bold text-gray-900 mb-6 border-b border-gray-100 pb-2">Bank Details</h3>
+            <form className="space-y-6" onSubmit={e => { e.preventDefault(); alert("Bank details saved securely."); }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Holder Name</label>
+                  <input type="text" placeholder="As per bank records" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Bank Name</label>
+                  <input type="text" placeholder="e.g. State Bank of India" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Number</label>
+                  <input type="text" placeholder="Account Number" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none font-mono" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">IFSC Code</label>
+                  <input type="text" placeholder="e.g. SBIN0001234" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none font-mono uppercase" required />
+                </div>
+                <div className="col-span-1 md:col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">UPI Details (Optional)</label>
+                  <input type="text" placeholder="yourname@upi" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none font-mono" />
+                </div>
+              </div>
+              <div className="flex justify-end mt-4">
+                <button type="submit" className="bg-[#E57138] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-[0_4px_14px_0_rgb(229,113,56,0.39)]">
+                  Save Bank Details
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
 
       {activeTab === "marketing" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Marketing & Promotions</h2>
-          <p className="text-gray-500 font-medium">Marketing tools will be unlocked once your store completes 10 successful sales.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Marketing & Promotions</h2>
+          <div className="bg-blue-50 border border-blue-100 p-6 rounded-2xl flex flex-col items-center justify-center text-center space-y-4">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl">📢</div>
+            <h3 className="font-bold text-blue-900 text-lg">Promote Your Store on the Homepage!</h3>
+            <p className="text-blue-700 font-medium text-sm max-w-md">Marketing tools will be unlocked once your store completes 10 successful sales. Need early access? Request a promotion package.</p>
+            <button className="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl shadow-sm hover:bg-blue-700 transition-colors mt-2">
+              Request Featured Placement
+            </button>
+          </div>
         </div>
       )}
 
@@ -845,22 +873,24 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             
             <div className="space-y-4">
               <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">1. Public Brand Info</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Name</label>
-                  <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="e.g. Sonepur Silk Emporium" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+              <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Name</label>
+                    <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="e.g. Sonepur Silk Emporium" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Description</label>
+                    <input type="text" value={publicDesc} onChange={e => setPublicDesc(e.target.value)} placeholder="e.g. Authentic handlooms direct from weavers." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Description</label>
-                  <input type="text" value={publicDesc} onChange={e => setPublicDesc(e.target.value)} placeholder="e.g. Authentic handlooms direct from weavers." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Logo (URL)</label>
-                  <input type="text" value={storeLogo} onChange={e => setStoreLogo(e.target.value)} placeholder="https://..." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Banner Image (URL)</label>
-                  <input type="text" value={storeBanner} onChange={e => setStoreBanner(e.target.value)} placeholder="https://..." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" />
+                  <ImageUploader
+                    value={storeLogo}
+                    onChange={setStoreLogo}
+                    label="Store Logo"
+                    aspectRatio="square"
+                  />
                 </div>
               </div>
             </div>
