@@ -20,7 +20,6 @@ export default function ImageUploader({
   const [dragActive, setDragActive] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [showUrlInput, setShowUrlInput] = useState(!value.startsWith("data:"));
 
   // Adjustments (Crop / Zoom / Pan) State
   const [rawImageSrc, setRawImageSrc] = useState<string | null>(null);
@@ -202,34 +201,27 @@ export default function ImageUploader({
   };
 
   return (
-    <div className="space-y-3 bg-[#0A3A35]/30 border border-[#C5A059]/25 rounded-2xl p-4">
+    <div className="space-y-3 bg-blue-50/50 border border-blue-200 rounded-2xl p-4">
       {/* Header Guideline */}
       <div className="flex justify-between items-start">
         <div>
-          <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest">{label}</label>
-          <span className="block text-[9px] text-[#C5A059]/75 font-mono mt-0.5">{sizeGuidelines.label}</span>
-          <span className="block text-[8px] text-gray-400 font-mono italic">{sizeGuidelines.desc}</span>
+          <label className="block text-xs font-bold text-blue-900 uppercase tracking-widest">{label}</label>
+          <span className="block text-[9px] text-blue-700 font-mono mt-0.5">{sizeGuidelines.label}</span>
+          <span className="block text-[8px] text-gray-500 font-mono italic">{sizeGuidelines.desc}</span>
         </div>
-        <button
-          type="button"
-          onClick={() => setShowUrlInput(!showUrlInput)}
-          className="text-[9px] text-[#C5A059]/80 hover:text-white uppercase tracking-wider underline cursor-pointer"
-        >
-          {showUrlInput ? "Use File Upload" : "Paste URL Instead"}
-        </button>
       </div>
 
       {rawImageSrc ? (
         /* Image Adjustment Canvas Tool */
-        <div className="bg-black/85 rounded-xl border border-[#C5A059]/40 p-4 space-y-4 flex flex-col items-center">
+        <div className="bg-white shadow-md rounded-xl border border-gray-200 p-4 space-y-4 flex flex-col items-center">
           <div className="text-center">
-            <h4 className="text-[10px] uppercase font-bold text-[#C5A059] tracking-wider">Adjust Image Zoom & Align</h4>
-            <p className="text-[8px] text-gray-400 mt-0.5">Use sliders below to adjust composition inside frame</p>
+            <h4 className="text-[10px] uppercase font-bold text-blue-900 tracking-wider">Adjust Image Zoom & Align</h4>
+            <p className="text-[8px] text-gray-500 mt-0.5">Use sliders below to adjust composition inside frame</p>
           </div>
 
           {/* Aspect Preview Frame Container */}
-          <div className={`relative overflow-hidden rounded-xl border border-[#C5A059] bg-[#051815] w-full flex items-center justify-center ${sizeGuidelines.class}`}>
-            <div className="absolute inset-0 z-10 border border-dashed border-white/20 pointer-events-none rounded-xl" />
+          <div className={`relative overflow-hidden rounded-xl border border-blue-300 bg-gray-50 w-full flex items-center justify-center ${sizeGuidelines.class}`}>
+            <div className="absolute inset-0 z-10 border border-dashed border-gray-300 pointer-events-none rounded-xl" />
             <img 
               src={rawImageSrc} 
               alt="Adjustment Source"
@@ -242,21 +234,21 @@ export default function ImageUploader({
           </div>
 
           {/* Sliders Container */}
-          <div className="w-full space-y-3.5 text-gray-300 px-2">
+          <div className="w-full space-y-3.5 text-gray-600 px-2">
             <div>
               <div className="flex justify-between text-[10px] font-mono">
                 <span>🔍 Zoom ({scale.toFixed(1)}x)</span>
                 <span>Max: 3.0x</span>
               </div>
-              <input 
-                type="range" 
-                min="1" 
-                max="3" 
-                step="0.05"
-                value={scale}
-                onChange={e => setScale(parseFloat(e.target.value))}
-                className="w-full h-1 bg-[#051815] rounded-lg appearance-none cursor-pointer accent-[#C5A059]"
-              />
+                <input 
+                  type="range" 
+                  min="1" 
+                  max="3" 
+                  step="0.05"
+                  value={scale}
+                  onChange={e => setScale(parseFloat(e.target.value))}
+                  className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                />
             </div>
             
             <div className="grid grid-cols-2 gap-4">
@@ -264,27 +256,27 @@ export default function ImageUploader({
                 <div className="flex justify-between text-[10px] font-mono">
                   <span>↔ Pan X ({offsetX}px)</span>
                 </div>
-                <input 
-                  type="range" 
-                  min="-200" 
-                  max="200"
-                  value={offsetX}
-                  onChange={e => setOffsetX(parseInt(e.target.value))}
-                  className="w-full h-1 bg-[#051815] rounded-lg appearance-none cursor-pointer accent-[#C5A059]"
-                />
+                  <input 
+                    type="range" 
+                    min="-200" 
+                    max="200"
+                    value={offsetX}
+                    onChange={e => setOffsetX(parseInt(e.target.value))}
+                    className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
               </div>
               <div>
                 <div className="flex justify-between text-[10px] font-mono">
                   <span>↕ Pan Y ({offsetY}px)</span>
                 </div>
-                <input 
-                  type="range" 
-                  min="-200" 
-                  max="200"
-                  value={offsetY}
-                  onChange={e => setOffsetY(parseInt(e.target.value))}
-                  className="w-full h-1 bg-[#051815] rounded-lg appearance-none cursor-pointer accent-[#C5A059]"
-                />
+                  <input 
+                    type="range" 
+                    min="-200" 
+                    max="200"
+                    value={offsetY}
+                    onChange={e => setOffsetY(parseInt(e.target.value))}
+                    className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
               </div>
             </div>
           </div>
@@ -294,33 +286,18 @@ export default function ImageUploader({
             <button
               type="button"
               onClick={handleApplyCrop}
-              className="flex-1 py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-slate-900 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow hover:brightness-110"
+              className="flex-1 py-2 bg-blue-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow hover:bg-blue-700"
             >
               Apply Crop & Preview
             </button>
             <button
               type="button"
               onClick={() => setRawImageSrc(null)}
-              className="px-4 py-2 border border-[#C5A059]/50 text-gray-300 hover:text-white text-xs uppercase tracking-wider rounded-xl transition-all"
+              className="px-4 py-2 border border-gray-300 text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-xs uppercase tracking-wider rounded-xl transition-all"
             >
               Cancel
             </button>
           </div>
-        </div>
-      ) : showUrlInput ? (
-        <div className="space-y-1">
-          <input
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            type="url"
-            className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]"
-            placeholder="https://example.com/photo.jpg"
-          />
-          {value && value.startsWith("http") && (
-            <div className="mt-2 relative w-20 h-20 rounded-lg overflow-hidden border border-[#C5A059]/30 shadow">
-              <img src={value} alt="Preview" className="object-cover w-full h-full" />
-            </div>
-          )}
         </div>
       ) : (
         <div className="space-y-2">
@@ -332,15 +309,15 @@ export default function ImageUploader({
               onDragLeave={handleDrag}
               onDrop={handleDrop}
               className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all flex flex-col items-center justify-center gap-3 ${
-                dragActive ? "border-[#C5A059] bg-[#0A3A35]/30" : "border-[#C5A059]/30 bg-[#051815]"
+                dragActive ? "border-blue-400 bg-blue-50/50" : "border-blue-200 bg-white"
               }`}
             >
-              <div className="text-2xl text-[#C5A059]/70">📁</div>
-              <div className="text-xs text-gray-300">
+              <div className="text-2xl text-blue-500">📁</div>
+              <div className="text-xs text-gray-500">
                 Drag & drop image here, or
               </div>
               <div className="flex flex-wrap gap-2 justify-center mt-1">
-                <label className="bg-[#C5A059] text-[#0A1021] hover:brightness-110 font-bold px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider cursor-pointer select-none transition-all">
+                <label className="bg-blue-100 text-blue-700 hover:bg-blue-200 font-bold px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider cursor-pointer select-none transition-all">
                   Browse Files
                   <input
                     type="file"
@@ -352,7 +329,7 @@ export default function ImageUploader({
                 <button
                   type="button"
                   onClick={startCamera}
-                  className="bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] text-[#C5A059] hover:text-white font-bold px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider cursor-pointer transition-all"
+                  className="bg-white border border-blue-200 hover:border-blue-400 text-blue-600 hover:text-blue-800 font-bold px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider cursor-pointer transition-all"
                 >
                   📷 Take Photo
                 </button>
@@ -362,21 +339,21 @@ export default function ImageUploader({
 
           {/* Active Camera View */}
           {cameraActive && (
-            <div className="bg-black/90 rounded-2xl border border-[#C5A059]/40 p-4 relative overflow-hidden flex flex-col items-center justify-center gap-3">
+            <div className="bg-white shadow-lg rounded-2xl border border-gray-200 p-4 relative overflow-hidden flex flex-col items-center justify-center gap-3">
               {cameraError ? (
                 <div className="text-center p-6 space-y-3">
                   <p className="text-xs text-red-400 font-medium">{cameraError}</p>
                   <button
                     type="button"
                     onClick={stopCamera}
-                    className="px-3 py-1.5 bg-[#0A3A35] text-white text-[10px] rounded uppercase font-bold tracking-wider"
+                    className="px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 text-[10px] rounded uppercase font-bold tracking-wider"
                   >
                     Go Back
                   </button>
                 </div>
               ) : (
                 <>
-                  <div className="relative w-full aspect-square max-w-[280px] rounded-xl overflow-hidden border border-[#C5A059]/30">
+                  <div className="relative w-full aspect-square max-w-[280px] rounded-xl overflow-hidden border border-gray-300">
                     <video
                       ref={videoRef}
                       autoPlay
@@ -394,14 +371,14 @@ export default function ImageUploader({
                     <button
                       type="button"
                       onClick={snapPhoto}
-                      className="px-5 py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-slate-900 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow"
+                      className="px-5 py-2 bg-blue-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow hover:bg-blue-700"
                     >
                       Capture Photo
                     </button>
                     <button
                       type="button"
                       onClick={stopCamera}
-                      className="px-4 py-2 border border-[#C5A059]/50 text-gray-300 hover:text-white text-xs uppercase tracking-wider rounded-xl transition-all"
+                      className="px-4 py-2 border border-gray-300 text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-xs uppercase tracking-wider rounded-xl transition-all"
                     >
                       Cancel
                     </button>
@@ -413,7 +390,7 @@ export default function ImageUploader({
 
           {/* Image Uploaded Preview */}
           {value && !cameraActive && (
-            <div className="relative w-32 h-32 rounded-2xl overflow-hidden border border-[#C5A059]/50 shadow-lg group">
+            <div className="relative w-32 h-32 rounded-2xl overflow-hidden border border-gray-300 shadow-sm group">
               <img src={value} alt="Profile preview" className="object-cover w-full h-full" />
               <button
                 type="button"
