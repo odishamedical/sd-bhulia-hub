@@ -595,7 +595,9 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [productPrice, setProductPrice] = useState("");
   const [originalWeaver, setOriginalWeaver] = useState("");
   const [stockQuantity, setStockQuantity] = useState("1");
+  const [productImage, setProductImage] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [isAddInventoryOpen, setIsAddInventoryOpen] = useState(false);
 
   // Settings State
   const [storeName, setStoreName] = useState("");
@@ -608,8 +610,10 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [isSaving, setIsSaving] = useState(false);
 
   const { orders } = useOrders();
+  const { products } = useProducts();
 
   const vendorOrders = orders.filter(o => o.logisticsStatus !== "Delivered");
+  const vendorProducts = products.filter(p => p.ownerId === auth.currentUser?.uid);
 
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -664,6 +668,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         price: Number(productPrice),
         originalWeaver: originalWeaver,
         stockQuantity: Number(stockQuantity),
+        img: productImage || "/bhulia-hero.png",
         ownerId: auth.currentUser.uid,
         ownerRole: "vendor",
         status: "pending",
@@ -674,7 +679,8 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       setProductPrice("");
       setOriginalWeaver("");
       setStockQuantity("1");
-      onTabChange("home");
+      setProductImage("");
+      setIsAddInventoryOpen(false);
     } catch (error) {
       console.error(error);
       alert("Upload failed.");
@@ -712,31 +718,118 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       )}
 
       {activeTab === "products" && (
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Upload New Inventory Batch</h2>
-          <form className="space-y-6" onSubmit={handleUpload}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
-                <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-5xl animate-in fade-in">
+          {!isAddInventoryOpen ? (
+            <div>
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-bold text-gray-900">Products Catalog</h2>
+                <button onClick={() => setIsAddInventoryOpen(true)} className="bg-[#1f2937] text-white px-5 py-2.5 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">
+                  + Add Inventory
+                </button>
               </div>
-              <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
-                <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name (Optional)</label>
-                <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Stock Quantity</label>
-                <input type="number" min="1" value={stockQuantity} onChange={e => setStockQuantity(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
-              </div>
+
+              {vendorProducts.length === 0 ? (
+                <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50">
+                  <div className="text-4xl mb-4">🛍️</div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">No Products Yet</h3>
+                  <p className="text-gray-500 max-w-md mx-auto mb-6">You haven't added any products to your catalog. Add your first item to start selling.</p>
+                  <button onClick={() => setIsAddInventoryOpen(true)} className="bg-[#E57138] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-sm">
+                    Upload First Product
+                  </button>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-gray-100 text-xs uppercase tracking-wider text-gray-400">
+                        <th className="pb-4 font-bold">Product</th>
+                        <th className="pb-4 font-bold">Price</th>
+                        <th className="pb-4 font-bold">Stock</th>
+                        <th className="pb-4 font-bold">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                      {vendorProducts.map(product => (
+                        <tr key={product.id} className="hover:bg-gray-50/50 transition-colors">
+                          <td className="py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                                <img src={product.img || "/bhulia-hero.png"} alt={product.title} className="w-full h-full object-cover" />
+                              </div>
+                              <div>
+                                <div className="font-bold text-gray-900">{product.title}</div>
+                                {product.originalWeaver && (
+                                  <div className="text-xs text-gray-500">Weaver: {product.originalWeaver}</div>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-4 font-bold text-gray-900">₹{product.price.toLocaleString()}</td>
+                          <td className="py-4 font-medium text-gray-500">{product.stockQuantity} in stock</td>
+                          <td className="py-4">
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                              product.status === "approved" ? "bg-green-50 text-green-700 border-green-200" :
+                              product.status === "rejected" ? "bg-red-50 text-red-700 border-red-200" :
+                              "bg-yellow-50 text-yellow-700 border-yellow-200"
+                            }`}>
+                              {product.status.charAt(0).toUpperCase() + product.status.slice(1)}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
-            <button type="submit" disabled={isUploading} className="w-full bg-[#E57138] text-white font-bold py-3.5 rounded-xl disabled:opacity-50 hover:bg-[#D56128] transition-colors shadow-sm mt-4">
-              {isUploading ? "Uploading to Database..." : "Submit Inventory for QC"}
-            </button>
-          </form>
+          ) : (
+            <div>
+              <div className="flex items-center gap-4 mb-8">
+                <button onClick={() => setIsAddInventoryOpen(false)} className="text-gray-400 hover:text-gray-900 transition-colors">
+                  ← Back to Catalog
+                </button>
+                <h2 className="text-2xl font-bold text-gray-900">Upload New Inventory</h2>
+              </div>
+              
+              <form className="space-y-6" onSubmit={handleUpload}>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <div className="lg:col-span-1">
+                    <ImageUploader 
+                      label="Product Photo" 
+                      value={productImage} 
+                      onChange={setProductImage} 
+                      aspectRatio="portrait"
+                    />
+                  </div>
+                  
+                  <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
+                      <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
+                      <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Stock Quantity</label>
+                      <input type="number" min="1" value={stockQuantity} onChange={e => setStockQuantity(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name (Optional)</label>
+                      <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex justify-end pt-4 border-t border-gray-100">
+                  <button type="submit" disabled={isUploading} className="w-full md:w-auto bg-[#E57138] text-white px-8 py-3.5 font-bold rounded-xl disabled:opacity-50 hover:bg-[#D56128] transition-colors shadow-sm">
+                    {isUploading ? "Uploading to Database..." : "Submit Inventory for QC"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
       )}
 
