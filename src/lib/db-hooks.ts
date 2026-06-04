@@ -95,6 +95,20 @@ export interface Order {
   timestamp: string;
 }
 
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  whatsapp: string;
+  country: string;
+  state: string;
+  district: string;
+  address: string;
+  pin: string;
+  createdAt: string;
+}
+
 // ============================================================================
 // HOOKS (REALTIME SYNC)
 // ============================================================================
@@ -145,6 +159,30 @@ export function useWeavers() {
   }, []);
 
   return { weavers, loading };
+}
+
+export function useCustomers() {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const q = query(collection(db, "customers"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data: Customer[] = [];
+      snapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() } as Customer);
+      });
+      setCustomers(data);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching customers: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return { customers, loading };
 }
 
 export function useStores() {
@@ -328,8 +366,14 @@ export function useFranchiseBySlug(slug: string) {
 }
 
 // ============================================================================
-// MUTATIONS
+// CREATE / UPDATE / DELETE FUNCTIONS
 // ============================================================================
+
+export async function addCustomer(data: Omit<Customer, "id" | "createdAt">) {
+  const docRef = doc(collection(db, "customers"));
+  await setDoc(docRef, { ...data, createdAt: new Date().toISOString() });
+  return docRef.id;
+}
 
 export async function addProduct(product: Partial<Omit<Product, 'id'>>, customId?: string) {
   try {

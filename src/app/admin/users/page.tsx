@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useStores, useOrders, addWeaver, addStore } from "@/lib/db-hooks";
+import { useWeavers, useStores, useOrders, useCustomers, addWeaver, addStore, addCustomer } from "@/lib/db-hooks";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers();
   const { stores } = useStores();
   const { orders } = useOrders();
+  const { customers } = useCustomers();
   
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -72,9 +73,9 @@ export default function UserManagementPage() {
       subStatus: s.subscription?.status || "free_trial",
     }));
 
-    // Extract Customers from Orders (Mocking since no useCustomers hook exists)
+    // Extract Customers from Orders (Mocking legacy customers from purchases)
     const cList = Array.from(new Set(orders.map(o => o.customerName))).filter(Boolean).map((name, idx) => ({
-      id: `cust_${idx}`,
+      id: `order_cust_${idx}`,
       name: name as string,
       role: "customer",
       phone: orders.find(o => o.customerName === name)?.customerPhone || "N/A",
@@ -85,8 +86,22 @@ export default function UserManagementPage() {
       purchasedProductIds: orders.filter(o => o.customerName === name).map(o => o.productId).filter(Boolean),
     }));
 
-    return [...wList, ...sList, ...cList];
-  }, [weavers, stores, orders]);
+    // Explicitly Registered Customers (May not have purchased yet)
+    const registeredCustomersList = customers.map((c) => ({
+      id: c.id,
+      name: c.name || "Unknown Customer",
+      role: "customer",
+      phone: c.phone || "N/A",
+      state: c.state || "N/A",
+      district: c.district || "N/A",
+      country: c.country || "India",
+      volume: 0,
+      purchasedProductIds: [],
+    }));
+
+    // Deduplicate logic (if a registered customer matches an order customer by name/phone, we could merge, but for now we just concat)
+    return [...wList, ...sList, ...cList, ...registeredCustomersList];
+  }, [weavers, stores, orders, customers]);
 
   // Apply Filters
   const filteredUsers = useMemo(() => {
@@ -177,7 +192,7 @@ export default function UserManagementPage() {
           subscription: subscriptionData,
         });
         alert(`Master Weaver Profile Generated!\nPublic Link: bhulia.com/weaver/${generatedSlug}`);
-      } else if (newUserRole === "vendor") {
+      } else if (newUserRole === "shop") {
         await addStore({
           slug: generatedSlug,
           title: newUserName,
@@ -194,8 +209,18 @@ export default function UserManagementPage() {
         });
         alert(`B2B Vendor Profile Generated!\nPublic Link: bhulia.com/store/${generatedSlug}`);
       } else {
-        // Mock generic user creation
-        alert(`Customer Created Successfully in Identity Provider.\nRole: ${newUserRole}`);
+        await addCustomer({
+          name: newUserName,
+          email: newUserEmail || "N/A",
+          phone: newUserPhone || "N/A",
+          whatsapp: newUserWhatsapp || "N/A",
+          country: newUserCountry || "India",
+          state: newUserState || "N/A",
+          district: newUserDistrict || "N/A",
+          address: newUserAddress || "N/A",
+          pin: newUserPin || "N/A",
+        });
+        alert(`Customer Created Successfully in Database.`);
       }
       
       // Reset Modal
