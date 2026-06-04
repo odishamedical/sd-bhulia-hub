@@ -21,6 +21,8 @@ export default function UserManagementPage() {
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [selectedUserForDetails, setSelectedUserForDetails] = useState<any>(null);
+  
   const [newUserRole, setNewUserRole] = useState("customer");
   const [newUserDuration, setNewUserDuration] = useState("permanent");
   const [newUserStockLimit, setNewUserStockLimit] = useState("limited");
@@ -53,10 +55,13 @@ export default function UserManagementPage() {
       phone: w.phoneNumber || "N/A",
       state: w.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "Odisha",
       district: w.address?.split(",")?.[1]?.trim() || "Sambalpur",
-      country: "India",
       volume: Math.floor(Math.random() * 500000) + 50000,
       purchasedProductIds: [],
       subStatus: w.subscription?.status || "free_trial",
+      whatsapp: w.whatsapp || "N/A",
+      address: w.address || "N/A",
+      email: "N/A",
+      slug: w.slug,
     }));
 
     // Shops/Franchises
@@ -67,10 +72,13 @@ export default function UserManagementPage() {
       phone: "N/A",
       state: ["Maharashtra", "Delhi", "Karnataka"][idx % 3],
       district: ["Mumbai", "New Delhi", "Bangalore"][idx % 3],
-      country: "India",
       volume: Math.floor(Math.random() * 1000000) + 100000,
       purchasedProductIds: [],
       subStatus: s.subscription?.status || "free_trial",
+      whatsapp: s.whatsapp || "N/A",
+      address: s.address || "N/A",
+      email: "N/A",
+      slug: s.slug,
     }));
 
     // Extract Customers from Orders (Mocking legacy customers from purchases)
@@ -84,6 +92,9 @@ export default function UserManagementPage() {
       country: "India",
       volume: orders.filter(o => o.customerName === name).reduce((acc, curr) => acc + (parseInt(curr.productPrice?.toString().replace(/[^0-9]/g, '') || "0")), 0), // Total spent
       purchasedProductIds: orders.filter(o => o.customerName === name).map(o => o.productId).filter(Boolean),
+      whatsapp: orders.find(o => o.customerName === name)?.customerWhatsapp || "N/A",
+      address: orders.find(o => o.customerName === name)?.customerAddress || "N/A",
+      email: "N/A",
     }));
 
     // Explicitly Registered Customers (May not have purchased yet)
@@ -97,6 +108,9 @@ export default function UserManagementPage() {
       country: c.country || "India",
       volume: 0,
       purchasedProductIds: [],
+      whatsapp: c.whatsapp || "N/A",
+      address: c.address || "N/A",
+      email: c.email || "N/A",
     }));
 
     // Deduplicate logic (if a registered customer matches an order customer by name/phone, we could merge, but for now we just concat)
@@ -398,8 +412,8 @@ export default function UserManagementPage() {
                       <div className="font-black text-gray-900">₹{user.volume.toLocaleString()}</div>
                     </td>
                     <td className="py-4 px-6 text-right">
-                      <button className="px-4 py-2 border border-gray-200 text-gray-700 rounded-xl text-xs font-bold hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all">
-                        View Profile
+                      <button onClick={() => setSelectedUserForDetails(user)} className="px-4 py-2 border border-gray-200 text-gray-700 rounded-xl text-xs font-bold hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all">
+                        View CRM Details
                       </button>
                     </td>
                   </tr>
@@ -610,6 +624,64 @@ export default function UserManagementPage() {
             <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
               <button onClick={() => setShowAddUserModal(false)} className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all">Cancel</button>
               <button onClick={handleCreateUser} className="px-6 py-3 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm">Save & Generate Public Profile</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedUserForDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl border border-gray-100">
+            <div className="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
+              <div>
+                <h3 className="text-2xl font-black text-gray-900 mb-1">{selectedUserForDetails.name}</h3>
+                <div className="text-xs text-gray-500 font-mono uppercase tracking-widest">ID: {selectedUserForDetails.id} • ROLE: {selectedUserForDetails.role}</div>
+              </div>
+              <button onClick={() => setSelectedUserForDetails(null)} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 mb-6">
+              <div className="space-y-4">
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Phone Number</div>
+                  <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.phone}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">WhatsApp</div>
+                  <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.whatsapp}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Email Address</div>
+                  <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.email}</div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Geography</div>
+                  <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.district}, {selectedUserForDetails.state}, {selectedUserForDetails.country}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Full Address</div>
+                  <div className="text-sm font-bold text-gray-900 leading-relaxed">{selectedUserForDetails.address}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Lifetime Volume</div>
+                  <div className="text-sm font-black text-green-600">₹{selectedUserForDetails.volume.toLocaleString()}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+              {selectedUserForDetails.role !== 'customer' && selectedUserForDetails.slug && (
+                <button onClick={() => window.open(`/${selectedUserForDetails.role}/${selectedUserForDetails.slug}`, '_blank')} className="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all shadow-sm">
+                  View Public Profile
+                </button>
+              )}
+              <button onClick={() => window.open(`https://api.whatsapp.com/send?phone=${selectedUserForDetails.whatsapp.replace(/[^0-9]/g,'')}`, '_blank')} className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all shadow-sm">
+                Chat on WhatsApp
+              </button>
             </div>
           </div>
         </div>
