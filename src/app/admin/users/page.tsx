@@ -22,6 +22,18 @@ export default function UserManagementPage() {
   const [newUserRole, setNewUserRole] = useState("customer");
   const [newUserDuration, setNewUserDuration] = useState("permanent");
   const [newUserStockLimit, setNewUserStockLimit] = useState("limited");
+  
+  // New User Form State
+  const [newUserName, setNewUserName] = useState("");
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [newUserPhone, setNewUserPhone] = useState("");
+  const [newUserWhatsapp, setNewUserWhatsapp] = useState("");
+  const [newUserCountry, setNewUserCountry] = useState("India");
+  const [newUserState, setNewUserState] = useState("");
+  const [newUserDistrict, setNewUserDistrict] = useState("");
+  const [newUserAddress, setNewUserAddress] = useState("");
+  const [newUserPin, setNewUserPin] = useState("");
+  const [allowDirectContact, setAllowDirectContact] = useState(false);
 
   // Generate unified mock users from ecosystem data
   const users = useMemo(() => {
@@ -323,41 +335,161 @@ export default function UserManagementPage() {
 
       {showAddUserModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-8 w-full max-w-xl shadow-2xl border border-gray-100">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-4xl shadow-2xl border border-gray-100 max-h-[90vh] overflow-y-auto">
             <h3 className="text-2xl font-black text-gray-900 mb-6">Create New Ecosystem User</h3>
             
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="text-xs font-bold text-gray-500 mb-1.5 block">User Role</label>
-                <select value={newUserRole} onChange={e => setNewUserRole(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
-                  <option value="customer">Retail Customer</option>
-                  <option value="weaver">Sambalpuri Weaver</option>
-                  <option value="shop">B2B Franchise Shop</option>
-                </select>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {/* Left Column: Core & Contact */}
+              <div className="space-y-4">
+                <h4 className="text-sm font-bold uppercase tracking-widest text-[#C5A059] border-b border-gray-100 pb-2">Core Profile</h4>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1.5 block">User Role</label>
+                    <select value={newUserRole} onChange={e => {
+                        setNewUserRole(e.target.value);
+                        if (e.target.value === 'weaver') {
+                          setNewUserCountry("India");
+                          setNewUserState("Odisha");
+                          setNewUserDistrict("");
+                        }
+                      }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                      <option value="customer">Retail Customer</option>
+                      <option value="weaver">Sambalpuri Weaver</option>
+                      <option value="shop">B2B Franchise Shop</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1.5 block">Full Name / Entity Name</label>
+                    <input type="text" value={newUserName} onChange={e => setNewUserName(e.target.value)} placeholder="Name" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                  </div>
+                </div>
 
-              <div>
-                <label className="text-xs font-bold text-gray-500 mb-1.5 block">Account Duration</label>
-                <select value={newUserDuration} onChange={e => setNewUserDuration(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
-                  <option value="permanent">Permanent / Standard</option>
-                  <option value="temporary">Temporary (30-day trial/event access)</option>
-                </select>
-              </div>
-
-              {newUserRole !== 'customer' && (
                 <div>
-                  <label className="text-xs font-bold text-gray-500 mb-1.5 block">Stock & Inventory Limits (For Weavers/Shops)</label>
-                  <select value={newUserStockLimit} onChange={e => setNewUserStockLimit(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
-                    <option value="limited">Limited (Up to 50 active SKUs)</option>
-                    <option value="unlimited">Unlimited (Enterprise / Certified Master Weaver)</option>
+                  <label className="text-xs font-bold text-gray-500 mb-1.5 block">Email Address (Used for Login)</label>
+                  <input type="email" value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} placeholder="Email" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1.5 block">Phone Number</label>
+                    <input type="tel" value={newUserPhone} onChange={e => setNewUserPhone(e.target.value)} placeholder="+91" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1.5 block">WhatsApp Number</label>
+                    <input type="tel" value={newUserWhatsapp} onChange={e => setNewUserWhatsapp(e.target.value)} placeholder="+91" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                  </div>
+                </div>
+
+                {newUserRole !== 'customer' && (
+                  <>
+                    <div className="pt-2">
+                      <label className="text-xs font-bold text-gray-500 mb-1.5 block">Profile Image (Square)</label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-50 transition-all">
+                        <span className="text-sm font-bold text-blue-600">Click to Upload Avatar</span>
+                        <p className="text-[10px] text-gray-400 mt-1">Recommended: 400x400px (JPG/PNG)</p>
+                      </div>
+                    </div>
+                    
+                    <label className="flex items-start gap-3 p-4 bg-orange-50 border border-orange-100 rounded-xl cursor-pointer mt-4">
+                      <input type="checkbox" checked={allowDirectContact} onChange={e => setAllowDirectContact(e.target.checked)} className="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded" />
+                      <div>
+                        <div className="text-sm font-bold text-orange-900 leading-tight">Special Provision: Unmask Contact</div>
+                        <div className="text-xs text-orange-700 mt-0.5">By default, phone numbers are masked on public pages. Check this to allow direct customer calls/WhatsApp.</div>
+                      </div>
+                    </label>
+                  </>
+                )}
+              </div>
+
+              {/* Right Column: Geography & Admin Limits */}
+              <div className="space-y-4">
+                <h4 className="text-sm font-bold uppercase tracking-widest text-[#C5A059] border-b border-gray-100 pb-2">Geography & Access</h4>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1.5 block">Country</label>
+                    <select value={newUserCountry} onChange={e => setNewUserCountry(e.target.value)} disabled={newUserRole === 'weaver'} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none disabled:opacity-50">
+                      <option value="India">India</option>
+                      <option value="USA">USA</option>
+                      <option value="UK">UK</option>
+                      <option value="UAE">UAE</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1.5 block">State</label>
+                    <select value={newUserState} onChange={e => setNewUserState(e.target.value)} disabled={newUserRole === 'weaver'} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none disabled:opacity-50">
+                      {newUserRole === 'weaver' ? (
+                        <option value="Odisha">Odisha</option>
+                      ) : (
+                        <>
+                          <option value="">Select State</option>
+                          {allStates.map(s => <option key={s} value={s}>{s}</option>)}
+                          <option value="Maharashtra">Maharashtra</option>
+                          <option value="Delhi">Delhi</option>
+                          <option value="Karnataka">Karnataka</option>
+                          <option value="Tamil Nadu">Tamil Nadu</option>
+                          <option value="Odisha">Odisha</option>
+                        </>
+                      )}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-gray-500 mb-1.5 block">District / City</label>
+                  <select value={newUserDistrict} onChange={e => setNewUserDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                    <option value="">Select District</option>
+                    {newUserRole === 'weaver' ? (
+                      // Only allow GI-Approved Sambalpuri Districts
+                      ["Bargarh", "Sonepur", "Sambalpur", "Bolangir", "Nuapada", "Boudh", "Jharsuguda"].map(d => (
+                        <option key={d} value={d}>{d} (GI-Approved)</option>
+                      ))
+                    ) : (
+                      <>
+                        {allDistricts.map(d => <option key={d} value={d}>{d}</option>)}
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="New Delhi">New Delhi</option>
+                        <option value="Bangalore">Bangalore</option>
+                      </>
+                    )}
                   </select>
                 </div>
-              )}
+
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="col-span-2">
+                    <label className="text-xs font-bold text-gray-500 mb-1.5 block">Complete Address</label>
+                    <input type="text" value={newUserAddress} onChange={e => setNewUserAddress(e.target.value)} placeholder="Street, landmark..." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1.5 block">PIN Code</label>
+                    <input type="text" value={newUserPin} onChange={e => setNewUserPin(e.target.value)} placeholder="PIN" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-100">
+                  <label className="text-xs font-bold text-gray-500 mb-1.5 block">Account Duration</label>
+                  <select value={newUserDuration} onChange={e => setNewUserDuration(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none mb-4">
+                    <option value="permanent">Permanent / Standard</option>
+                    <option value="temporary">Temporary (30-day trial/event access)</option>
+                  </select>
+
+                  {newUserRole !== 'customer' && (
+                    <>
+                      <label className="text-xs font-bold text-gray-500 mb-1.5 block">Stock & Inventory Limits</label>
+                      <select value={newUserStockLimit} onChange={e => setNewUserStockLimit(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                        <option value="limited">Limited (Up to 50 active SKUs)</option>
+                        <option value="unlimited">Unlimited (Enterprise / Certified Master Weaver)</option>
+                      </select>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-              <button onClick={() => setShowAddUserModal(false)} className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all">Cancel</button>
-              <button onClick={handleCreateUser} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm">Create Profile</button>
+              <button onClick={() => setShowAddUserModal(false)} className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all">Cancel</button>
+              <button onClick={handleCreateUser} className="px-6 py-3 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm">Save & Generate Public Profile</button>
             </div>
           </div>
         </div>
