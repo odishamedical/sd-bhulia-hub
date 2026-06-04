@@ -109,9 +109,41 @@ export interface Customer {
   createdAt: string;
 }
 
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+}
+
 // ============================================================================
 // HOOKS (REALTIME SYNC)
 // ============================================================================
+
+export function useAuthUsers() {
+  const [authUsers, setAuthUsers] = useState<AuthUser[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const q = query(collection(db, "users"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data: AuthUser[] = [];
+      snapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() } as AuthUser);
+      });
+      setAuthUsers(data);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching auth users: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return { authUsers, loading };
+}
 
 export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);

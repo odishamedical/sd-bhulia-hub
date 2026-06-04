@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useStores, useOrders, useCustomers, addWeaver, addStore, addCustomer } from "@/lib/db-hooks";
+import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, addWeaver, addStore, addCustomer } from "@/lib/db-hooks";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers();
   const { stores } = useStores();
   const { orders } = useOrders();
   const { customers } = useCustomers();
+  const { authUsers } = useAuthUsers();
   
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -113,9 +114,25 @@ export default function UserManagementPage() {
       email: c.email || "N/A",
     }));
 
+    // General Identity Provider Users (e.g. Gmail login)
+    const identityUsersList = authUsers.map((u) => ({
+      id: u.id,
+      name: u.name || u.email?.split("@")[0] || "Auth User",
+      role: u.role || "user",
+      phone: "N/A",
+      state: "N/A",
+      district: "N/A",
+      country: "N/A",
+      volume: 0,
+      purchasedProductIds: [],
+      whatsapp: "N/A",
+      address: "N/A",
+      email: u.email || "N/A",
+    }));
+
     // Deduplicate logic (if a registered customer matches an order customer by name/phone, we could merge, but for now we just concat)
-    return [...wList, ...sList, ...cList, ...registeredCustomersList];
-  }, [weavers, stores, orders, customers]);
+    return [...wList, ...sList, ...cList, ...registeredCustomersList, ...identityUsersList];
+  }, [weavers, stores, orders, customers, authUsers]);
 
   // Apply Filters
   const filteredUsers = useMemo(() => {
