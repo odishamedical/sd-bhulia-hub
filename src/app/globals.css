@@ -8,8 +8,8 @@
   --color-gold: #C5A059;
   --color-pastel-accent: #E8F0F2;
   
-  --font-display: var(--font-playfair);
-  --font-sans: var(--font-inter);
+  --font-display: 'Playfair Display', serif;
+  --font-sans: 'Inter', sans-serif;
 }
 
 :root {
