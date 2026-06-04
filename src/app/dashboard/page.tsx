@@ -7,9 +7,13 @@ import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc } from "fir
 import { onAuthStateChanged } from "firebase/auth";
 import { useOrders } from "@/lib/db-hooks";
 
+import DashboardLayout, { NavItem } from "@/components/DashboardLayout";
+
 export default function DashboardPage() {
   const [role, setRole] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("home");
   const router = useRouter();
 
   useEffect(() => {
@@ -20,6 +24,7 @@ export default function DashboardPage() {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
             setRole(userDoc.data().role);
+            setUserName(userDoc.data().name || user.email?.split("@")[0] || "User");
           } else {
             setRole("onboarding");
           }
@@ -38,8 +43,8 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-bhulia-bg">
-        <div className="w-12 h-12 border-4 border-[#C5A059] border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
+        <div className="w-12 h-12 border-4 border-[#E57138] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -50,28 +55,57 @@ export default function DashboardPage() {
 
   const isCustomer = role === "customer" || role === "user" || !role;
   const displayRole = role === "franchisee" ? "reseller" : role === "store" ? "vendor" : role;
+  const actualRole = isCustomer ? "customer" : displayRole || "customer";
+
+  let navItems: NavItem[] = [];
+  if (isCustomer) {
+    navItems = [
+      { id: "home", label: "Dashboard", icon: "📊" },
+      { id: "orders", label: "My Orders", icon: "📦" },
+      { id: "wishlist", label: "Wishlist", icon: "❤️" },
+      { id: "messages", label: "Messages", icon: "💬" },
+      { id: "support", label: "Support", icon: "📞" },
+      { id: "profile", label: "Profile Settings", icon: "⚙️" },
+    ];
+  } else if (actualRole === "weaver") {
+    navItems = [
+      { id: "home", label: "Dashboard", icon: "📊" },
+      { id: "upload", label: "Upload Product", icon: "📤" },
+      { id: "orders", label: "My Orders", icon: "📦" },
+      { id: "wallet", label: "Wallet & Earnings", icon: "💰" },
+      { id: "verification", label: "Verification", icon: "🛡️" },
+    ];
+  } else if (actualRole === "vendor") {
+    navItems = [
+      { id: "home", label: "Dashboard", icon: "📊" },
+      { id: "upload", label: "Upload Inventory", icon: "📤" },
+      { id: "orders", label: "Manage Orders", icon: "📦" },
+      { id: "wallet", label: "Wallet & Earnings", icon: "💰" },
+      { id: "verification", label: "Verification", icon: "🛡️" },
+    ];
+  } else if (actualRole === "reseller") {
+    navItems = [
+      { id: "home", label: "Dashboard", icon: "📊" },
+      { id: "curation", label: "Store Curation", icon: "🛍️" },
+      { id: "proxy", label: "Proxy Orders", icon: "🛒" },
+      { id: "wallet", label: "Commissions", icon: "💰" },
+      { id: "verification", label: "Verification", icon: "🛡️" },
+    ];
+  }
 
   return (
-    <div className={`min-h-screen ${isCustomer ? "bg-[#EBF5FB] text-gray-900" : "bg-[#051815] text-white"} p-6 transition-colors duration-300`}>
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className={`text-3xl font-display capitalize ${isCustomer ? "text-[#1A5276]" : "bhulia-gold-text"}`}>
-            {isCustomer ? "Customer" : displayRole} Dashboard
-          </h1>
-          <button 
-            onClick={() => auth.signOut()}
-            className={`px-4 py-2 rounded transition-colors ${isCustomer ? "bg-red-100 text-red-600 hover:bg-red-200" : "bg-red-900/50 text-red-200 hover:bg-red-800/50"}`}
-          >
-            Sign Out
-          </button>
-        </div>
-
-        {isCustomer && <CustomerDashboard />}
-        {role === "weaver" && <WeaverDashboard />}
-        {(role === "vendor" || role === "store") && <VendorDashboard />}
-        {(role === "reseller" || role === "franchisee") && <ResellerDashboard />}
-      </div>
-    </div>
+    <DashboardLayout
+      userName={userName}
+      userRole={actualRole}
+      navItems={navItems}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+    >
+      {isCustomer && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+      {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+      {actualRole === "vendor" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+      {actualRole === "reseller" && <ResellerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+    </DashboardLayout>
   );
 }
 
@@ -100,13 +134,13 @@ function OnboardingFlow({ onComplete }: { onComplete: () => void }) {
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bhulia-bg px-4">
-      <div className="bhulia-premium-card p-8 w-full max-w-lg">
-        <h2 className="text-2xl font-display bhulia-gold-text mb-4 text-center">Complete Your Profile</h2>
-        <p className="text-gray-400 text-center mb-6">Select your account type to proceed</p>
+    <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] px-4">
+      <div className="bg-white border border-gray-200 shadow-xl rounded-2xl p-8 w-full max-w-lg">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">Complete Your Profile</h2>
+        <p className="text-gray-500 text-center mb-6">Select your account type to proceed</p>
         
         <select 
-          className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white mb-6 focus:border-[#C5A059] focus:outline-none"
+          className="w-full bg-gray-50 border border-gray-300 rounded-xl p-3 text-gray-900 mb-6 focus:border-[#E57138] focus:outline-none focus:ring-1 focus:ring-[#E57138]"
           value={selectedRole}
           onChange={(e) => setSelectedRole(e.target.value)}
         >
@@ -119,7 +153,7 @@ function OnboardingFlow({ onComplete }: { onComplete: () => void }) {
         <button 
           onClick={handleContinue}
           disabled={loading}
-          className="w-full bhulia-gold-button py-3 rounded disabled:opacity-50"
+          className="w-full bg-[#E57138] text-white font-bold py-3 rounded-xl disabled:opacity-50 hover:bg-[#D56128] transition-colors"
         >
           {loading ? "Saving..." : `Continue as ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}`}
         </button>
@@ -129,140 +163,127 @@ function OnboardingFlow({ onComplete }: { onComplete: () => void }) {
 }
 
 /* ==========================================
-   1. CUSTOMER DASHBOARD (LIGHT/PASTEL THEME)
+   1. CUSTOMER DASHBOARD
    ========================================== */
-function CustomerDashboard() {
-  const [activeTab, setActiveTab] = useState("home");
-
-  const NavButton = ({ id, label }: { id: string, label: string }) => (
-    <button 
-      onClick={() => setActiveTab(id)}
-      className={`px-4 py-2 font-semibold text-sm rounded-t-lg transition-all ${activeTab === id ? "bg-white text-[#1A5276] shadow-sm border-t-2 border-[#3498DB]" : "text-gray-500 hover:text-[#1A5276]"}`}
-    >
-      {label}
-    </button>
-  );
-
+function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
   return (
     <div className="space-y-6">
-      <div className="flex space-x-2 border-b border-gray-200">
-        <NavButton id="home" label="Home" />
-        <NavButton id="orders" label="My Orders" />
-        <NavButton id="wishlist" label="Wishlist" />
-        <NavButton id="messages" label="Messages" />
-        <NavButton id="support" label="Support" />
-        <NavButton id="profile" label="Profile" />
-      </div>
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Customer Hub</h1>
+          <p className="text-gray-500 mt-2 font-medium">Manage your authentic handloom collection seamlessly.</p>
+        </div>
+      </header>
 
-      <div className="bg-white p-6 rounded-b-xl rounded-tr-xl shadow-lg border border-blue-50 min-h-[500px]">
-        {activeTab === "home" && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
-            <div className="bg-gradient-to-r from-[#D6EAF8] to-[#EBF5FB] p-8 rounded-xl border border-blue-100">
-              <h2 className="text-3xl font-display text-[#1A5276] mb-2">Welcome back!</h2>
-              <p className="text-[#2874A6]">Manage your authentic handloom collection seamlessly.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-6 bg-[#FDFEFE] rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <h3 className="text-lg font-bold text-[#1A5276] mb-4">Recent Orders</h3>
+      {activeTab === "home" && (
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between group hover:border-[#E57138]/30 transition-colors">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Orders</h3>
                 <div className="text-sm text-gray-500">No recent orders found.</div>
-                <button onClick={() => setActiveTab("orders")} className="mt-4 text-sm text-[#3498DB] font-semibold">View All Orders →</button>
               </div>
-              <div className="p-6 bg-[#FDFEFE] rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <h3 className="text-lg font-bold text-[#1A5276] mb-4">Wishlist Preview</h3>
+              <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#E57138] font-bold text-left w-max group-hover:underline">View All Orders →</button>
+            </div>
+            <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between group hover:border-[#E57138]/30 transition-colors">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Wishlist Preview</h3>
                 <div className="text-sm text-gray-500">Your wishlist is empty.</div>
-                <button onClick={() => setActiveTab("wishlist")} className="mt-4 text-sm text-[#3498DB] font-semibold">View Wishlist →</button>
               </div>
-              <div className="p-6 bg-[#FDFEFE] rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <h3 className="text-lg font-bold text-[#1A5276] mb-4">Notifications</h3>
+              <button onClick={() => onTabChange("wishlist")} className="mt-6 text-sm text-[#E57138] font-bold text-left w-max group-hover:underline">View Wishlist →</button>
+            </div>
+            <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Notifications</h3>
                 <div className="text-sm text-gray-500">No new notifications.</div>
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {activeTab === "orders" && (
-          <div className="space-y-6 animate-in fade-in">
-            <div className="flex gap-2 mb-6">
-              {['All', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(f => (
-                <button key={f} className="px-4 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600 border border-gray-200">{f}</button>
-              ))}
-            </div>
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between">
-              <div>
-                <p className="text-sm font-bold text-[#1A5276]">Order #ORD-99382</p>
-                <p className="text-xs text-gray-500">Status: Dispatched via Bhulia Hub</p>
-              </div>
-              <button className="px-4 py-2 bg-[#3498DB] text-white text-xs font-bold rounded-lg hover:bg-[#2980B9]">Track Order (Bhulia Logistics)</button>
-            </div>
-            <div className="text-center py-8 text-gray-400 text-sm">End of order history.</div>
+      {activeTab === "orders" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in">
+          <div className="flex flex-wrap gap-2 mb-6">
+            {['All', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(f => (
+              <button key={f} className="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-50 text-gray-600 hover:bg-orange-50 hover:text-[#E57138] border border-gray-200 transition-colors">{f}</button>
+            ))}
           </div>
-        )}
-
-        {activeTab === "wishlist" && (
-          <div className="space-y-6 animate-in fade-in">
-            <h2 className="text-xl font-bold text-[#1A5276]">Saved Items</h2>
-            <div className="text-center py-12 text-gray-400">Your wishlist is currently empty.</div>
-          </div>
-        )}
-
-        {activeTab === "messages" && (
-          <div className="space-y-6 animate-in fade-in">
-            <h2 className="text-xl font-bold text-[#1A5276]">Direct Messages</h2>
-            <div className="flex gap-4">
-              <div className="w-1/3 border-r pr-4">
-                <div className="p-4 bg-gray-50 rounded-lg text-sm text-gray-500 text-center">No active conversations</div>
-              </div>
-              <div className="w-2/3 flex items-center justify-center text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-200 min-h-[300px]">
-                Select a chat to start messaging
-              </div>
+          <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 flex flex-col md:flex-row gap-4 items-center justify-between hover:border-gray-200 transition-colors">
+            <div>
+              <p className="text-sm font-bold text-gray-900">Order #ORD-99382</p>
+              <p className="text-xs text-gray-500 mt-1">Status: Dispatched via Bhulia Hub</p>
             </div>
+            <button className="px-5 py-2.5 bg-[#E57138] text-white text-xs font-bold rounded-xl hover:bg-[#D56128] transition-colors shadow-sm">Track Order (Bhulia Logistics)</button>
           </div>
-        )}
+          <div className="text-center py-10 text-gray-400 text-sm font-medium">End of order history.</div>
+        </div>
+      )}
 
-        {activeTab === "support" && (
-          <div className="space-y-6 animate-in fade-in max-w-2xl">
-            <h2 className="text-xl font-bold text-[#1A5276]">Contact Support & Shops</h2>
-            <p className="text-sm text-gray-500 mb-4">Your privacy is protected. Contact sellers directly via masked hub routing.</p>
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <button className="flex items-center justify-center gap-2 py-4 bg-green-50 text-green-700 rounded-xl font-semibold hover:bg-green-100 transition-colors">
-                <span>WhatsApp Shop (Masked)</span>
-              </button>
-              <button className="flex items-center justify-center gap-2 py-4 bg-blue-50 text-blue-700 rounded-xl font-semibold hover:bg-blue-100 transition-colors">
-                <span>Call Shop (Masked)</span>
-              </button>
+      {activeTab === "wishlist" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Saved Items</h2>
+          <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium">Your wishlist is currently empty.</div>
+        </div>
+      )}
+
+      {activeTab === "messages" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Direct Messages</h2>
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="w-full md:w-1/3 md:border-r border-gray-100 md:pr-6">
+              <div className="p-5 bg-gray-50 rounded-2xl text-sm text-gray-500 font-medium text-center border border-gray-100">No active conversations</div>
             </div>
-            <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
-              <h3 className="font-bold text-gray-700 mb-4">Raise a Ticket</h3>
-              <form className="space-y-4">
-                <input type="text" placeholder="Subject" className="w-full border-gray-300 rounded p-2 focus:border-blue-400 focus:ring-1 focus:ring-blue-400" />
-                <textarea rows={4} placeholder="Describe your issue..." className="w-full border-gray-300 rounded p-2 focus:border-blue-400 focus:ring-1 focus:ring-blue-400"></textarea>
-                <button type="button" className="bg-[#1A5276] text-white px-6 py-2 rounded font-semibold hover:bg-[#154360]">Submit Ticket</button>
-              </form>
+            <div className="w-full md:w-2/3 flex items-center justify-center text-gray-400 font-medium bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 min-h-[300px]">
+              Select a chat to start messaging
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {activeTab === "profile" && (
-          <div className="space-y-6 animate-in fade-in max-w-xl">
-            <h2 className="text-xl font-bold text-[#1A5276]">Profile Settings</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">Full Name</label>
-                <input type="text" className="w-full border border-gray-300 rounded p-2" defaultValue="Customer User" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">Email Address</label>
-                <input type="email" className="w-full border border-gray-300 rounded p-2 bg-gray-50" disabled />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">Shipping Address</label>
-                <textarea className="w-full border border-gray-300 rounded p-2" rows={3}></textarea>
-              </div>
-              <button className="bg-[#1A5276] text-white px-6 py-2 rounded font-semibold">Save Changes</button>
-            </div>
+      {activeTab === "support" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-3xl">
+          <h2 className="text-xl font-bold text-gray-900">Contact Support & Shops</h2>
+          <p className="text-sm text-gray-500 mb-6 font-medium">Your privacy is protected. Contact sellers directly via masked hub routing.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <button className="flex items-center justify-center gap-2 py-4 bg-green-50 text-green-700 rounded-2xl font-bold hover:bg-green-100 transition-colors shadow-sm">
+              <span>WhatsApp Shop (Masked)</span>
+            </button>
+            <button className="flex items-center justify-center gap-2 py-4 bg-blue-50 text-blue-700 rounded-2xl font-bold hover:bg-blue-100 transition-colors shadow-sm">
+              <span>Call Shop (Masked)</span>
+            </button>
           </div>
-        )}
-      </div>
+          <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+            <h3 className="font-bold text-gray-900 mb-5">Raise a Ticket</h3>
+            <form className="space-y-4">
+              <input type="text" placeholder="Subject" className="w-full border border-gray-200 bg-white rounded-xl p-3 text-sm focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" />
+              <textarea rows={4} placeholder="Describe your issue..." className="w-full border border-gray-200 bg-white rounded-xl p-3 text-sm focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors"></textarea>
+              <button type="button" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Submit Ticket</button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "profile" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Profile Settings</h2>
+          <div className="space-y-5">
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name</label>
+              <input type="text" className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:border-[#E57138] focus:outline-none" defaultValue="Customer User" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
+              <input type="email" className="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50 text-gray-500 cursor-not-allowed" disabled />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Shipping Address</label>
+              <textarea className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:border-[#E57138] focus:outline-none" rows={3}></textarea>
+            </div>
+            <button className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm mt-4">Save Changes</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -271,9 +292,10 @@ function CustomerDashboard() {
 /* ==========================================
    2. WEAVER DASHBOARD (DARK/GOLD THEME)
    ========================================== */
-function WeaverDashboard() {
-  const [activeTab, setActiveTab] = useState("home");
-  
+/* ==========================================
+   2. WEAVER DASHBOARD
+   ========================================== */
+function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
   // Upload Form State
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
@@ -303,103 +325,96 @@ function WeaverDashboard() {
       setProductName("");
       setProductPrice("");
       setProductDesc("");
-      setActiveTab("home");
+      onTabChange("home");
     } catch (error) {
       console.error(error);
       alert("Upload failed.");
     }
     setIsUploading(false);
   };
-  
-  const NavButton = ({ id, label }: { id: string, label: string }) => (
-    <button 
-      onClick={() => setActiveTab(id)}
-      className={`px-4 py-2 font-semibold text-sm transition-all ${activeTab === id ? "text-[#C5A059] border-b-2 border-[#C5A059]" : "text-gray-500 hover:text-gray-300"}`}
-    >
-      {label}
-    </button>
-  );
 
   return (
     <div className="space-y-6">
-      <div className="flex space-x-4 border-b border-gray-800 mb-6 overflow-x-auto custom-scrollbar">
-        <NavButton id="home" label="Home Overview" />
-        <NavButton id="upload" label="Upload Product" />
-        <NavButton id="orders" label="My Orders" />
-        <NavButton id="wallet" label="Wallet" />
-        <NavButton id="verification" label="Verification" />
-      </div>
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Master Weaver Hub</h1>
+          <p className="text-gray-500 mt-2 font-medium">Manage your digital storefront and orders.</p>
+        </div>
+        <button onClick={() => onTabChange("upload")} className="bg-[#E57138] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-sm self-start md:self-auto">
+          + Upload Product
+        </button>
+      </header>
 
       {activeTab === "home" && (
-        <div className="space-y-6 animate-in fade-in">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bhulia-premium-card p-6 border-t-4 border-t-[#C5A059]">
-              <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Wallet Balance</h3>
-              <div className="text-3xl font-display bhulia-gold-text">₹0</div>
+        <div className="space-y-8 animate-in fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Wallet Balance</h3>
+              <div className="text-3xl font-black text-gray-900">₹0</div>
             </div>
-            <div className="bhulia-premium-card p-6 border-t-4 border-t-green-600">
-              <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Subscription</h3>
-              <div className="text-xl font-semibold text-green-500 mt-1">Active</div>
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Subscription</h3>
+              <div className="text-xl font-bold text-green-500 mt-1">Active</div>
             </div>
-            <div className="bhulia-premium-card p-6 border-t-4 border-t-yellow-500">
-              <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Pending Approvals</h3>
-              <div className="text-3xl font-display text-white">0</div>
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Approvals</h3>
+              <div className="text-3xl font-black text-gray-900">0</div>
             </div>
-            <div className="bhulia-premium-card p-6 border-t-4 border-t-blue-500">
-              <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">New Orders</h3>
-              <div className="text-3xl font-display text-white">0</div>
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">New Orders</h3>
+              <div className="text-3xl font-black text-gray-900">0</div>
             </div>
           </div>
-          <div className="bhulia-premium-card p-6">
-            <h3 className="text-lg font-display bhulia-gold-text mb-4">Notifications Timeline</h3>
-            <div className="text-sm text-gray-500">No recent activity.</div>
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+            <h3 className="text-lg font-bold text-gray-900 mb-6">Notifications Timeline</h3>
+            <div className="text-sm text-gray-500 font-medium">No recent activity.</div>
           </div>
         </div>
       )}
 
       {activeTab === "upload" && (
-        <div className="bhulia-premium-card p-8 max-w-3xl animate-in fade-in">
-          <h2 className="text-2xl font-display bhulia-gold-text mb-6">Upload New Sambalpuri Saree</h2>
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Upload New Sambalpuri Saree</h2>
           <form className="space-y-6" onSubmit={handleUpload}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Product Name</label>
-                <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white focus:border-[#C5A059]" required />
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
+                <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
               </div>
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Selling Price (₹)</label>
-                <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white focus:border-[#C5A059]" required />
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
+                <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
               </div>
             </div>
             <div>
-              <label className="block text-sm text-gray-300 mb-2">Category</label>
-              <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white focus:border-[#C5A059]">
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category</label>
+              <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors">
                 <option>Saree</option>
                 <option>Dupatta</option>
                 <option>Fabric</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm text-gray-300 mb-2">Description & Details</label>
-              <textarea rows={4} value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white focus:border-[#C5A059]" required></textarea>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Description & Details</label>
+              <textarea rows={4} value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required></textarea>
             </div>
             <div>
-              <label className="block text-sm text-gray-300 mb-2">Upload Images (Max 4)</label>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Images (Max 4)</label>
               <div className="flex gap-4">
                 {[1,2,3,4].map(i => (
-                  <div key={i} className="w-24 h-24 border-2 border-dashed border-gray-700 rounded-lg flex items-center justify-center text-gray-500 hover:border-[#C5A059] cursor-pointer transition-colors">+</div>
+                  <div key={i} className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center text-gray-400 hover:border-[#E57138] hover:text-[#E57138] cursor-pointer transition-colors bg-gray-50">+</div>
                 ))}
               </div>
             </div>
-            <div className="bg-[#0B2B26] p-4 rounded border border-[#C5A059]/30">
-              <label className="flex items-start space-x-3">
-                <input type="checkbox" className="form-checkbox text-[#C5A059] rounded w-5 h-5 mt-0.5" required />
-                <span className="text-sm text-gray-300">I declare that this is an authentic, handwoven Sambalpuri handloom product. I understand Bhulia.com strictly enforces GI-Tag authenticity.</span>
+            <div className="bg-orange-50 p-5 rounded-2xl border border-orange-100">
+              <label className="flex items-start space-x-3 cursor-pointer">
+                <input type="checkbox" className="form-checkbox text-[#E57138] rounded w-5 h-5 mt-0.5 focus:ring-[#E57138]" required />
+                <span className="text-sm text-gray-700 font-medium">I declare that this is an authentic, handwoven Sambalpuri handloom product. I understand Bhulia.com strictly enforces GI-Tag authenticity.</span>
               </label>
             </div>
             <div className="flex gap-4 pt-4">
-              <button type="button" className="flex-1 bg-[#051815] border border-gray-700 text-white py-3 rounded hover:bg-gray-800 transition-colors">Save Draft</button>
-              <button type="submit" disabled={isUploading} className="flex-1 bhulia-gold-button py-3 rounded disabled:opacity-50">
+              <button type="button" className="flex-1 bg-white border border-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">Save Draft</button>
+              <button type="submit" disabled={isUploading} className="flex-1 bg-[#E57138] text-white font-bold py-3 rounded-xl disabled:opacity-50 hover:bg-[#D56128] transition-colors shadow-sm">
                 {isUploading ? "Uploading to Database..." : "Submit for Approval"}
               </button>
             </div>
@@ -408,29 +423,29 @@ function WeaverDashboard() {
       )}
 
       {activeTab === "orders" && (
-        <div className="bhulia-premium-card p-6 animate-in fade-in">
-          <h2 className="text-xl font-display bhulia-gold-text mb-6">Order Management</h2>
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Order Management</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-gray-800 text-xs uppercase tracking-widest text-gray-500">
-                  <th className="pb-3 font-semibold">Order ID</th>
-                  <th className="pb-3 font-semibold">Product</th>
-                  <th className="pb-3 font-semibold">Status</th>
-                  <th className="pb-3 font-semibold">Action</th>
+                <tr className="border-b border-gray-100 text-xs uppercase tracking-widest text-gray-500 bg-gray-50">
+                  <th className="py-4 px-4 font-bold rounded-tl-xl">Order ID</th>
+                  <th className="py-4 px-4 font-bold">Product</th>
+                  <th className="py-4 px-4 font-bold">Status</th>
+                  <th className="py-4 px-4 font-bold rounded-tr-xl">Action</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-50">
                 {weaverOrders.length > 0 ? weaverOrders.map(order => (
-                  <tr key={order.id} className="border-b border-gray-800 text-sm">
-                    <td className="py-4 text-gray-300 font-mono text-xs">{order.orderId || order.id}</td>
-                    <td className="py-4 text-white font-semibold">{order.productName || "Proxy Order"}</td>
-                    <td className="py-4">
-                      <span className="px-2 py-1 bg-blue-900/30 text-blue-400 border border-blue-800/50 rounded text-xs">
+                  <tr key={order.id} className="text-sm hover:bg-gray-50 transition-colors group">
+                    <td className="py-4 px-4 text-gray-500 font-mono text-xs">{order.orderId || order.id}</td>
+                    <td className="py-4 px-4 text-gray-900 font-bold">{order.productName || "Proxy Order"}</td>
+                    <td className="py-4 px-4">
+                      <span className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded-full text-xs font-bold">
                         {order.logisticsStatus || "Pending Sourcing"}
                       </span>
                     </td>
-                    <td className="py-4">
+                    <td className="py-4 px-4">
                       {(!order.logisticsStatus || order.logisticsStatus === "Pending Sourcing") && (
                         <button 
                           onClick={async () => {
@@ -445,19 +460,19 @@ function WeaverDashboard() {
                               alert("Failed to generate AWB.");
                             }
                           }}
-                          className="px-3 py-1.5 bg-green-900/30 text-green-400 border border-green-800 hover:bg-green-800/50 transition-colors rounded text-xs uppercase tracking-wider font-bold"
+                          className="px-4 py-2 bg-green-50 text-green-700 hover:bg-green-100 transition-colors rounded-lg text-xs font-bold border border-green-200"
                         >
-                          Send to Bhulia Hub (Generate AWB)
+                          Dispatch to Hub
                         </button>
                       )}
                       {(order.logisticsStatus === "Dispatched via Hub") && (
-                        <span className="text-xs text-gray-500 italic">AWB Generated. En Route to Hub.</span>
+                        <span className="text-xs text-gray-500 font-medium">AWB Generated</span>
                       )}
                     </td>
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan={4} className="py-8 text-center text-gray-500 text-sm">No active orders to dispatch.</td>
+                    <td colSpan={4} className="py-16 text-center text-gray-500 font-medium text-sm">No active orders to dispatch.</td>
                   </tr>
                 )}
               </tbody>
@@ -468,41 +483,41 @@ function WeaverDashboard() {
 
       {activeTab === "wallet" && (
         <div className="space-y-6 animate-in fade-in">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bhulia-premium-card p-6 border-l-4 border-l-yellow-500">
-              <div className="text-sm text-gray-400 mb-1">Funds in Escrow (Pending QC)</div>
-              <div className="text-2xl font-bold text-white">₹0</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Funds in Escrow (Pending QC)</div>
+              <div className="text-3xl font-black text-gray-900">₹0</div>
             </div>
-            <div className="bhulia-premium-card p-6 border-l-4 border-l-green-500">
-              <div className="text-sm text-gray-400 mb-1">Completed Payouts</div>
-              <div className="text-2xl font-bold text-[#C5A059]">₹0</div>
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Completed Payouts</div>
+              <div className="text-3xl font-black text-green-600">₹0</div>
             </div>
           </div>
-          <div className="bhulia-premium-card p-6">
-            <h3 className="font-display text-[#C5A059] mb-4">Bank Details</h3>
-            <p className="text-sm text-gray-400">No bank account linked. Please add Jan Dhan or standard bank details for payouts.</p>
-            <button className="mt-4 px-4 py-2 border border-[#C5A059] text-[#C5A059] rounded text-sm hover:bg-[#C5A059]/10">Add Bank Account</button>
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+            <h3 className="font-bold text-gray-900 mb-4">Bank Details</h3>
+            <p className="text-sm text-gray-500 font-medium">No bank account linked. Please add Jan Dhan or standard bank details for payouts.</p>
+            <button className="mt-6 px-6 py-2.5 border border-gray-200 text-gray-900 font-bold rounded-xl hover:bg-gray-50 transition-colors">Add Bank Account</button>
           </div>
         </div>
       )}
 
       {activeTab === "verification" && (
-        <div className="bhulia-premium-card p-8 max-w-2xl animate-in fade-in">
-          <h2 className="text-xl font-display bhulia-gold-text mb-6">Identity & Subscription</h2>
-          <div className="space-y-6">
-            <div className="flex justify-between items-center p-4 bg-[#0B2B26] rounded border border-gray-800">
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-3xl animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-8">Identity & Subscription</h2>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
               <div>
-                <div className="font-bold text-white mb-1">KYC Documents</div>
-                <div className="text-xs text-gray-400">Aadhaar / Artisan Card</div>
+                <div className="font-bold text-gray-900 mb-1">KYC Documents</div>
+                <div className="text-sm text-gray-500 font-medium">Aadhaar / Artisan Card</div>
               </div>
-              <span className="px-3 py-1 bg-green-900/30 text-green-400 border border-green-800 rounded-full text-xs font-semibold">Approved</span>
+              <span className="px-4 py-1.5 bg-green-50 text-green-700 border border-green-200 rounded-full text-xs font-bold">Approved</span>
             </div>
-            <div className="flex justify-between items-center p-4 bg-[#0B2B26] rounded border border-gray-800">
+            <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
               <div>
-                <div className="font-bold text-white mb-1">Platform Subscription</div>
-                <div className="text-xs text-gray-400">₹5,000 / year</div>
+                <div className="font-bold text-gray-900 mb-1">Platform Subscription</div>
+                <div className="text-sm text-gray-500 font-medium">₹5,000 / year</div>
               </div>
-              <button className="bhulia-gold-button px-4 py-2 text-sm rounded">Renew Now</button>
+              <button className="bg-[#1f2937] text-white px-6 py-2.5 text-sm font-bold rounded-xl hover:bg-black transition-colors shadow-sm">Renew Now</button>
             </div>
           </div>
         </div>
@@ -513,11 +528,9 @@ function WeaverDashboard() {
 
 
 /* ==========================================
-   3. VENDOR / SHOP DASHBOARD (DARK THEME)
+   3. VENDOR / SHOP DASHBOARD
    ========================================== */
-function VendorDashboard() {
-  const [activeTab, setActiveTab] = useState("home");
-  
+function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
   // Upload Form State
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
@@ -548,7 +561,7 @@ function VendorDashboard() {
       setProductPrice("");
       setOriginalWeaver("");
       setStockQuantity("1");
-      setActiveTab("home");
+      onTabChange("home");
     } catch (error) {
       console.error(error);
       alert("Upload failed.");
@@ -556,69 +569,62 @@ function VendorDashboard() {
     setIsUploading(false);
   };
 
-  const NavButton = ({ id, label }: { id: string, label: string }) => (
-    <button 
-      onClick={() => setActiveTab(id)}
-      className={`px-4 py-2 font-semibold text-sm transition-all ${activeTab === id ? "text-[#C5A059] border-b-2 border-[#C5A059]" : "text-gray-500 hover:text-gray-300"}`}
-    >
-      {label}
-    </button>
-  );
-
   return (
     <div className="space-y-6">
-      <div className="flex space-x-4 border-b border-gray-800 mb-6 overflow-x-auto custom-scrollbar">
-        <NavButton id="home" label="Overview" />
-        <NavButton id="upload" label="Upload Inventory" />
-        <NavButton id="orders" label="Manage Orders" />
-        <NavButton id="wallet" label="Wallet" />
-        <NavButton id="verification" label="Verification" />
-      </div>
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Vendor Hub</h1>
+          <p className="text-gray-500 mt-2 font-medium">Manage your retail inventory and dispatch operations.</p>
+        </div>
+        <button onClick={() => onTabChange("upload")} className="bg-[#E57138] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-sm self-start md:self-auto">
+          + Add Inventory
+        </button>
+      </header>
 
       {activeTab === "home" && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in">
-          <div className="bhulia-premium-card p-6 border-t-4 border-t-blue-500">
-            <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Total Inventory</h3>
-            <div className="text-3xl font-display text-white">0</div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Inventory</h3>
+            <div className="text-3xl font-black text-gray-900">0</div>
           </div>
-          <div className="bhulia-premium-card p-6 border-t-4 border-t-[#C5A059]">
-            <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Wallet</h3>
-            <div className="text-3xl font-display bhulia-gold-text">₹0</div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Wallet Balance</h3>
+            <div className="text-3xl font-black text-green-600">₹0</div>
           </div>
-          <div className="bhulia-premium-card p-6 border-t-4 border-t-yellow-500">
-            <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Pending Orders</h3>
-            <div className="text-3xl font-display text-white">0</div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Orders</h3>
+            <div className="text-3xl font-black text-gray-900">0</div>
           </div>
         </div>
       )}
 
       {activeTab === "upload" && (
-        <div className="bhulia-premium-card p-8 max-w-3xl animate-in fade-in">
-          <h2 className="text-2xl font-display bhulia-gold-text mb-6">Upload New Inventory Batch</h2>
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Upload New Inventory Batch</h2>
           <form className="space-y-6" onSubmit={handleUpload}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Product Name</label>
-                <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white focus:border-[#C5A059]" required />
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
+                <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
               </div>
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Selling Price (₹)</label>
-                <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white focus:border-[#C5A059]" required />
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
+                <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
               </div>
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Original Weaver Name</label>
-                <select value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white focus:border-[#C5A059]" required>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name</label>
+                <select value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required>
                   <option value="">Select Weaver</option>
                   <option value="bargarh">Bargarh Cooperative</option>
                   <option value="sonepur">Sonepur Master Weavers</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm text-gray-300 mb-2">Stock Quantity</label>
-                <input type="number" min="1" value={stockQuantity} onChange={e => setStockQuantity(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white focus:border-[#C5A059]" required />
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Stock Quantity</label>
+                <input type="number" min="1" value={stockQuantity} onChange={e => setStockQuantity(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
               </div>
             </div>
-            <button type="submit" disabled={isUploading} className="bhulia-gold-button w-full py-3 rounded mt-4 disabled:opacity-50">
+            <button type="submit" disabled={isUploading} className="w-full bg-[#E57138] text-white font-bold py-3.5 rounded-xl disabled:opacity-50 hover:bg-[#D56128] transition-colors shadow-sm mt-4">
               {isUploading ? "Uploading to Database..." : "Submit Inventory for QC"}
             </button>
           </form>
@@ -626,29 +632,29 @@ function VendorDashboard() {
       )}
 
       {activeTab === "orders" && (
-        <div className="bhulia-premium-card p-6 animate-in fade-in">
-          <h2 className="text-xl font-display bhulia-gold-text mb-6">Order Management</h2>
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Order Management</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-gray-800 text-xs uppercase tracking-widest text-gray-500">
-                  <th className="pb-3 font-semibold">Order ID</th>
-                  <th className="pb-3 font-semibold">Product</th>
-                  <th className="pb-3 font-semibold">Status</th>
-                  <th className="pb-3 font-semibold">Action</th>
+                <tr className="border-b border-gray-100 text-xs uppercase tracking-widest text-gray-500 bg-gray-50">
+                  <th className="py-4 px-4 font-bold rounded-tl-xl">Order ID</th>
+                  <th className="py-4 px-4 font-bold">Product</th>
+                  <th className="py-4 px-4 font-bold">Status</th>
+                  <th className="py-4 px-4 font-bold rounded-tr-xl">Action</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-50">
                 {vendorOrders.length > 0 ? vendorOrders.map(order => (
-                  <tr key={order.id} className="border-b border-gray-800 text-sm">
-                    <td className="py-4 text-gray-300 font-mono text-xs">{order.orderId || order.id}</td>
-                    <td className="py-4 text-white font-semibold">{order.productName || "Proxy Order"}</td>
-                    <td className="py-4">
-                      <span className="px-2 py-1 bg-blue-900/30 text-blue-400 border border-blue-800/50 rounded text-xs">
+                  <tr key={order.id} className="text-sm hover:bg-gray-50 transition-colors group">
+                    <td className="py-4 px-4 text-gray-500 font-mono text-xs">{order.orderId || order.id}</td>
+                    <td className="py-4 px-4 text-gray-900 font-bold">{order.productName || "Proxy Order"}</td>
+                    <td className="py-4 px-4">
+                      <span className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded-full text-xs font-bold">
                         {order.logisticsStatus || "Pending Sourcing"}
                       </span>
                     </td>
-                    <td className="py-4">
+                    <td className="py-4 px-4">
                       {(!order.logisticsStatus || order.logisticsStatus === "Pending Sourcing") && (
                         <button 
                           onClick={async () => {
@@ -663,19 +669,19 @@ function VendorDashboard() {
                               alert("Failed to generate AWB.");
                             }
                           }}
-                          className="px-3 py-1.5 bg-green-900/30 text-green-400 border border-green-800 hover:bg-green-800/50 transition-colors rounded text-xs uppercase tracking-wider font-bold"
+                          className="px-4 py-2 bg-green-50 text-green-700 hover:bg-green-100 transition-colors rounded-lg text-xs font-bold border border-green-200"
                         >
-                          Send to Bhulia Hub (Generate AWB)
+                          Dispatch to Hub
                         </button>
                       )}
                       {(order.logisticsStatus === "Dispatched via Hub") && (
-                        <span className="text-xs text-gray-500 italic">AWB Generated. En Route to Hub.</span>
+                        <span className="text-xs text-gray-500 font-medium">AWB Generated</span>
                       )}
                     </td>
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan={4} className="py-8 text-center text-gray-500 text-sm">No active orders to dispatch.</td>
+                    <td colSpan={4} className="py-16 text-center text-gray-500 font-medium text-sm">No active orders to dispatch.</td>
                   </tr>
                 )}
               </tbody>
@@ -685,37 +691,42 @@ function VendorDashboard() {
       )}
 
       {activeTab === "wallet" && (
-        <div className="bhulia-premium-card p-6 animate-in fade-in">
+        <div className="space-y-6 animate-in fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 border-l-4 border-l-yellow-500 bg-[#0B2B26]">
-              <div className="text-sm text-gray-400 mb-1">Pending Commissions</div>
-              <div className="text-2xl font-bold text-white">₹0</div>
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pending Commissions</div>
+              <div className="text-3xl font-black text-gray-900">₹0</div>
             </div>
-            <div className="p-6 border-l-4 border-l-green-500 bg-[#0B2B26]">
-              <div className="text-sm text-gray-400 mb-1">Total Payouts</div>
-              <div className="text-2xl font-bold text-[#C5A059]">₹0</div>
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Payouts</div>
+              <div className="text-3xl font-black text-green-600">₹0</div>
             </div>
+          </div>
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+            <h3 className="font-bold text-gray-900 mb-4">Bank Details</h3>
+            <p className="text-sm text-gray-500 font-medium">No bank account linked. Please add your business bank details for payouts.</p>
+            <button className="mt-6 px-6 py-2.5 border border-gray-200 text-gray-900 font-bold rounded-xl hover:bg-gray-50 transition-colors">Add Bank Account</button>
           </div>
         </div>
       )}
 
       {activeTab === "verification" && (
-        <div className="bhulia-premium-card p-8 max-w-2xl animate-in fade-in">
-          <h2 className="text-xl font-display bhulia-gold-text mb-6">Shop Verification & Subscription</h2>
-          <div className="space-y-6">
-            <div className="flex justify-between items-center p-4 bg-[#0B2B26] rounded border border-gray-800">
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-3xl animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-8">Shop Verification & Subscription</h2>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
               <div>
-                <div className="font-bold text-white mb-1">Vendor KYC</div>
-                <div className="text-xs text-gray-400">GST / Trade License</div>
+                <div className="font-bold text-gray-900 mb-1">Vendor KYC</div>
+                <div className="text-sm text-gray-500 font-medium">GST / Trade License</div>
               </div>
-              <span className="px-3 py-1 bg-green-900/30 text-green-400 border border-green-800 rounded-full text-xs font-semibold">Approved</span>
+              <span className="px-4 py-1.5 bg-green-50 text-green-700 border border-green-200 rounded-full text-xs font-bold">Approved</span>
             </div>
-            <div className="flex justify-between items-center p-4 bg-[#0B2B26] rounded border border-gray-800">
+            <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
               <div>
-                <div className="font-bold text-white mb-1">Vendor Subscription</div>
-                <div className="text-xs text-gray-400">₹10,000 / year</div>
+                <div className="font-bold text-gray-900 mb-1">Vendor Subscription</div>
+                <div className="text-sm text-gray-500 font-medium">₹10,000 / year</div>
               </div>
-              <button className="bhulia-gold-button px-4 py-2 text-sm rounded">Renew Now</button>
+              <button className="bg-[#1f2937] text-white px-6 py-2.5 text-sm font-bold rounded-xl hover:bg-black transition-colors shadow-sm">Renew Now</button>
             </div>
           </div>
         </div>
@@ -726,11 +737,9 @@ function VendorDashboard() {
 
 
 /* ==========================================
-   4. RESELLER DASHBOARD (DARK THEME)
+   4. RESELLER DASHBOARD
    ========================================== */
-function ResellerDashboard() {
-  const [activeTab, setActiveTab] = useState("home");
-  
+function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
   // Proxy Order State
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -761,7 +770,7 @@ function ResellerDashboard() {
       setPinCode("");
       setAddress("");
       setPaymentMethod("");
-      setActiveTab("home");
+      onTabChange("home");
     } catch (error) {
       console.error(error);
       alert("Failed to place proxy order.");
@@ -769,96 +778,127 @@ function ResellerDashboard() {
     setIsOrdering(false);
   };
 
-  const NavButton = ({ id, label }: { id: string, label: string }) => (
-    <button 
-      onClick={() => setActiveTab(id)}
-      className={`px-4 py-2 font-semibold text-sm transition-all ${activeTab === id ? "text-[#C5A059] border-b-2 border-[#C5A059]" : "text-gray-500 hover:text-gray-300"}`}
-    >
-      {label}
-    </button>
-  );
-
   return (
     <div className="space-y-6">
-      <div className="flex space-x-4 border-b border-gray-800 mb-6 overflow-x-auto custom-scrollbar">
-        <NavButton id="home" label="Home" />
-        <NavButton id="curation" label="Store Curation" />
-        <NavButton id="proxy" label="Proxy Orders" />
-        <NavButton id="wallet" label="Commissions" />
-        <NavButton id="verification" label="Verification" />
-      </div>
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Reseller Hub</h1>
+          <p className="text-gray-500 mt-2 font-medium">Curate products and place proxy orders for your customers.</p>
+        </div>
+      </header>
       
       {activeTab === "home" && (
         <div className="space-y-6 animate-in fade-in">
-          <div className="bg-yellow-900/30 border border-yellow-700/50 p-4 rounded-lg flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-yellow-600/20 flex items-center justify-center text-yellow-500">⏳</div>
+          <div className="bg-orange-50 border border-orange-200 p-6 rounded-2xl flex items-start gap-4">
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-orange-500 text-xl shadow-sm shrink-0">⏳</div>
             <div>
-              <h3 className="font-bold text-yellow-500">Activation Pending</h3>
-              <p className="text-sm text-yellow-200/70">Our staff will contact you shortly to verify your identity and activate your storefront link.</p>
+              <h3 className="font-bold text-gray-900 text-lg">Activation Pending</h3>
+              <p className="text-sm text-gray-600 mt-1">Our staff will contact you shortly to verify your identity and activate your storefront link.</p>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bhulia-premium-card p-6 border-l-4 border-l-[#C5A059]">
-              <div className="text-sm text-gray-400 mb-1">Wallet Balance</div>
-              <div className="text-3xl font-display bhulia-gold-text">₹0</div>
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">My Curated Products</h3>
+              <div className="text-3xl font-black text-gray-900">0</div>
             </div>
-            <div className="bhulia-premium-card p-6 border-l-4 border-l-blue-500">
-              <div className="text-sm text-gray-400 mb-1">Curated Products on Shelf</div>
-              <div className="text-3xl font-display text-white">0</div>
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Commission Earned</h3>
+              <div className="text-3xl font-black text-green-600">₹0</div>
             </div>
           </div>
         </div>
       )}
 
       {activeTab === "curation" && (
-        <div className="bhulia-premium-card p-8 animate-in fade-in">
-          <div className="flex justify-between items-end mb-6">
-            <div>
-              <h2 className="text-2xl font-display bhulia-gold-text">Curate Your Shelf</h2>
-              <p className="text-sm text-gray-400 mt-1">Select global products to feature on your personal Reseller link.</p>
-            </div>
-            <div className="flex gap-2">
-              <select className="bg-[#051815] border border-gray-700 text-sm text-white p-2 rounded"><option>Category</option></select>
-              <select className="bg-[#051815] border border-gray-700 text-sm text-white p-2 rounded"><option>Price</option></select>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-gray-800">
-            <div className="bg-[#051815] border border-gray-800 p-8 rounded-xl text-center text-gray-500 col-span-full">Global catalog is currently empty.</div>
-          </div>
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 animate-in fade-in">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Curate Products</h2>
+          <p className="text-gray-500 mb-8 font-medium">Browse the master catalog and select products to display on your personal link.</p>
+          <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium">No products in catalog yet.</div>
         </div>
       )}
-      
+
       {activeTab === "proxy" && (
-        <div className="bhulia-premium-card p-8 max-w-2xl animate-in fade-in">
-          <h2 className="text-xl font-display bhulia-gold-text mb-6">Place Proxy Order</h2>
-          <form className="space-y-4" onSubmit={handleProxyOrder}>
-             <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder="Customer Full Name" className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white" required />
-             <input type="text" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} placeholder="Customer Phone (For payment link)" className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white" required />
-             <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="Delivery PIN Code" className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white" required />
-             <textarea value={address} onChange={e => setAddress(e.target.value)} placeholder="Complete Delivery Address" rows={3} className="w-full bg-[#051815] border border-gray-700 rounded p-3 text-white" required></textarea>
-             
-             <div className="pt-4">
-               <label className="block text-sm text-gray-400 mb-2">Select Payment Method</label>
-               <div className="flex gap-4">
-                 <label className="flex items-center gap-2 text-white bg-[#0B2B26] p-3 rounded border border-gray-700 flex-1 cursor-pointer hover:border-[#C5A059]">
-                   <input type="radio" name="payment" value="online" checked={paymentMethod === 'online'} onChange={e => setPaymentMethod(e.target.value)} required /> Send Online Link
-                 </label>
-                 <label className="flex items-center gap-2 text-white bg-[#0B2B26] p-3 rounded border border-gray-700 flex-1 cursor-pointer hover:border-[#C5A059]">
-                   <input type="radio" name="payment" value="cash" checked={paymentMethod === 'cash'} onChange={e => setPaymentMethod(e.target.value)} required /> Cash Received
-                 </label>
-               </div>
-             </div>
-             
-             <button type="submit" disabled={isOrdering} className="bhulia-gold-button w-full py-4 rounded font-bold tracking-wider mt-4 disabled:opacity-50">
-               {isOrdering ? "Writing to Database..." : "LOCK ORDER"}
-             </button>
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Place Proxy Order</h2>
+          <form className="space-y-6" onSubmit={handleProxyOrder}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Customer Full Name</label>
+                <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Customer WhatsApp/Phone</label>
+                <input type="tel" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Shipping Address</label>
+              <textarea rows={3} value={address} onChange={e => setAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required></textarea>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
+                <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Payment Method</label>
+                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required>
+                  <option value="">Select Method</option>
+                  <option value="UPI">Send UPI Link to Customer</option>
+                  <option value="COD">Cash on Delivery (₹100 Extra)</option>
+                  <option value="PREPAID">I will pay now (Prepaid)</option>
+                </select>
+              </div>
+            </div>
+            <div className="bg-blue-50 p-5 rounded-2xl border border-blue-100 flex items-start gap-4">
+              <span className="text-xl">ℹ️</span>
+              <p className="text-sm text-blue-800 font-medium">Proxy orders are shipped in your name. The customer will not see Bhulia.com pricing, ensuring your markup is protected.</p>
+            </div>
+            <button type="submit" disabled={isOrdering} className="w-full bg-[#E57138] text-white font-bold py-3.5 rounded-xl disabled:opacity-50 hover:bg-[#D56128] transition-colors shadow-sm mt-4">
+              {isOrdering ? "Securing Order..." : "Place Proxy Order"}
+            </button>
           </form>
         </div>
       )}
 
-      {(activeTab === "wallet" || activeTab === "verification") && (
-        <div className="bhulia-premium-card p-8 text-center text-gray-500 animate-in fade-in">
-          {activeTab === "wallet" ? "No commissions earned yet." : "KYC Verification module loading..."}
+      {activeTab === "wallet" && (
+        <div className="space-y-6 animate-in fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Unsettled Commissions</div>
+              <div className="text-3xl font-black text-gray-900">₹0</div>
+            </div>
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Settled Payouts</div>
+              <div className="text-3xl font-black text-green-600">₹0</div>
+            </div>
+          </div>
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+            <h3 className="font-bold text-gray-900 mb-4">Bank Details</h3>
+            <p className="text-sm text-gray-500 font-medium">No bank account linked. Please add your bank details for automated payouts.</p>
+            <button className="mt-6 px-6 py-2.5 border border-gray-200 text-gray-900 font-bold rounded-xl hover:bg-gray-50 transition-colors">Add Bank Account</button>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "verification" && (
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-3xl animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-8">Identity & Tier</h2>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
+              <div>
+                <div className="font-bold text-gray-900 mb-1">Reseller KYC</div>
+                <div className="text-sm text-gray-500 font-medium">Aadhaar / PAN</div>
+              </div>
+              <span className="px-4 py-1.5 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-full text-xs font-bold">Pending Review</span>
+            </div>
+            <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
+              <div>
+                <div className="font-bold text-gray-900 mb-1">Current Tier</div>
+                <div className="text-sm text-gray-500 font-medium">Standard Reseller (10% Margin)</div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
