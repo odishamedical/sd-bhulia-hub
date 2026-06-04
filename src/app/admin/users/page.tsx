@@ -461,51 +461,34 @@ export default function UserManagementPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-bold text-gray-500 mb-1.5 block">Country</label>
-                    <select value={newUserCountry} onChange={e => setNewUserCountry(e.target.value)} disabled={newUserRole === 'weaver'} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none disabled:opacity-50">
-                      <option value="India">India</option>
-                      <option value="USA">USA</option>
-                      <option value="UK">UK</option>
-                      <option value="UAE">UAE</option>
-                    </select>
+                    {newUserRole === 'weaver' ? (
+                      <input type="text" value="India" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-sm font-medium outline-none opacity-60" />
+                    ) : (
+                      <input type="text" value={newUserCountry} onChange={e => setNewUserCountry(e.target.value)} placeholder="e.g. India, USA" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                    )}
                   </div>
                   <div>
                     <label className="text-xs font-bold text-gray-500 mb-1.5 block">State</label>
-                    <select value={newUserState} onChange={e => setNewUserState(e.target.value)} disabled={newUserRole === 'weaver'} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none disabled:opacity-50">
-                      {newUserRole === 'weaver' ? (
-                        <option value="Odisha">Odisha</option>
-                      ) : (
-                        <>
-                          <option value="">Select State</option>
-                          {allStates.map(s => <option key={s} value={s}>{s}</option>)}
-                          <option value="Maharashtra">Maharashtra</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="Karnataka">Karnataka</option>
-                          <option value="Tamil Nadu">Tamil Nadu</option>
-                          <option value="Odisha">Odisha</option>
-                        </>
-                      )}
-                    </select>
+                    {newUserRole === 'weaver' ? (
+                      <input type="text" value="Odisha" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-sm font-medium outline-none opacity-60" />
+                    ) : (
+                      <input type="text" value={newUserState} onChange={e => setNewUserState(e.target.value)} placeholder="e.g. Maharashtra, California" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                    )}
                   </div>
                 </div>
 
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">District / City</label>
-                  <select value={newUserDistrict} onChange={e => setNewUserDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
-                    <option value="">Select District</option>
-                    {newUserRole === 'weaver' ? (
-                      // Only allow GI-Approved Sambalpuri Districts
-                      ["Bargarh", "Sonepur", "Sambalpur", "Bolangir", "Nuapada", "Boudh", "Jharsuguda"].map(d => (
+                  {newUserRole === 'weaver' ? (
+                    <select value={newUserDistrict} onChange={e => setNewUserDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                      <option value="">Select District</option>
+                      {["Bargarh", "Sonepur", "Sambalpur", "Bolangir", "Nuapada", "Boudh", "Jharsuguda"].map(d => (
                         <option key={d} value={d}>{d} (GI-Approved)</option>
-                      ))
-                    ) : (
-                      <>
-                        {allDistricts.map(d => <option key={d} value={d}>{d}</option>)}
-                        <option value="Mumbai">Mumbai</option>
-                        <option value="New Delhi">New Delhi</option>
-                        <option value="Bangalore">Bangalore</option>
-                      </>
-                    )}
-                  </select>
+                      ))}
+                    </select>
+                  ) : (
+                    <input type="text" value={newUserDistrict} onChange={e => setNewUserDistrict(e.target.value)} placeholder="e.g. Mumbai, New York" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                  )}
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
