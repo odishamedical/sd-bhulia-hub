@@ -3,8 +3,15 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/franchise/dashboard") || pathname?.startsWith("/admin") || pathname?.startsWith("/dashboard")) {
+    return null;
+  }
+
   return (
     <footer className="w-full bg-[#051815] border-t border-[#C5A059]/40 text-white py-8 px-6 z-50 relative shadow-[0_-4_30px_rgba(0,0,0,0.6)] mt-auto font-sans">
       <div className="max-w-[1400px] mx-auto flex flex-col gap-6 md:gap-8">

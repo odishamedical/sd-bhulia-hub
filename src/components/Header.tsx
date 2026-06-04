@@ -16,7 +16,7 @@ export default function Header() {
   const pathname = usePathname();
 
   // Hide the global public header on the dashboard page so we don't get double headers
-  if (pathname?.startsWith("/franchise/dashboard")) {
+  if (pathname?.startsWith("/franchise/dashboard") || pathname?.startsWith("/admin") || pathname?.startsWith("/dashboard")) {
     return null;
   }
 

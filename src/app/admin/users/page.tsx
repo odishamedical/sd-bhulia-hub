@@ -18,6 +18,10 @@ export default function UserManagementPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
   const [broadcastMessage, setBroadcastMessage] = useState("");
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [newUserRole, setNewUserRole] = useState("customer");
+  const [newUserDuration, setNewUserDuration] = useState("permanent");
+  const [newUserStockLimit, setNewUserStockLimit] = useState("limited");
 
   // Generate unified mock users from ecosystem data
   const users = useMemo(() => {
@@ -114,6 +118,11 @@ export default function UserManagementPage() {
     setBroadcastMessage("");
   };
 
+  const handleCreateUser = () => {
+    alert(`User Created!\nRole: ${newUserRole}\nDuration: ${newUserDuration}\nStock Access: ${newUserStockLimit}\n\nNote: This is simulated in the mock environment.`);
+    setShowAddUserModal(false);
+  };
+
   return (
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -122,6 +131,13 @@ export default function UserManagementPage() {
           <p className="text-gray-500 mt-2 font-medium">Unified management for Customers, Weavers, and Retail Shops.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          <button 
+            onClick={() => setShowAddUserModal(true)}
+            className="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm flex items-center gap-2"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+            Add New User
+          </button>
           <button 
             onClick={() => setShowBroadcastModal(true)}
             disabled={filteredUsers.length === 0}
@@ -300,6 +316,48 @@ export default function UserManagementPage() {
             <div className="flex justify-end gap-3">
               <button onClick={() => setShowBroadcastModal(false)} className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all">Cancel</button>
               <button onClick={handleSendBroadcast} className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all shadow-sm">Send Broadcast</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAddUserModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-xl shadow-2xl border border-gray-100">
+            <h3 className="text-2xl font-black text-gray-900 mb-6">Create New Ecosystem User</h3>
+            
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="text-xs font-bold text-gray-500 mb-1.5 block">User Role</label>
+                <select value={newUserRole} onChange={e => setNewUserRole(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                  <option value="customer">Retail Customer</option>
+                  <option value="weaver">Sambalpuri Weaver</option>
+                  <option value="shop">B2B Franchise Shop</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 mb-1.5 block">Account Duration</label>
+                <select value={newUserDuration} onChange={e => setNewUserDuration(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                  <option value="permanent">Permanent / Standard</option>
+                  <option value="temporary">Temporary (30-day trial/event access)</option>
+                </select>
+              </div>
+
+              {newUserRole !== 'customer' && (
+                <div>
+                  <label className="text-xs font-bold text-gray-500 mb-1.5 block">Stock & Inventory Limits (For Weavers/Shops)</label>
+                  <select value={newUserStockLimit} onChange={e => setNewUserStockLimit(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                    <option value="limited">Limited (Up to 50 active SKUs)</option>
+                    <option value="unlimited">Unlimited (Enterprise / Certified Master Weaver)</option>
+                  </select>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+              <button onClick={() => setShowAddUserModal(false)} className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all">Cancel</button>
+              <button onClick={handleCreateUser} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm">Create Profile</button>
             </div>
           </div>
         </div>
