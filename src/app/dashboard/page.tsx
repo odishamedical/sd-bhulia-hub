@@ -704,7 +704,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Inventory</h3>
-            <div className="text-3xl font-black text-gray-900">0</div>
+            <div className="text-3xl font-black text-gray-900">{vendorProducts.length}</div>
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Wallet Balance</h3>
@@ -712,7 +712,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Orders</h3>
-            <div className="text-3xl font-black text-gray-900">0</div>
+            <div className="text-3xl font-black text-gray-900">{vendorOrders.length}</div>
           </div>
         </div>
       )}
