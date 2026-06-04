@@ -576,7 +576,7 @@ export default function UserManagementPage() {
                       <option value="customer">Retail Customer</option>
                       <option value="reseller">Reseller (Marketing Agent)</option>
                       <option value="weaver">Sambalpuri Weaver</option>
-                      <option value="shop">B2B Franchise Shop</option>
+                      <option value="shop">Shop</option>
                     </select>
                   </div>
                   <div>
