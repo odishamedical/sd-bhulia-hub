@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addStore, addCustomer, addReseller } from "@/lib/db-hooks";
+import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addStore, addCustomer, addReseller, deleteUserRecord } from "@/lib/db-hooks";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers();
@@ -296,7 +296,27 @@ export default function UserManagementPage() {
       setNewUserEmail("");
       setNewUserWhatsapp("");
     } catch (e) {
-      alert("Database error: Could not save profile.");
+      alert("Error adding customer to database.");
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!selectedUserForDetails) return;
+    
+    // Prevent accidental deletion of super admins
+    if (selectedUserForDetails.role === "super_admin") {
+      return alert("Action denied: Cannot delete super administrator account.");
+    }
+
+    const confirmDelete = window.confirm(`Are you sure you want to permanently delete ${selectedUserForDetails.name}? This action cannot be undone.`);
+    if (!confirmDelete) return;
+
+    const res = await deleteUserRecord(selectedUserForDetails.role, selectedUserForDetails.id);
+    if (res.success) {
+      alert(`${selectedUserForDetails.name} has been successfully deleted.`);
+      setSelectedUserForDetails(null);
+    } else {
+      alert(`Failed to delete user. They might be a mock data record or there was a server error.`);
     }
   };
 
@@ -758,6 +778,9 @@ export default function UserManagementPage() {
               )}
               <button onClick={() => window.open(`https://api.whatsapp.com/send?phone=${selectedUserForDetails.whatsapp.replace(/[^0-9]/g,'')}`, '_blank')} className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all shadow-sm">
                 Chat on WhatsApp
+              </button>
+              <button onClick={handleDeleteUser} className="px-5 py-2.5 bg-red-50 text-red-600 border border-red-100 rounded-xl text-sm font-bold hover:bg-red-600 hover:text-white transition-all shadow-sm ml-auto">
+                Delete Account
               </button>
             </div>
           </div>
