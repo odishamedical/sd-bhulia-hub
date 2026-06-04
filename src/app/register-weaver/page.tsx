@@ -353,7 +353,7 @@ export default function WeaverRegistrationPage() {
       phone: formData.contactNumber,
       whatsapp: formData.whatsappNumber,
       address: formData.address,
-      tier: formData.tier,
+      tier: formData.tier as "Master",
       status: "pending_approval" as const,
       layoutConfig: {
         sidebarPosition: "Left" as const,
