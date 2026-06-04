@@ -61,14 +61,8 @@ export default function UserMenu() {
                 const role = localStorage.getItem("sd_current_user_role");
                 if (role === "super_admin") {
                   router.push('/admin'); 
-                } else if (role === "franchisee") {
-                  router.push('/franchise/dashboard');
-                } else if (role === "store") {
-                  router.push('/store/dashboard');
-                } else if (role === "weaver") {
-                  router.push('/weaver/dashboard');
                 } else {
-                  router.push('/profile');
+                  router.push('/dashboard');
                 }
               }} 
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-all text-left group"
@@ -92,7 +86,7 @@ export default function UserMenu() {
                 if (role === "super_admin") {
                   router.push('/admin?tab=notifications'); 
                 } else {
-                  router.push('/profile');
+                  router.push('/dashboard');
                 }
               }} className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-white/5 transition-all text-left group">
               <div className="flex items-center gap-3">
