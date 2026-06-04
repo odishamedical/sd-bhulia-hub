@@ -799,6 +799,14 @@ export default function UserManagementPage() {
                 Chat on WhatsApp
               </button>
               <div className="ml-auto flex gap-2">
+                <button onClick={() => {
+                  localStorage.setItem("sd_view_as_uid", selectedUserForDetails.id);
+                  localStorage.setItem("sd_view_as_role", selectedUserForDetails.role);
+                  localStorage.setItem("sd_view_as_name", selectedUserForDetails.name);
+                  window.open('/dashboard', '_blank');
+                }} className="px-5 py-2.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-xl text-sm font-bold hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                  View Dashboard As User
+                </button>
                 <button onClick={handleSuspendUser} className="px-5 py-2.5 bg-orange-50 text-orange-600 border border-orange-100 rounded-xl text-sm font-bold hover:bg-orange-600 hover:text-white transition-all shadow-sm">
                   Suspend & Block
                 </button>

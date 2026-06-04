@@ -21,6 +21,7 @@ export default function DashboardPage() {
   const [userName, setUserName] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("home");
+  const [isViewAsMode, setIsViewAsMode] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -30,8 +31,20 @@ export default function DashboardPage() {
         try {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
-            setRole(userDoc.data().role);
-            setUserName(userDoc.data().name || user.email?.split("@")[0] || "User");
+            const actualRole = userDoc.data().role;
+            const viewAsUid = localStorage.getItem("sd_view_as_uid");
+            const viewAsRole = localStorage.getItem("sd_view_as_role");
+            const viewAsName = localStorage.getItem("sd_view_as_name");
+            
+            if (actualRole === "super_admin" && viewAsUid && viewAsRole) {
+              setRole(viewAsRole);
+              setUserName(viewAsName || "Viewing User");
+              setIsViewAsMode(true);
+            } else {
+              setRole(actualRole);
+              setUserName(userDoc.data().name || user.email?.split("@")[0] || "User");
+              setIsViewAsMode(false);
+            }
           } else {
             setRole("onboarding");
           }
@@ -124,6 +137,27 @@ export default function DashboardPage() {
       activeTab={activeTab}
       onTabChange={setActiveTab}
     >
+      {isViewAsMode && (
+        <div className="bg-blue-600 text-white p-3 rounded-xl mb-6 flex justify-between items-center shadow-lg animate-in fade-in slide-in-from-top-4">
+          <div className="flex items-center gap-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span className="font-bold text-sm">Super Admin View-As Mode:</span>
+            <span className="text-sm font-medium">You are viewing {userName}'s Dashboard. Actions taken here may affect their account.</span>
+          </div>
+          <button 
+            onClick={() => {
+              localStorage.removeItem("sd_view_as_uid");
+              localStorage.removeItem("sd_view_as_role");
+              localStorage.removeItem("sd_view_as_name");
+              window.location.reload();
+            }}
+            className="px-4 py-1.5 bg-white text-blue-700 text-xs font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors"
+          >
+            Exit View As
+          </button>
+        </div>
+      )}
+
       {isCustomer && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "vendor" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
