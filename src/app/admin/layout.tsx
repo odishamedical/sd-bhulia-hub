@@ -41,7 +41,8 @@ const SIDEBAR_CATEGORIES = [
     badgeId: "products",
     subLinks: [
       { name: "GI-Tag Audit", path: "/admin/products/audit" },
-      { name: "Live Saree DB", path: "/admin/products/live" },
+      { name: "Product Catalog", path: "/admin/products" },
+      { name: "Live Inventory DB", path: "/admin/products/live" },
       { name: "Low Stock Alerts", path: "/admin/products/stock" },
     ]
   },
