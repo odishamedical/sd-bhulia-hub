@@ -49,11 +49,11 @@ export default function MobileBottomNav() {
         </Link>
 
         {/* Profile */}
-        <Link href="/profile" className="flex flex-col items-center justify-center w-16 h-full text-center relative group">
-          <svg className={`w-6 h-6 mb-1 transition-all ${pathname === "/profile" ? "text-[#C5A059]" : "text-gray-400 group-hover:text-gray-200"}`} fill={pathname === "/profile" ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" strokeWidth={pathname === "/profile" ? "0" : "2"}>
+        <Link href="/dashboard" className="flex flex-col items-center justify-center w-16 h-full text-center relative group">
+          <svg className={`w-6 h-6 mb-1 transition-all ${pathname === "/dashboard" ? "text-[#C5A059]" : "text-gray-400 group-hover:text-gray-200"}`} fill={pathname === "/dashboard" ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" strokeWidth={pathname === "/dashboard" ? "0" : "2"}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
-          <span className={`text-[10px] font-bold tracking-wider ${pathname === "/profile" ? "text-[#C5A059]" : "text-gray-400"}`}>Profile</span>
+          <span className={`text-[10px] font-bold tracking-wider ${pathname === "/dashboard" ? "text-[#C5A059]" : "text-gray-400"}`}>Dashboard</span>
         </Link>
 
       </div>

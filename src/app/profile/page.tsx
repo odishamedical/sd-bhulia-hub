@@ -129,6 +129,8 @@ function ProfileContent() {
     };
 
     fetchProfile();
+    // FORCE REDIRECT TO UNIFIED DASHBOARD
+    router.replace("/dashboard");
   }, [user, intent, router]);
 
   const handleSaveProfile = async (e: React.FormEvent) => {
