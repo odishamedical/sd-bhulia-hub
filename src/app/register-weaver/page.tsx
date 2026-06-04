@@ -139,7 +139,7 @@ export default function WeaverRegistrationPage() {
     bankName: "",
     consentAuthentic: false,
     consentTerms: false,
-    tier: "Silver" as "Silver" | "Gold" | "Diamond"
+    tier: "Master"
   });
 
   
@@ -480,28 +480,15 @@ export default function WeaverRegistrationPage() {
 
                   {/* Tier Selection */}
                   <div className="space-y-2 mb-4">
-                    <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block">Select Weaving Tier</label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {[
-                        { id: "Silver", name: "Silver (Free)", price: "Free", desc: "Simple profile, hidden phone, automatic URL." },
-                        { id: "Gold", name: "Gold (Rs 1,500/yr)", price: "Rs 1,500", desc: "Custom URL choice, upload 5 images, verified seal." },
-                        { id: "Diamond", name: "Diamond (Rs 2,000/yr)", price: "Rs 2,000", desc: "Gold features + place products in stores." }
-                      ].map((t) => {
-                        const selected = formData.tier === t.id;
-                        return (
-                          <div 
-                            key={t.id}
-                            onClick={() => setFormData(prev => ({ ...prev, tier: t.id as any }))}
-                            className={`border rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between ${selected ? "bg-[#0A3A35] border-[#C5A059] text-white" : "border-[#C5A059]/20 bg-[#051815]/50 text-gray-300 hover:border-[#C5A059]"}`}
-                          >
-                            <div>
-                              <p className="text-xs font-bold text-[#C5A059]">{t.name}</p>
-                              <p className="text-[10px] text-gray-300 mt-1 leading-relaxed">{t.desc}</p>
-                            </div>
-                            <span className="text-[10px] font-mono text-[#C5A059] font-bold mt-2 block">{t.price}</span>
-                          </div>
-                        );
-                      })}
+                    <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block">Weaving Tier</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
+                      <div className="bg-[#0A3A35] border border-[#C5A059] text-white rounded-xl p-4 flex flex-col justify-between">
+                        <div>
+                          <p className="text-sm font-bold text-[#C5A059]">Master Weaver (Rs 5,000/yr)</p>
+                          <p className="text-xs text-gray-300 mt-2 leading-relaxed">Full access to Bhulia Hub, custom URL, unlimited product uploads, GI-tag verification, escrow protection, and direct D2C logistics support.</p>
+                        </div>
+                        <span className="text-xs font-mono text-[#C5A059] font-bold mt-4 block">Rs 5,000</span>
+                      </div>
                     </div>
                   </div>
 

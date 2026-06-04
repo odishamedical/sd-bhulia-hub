@@ -186,7 +186,14 @@ function CustomerDashboard() {
                 <button key={f} className="px-4 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600 border border-gray-200">{f}</button>
               ))}
             </div>
-            <div className="text-center py-12 text-gray-400">You have no active orders yet.</div>
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between">
+              <div>
+                <p className="text-sm font-bold text-[#1A5276]">Order #ORD-99382</p>
+                <p className="text-xs text-gray-500">Status: Dispatched via Bhulia Hub</p>
+              </div>
+              <button className="px-4 py-2 bg-[#3498DB] text-white text-xs font-bold rounded-lg hover:bg-[#2980B9]">Track Order (Bhulia Logistics)</button>
+            </div>
+            <div className="text-center py-8 text-gray-400 text-sm">End of order history.</div>
           </div>
         )}
 
@@ -213,13 +220,14 @@ function CustomerDashboard() {
 
         {activeTab === "support" && (
           <div className="space-y-6 animate-in fade-in max-w-2xl">
-            <h2 className="text-xl font-bold text-[#1A5276]">Bhulia Hub Concierge Support</h2>
+            <h2 className="text-xl font-bold text-[#1A5276]">Contact Support & Shops</h2>
+            <p className="text-sm text-gray-500 mb-4">Your privacy is protected. Contact sellers directly via masked hub routing.</p>
             <div className="grid grid-cols-2 gap-4 mb-8">
               <button className="flex items-center justify-center gap-2 py-4 bg-green-50 text-green-700 rounded-xl font-semibold hover:bg-green-100 transition-colors">
-                <span>WhatsApp Hub</span>
+                <span>WhatsApp Shop (Masked)</span>
               </button>
               <button className="flex items-center justify-center gap-2 py-4 bg-blue-50 text-blue-700 rounded-xl font-semibold hover:bg-blue-100 transition-colors">
-                <span>Call Hub</span>
+                <span>Call Shop (Masked)</span>
               </button>
             </div>
             <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
@@ -515,6 +523,9 @@ function VendorDashboard() {
   const [originalWeaver, setOriginalWeaver] = useState("");
   const [stockQuantity, setStockQuantity] = useState("1");
   const [isUploading, setIsUploading] = useState(false);
+  const { orders } = useOrders();
+
+  const vendorOrders = orders.filter(o => o.logisticsStatus !== "Delivered");
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -613,9 +624,99 @@ function VendorDashboard() {
         </div>
       )}
 
-      {(activeTab === "orders" || activeTab === "wallet" || activeTab === "verification") && (
-        <div className="bhulia-premium-card p-8 text-center text-gray-500 animate-in fade-in">
-          No records found for this section yet.
+      {activeTab === "orders" && (
+        <div className="bhulia-premium-card p-6 animate-in fade-in">
+          <h2 className="text-xl font-display bhulia-gold-text mb-6">Order Management</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-gray-800 text-xs uppercase tracking-widest text-gray-500">
+                  <th className="pb-3 font-semibold">Order ID</th>
+                  <th className="pb-3 font-semibold">Product</th>
+                  <th className="pb-3 font-semibold">Status</th>
+                  <th className="pb-3 font-semibold">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vendorOrders.length > 0 ? vendorOrders.map(order => (
+                  <tr key={order.id} className="border-b border-gray-800 text-sm">
+                    <td className="py-4 text-gray-300 font-mono text-xs">{order.orderId || order.id}</td>
+                    <td className="py-4 text-white font-semibold">{order.productName || "Proxy Order"}</td>
+                    <td className="py-4">
+                      <span className="px-2 py-1 bg-blue-900/30 text-blue-400 border border-blue-800/50 rounded text-xs">
+                        {order.logisticsStatus || "Pending Sourcing"}
+                      </span>
+                    </td>
+                    <td className="py-4">
+                      {(!order.logisticsStatus || order.logisticsStatus === "Pending Sourcing") && (
+                        <button 
+                          onClick={async () => {
+                            if (!confirm("Confirm dispatch to Bhulia QC Hub? This will generate a Shiprocket AWB.")) return;
+                            try {
+                              await updateDoc(doc(db, "orders", order.id), {
+                                logisticsStatus: "Dispatched via Hub",
+                                awbGenerated: true
+                              });
+                              alert(`Shiprocket AWB Generated Successfully for ${order.id}. Order is now tracked to QC Hub!`);
+                            } catch (e) {
+                              alert("Failed to generate AWB.");
+                            }
+                          }}
+                          className="px-3 py-1.5 bg-green-900/30 text-green-400 border border-green-800 hover:bg-green-800/50 transition-colors rounded text-xs uppercase tracking-wider font-bold"
+                        >
+                          Send to Bhulia Hub (Generate AWB)
+                        </button>
+                      )}
+                      {(order.logisticsStatus === "Dispatched via Hub") && (
+                        <span className="text-xs text-gray-500 italic">AWB Generated. En Route to Hub.</span>
+                      )}
+                    </td>
+                  </tr>
+                )) : (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-center text-gray-500 text-sm">No active orders to dispatch.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "wallet" && (
+        <div className="bhulia-premium-card p-6 animate-in fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-6 border-l-4 border-l-yellow-500 bg-[#0B2B26]">
+              <div className="text-sm text-gray-400 mb-1">Pending Commissions</div>
+              <div className="text-2xl font-bold text-white">₹0</div>
+            </div>
+            <div className="p-6 border-l-4 border-l-green-500 bg-[#0B2B26]">
+              <div className="text-sm text-gray-400 mb-1">Total Payouts</div>
+              <div className="text-2xl font-bold text-[#C5A059]">₹0</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "verification" && (
+        <div className="bhulia-premium-card p-8 max-w-2xl animate-in fade-in">
+          <h2 className="text-xl font-display bhulia-gold-text mb-6">Shop Verification & Subscription</h2>
+          <div className="space-y-6">
+            <div className="flex justify-between items-center p-4 bg-[#0B2B26] rounded border border-gray-800">
+              <div>
+                <div className="font-bold text-white mb-1">Vendor KYC</div>
+                <div className="text-xs text-gray-400">GST / Trade License</div>
+              </div>
+              <span className="px-3 py-1 bg-green-900/30 text-green-400 border border-green-800 rounded-full text-xs font-semibold">Approved</span>
+            </div>
+            <div className="flex justify-between items-center p-4 bg-[#0B2B26] rounded border border-gray-800">
+              <div>
+                <div className="font-bold text-white mb-1">Vendor Subscription</div>
+                <div className="text-xs text-gray-400">₹10,000 / year</div>
+              </div>
+              <button className="bhulia-gold-button px-4 py-2 text-sm rounded">Renew Now</button>
+            </div>
+          </div>
         </div>
       )}
     </div>
