@@ -61,10 +61,6 @@ export default function UserMenu() {
                 const role = localStorage.getItem("sd_current_user_role");
                 if (role === "super_admin") {
                   router.push('/admin'); 
-                } else if (role === "franchisee") {
-                  router.push('/franchise/dashboard');
-                } else if (role === "store") {
-                  router.push('/store/dashboard');
                 } else {
                   router.push('/dashboard');
                 }

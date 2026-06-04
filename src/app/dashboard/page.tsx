@@ -44,28 +44,19 @@ export default function DashboardPage() {
     );
   }
 
-  // Redirect specialized roles to their dedicated dashboards
-  if (role === "franchisee") {
-    router.replace("/franchise/dashboard");
-    return null;
-  }
-  if (role === "store") {
-    router.replace("/store/dashboard");
-    return null;
-  }
-
   if (role === "onboarding") {
     return <OnboardingFlow onComplete={() => window.location.reload()} />;
   }
 
   const isCustomer = role === "customer" || role === "user" || !role;
+  const displayRole = role === "franchisee" ? "reseller" : role === "store" ? "vendor" : role;
 
   return (
     <div className={`min-h-screen ${isCustomer ? "bg-[#EBF5FB] text-gray-900" : "bg-[#051815] text-white"} p-6 transition-colors duration-300`}>
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className={`text-3xl font-display capitalize ${isCustomer ? "text-[#1A5276]" : "bhulia-gold-text"}`}>
-            {isCustomer ? "Customer" : role} Dashboard
+            {isCustomer ? "Customer" : displayRole} Dashboard
           </h1>
           <button 
             onClick={() => auth.signOut()}
@@ -77,8 +68,8 @@ export default function DashboardPage() {
 
         {isCustomer && <CustomerDashboard />}
         {role === "weaver" && <WeaverDashboard />}
-        {role === "vendor" && <VendorDashboard />}
-        {role === "reseller" && <ResellerDashboard />}
+        {(role === "vendor" || role === "store") && <VendorDashboard />}
+        {(role === "reseller" || role === "franchisee") && <ResellerDashboard />}
       </div>
     </div>
   );
