@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { useOrders } from "@/lib/db-hooks";
+import { 
+  useOrders,
+  useProducts,
+  useWeavers,
+  useStores,
+  useFranchises,
+  updateDocumentStatus
+} from "@/lib/db-hooks";
 
 import DashboardLayout, { NavItem } from "@/components/DashboardLayout";
 
@@ -54,8 +61,13 @@ export default function DashboardPage() {
   }
 
   const isCustomer = role === "customer" || role === "user" || !role;
+  const isSuperAdmin = role === "super_admin";
   const displayRole = role === "franchisee" ? "reseller" : role === "store" ? "vendor" : role;
-  const actualRole = isCustomer ? "customer" : displayRole || "customer";
+  
+  // Resolve actual role mapping
+  let actualRole = "customer";
+  if (isSuperAdmin) actualRole = "super_admin";
+  else if (!isCustomer && displayRole) actualRole = displayRole;
 
   let navItems: NavItem[] = [];
   if (isCustomer) {
@@ -67,6 +79,16 @@ export default function DashboardPage() {
       { id: "support", label: "Support", icon: "📞" },
       { id: "profile", label: "Profile Settings", icon: "⚙️" },
     ];
+  } else if (actualRole === "super_admin") {
+    navItems = [
+      { id: "overview", label: "Overview", icon: "📊" },
+      { id: "kyc", label: "KYC (Users)", icon: "🛡️" },
+      { id: "products", label: "Products", icon: "🛍️" },
+      { id: "logistics", label: "Logistics", icon: "🚚" },
+      { id: "finance", label: "Finance", icon: "💰" },
+    ];
+    // Override default tab if needed
+    if (activeTab === "home") setActiveTab("overview");
   } else if (actualRole === "weaver") {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊" },
@@ -105,6 +127,7 @@ export default function DashboardPage() {
       {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "vendor" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "reseller" && <ResellerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+      {actualRole === "super_admin" && <SuperAdminDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
     </DashboardLayout>
   );
 }
@@ -897,6 +920,343 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                 <div className="font-bold text-gray-900 mb-1">Current Tier</div>
                 <div className="text-sm text-gray-500 font-medium">Standard Reseller (10% Margin)</div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ==========================================
+   5. SUPER ADMIN DASHBOARD
+   ========================================== */
+function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
+  const { products, loading: productsLoading } = useProducts();
+  const { weavers, loading: weaversLoading } = useWeavers();
+  const { stores, loading: storesLoading } = useStores();
+  const { franchises, loading: franchisesLoading } = useFranchises();
+  const { orders, loading: ordersLoading } = useOrders();
+
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Group pending items
+  const pendingWeavers = weavers.filter(w => w.status === "pending_approval" || (w.status as string) === "pending");
+  const pendingStores = stores.filter(s => s.status === "pending_approval" || (s.status as string) === "pending");
+  const pendingFranchises = franchises.filter(f => f.status === "pending_approval" || (f.status as string) === "pending");
+  const pendingProducts = products.filter(p => p.escrowStatus === "pending_approval" || (p as any).status === "pending_approval" || (p as any).status === "pending");
+
+  const pendingList = [
+    ...pendingWeavers.map(w => ({ id: w.id, title: w.title || w.slug, type: "weavers" as const, data: w as any })),
+    ...pendingStores.map(s => ({ id: s.id, title: s.title || s.slug, type: "stores" as const, data: s as any })),
+    ...pendingFranchises.map(f => ({ id: f.id, title: f.name || f.slug, type: "franchises" as const, data: f as any })),
+    ...pendingProducts.map(p => ({ id: p.id, title: p.title, type: "products" as const, data: p as any }))
+  ];
+
+  const totalCatalogValue = products.reduce((acc, curr) => {
+    const priceStr = curr.price?.toString().replace(/[^0-9]/g, '') || "0";
+    return acc + (parseInt(priceStr) || 0);
+  }, 0);
+
+  const handleInspect = (item: any) => setSelectedItem(item);
+
+  const handleApprove = async () => {
+    if (!selectedItem) return;
+    setIsSubmitting(true);
+    const { id, type, data } = selectedItem;
+    let updates: any = { status: "approved" };
+
+    if (data.pendingChanges) {
+      updates = { ...updates, ...data.pendingChanges, pendingChanges: null };
+    }
+    if (type === "products") {
+      updates.isBhuliaVerified = true;
+      updates.status = "approved";
+    }
+
+    const res = await updateDocumentStatus(type, id, updates);
+    if (res.success) {
+      alert("Successfully verified and published to Bhulia Hub!");
+      setSelectedItem(null);
+    } else {
+      alert("Error approving changes: " + (res.error as any)?.message);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleReject = async () => {
+    if (!selectedItem) return;
+    if (!confirm("Are you sure you want to reject this item?")) return;
+    setIsSubmitting(true);
+    const { id, type, data } = selectedItem;
+    
+    let updates: any = { status: "rejected" };
+    if (data.pendingChanges) {
+      updates = { status: "approved", pendingChanges: null };
+    }
+    
+    const res = await updateDocumentStatus(type, id, updates);
+    if (res.success) {
+      alert("Application rejected.");
+      setSelectedItem(null);
+    } else {
+      alert("Error rejecting application");
+    }
+    setIsSubmitting(false);
+  };
+
+  const updateOrderStatus = async (orderId: string, statusKey: string, newValue: string) => {
+    try {
+      await updateDoc(doc(db, "orders", orderId), { [statusKey]: newValue });
+      alert(`Order ${statusKey} updated to ${newValue}`);
+    } catch (e) {
+      alert("Failed to update order status.");
+    }
+  };
+
+  return (
+    <div className="space-y-6 relative">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Super Admin Hub</h1>
+          <p className="text-gray-500 mt-2 font-medium">Manage KYC, Products, Logistics, and Escrow Finances.</p>
+        </div>
+      </header>
+
+      {activeTab === "overview" && (
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Catalog Value</h3>
+              <p className="text-3xl font-black text-gray-900">₹{totalCatalogValue.toLocaleString()}</p>
+            </div>
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Live Products</h3>
+              <p className="text-3xl font-black text-[#E57138]">{productsLoading ? "..." : products.length}</p>
+            </div>
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Verified Weavers</h3>
+              <p className="text-3xl font-black text-[#E57138]">{weaversLoading ? "..." : weavers.length}</p>
+            </div>
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Retail Stores</h3>
+              <p className="text-3xl font-black text-[#E57138]">{storesLoading ? "..." : stores.length}</p>
+            </div>
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Resellers</h3>
+              <p className="text-3xl font-black text-[#E57138]">{franchisesLoading ? "..." : franchises.length}</p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Global Action Queue</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="text-xs uppercase text-gray-500 border-b border-gray-100">
+                    <th className="pb-4 font-bold tracking-wider">Tenant / Asset</th>
+                    <th className="pb-4 font-bold tracking-wider">Category</th>
+                    <th className="pb-4 font-bold tracking-wider">Status</th>
+                    <th className="pb-4 font-bold tracking-wider text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm divide-y divide-gray-50">
+                  {pendingList.map(item => (
+                    <tr key={item.id} className="group">
+                      <td className="py-4">
+                        <div className="font-bold text-gray-900">{item.title}</div>
+                        <div className="text-xs text-gray-500">ID: {item.id}</div>
+                      </td>
+                      <td className="py-4">
+                        <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase">{item.type}</span>
+                      </td>
+                      <td className="py-4">
+                        <span className="text-[#E57138] font-bold">Pending Review</span>
+                      </td>
+                      <td className="py-4 text-right">
+                        <button onClick={() => handleInspect(item)} className="px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition-colors">Review</button>
+                      </td>
+                    </tr>
+                  ))}
+                  {pendingList.length === 0 && (
+                    <tr>
+                      <td colSpan={4} className="py-8 text-center text-gray-500 font-medium">No pending items in the queue.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "kyc" && (
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">User KYC & Verification</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-xs uppercase text-gray-500 border-b border-gray-100">
+                  <th className="pb-4 font-bold tracking-wider">User Details</th>
+                  <th className="pb-4 font-bold tracking-wider">Role</th>
+                  <th className="pb-4 font-bold tracking-wider text-right">KYC Status</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm divide-y divide-gray-50">
+                {[...pendingWeavers, ...pendingStores, ...pendingFranchises].map((user: any) => (
+                  <tr key={user.id}>
+                    <td className="py-4">
+                      <div className="font-bold text-gray-900">{user.title || user.name || user.slug}</div>
+                      <div className="text-xs text-gray-500">{user.id}</div>
+                    </td>
+                    <td className="py-4 font-bold text-gray-600 uppercase text-xs">{user.status ? "Platform User" : "Unknown"}</td>
+                    <td className="py-4 text-right">
+                      <button onClick={() => handleInspect({ id: user.id, title: user.title || user.name || user.slug, type: user.name ? "franchises" : user.title ? "stores" : "weavers", data: user })} className="px-4 py-2 border border-gray-200 text-gray-900 rounded-xl text-xs font-bold hover:bg-gray-50 transition-colors">
+                        Review KYC
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "products" && (
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Product Approvals (GI-Tag Validation)</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {pendingProducts.map(p => (
+              <div key={p.id} className="p-6 border border-gray-200 rounded-2xl flex flex-col justify-between group hover:border-[#E57138]/30 transition-colors">
+                <div>
+                  <div className="font-bold text-gray-900 mb-1">{p.title}</div>
+                  <div className="text-sm font-bold text-[#E57138] mb-6">Price: {p.price}</div>
+                </div>
+                <button onClick={() => handleInspect({ id: p.id, title: p.title, type: "products", data: p })} className="w-full py-2.5 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition-colors">
+                  Verify Handloom Authenticity
+                </button>
+              </div>
+            ))}
+            {pendingProducts.length === 0 && (
+              <div className="col-span-full py-8 text-center text-gray-500 font-medium">No products pending review.</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {activeTab === "logistics" && (
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Logistics & Order Fulfillment</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-xs uppercase text-gray-500 border-b border-gray-100">
+                  <th className="pb-4 font-bold tracking-wider">Order Details</th>
+                  <th className="pb-4 font-bold tracking-wider">Customer</th>
+                  <th className="pb-4 font-bold tracking-wider">Logistics Status</th>
+                  <th className="pb-4 font-bold tracking-wider text-right">Update</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm divide-y divide-gray-50">
+                {orders.map(order => (
+                  <tr key={order.id}>
+                    <td className="py-4">
+                      <div className="font-bold text-gray-900">{order.productName || "Proxy Order"}</div>
+                      <div className="text-xs text-gray-500">ID: {order.orderId || order.id}</div>
+                    </td>
+                    <td className="py-4">
+                      <div className="font-medium text-gray-900">{order.customerName}</div>
+                      <div className="text-xs text-gray-500">{order.customerAddress}</div>
+                    </td>
+                    <td className="py-4">
+                      <select value={order.logisticsStatus || (order as any).status || "Pending QC"} onChange={(e) => updateOrderStatus(order.id, "logisticsStatus", e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#E57138]">
+                        <option value="placed">Placed (Pending QC)</option>
+                        <option value="QC Passed">QC Passed</option>
+                        <option value="Pending Weaver Handover">Pending Weaver Handover</option>
+                        <option value="Dispatched via Hub">Dispatched via Hub</option>
+                        <option value="Delivered">Delivered</option>
+                      </select>
+                    </td>
+                    <td className="py-4 text-right">
+                      <button onClick={() => alert("Shiprocket AWB creation will pop up here.")} className="text-sm text-[#E57138] font-bold hover:underline">Generate AWB</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "finance" && (
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Escrow & Reseller Finance</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-xs uppercase text-gray-500 border-b border-gray-100">
+                  <th className="pb-4 font-bold tracking-wider">Order ID</th>
+                  <th className="pb-4 font-bold tracking-wider">Amount / Method</th>
+                  <th className="pb-4 font-bold tracking-wider">Payment Status</th>
+                  <th className="pb-4 font-bold tracking-wider text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm divide-y divide-gray-50">
+                {orders.map(order => (
+                  <tr key={order.id}>
+                    <td className="py-4 font-mono text-xs text-gray-500">{order.orderId || order.id}</td>
+                    <td className="py-4">
+                      <div className="font-bold text-[#E57138]">{order.productPrice || "TBD"}</div>
+                      <div className="text-xs font-bold text-gray-500 uppercase">{order.paymentMode || "Online"}</div>
+                    </td>
+                    <td className="py-4">
+                      <select value={order.paymentStatus || (order as any).status || "Escrow Locked"} onChange={(e) => updateOrderStatus(order.id, "paymentStatus", e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#E57138]">
+                        <option value="Escrow Locked">Escrow Locked</option>
+                        <option value="placed">Placed (Cash)</option>
+                        <option value="Payout Pending (Weaver)">Payout Pending (Weaver)</option>
+                        <option value="Settled">Fully Settled</option>
+                      </select>
+                    </td>
+                    <td className="py-4 text-right flex justify-end gap-2">
+                      <button onClick={() => alert("Initiating Weaver Razorpay Route...")} className="px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-xl text-xs font-bold">Release Escrow</button>
+                      {(order.referralId || order.proxyBuyerId || (order as any).resellerId) && (
+                        <button onClick={() => alert("Initiating Reseller Commission Payout...")} className="px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold">Pay Comm.</button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Inspector Modal */}
+      {selectedItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl border border-gray-100">
+            <div className="flex justify-between items-start border-b border-gray-100 pb-4 mb-6">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#E57138]">Ecosystem Verification</span>
+                <h3 className="text-2xl font-black text-gray-900 mt-1">Inspect: {selectedItem.title}</h3>
+              </div>
+              <button onClick={() => setSelectedItem(null)} className="p-2 bg-gray-50 text-gray-500 rounded-full hover:bg-gray-100 transition-colors">✕</button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-6 rounded-2xl border border-gray-100 mb-8">
+              {Object.keys(selectedItem.data).filter(key => key !== "id" && key !== "status" && key !== "pendingChanges" && key !== "layoutConfig").map(key => (
+                <div key={key} className="space-y-1">
+                  <span className="text-xs text-gray-500 font-bold uppercase tracking-wider block">{key}</span>
+                  <span className="text-sm font-medium text-gray-900">{String(selectedItem.data[key])}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-between gap-4">
+              <button onClick={handleReject} disabled={isSubmitting} className="px-6 py-3 border border-red-200 text-red-600 font-bold rounded-xl hover:bg-red-50 transition-colors disabled:opacity-50">Reject</button>
+              <button onClick={handleApprove} disabled={isSubmitting} className="px-8 py-3 bg-[#E57138] text-white font-bold rounded-xl hover:bg-[#D56128] transition-colors shadow-sm disabled:opacity-50">Approve & Publish</button>
             </div>
           </div>
         </div>
