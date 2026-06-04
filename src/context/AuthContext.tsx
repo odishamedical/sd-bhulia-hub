@@ -56,12 +56,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           } else if (userDocSnap.exists()) {
             const data = userDocSnap.data();
 
-            // ANTI-SPAM BLOCK: Instantly lock out suspended users
+            // ANTI-SPAM BLOCK: Instantly lock out suspended users (Shadow-ban approach)
             if (data.status === "suspended") {
               await signOut(auth);
               localStorage.clear();
               document.cookie = `bhulia-auth-token=; path=/; max-age=0`;
-              alert("Your account has been suspended for violating terms of service. You cannot access this platform.");
+              alert("We are currently experiencing a technical issue with your account synchronization. Please try again later or contact support.");
               setUser(null);
               setLoading(false);
               return;
