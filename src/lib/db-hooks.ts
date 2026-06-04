@@ -623,3 +623,32 @@ export async function deleteUserRecord(role: string, id: string) {
   }
 }
 
+export async function suspendUserRecord(role: string, id: string) {
+  try {
+    let collectionName = "";
+    if (role === "weaver") collectionName = "weavers";
+    else if (role === "shop" || role === "store") collectionName = "stores";
+    else if (role === "customer") collectionName = "customers";
+    else if (role === "reseller") collectionName = "resellers";
+    else if (role === "franchisee" || role === "franchise") collectionName = "franchises";
+    else collectionName = "users"; // Fallback to auth users collection
+
+    if (collectionName) {
+      await updateDoc(doc(db, collectionName, id), { status: "suspended" });
+    }
+    
+    // Also try to suspend their primary Auth record if it exists
+    try {
+      await updateDoc(doc(db, "users", id), { status: "suspended" });
+    } catch(e) {
+      // It's okay if they don't have a record in the 'users' mirror collection
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error(`Error suspending user from ${role}:`, error);
+    return { success: false, error };
+  }
+}
+
+

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addStore, addCustomer, addReseller, deleteUserRecord } from "@/lib/db-hooks";
+import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addStore, addCustomer, addReseller, deleteUserRecord, suspendUserRecord } from "@/lib/db-hooks";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers();
@@ -317,6 +317,25 @@ export default function UserManagementPage() {
       setSelectedUserForDetails(null);
     } else {
       alert(`Failed to delete user. They might be a mock data record or there was a server error.`);
+    }
+  };
+
+  const handleSuspendUser = async () => {
+    if (!selectedUserForDetails) return;
+    
+    if (selectedUserForDetails.role === "super_admin") {
+      return alert("Action denied: Cannot suspend super administrator account.");
+    }
+
+    const confirmSuspend = window.confirm(`Are you sure you want to SUSPEND ${selectedUserForDetails.name}? They will be immediately blocked from logging in or registering again.`);
+    if (!confirmSuspend) return;
+
+    const res = await suspendUserRecord(selectedUserForDetails.role, selectedUserForDetails.id);
+    if (res.success) {
+      alert(`${selectedUserForDetails.name} has been successfully suspended and blacklisted.`);
+      setSelectedUserForDetails(null);
+    } else {
+      alert(`Failed to suspend user.`);
     }
   };
 
@@ -779,9 +798,14 @@ export default function UserManagementPage() {
               <button onClick={() => window.open(`https://api.whatsapp.com/send?phone=${selectedUserForDetails.whatsapp.replace(/[^0-9]/g,'')}`, '_blank')} className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all shadow-sm">
                 Chat on WhatsApp
               </button>
-              <button onClick={handleDeleteUser} className="px-5 py-2.5 bg-red-50 text-red-600 border border-red-100 rounded-xl text-sm font-bold hover:bg-red-600 hover:text-white transition-all shadow-sm ml-auto">
-                Delete Account
-              </button>
+              <div className="ml-auto flex gap-2">
+                <button onClick={handleSuspendUser} className="px-5 py-2.5 bg-orange-50 text-orange-600 border border-orange-100 rounded-xl text-sm font-bold hover:bg-orange-600 hover:text-white transition-all shadow-sm">
+                  Suspend & Block
+                </button>
+                <button onClick={handleDeleteUser} className="px-5 py-2.5 bg-red-50 text-red-600 border border-red-100 rounded-xl text-sm font-bold hover:bg-red-600 hover:text-white transition-all shadow-sm">
+                  Delete Account
+                </button>
+              </div>
             </div>
           </div>
         </div>

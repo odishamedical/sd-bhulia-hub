@@ -55,6 +55,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
           } else if (userDocSnap.exists()) {
             const data = userDocSnap.data();
+
+            // ANTI-SPAM BLOCK: Instantly lock out suspended users
+            if (data.status === "suspended") {
+              await signOut(auth);
+              localStorage.clear();
+              document.cookie = `bhulia-auth-token=; path=/; max-age=0`;
+              alert("Your account has been suspended for violating terms of service. You cannot access this platform.");
+              setUser(null);
+              setLoading(false);
+              return;
+            }
+
             if (data.role) {
               localStorage.setItem("sd_current_user_role", data.role);
             } else {
