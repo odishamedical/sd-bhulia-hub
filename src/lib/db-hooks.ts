@@ -18,7 +18,7 @@ export interface Weaver {
   phone: string;
   whatsapp: string;
   address: string;
-  tier: "Silver" | "Gold" | "Diamond";
+  tier: "Silver" | "Gold" | "Diamond" | "Master";
   status: "pending_approval" | "approved";
   layoutConfig?: {
     sidebarPosition: "Left" | "Right" | "Hidden";
