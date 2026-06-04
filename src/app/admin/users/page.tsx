@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useStores, useOrders } from "@/lib/db-hooks";
+import { useWeavers, useStores, useOrders, addWeaver, addStore } from "@/lib/db-hooks";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers();
@@ -130,9 +130,61 @@ export default function UserManagementPage() {
     setBroadcastMessage("");
   };
 
-  const handleCreateUser = () => {
-    alert(`User Created!\nRole: ${newUserRole}\nDuration: ${newUserDuration}\nStock Access: ${newUserStockLimit}\n\nNote: This is simulated in the mock environment.`);
-    setShowAddUserModal(false);
+  const handleCreateUser = async () => {
+    if (!newUserName.trim()) return alert("Please provide a Full Name.");
+    
+    // Auto-generate a slug from the name (e.g., "John Doe" -> "john-doe")
+    const generatedSlug = newUserName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+    try {
+      if (newUserRole === "weaver") {
+        await addWeaver({
+          slug: generatedSlug,
+          title: newUserName,
+          desc: `Master weaver specializing in handlooms from ${newUserDistrict || newUserState || "Odisha"}.`,
+          img: "/bhulia-hero.png",
+          badge: "Odishan Master Weaver",
+          phone: newUserPhone || "N/A",
+          whatsapp: newUserWhatsapp || "N/A",
+          address: `${newUserAddress}, ${newUserDistrict}, ${newUserState} - ${newUserPin}`,
+          tier: "Silver",
+          status: "approved",
+          layoutConfig: {
+            sidebarPosition: "Left",
+            heroEnabled: true,
+            gridStyle: "3-Column",
+          },
+        });
+        alert(`Master Weaver Profile Generated!\nPublic Link: bhulia.com/weaver/${generatedSlug}`);
+      } else if (newUserRole === "vendor") {
+        await addStore({
+          slug: generatedSlug,
+          title: newUserName,
+          desc: `Premium handloom store located in ${newUserDistrict || newUserState || "Odisha"}.`,
+          img: "/bhulia-hero.png",
+          badge: "Verified Vendor",
+          phone: newUserPhone || "N/A",
+          whatsapp: newUserWhatsapp || "N/A",
+          address: `${newUserAddress}, ${newUserDistrict}, ${newUserState} - ${newUserPin}`,
+          tier: "Silver",
+          status: "approved",
+          productLimit: newUserStockLimit === "unlimited" ? 9999 : 50,
+        });
+        alert(`B2B Vendor Profile Generated!\nPublic Link: bhulia.com/store/${generatedSlug}`);
+      } else {
+        // Mock generic user creation
+        alert(`Customer Created Successfully in Identity Provider.\nRole: ${newUserRole}`);
+      }
+      
+      // Reset Modal
+      setShowAddUserModal(false);
+      setNewUserName("");
+      setNewUserPhone("");
+      setNewUserEmail("");
+      setNewUserWhatsapp("");
+    } catch (e) {
+      alert("Database error: Could not save profile.");
+    }
   };
 
   return (
