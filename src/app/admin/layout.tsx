@@ -10,7 +10,7 @@ const SIDEBAR_CATEGORIES = [
   {
     title: "Dashboard",
     icon: "📊",
-    path: "/dashboard",
+    path: "/admin/dashboard",
     subLinks: []
   },
   {
