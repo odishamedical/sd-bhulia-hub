@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, addWeaver, addStore, addCustomer } from "@/lib/db-hooks";
+import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addStore, addCustomer, addReseller } from "@/lib/db-hooks";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers();
@@ -9,6 +9,7 @@ export default function UserManagementPage() {
   const { orders } = useOrders();
   const { customers } = useCustomers();
   const { authUsers } = useAuthUsers();
+  const { resellers } = useResellers();
   
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -130,9 +131,25 @@ export default function UserManagementPage() {
       email: u.email || "N/A",
     }));
 
+    // Resellers (Marketing Agents)
+    const resellersList = resellers.map((r) => ({
+      id: r.id,
+      name: r.name || "Unknown Reseller",
+      role: "reseller",
+      phone: r.phone || "N/A",
+      state: r.state || "N/A",
+      district: r.district || "N/A",
+      country: r.country || "India",
+      volume: 0,
+      purchasedProductIds: [],
+      whatsapp: r.whatsapp || "N/A",
+      address: r.address || "N/A",
+      email: r.email || "N/A",
+    }));
+
     // Deduplicate logic (if a registered customer matches an order customer by name/phone, we could merge, but for now we just concat)
-    return [...wList, ...sList, ...cList, ...registeredCustomersList, ...identityUsersList];
-  }, [weavers, stores, orders, customers, authUsers]);
+    return [...wList, ...sList, ...cList, ...registeredCustomersList, ...identityUsersList, ...resellersList];
+  }, [weavers, stores, orders, customers, authUsers, resellers]);
 
   // Apply Filters
   const filteredUsers = useMemo(() => {
@@ -239,6 +256,21 @@ export default function UserManagementPage() {
           subscription: subscriptionData,
         });
         alert(`B2B Vendor Profile Generated!\nPublic Link: bhulia.com/store/${generatedSlug}`);
+      } else if (newUserRole === "reseller") {
+        await addReseller({
+          name: newUserName,
+          email: newUserEmail || "N/A",
+          phone: newUserPhone || "N/A",
+          whatsapp: newUserWhatsapp || "N/A",
+          country: newUserCountry || "India",
+          state: newUserState || "N/A",
+          district: newUserDistrict || "N/A",
+          address: newUserAddress || "N/A",
+          pin: newUserPin || "N/A",
+          commissionRate: parseInt(newSubCommission) || 15,
+          status: "active",
+        });
+        alert(`Reseller Created Successfully in Database.`);
       } else {
         await addCustomer({
           name: newUserName,
@@ -316,10 +348,14 @@ export default function UserManagementPage() {
                 Role Filter
               </h3>
               <div className="space-y-2">
-                {['all', 'customer', 'weaver', 'shop'].map(role => (
+                {['all', 'user', 'customer', 'reseller', 'weaver', 'shop'].map(role => (
                   <label key={role} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-100 transition-all">
                     <input type="radio" name="role" checked={roleFilter === role} onChange={() => setRoleFilter(role)} className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span className="text-sm font-bold text-gray-700 capitalize">{role === 'all' ? 'Entire Ecosystem' : role + 's'}</span>
+                    <span className="text-sm font-bold text-gray-700 capitalize">{
+                      role === 'all' ? 'Entire Ecosystem' :
+                      role === 'user' ? 'General Users' :
+                      role + 's'
+                    }</span>
                   </label>
                 ))}
               </div>
@@ -416,7 +452,9 @@ export default function UserManagementPage() {
                       <span className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest border ${
                         user.role === 'weaver' ? 'bg-orange-50 text-orange-700 border-orange-200' :
                         user.role === 'shop' ? 'bg-purple-50 text-purple-700 border-purple-200' :
-                        'bg-blue-50 text-blue-700 border-blue-200'
+                        user.role === 'reseller' ? 'bg-green-50 text-green-700 border-green-200' :
+                        user.role === 'customer' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                        'bg-gray-50 text-gray-700 border-gray-200'
                       }`}>
                         {user.role}
                       </span>
@@ -494,6 +532,7 @@ export default function UserManagementPage() {
                         }
                       }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
                       <option value="customer">Retail Customer</option>
+                      <option value="reseller">Reseller (Marketing Agent)</option>
                       <option value="weaver">Sambalpuri Weaver</option>
                       <option value="shop">B2B Franchise Shop</option>
                     </select>

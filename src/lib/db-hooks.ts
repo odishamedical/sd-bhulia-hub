@@ -117,6 +117,22 @@ export interface AuthUser {
   createdAt: string;
 }
 
+export interface Reseller {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  whatsapp: string;
+  country: string;
+  state: string;
+  district: string;
+  address: string;
+  pin: string;
+  commissionRate: number;
+  status: "active" | "inactive";
+  createdAt: string;
+}
+
 // ============================================================================
 // HOOKS (REALTIME SYNC)
 // ============================================================================
@@ -215,6 +231,30 @@ export function useCustomers() {
   }, []);
 
   return { customers, loading };
+}
+
+export function useResellers() {
+  const [resellers, setResellers] = useState<Reseller[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const q = query(collection(db, "resellers"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data: Reseller[] = [];
+      snapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() } as Reseller);
+      });
+      setResellers(data);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching resellers: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return { resellers, loading };
 }
 
 export function useStores() {
@@ -400,6 +440,12 @@ export function useFranchiseBySlug(slug: string) {
 // ============================================================================
 // CREATE / UPDATE / DELETE FUNCTIONS
 // ============================================================================
+
+export async function addReseller(data: Omit<Reseller, "id" | "createdAt">) {
+  const docRef = doc(collection(db, "resellers"));
+  await setDoc(docRef, { ...data, createdAt: new Date().toISOString() });
+  return docRef.id;
+}
 
 export async function addCustomer(data: Omit<Customer, "id" | "createdAt">) {
   const docRef = doc(collection(db, "customers"));
