@@ -15,6 +15,9 @@ export default function UserManagementPage() {
   const [minVolume, setMinVolume] = useState("");
   const [productIdFilter, setProductIdFilter] = useState("");
   const [showFilters, setShowFilters] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
+  const [showBroadcastModal, setShowBroadcastModal] = useState(false);
+  const [broadcastMessage, setBroadcastMessage] = useState("");
 
   // Generate unified mock users from ecosystem data
   const users = useMemo(() => {
@@ -77,6 +80,40 @@ export default function UserManagementPage() {
   const allStates = Array.from(new Set(users.map(u => u.state))).sort();
   const allDistricts = Array.from(new Set(users.map(u => u.district))).sort();
 
+  const handleExportCSV = () => {
+    setIsExporting(true);
+    setTimeout(() => {
+      const headers = ["ID", "Name", "Role", "Phone/WhatsApp", "State", "District", "Country", "Lifetime Volume"];
+      const rows = filteredUsers.map(u => [
+        u.id,
+        `"${u.name.replace(/"/g, '""')}"`,
+        u.role,
+        u.phone,
+        u.state,
+        u.district,
+        u.country,
+        u.volume
+      ]);
+      
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `bhulia_crm_export_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setIsExporting(false);
+    }, 1000);
+  };
+
+  const handleSendBroadcast = () => {
+    if (!broadcastMessage.trim()) return alert("Please enter a message.");
+    alert(`Initiating API Broadcast to ${filteredUsers.length} users via WhatsApp/Email API...`);
+    setShowBroadcastModal(false);
+    setBroadcastMessage("");
+  };
+
   return (
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -84,13 +121,31 @@ export default function UserManagementPage() {
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Ecosystem Hub</h1>
           <p className="text-gray-500 mt-2 font-medium">Unified management for Customers, Weavers, and Retail Shops.</p>
         </div>
-        <button 
-          onClick={() => setShowFilters(!showFilters)}
-          className={`px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all flex items-center gap-2 ${showFilters ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-          {showFilters ? 'Hide Filters' : 'Advanced Filters'}
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button 
+            onClick={() => setShowBroadcastModal(true)}
+            disabled={filteredUsers.length === 0}
+            className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all disabled:opacity-50 shadow-sm flex items-center gap-2"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Broadcast
+          </button>
+          <button 
+            onClick={handleExportCSV}
+            disabled={isExporting || filteredUsers.length === 0}
+            className="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all disabled:opacity-50 shadow-sm flex items-center gap-2"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            {isExporting ? "Exporting..." : "Export CRM"}
+          </button>
+          <button 
+            onClick={() => setShowFilters(!showFilters)}
+            className={`px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all flex items-center gap-2 ${showFilters ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+            {showFilters ? 'Hide Filters' : 'Filters'}
+          </button>
+        </div>
       </header>
 
       <div className="flex flex-col xl:flex-row gap-6">
@@ -229,6 +284,26 @@ export default function UserManagementPage() {
           </div>
         </div>
       </div>
+
+      {showBroadcastModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-xl shadow-2xl border border-gray-100">
+            <h3 className="text-2xl font-black text-gray-900 mb-2">Broadcast Message</h3>
+            <p className="text-sm font-medium text-gray-500 mb-6">Send an instant WhatsApp/Email broadcast to the {filteredUsers.length} filtered users.</p>
+            <textarea 
+              rows={4}
+              value={broadcastMessage}
+              onChange={e => setBroadcastMessage(e.target.value)}
+              placeholder="Enter your message here..."
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none resize-none mb-6"
+            ></textarea>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setShowBroadcastModal(false)} className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all">Cancel</button>
+              <button onClick={handleSendBroadcast} className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all shadow-sm">Send Broadcast</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
