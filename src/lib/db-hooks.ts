@@ -128,6 +128,8 @@ export interface Reseller {
   district: string;
   address: string;
   pin: string;
+  referralId: string;
+  tier: "Bronze" | "Silver" | "Gold" | "Platinum";
   commissionRate: number;
   status: "active" | "inactive";
   createdAt: string;
@@ -441,9 +443,10 @@ export function useFranchiseBySlug(slug: string) {
 // CREATE / UPDATE / DELETE FUNCTIONS
 // ============================================================================
 
-export async function addReseller(data: Omit<Reseller, "id" | "createdAt">) {
+export async function addReseller(data: Omit<Reseller, "id" | "referralId" | "tier" | "createdAt">) {
   const docRef = doc(collection(db, "resellers"));
-  await setDoc(docRef, { ...data, createdAt: new Date().toISOString() });
+  const referralId = `SDR-${Math.floor(1000 + Math.random() * 9000)}`;
+  await setDoc(docRef, { ...data, referralId, tier: "Bronze", createdAt: new Date().toISOString() });
   return docRef.id;
 }
 

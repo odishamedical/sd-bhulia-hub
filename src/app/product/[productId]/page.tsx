@@ -90,9 +90,10 @@ export default function ProductDetailPage() {
     return () => window.removeEventListener("sd_auth_change", checkAuth);
   }, []);
 
-  const handleSocialShare = (platform: "whatsapp" | "facebook") => {
+  const handleSocialShare = (platform: "whatsapp" | "facebook", customRefId?: string) => {
     if (!product) return;
-    const shareUrl = `${window.location.origin}/product/${product.slug}?ref=${userUid}`;
+    const finalRef = customRefId || userUid;
+    const shareUrl = `${window.location.origin}/product/${product.slug}?ref=${finalRef}`;
     const message = `Check out this gorgeous authentic GI-Tagged ${product.title} from Bhulia Hub! Direct weaver-to-consumer escrow purchase. ${shareUrl}`;
 
     if (platform === "whatsapp") {
@@ -303,16 +304,26 @@ export default function ProductDetailPage() {
             {/* Sharing widgets */}
             <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl text-white">
               <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block mb-3">Share & Earn Commissions</span>
+              <div className="mb-4">
+                <label className="text-[9px] uppercase tracking-widest text-gray-400 block mb-1">Your Referral ID (Optional)</label>
+                <input type="text" id="customReferralInput" placeholder="e.g. SDR-1234" className="w-full bg-[#0A3A35] border border-[#C5A059]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]" />
+              </div>
               <div className="grid grid-cols-2 gap-3">
-                <button onClick={() => handleSocialShare("whatsapp")} className="flex items-center justify-center gap-2 py-3 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer">
+                <button onClick={() => {
+                  const val = (document.getElementById('customReferralInput') as HTMLInputElement)?.value;
+                  handleSocialShare("whatsapp", val);
+                }} className="flex items-center justify-center gap-2 py-3 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer">
                   <span>📲 Share via WhatsApp</span>
                 </button>
-                <button onClick={() => handleSocialShare("facebook")} className="flex items-center justify-center gap-2 py-3 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer">
+                <button onClick={() => {
+                  const val = (document.getElementById('customReferralInput') as HTMLInputElement)?.value;
+                  handleSocialShare("facebook", val);
+                }} className="flex items-center justify-center gap-2 py-3 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border border-[#1877F2]/30 text-[#1877F2] rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer">
                   <span>📘 Share via Facebook</span>
                 </button>
               </div>
               <p className="text-[10px] text-gray-300 leading-normal mt-3 text-center">
-                Sharing this page creates a tracking cookie containing your referral ID. Registered franchises and users receive a 5% commission on successfully completed escrow checkouts.
+                Sharing this page creates a tracking cookie containing your referral ID. Registered Resellers receive a commission on successfully completed escrow checkouts.
               </p>
             </div>
 

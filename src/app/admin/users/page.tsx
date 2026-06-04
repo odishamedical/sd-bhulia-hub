@@ -145,6 +145,9 @@ export default function UserManagementPage() {
       whatsapp: r.whatsapp || "N/A",
       address: r.address || "N/A",
       email: r.email || "N/A",
+      referralId: r.referralId || "N/A",
+      tier: r.tier || "Bronze",
+      commissionRate: r.commissionRate || 10,
     }));
 
     // Deduplicate logic (if a registered customer matches an order customer by name/phone, we could merge, but for now we just concat)
@@ -722,6 +725,24 @@ export default function UserManagementPage() {
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Full Address</div>
                   <div className="text-sm font-bold text-gray-900 leading-relaxed">{selectedUserForDetails.address}</div>
                 </div>
+                {selectedUserForDetails.role === 'reseller' && (
+                  <>
+                    <div className="bg-green-50 p-4 rounded-2xl border border-green-100 mb-4">
+                      <div className="text-[10px] uppercase tracking-widest text-green-700 font-bold mb-1">Referral ID (Shareable)</div>
+                      <div className="text-xl font-black text-green-900 font-mono tracking-widest">{selectedUserForDetails.referralId}</div>
+                    </div>
+                    <div className="flex gap-4 mb-4">
+                      <div>
+                        <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Commission Tier</div>
+                        <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.tier}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Base Rate</div>
+                        <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.commissionRate}%</div>
+                      </div>
+                    </div>
+                  </>
+                )}
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Lifetime Volume</div>
                   <div className="text-sm font-black text-green-600">₹{selectedUserForDetails.volume.toLocaleString()}</div>
