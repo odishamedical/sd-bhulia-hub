@@ -99,11 +99,12 @@ export default function DashboardPage() {
     ];
   } else if (actualRole === "vendor") {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "📊" },
-      { id: "upload", label: "Upload Inventory", icon: "📤" },
-      { id: "orders", label: "Manage Orders", icon: "📦" },
-      { id: "wallet", label: "Wallet & Earnings", icon: "💰" },
-      { id: "verification", label: "Verification", icon: "🛡️" },
+      { id: "home", label: "Overview", icon: "📊" },
+      { id: "products", label: "Products Catalog", icon: "🛍️" },
+      { id: "orders", label: "Order Management", icon: "📦" },
+      { id: "finance", label: "Finance & Payouts", icon: "💰" },
+      { id: "marketing", label: "Marketing", icon: "📢" },
+      { id: "settings", label: "Store Settings", icon: "⚙️" },
     ];
   } else if (actualRole === "reseller") {
     navItems = [
@@ -560,9 +561,66 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [originalWeaver, setOriginalWeaver] = useState("");
   const [stockQuantity, setStockQuantity] = useState("1");
   const [isUploading, setIsUploading] = useState(false);
+
+  // Settings State
+  const [storeName, setStoreName] = useState("");
+  const [publicDesc, setPublicDesc] = useState("");
+  const [storeLogo, setStoreLogo] = useState("");
+  const [storeBanner, setStoreBanner] = useState("");
+  const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [kycType, setKycType] = useState("");
+  const [kycId, setKycId] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
   const { orders } = useOrders();
 
   const vendorOrders = orders.filter(o => o.logisticsStatus !== "Delivered");
+
+  const handleSaveSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth.currentUser) return;
+    setIsSaving(true);
+    try {
+      // Create or update the store profile
+      await updateDoc(doc(db, "stores", auth.currentUser.uid), {
+        title: storeName,
+        desc: publicDesc,
+        img: storeLogo || "/bhulia-hero.png",
+        heroImg: storeBanner,
+        phone,
+        whatsapp,
+        kycType,
+        kycId,
+        status: "pending_approval",
+        updatedAt: serverTimestamp()
+      }).catch(async (error) => {
+        // If it doesn't exist, create it
+        const { setDoc } = await import("firebase/firestore");
+        await setDoc(doc(db, "stores", auth.currentUser.uid), {
+          id: auth.currentUser!.uid,
+          slug: storeName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          title: storeName,
+          desc: publicDesc,
+          img: storeLogo || "/bhulia-hero.png",
+          heroImg: storeBanner,
+          phone,
+          whatsapp,
+          kycType,
+          kycId,
+          tier: "Silver",
+          status: "pending_approval",
+          productLimit: 50,
+          createdAt: serverTimestamp()
+        });
+      });
+      alert("Settings saved successfully! KYC is under review.");
+    } catch (e) {
+      console.error(e);
+      alert("Failed to save settings.");
+    }
+    setIsSaving(false);
+  };
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -621,7 +679,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         </div>
       )}
 
-      {activeTab === "upload" && (
+      {activeTab === "products" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
           <h2 className="text-2xl font-bold text-gray-900 mb-8">Upload New Inventory Batch</h2>
           <form className="space-y-6" onSubmit={handleUpload}>
@@ -713,7 +771,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         </div>
       )}
 
-      {activeTab === "wallet" && (
+      {activeTab === "finance" && (
         <div className="space-y-6 animate-in fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
@@ -733,25 +791,91 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         </div>
       )}
 
-      {activeTab === "verification" && (
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-3xl animate-in fade-in">
-          <h2 className="text-xl font-bold text-gray-900 mb-8">Shop Verification & Subscription</h2>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
-              <div>
-                <div className="font-bold text-gray-900 mb-1">Vendor KYC</div>
-                <div className="text-sm text-gray-500 font-medium">GST / Trade License</div>
-              </div>
-              <span className="px-4 py-1.5 bg-green-50 text-green-700 border border-green-200 rounded-full text-xs font-bold">Approved</span>
-            </div>
-            <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
-              <div>
-                <div className="font-bold text-gray-900 mb-1">Vendor Subscription</div>
-                <div className="text-sm text-gray-500 font-medium">₹10,000 / year</div>
-              </div>
-              <button className="bg-[#1f2937] text-white px-6 py-2.5 text-sm font-bold rounded-xl hover:bg-black transition-colors shadow-sm">Renew Now</button>
-            </div>
+      {activeTab === "marketing" && (
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Marketing & Promotions</h2>
+          <p className="text-gray-500 font-medium">Marketing tools will be unlocked once your store completes 10 successful sales.</p>
+        </div>
+      )}
+
+      {activeTab === "settings" && (
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Store Profile & KYC Settings</h2>
+          
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-8">
+            <h3 className="text-yellow-800 font-bold text-sm mb-1">Privacy Enforcement Active</h3>
+            <p className="text-yellow-700 text-xs font-medium">Your contact details (Phone & WhatsApp) are securely stored for internal Bhulia Hub operations. They are automatically masked and hidden from your public storefront to protect your privacy.</p>
           </div>
+
+          <form className="space-y-8" onSubmit={handleSaveSettings}>
+            
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">1. Public Brand Info</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Name</label>
+                  <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="e.g. Sonepur Silk Emporium" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Description</label>
+                  <input type="text" value={publicDesc} onChange={e => setPublicDesc(e.target.value)} placeholder="e.g. Authentic handlooms direct from weavers." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Logo (URL)</label>
+                  <input type="text" value={storeLogo} onChange={e => setStoreLogo(e.target.value)} placeholder="https://..." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Banner Image (URL)</label>
+                  <input type="text" value={storeBanner} onChange={e => setStoreBanner(e.target.value)} placeholder="https://..." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">2. Private Contact Details (Masked)</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Business Phone Number</label>
+                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 9999999999" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Number</label>
+                  <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} placeholder="+91 9999999999" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">3. KYC & Verification Documents</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">KYC Document Type</label>
+                  <select value={kycType} onChange={e => setKycType(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required>
+                    <option value="">Select Document Type...</option>
+                    <option value="gst">GST Registration Number</option>
+                    <option value="udyam">Aadhaar Udyam Number</option>
+                    <option value="aadhaar">Personal Aadhaar Card</option>
+                  </select>
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document ID / Number</label>
+                  <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} placeholder="Enter the ID number" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Document Scan (PDF/JPG)</label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer">
+                    <span className="text-gray-500 font-medium text-sm">Click to upload or drag and drop your document file here</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-gray-100 flex justify-end">
+              <button type="submit" disabled={isSaving} className="bg-[#E57138] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#D56128] disabled:opacity-50 transition-colors shadow-[0_4px_14px_0_rgb(229,113,56,0.39)] hover:shadow-[0_6px_20px_rgba(229,113,56,0.23)]">
+                {isSaving ? "Saving..." : "Save Settings & Submit KYC"}
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>
