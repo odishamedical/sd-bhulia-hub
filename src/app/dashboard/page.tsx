@@ -409,7 +409,12 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Master Weaver Hub</h1>
-          <p className="text-gray-500 mt-2 font-medium">Manage your digital storefront and orders.</p>
+          <div className="flex items-center gap-3 mt-2">
+            <p className="text-gray-500 font-medium">Manage your digital storefront and orders.</p>
+            <a href={"/weaver/" + (auth.currentUser?.displayName?.toLowerCase().replace(/\s+/g, '-') || 'demo')} target="_blank" className="text-xs font-bold text-[#0070F3] hover:underline flex items-center gap-1 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
+              View Storefront ↗
+            </a>
+          </div>
         </div>
         <button onClick={() => onTabChange("upload")} className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm self-start md:self-auto">
           + Upload Product
@@ -820,7 +825,12 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Vendor Hub</h1>
-          <p className="text-gray-500 mt-2 font-medium">Manage your retail inventory and dispatch operations.</p>
+          <div className="flex items-center gap-3 mt-2">
+            <p className="text-gray-500 font-medium">Manage your retail inventory and dispatch operations.</p>
+            <a href={"/vendor/" + (storeName?.toLowerCase().replace(/\s+/g, '-') || 'demo')} target="_blank" className="text-xs font-bold text-[#0070F3] hover:underline flex items-center gap-1 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
+              View Storefront ↗
+            </a>
+          </div>
         </div>
         <button onClick={() => onTabChange("products")} className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm self-start md:self-auto">
           + Add Inventory
@@ -911,6 +921,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                             </span>
                           </td>
                           <td className="py-4 text-right">
+                            <a href={"/product/" + product.id} target="_blank" className="text-gray-500 font-bold text-xs hover:text-gray-900 hover:underline mr-4">View Live ↗</a>
                             <button onClick={() => handleEditClick(product)} className="text-[#0070F3] font-bold text-xs hover:underline">
                               Edit
                             </button>
