@@ -466,7 +466,11 @@ export default function ImageUploader({
 
           {/* Image Uploaded Preview */}
           {value && !cameraActive && (
-            <div className="relative w-32 h-32 rounded-2xl overflow-hidden border border-gray-300 shadow-sm group">
+            <div className={`relative rounded-2xl overflow-hidden border border-gray-300 shadow-sm group ${
+              aspectRatio === "portrait" ? "w-32 aspect-[9/16]" : 
+              aspectRatio === "landscape" ? "w-64 aspect-[5/2]" : 
+              "w-32 h-32"
+            }`}>
               <img 
                 src={value} 
                 alt="Profile preview" 

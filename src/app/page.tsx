@@ -25,9 +25,9 @@ export default function Home() {
   const { products, loading: productsLoading } = useProducts();
   const { weavers, loading: weaversLoading } = useWeavers();
 
-  const cottonSambalpuri = products.filter(p => p.category === "Cotton Classics");
-  const pataSambalpuri = products.filter(p => p.category === "Silk Masterpieces");
-  const cottonBomkai = products.filter(p => p.weave.includes("Bomkai"));
+  const cottonSambalpuri = products.filter(p => p?.category === "Cotton Classics");
+  const pataSambalpuri = products.filter(p => p?.category === "Silk Masterpieces");
+  const cottonBomkai = products.filter(p => p?.weave?.includes("Bomkai"));
   const { user, loginWithGoogle } = useAuth();
   
   const userAvatar = user?.photoURL || null;
@@ -269,7 +269,7 @@ export default function Home() {
           <div className="space-y-8 md:space-y-12">
             {cmsLayout.rows.map(row => {
               if (row.type === "products") {
-                const categoryProducts = products.filter(p => p.category === row.category || p.weave === row.category || p.category.toLowerCase().includes(row.category?.toLowerCase() || ""));
+                const categoryProducts = products.filter(p => p?.category === row.category || p?.weave === row.category || (p?.category || "").toLowerCase().includes(row.category?.toLowerCase() || ""));
                 
                 // Theme Logic
                 const isModern = row.themeStyle === "modern";
