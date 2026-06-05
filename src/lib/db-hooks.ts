@@ -387,33 +387,6 @@ export function useOrders() {
   return { orders, loading };
 }
 
-export function useProductBySlug(slug: string) {
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!slug) return;
-    
-    const q = query(collection(db, "products"), where("slug", "==", slug));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      if (!snapshot.empty) {
-        const doc = snapshot.docs[0];
-        setProduct({ id: doc.id, ...doc.data() } as Product);
-      } else {
-        setProduct(null);
-      }
-      setLoading(false);
-    }, (error) => {
-      console.error("Error fetching product by slug: ", error);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [slug]);
-
-  return { product, loading };
-}
-
 export function useWeaverBySlug(slug: string) {
   const [weaver, setWeaver] = useState<Weaver | null>(null);
   const [loading, setLoading] = useState(true);
