@@ -2,43 +2,43 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { useStoreBySlug, useProducts } from "@/lib/db-hooks";
+import { useVendorBySlug, useProducts } from "@/lib/db-hooks";
 import PublicProfileTemplate from "@/components/PublicProfileTemplate";
 
-export default function StoreDetailPage() {
+export default function VendorDetailPage() {
   const params = useParams();
   const rawSlug = typeof params?.slug === "string" ? params.slug : "";
-  const storeSlug = rawSlug.toLowerCase();
+  const vendorSlug = rawSlug.toLowerCase();
 
-  const { store, loading: storeLoading } = useStoreBySlug(storeSlug);
+  const { vendor, loading: vendorLoading } = useVendorBySlug(vendorSlug);
   const { products, loading: productsLoading } = useProducts();
 
   const [mappedProfile, setMappedProfile] = useState<any>(null);
   const [mappedProducts, setMappedProducts] = useState<any[]>([]);
 
   useEffect(() => {
-    if (store) {
+    if (vendor) {
       setMappedProfile({
-        name: store.title || "Retail Shop",
-        image: store.img || "/bhulia-hero.png",
-        district: store.address?.split(",")?.[1]?.trim() || "Sambalpur",
-        state: store.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "Odisha",
-        description: store.desc || "Verified Retail Shop for Authentic Handlooms.",
-        address: store.address || "Address not provided.",
-        phone: store.phone || "N/A",
-        whatsapp: store.whatsapp || "N/A",
+        name: vendor.title || "Retail Shop",
+        image: vendor.img || "/bhulia-hero.png",
+        district: vendor.address?.split(",")?.[1]?.trim() || "Sambalpur",
+        state: vendor.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "Odisha",
+        description: vendor.desc || "Verified Retail Shop for Authentic Handlooms.",
+        address: vendor.address || "Address not provided.",
+        phone: vendor.phone || "N/A",
+        whatsapp: vendor.whatsapp || "N/A",
       });
 
-      // Filter products belonging to this store
+      // Filter products belonging to this vendor
       const sProducts = products.filter(p => 
-        p.ownerId === store.id || 
-        (p.storeName && p.storeName.toLowerCase().includes(store.title?.toLowerCase() || ""))
+        p.sellerId === vendor.id || 
+        (p.vendorName && p.vendorName.toLowerCase().includes(vendor.title?.toLowerCase() || ""))
       );
       setMappedProducts(sProducts);
     }
-  }, [store, products]);
+  }, [vendor, products]);
 
-  if (storeLoading || productsLoading) {
+  if (vendorLoading || productsLoading) {
     return (
       <div className="flex-1 min-h-screen flex items-center justify-center bg-[#051815]">
         <div className="w-12 h-12 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
@@ -46,7 +46,7 @@ export default function StoreDetailPage() {
     );
   }
 
-  if (!store) {
+  if (!vendor) {
     return (
       <div className="flex-1 min-h-screen flex items-center justify-center bg-[#051815] p-6">
         <div className="text-center py-16 bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl w-full max-w-2xl">
@@ -63,7 +63,7 @@ export default function StoreDetailPage() {
   return (
     <main className="relative flex-1 w-full bg-[#051815] text-white font-sans flex flex-col min-h-screen">
       <PublicProfileTemplate 
-        type="store" 
+        type="vendor" 
         profile={mappedProfile} 
         products={mappedProducts} 
       />

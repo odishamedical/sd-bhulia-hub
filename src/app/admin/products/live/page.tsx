@@ -37,7 +37,7 @@ export default function LiveProductsPage() {
         `"${(p.title || '').replace(/"/g, '""')}"`,
         p.price || 0,
         p.stock || 0,
-        p.weaverId || 'Unknown'
+        p.sellerId || 'Unknown'
       ]);
       
       const csvContent = "data:text/csv;charset=utf-8," 

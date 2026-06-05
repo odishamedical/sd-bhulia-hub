@@ -375,8 +375,8 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         price: Number(productPrice),
         category: productCategory,
         description: productDesc,
-        ownerId: auth.currentUser.uid,
-        ownerRole: "weaver",
+        sellerId: auth.currentUser.uid,
+        sellerType: "weaver",
         status: "pending",
         createdAt: serverTimestamp(),
       });
@@ -624,7 +624,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const { products } = useProducts();
 
   const vendorOrders = orders.filter(o => o.logisticsStatus !== "Delivered");
-  const vendorProducts = products.filter(p => p.ownerId === auth.currentUser?.uid);
+  const vendorProducts = products.filter(p => p.sellerId === auth.currentUser?.uid);
 
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -740,11 +740,10 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       } else {
         await addDoc(collection(db, "products"), {
           ...productData,
-          isGI: false,
-          isBhuliaVerified: true,
+                    isBhuliaVerified: true,
           escrowStatus: "Payment Protected",
-          ownerId: auth.currentUser.uid,
-          ownerRole: "vendor",
+          sellerId: auth.currentUser.uid,
+          sellerType: "vendor",
           status: "pending",
           createdAt: serverTimestamp(),
         });

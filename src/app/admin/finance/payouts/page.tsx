@@ -12,7 +12,7 @@ export default function PayoutsPage() {
     if (orders.length > 0) {
       const pendingEscrow = orders.filter(o => o.status !== "delivered").map(order => ({
         id: order.id,
-        beneficiary: order.weaverId || "Bhulia Weaver Network",
+        beneficiary: order.sellerId || "Bhulia Weaver Network",
         amount: parseInt(order.productPrice?.toString().replace(/[^0-9]/g, '') || "5000"),
         platformFee: 0,
         status: "Held in Escrow",

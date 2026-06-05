@@ -105,12 +105,16 @@ export default function CheckoutPage() {
         handler: async function (response: any) {
           try {
             // Create Order in Firestore for each cart item
+            const parentOrderId = "GRP-" + Date.now();
             for (const item of cart) {
               await addOrder({
                 orderId: response.razorpay_payment_id,
+                parentOrderId: parentOrderId,
                 productName: item.title,
                 productPrice: item.price,
                 quantity: item.cartQuantity,
+                sellerId: item.sellerId || null,
+                sellerType: item.sellerType || null,
                 customerName: shippingDetails.fullName,
                 customerPhone: shippingDetails.phone,
                 customerWhatsapp: shippingDetails.phone,

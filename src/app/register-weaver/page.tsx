@@ -333,7 +333,7 @@ export default function WeaverRegistrationPage() {
       return;
     }
 
-    const uniqueId = "weaver-" + Math.floor(1000 + Math.random() * 9000);
+    const uniqueId = localStorage.getItem("sd_current_user_uid") || "weaver-" + Math.floor(1000 + Math.random() * 9000);
     const assignedSlug = formData.tier === "Silver"
       ? uniqueId
       : formData.fullName.toLowerCase().replace(/[^a-z0-9]+/g, "-");

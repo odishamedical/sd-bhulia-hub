@@ -12,7 +12,7 @@ export interface Product {
   cluster: string;
   village: string;
   yarnType: string;
-  isGI: boolean;
+  isBhuliaVerified: boolean;
   escrowStatus: string;
   rating: string;
   img: string;
@@ -33,7 +33,8 @@ export interface Product {
   length?: string;
   hasBlouse?: boolean;
   isBhuliaVerified?: boolean;
-  sellerId?: string; // Links product to a specific Weaver or Shop
+  sellerId?: string; // Links product to a specific Weaver or Vendor
+  sellerType?: "weaver" | "vendor";
 }
 
 
@@ -52,7 +53,7 @@ export const MASTER_PRODUCTS: Product[] = [
     cluster: "Sonepur Cluster",
     village: "Dasrajpur, Sonepur",
     yarnType: "3-Ply Mulberry Silk (Silk Mark Gold)",
-    isGI: true,
+    isBhuliaVerified: true,
     escrowStatus: "100% Escrow Protected Payouts Enabled",
     rating: "5.0 (18 Reviews)",
     img: "/bhulia-hero.png",
@@ -72,7 +73,7 @@ export const MASTER_PRODUCTS: Product[] = [
     cluster: "Sonepur Cluster",
     village: "Dasrajpur, Sonepur",
     yarnType: "3-Ply Mulberry Silk (Silk Mark Gold)",
-    isGI: true,
+    isBhuliaVerified: true,
     escrowStatus: "100% Escrow Protected Payouts Enabled",
     rating: "5.0 (12 Reviews)",
     img: "/bhulia-hero.png",
@@ -92,7 +93,7 @@ export const MASTER_PRODUCTS: Product[] = [
     cluster: "Sonepur Cluster",
     village: "Dasrajpur, Sonepur",
     yarnType: "2-Ply Mulberry Silk",
-    isGI: true,
+    isBhuliaVerified: true,
     escrowStatus: "100% Escrow Protected Payouts Enabled",
     rating: "4.9 (24 Reviews)",
     img: "/bhulia-hero.png",
@@ -112,7 +113,7 @@ export const MASTER_PRODUCTS: Product[] = [
     cluster: "Bargarh Cluster",
     village: "Barpali, Bargarh",
     yarnType: "100/2s Mercerized Cotton",
-    isGI: true,
+    isBhuliaVerified: true,
     escrowStatus: "100% Escrow Protected Payouts Enabled",
     rating: "4.9 (32 Reviews)",
     img: "/bhulia-hero.png",
@@ -132,7 +133,7 @@ export const MASTER_PRODUCTS: Product[] = [
     cluster: "Sonepur Cluster",
     village: "Sonepur Town",
     yarnType: "3-Ply Mulberry Silk (Silk Mark Gold)",
-    isGI: true,
+    isBhuliaVerified: true,
     escrowStatus: "100% Escrow Protected Payouts Enabled",
     rating: "5.0 (9 Reviews)",
     img: "/bhulia-hero.png",
@@ -152,7 +153,7 @@ export const MASTER_PRODUCTS: Product[] = [
     cluster: "Bargarh Cluster",
     village: "Barpali, Bargarh",
     yarnType: "80s Handspun Cotton",
-    isGI: true,
+    isBhuliaVerified: true,
     escrowStatus: "100% Escrow Protected Payouts Enabled",
     rating: "4.8 (15 Reviews)",
     img: "/bhulia-hero.png",
@@ -161,9 +162,9 @@ export const MASTER_PRODUCTS: Product[] = [
   {
     id: "SAR-104",
     slug: "bargarh-certified-silk-pasapalli-pata",
-    title: "Franchise Certified Silk Pasapalli Pata Saree",
+    title: "Bhulia Hub Certified Silk Pasapalli Pata Saree",
     category: "Silk Masterpieces",
-    desc: "Double ikat pure silk pata, certified by franchise inspection specialists.",
+    desc: "Double ikat pure silk pata, certified by Bhulia Hub inspection specialists.",
     longDesc: "A masterpiece of double ikat silk Pasapalli pata, pre-audited and certified at the Bargarh Phygital Hub. Shipped under double security.",
     price: "₹ 28,000",
     mrp: "₹ 34,000",
@@ -172,7 +173,7 @@ export const MASTER_PRODUCTS: Product[] = [
     cluster: "Bargarh Cluster",
     village: "Barpali, Bargarh",
     yarnType: "3-Ply Silk",
-    isGI: true,
+    isBhuliaVerified: true,
     escrowStatus: "100% Escrow Protected Payouts Enabled",
     rating: "4.9 (8 Reviews)",
     img: "/bhulia-hero.png",
@@ -192,7 +193,7 @@ export const MASTER_PRODUCTS: Product[] = [
     cluster: "Sonepur Cluster",
     village: "Sonepur Town",
     yarnType: "100% Handspun Cotton",
-    isGI: true,
+    isBhuliaVerified: true,
     escrowStatus: "100% Escrow Protected Payouts Enabled",
     rating: "4.8 (11 Reviews)",
     img: "/bhulia-hero.png",

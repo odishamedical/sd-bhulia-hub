@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import UserMenu from "@/components/UserMenu";
 import Link from "next/link";
-import { addStore } from "@/lib/db-hooks";
+import { addVendor } from "@/lib/db-hooks";
 
 const INDIAN_STATES = [
   "Odisha", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", 
@@ -64,7 +64,7 @@ const PRODUCT_CATEGORIES = [
   "Handloom Accessories"
 ];
 
-export default function StoreRegistrationPage() {
+export default function VendorRegistrationPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -72,7 +72,7 @@ export default function StoreRegistrationPage() {
 
   const handleAutofillStore = () => {
     setFormData({
-      storeName: "Sambalpur Handloom Emporium",
+      vendorName: "Sambalpur Handloom Emporium",
       ownerName: "Ramesh Chandra Meher",
       contactNumber: "+91 94380 12345",
       whatsappNumber: "+91 94380 12345",
@@ -89,7 +89,7 @@ export default function StoreRegistrationPage() {
       productCategories: ["Sambalpuri Saree", "Ikat Dress Material", "Sambalpuri Fabrics"],
       logoFileName: "emporium_logo.png",
       logoFilePreview: "https://images.unsplash.com/photo-1516841273335-e39b37888115?w=100&auto=format&fit=crop&q=80",
-      storeImages: [
+      vendorImages: [
         { name: "store_front.jpg", preview: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&auto=format&fit=crop&q=80" },
         { name: "product_rack.jpg", preview: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=120&auto=format&fit=crop&q=80" },
         { name: "loom_details.jpg", preview: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=120&auto=format&fit=crop&q=80" }
@@ -119,7 +119,7 @@ export default function StoreRegistrationPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
-  const [cameraTarget, setCameraTarget] = useState<"govId" | "giCert" | "logo" | "storeImages" | null>(null);
+  const [cameraTarget, setCameraTarget] = useState<"govId" | "giCert" | "logo" | "vendorImages" | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
 
@@ -159,7 +159,7 @@ export default function StoreRegistrationPage() {
 
   // Form State
   const [formData, setFormData] = useState({
-    storeName: "",
+    vendorName: "",
     ownerName: "",
     contactNumber: "",
     whatsappNumber: "",
@@ -176,7 +176,7 @@ export default function StoreRegistrationPage() {
     productCategories: [] as string[],
     logoFileName: "",
     logoFilePreview: null as string | null,
-    storeImages: [] as { name: string; preview: string }[],
+    vendorImages: [] as { name: string; preview: string }[],
     priceRangeMin: "",
     priceRangeMax: "",
     currency: "INR",
@@ -193,14 +193,14 @@ export default function StoreRegistrationPage() {
   
   // Draft Logic
   useEffect(() => {
-    const savedDraft = localStorage.getItem('sd_bhulia_store_draft');
+    const savedDraft = localStorage.getItem('sd_bhulia_vendor_draft');
     if (savedDraft) {
       try {
         const parsed = JSON.parse(savedDraft);
         if (confirm('We found an unsaved draft. Do you want to resume?')) {
           setFormData(parsed);
         } else {
-          localStorage.removeItem('sd_bhulia_store_draft');
+          localStorage.removeItem('sd_bhulia_vendor_draft');
         }
       } catch (e) {
         console.error('Failed to parse draft');
@@ -209,7 +209,7 @@ export default function StoreRegistrationPage() {
   }, []);
 
   const handleSaveDraft = () => {
-    localStorage.setItem('sd_bhulia_store_draft', JSON.stringify(formData));
+    localStorage.setItem('sd_bhulia_vendor_draft', JSON.stringify(formData));
     alert('Draft saved successfully! You can safely close this page and return later.');
   };
 
@@ -274,7 +274,7 @@ export default function StoreRegistrationPage() {
         reader.onloadend = () => {
           setFormData((prev) => ({
             ...prev,
-            storeImages: [...prev.storeImages, { name: file.name, preview: reader.result as string }]
+            vendorImages: [...prev.vendorImages, { name: file.name, preview: reader.result as string }]
           }));
         };
         reader.readAsDataURL(file);
@@ -283,7 +283,7 @@ export default function StoreRegistrationPage() {
   };
 
   // CAMERA MODULE FUNCTIONS
-  const startCamera = async (target: "govId" | "giCert" | "logo" | "storeImages") => {
+  const startCamera = async (target: "govId" | "giCert" | "logo" | "vendorImages") => {
     setCameraTarget(target);
     setCapturedImage(null);
     setCameraError(null);
@@ -334,10 +334,10 @@ export default function StoreRegistrationPage() {
   const saveCapturedPhoto = () => {
     if (capturedImage && cameraTarget) {
       const name = `camera_capture_${Date.now()}.jpg`;
-      if (cameraTarget === "storeImages") {
+      if (cameraTarget === "vendorImages") {
         setFormData((prev) => ({
           ...prev,
-          storeImages: [...prev.storeImages, { name, preview: capturedImage }]
+          vendorImages: [...prev.vendorImages, { name, preview: capturedImage }]
         }));
       } else {
         setFormData((prev) => ({
@@ -398,7 +398,7 @@ export default function StoreRegistrationPage() {
     setValidationError(null);
     if (bypassValidation) return null;
     if (currentStep === 1) {
-      if (!formData.storeName.trim()) return "Store Name is required.";
+      if (!formData.vendorName.trim()) return "Store/Vendor Name is required.";
       if (!formData.ownerName.trim()) return "Owner/Representative Name is required.";
       if (!formData.contactNumber.trim()) return "Contact Number is required.";
       if (!formData.whatsappNumber.trim()) return "WhatsApp Number is required.";
@@ -411,7 +411,7 @@ export default function StoreRegistrationPage() {
     } else if (currentStep === 3) {
       if (formData.productCategories.length === 0) return "Please select at least one Primary Product Category.";
       if (!formData.logoFileName) return "Please upload or capture your Store Logo.";
-      if (formData.storeImages.length < 3) return "Please upload or capture at least 3 store/product images.";
+      if (formData.vendorImages.length < 3) return "Please upload or capture at least 3 store/product images.";
       if (!formData.priceRangeMin || !formData.priceRangeMax) return "Please complete the typical price range fields.";
     } else if (currentStep === 4) {
       if (!formData.bankAccountName.trim()) return "Bank Account Holder Name is required.";
@@ -454,12 +454,12 @@ export default function StoreRegistrationPage() {
       return;
     }
 
-    const uniqueId = "store-" + Math.floor(1000 + Math.random() * 9000);
+    const uniqueId = localStorage.getItem("sd_current_user_uid") || "vendor-" + Math.floor(1000 + Math.random() * 9000);
     const assignedSlug = formData.tier === "Silver"
       ? uniqueId
-      : formData.storeName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      : formData.vendorName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
-    let finalImg = formData.logoFilePreview || (formData.storeImages[0]?.preview) || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80";
+    let finalImg = formData.logoFilePreview || (formData.vendorImages[0]?.preview) || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80";
     if (finalImg.length > 500000) {
       finalImg = "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80";
       console.warn("Image too large for demo database. Using placeholder.");
@@ -467,7 +467,7 @@ export default function StoreRegistrationPage() {
 
     const payload = {
       slug: assignedSlug,
-      title: formData.storeName,
+      title: formData.vendorName,
       desc: `Authentic Sambalpuri handloom showroom operated by ${formData.ownerName}.`,
       img: finalImg,
       badge: `${formData.tier} Store`,
@@ -479,14 +479,14 @@ export default function StoreRegistrationPage() {
       productLimit: formData.tier === "Silver" ? 0 : (formData.tier === "Gold" ? 5 : 9999)
     };
 
-    const res = await addStore(payload, uniqueId);
+    const res = await addVendor(payload, uniqueId);
     if (!res.success) {
       setValidationError("Error submitting application. Please try again.");
       return;
     }
 
     // Save submission state to local storage simulation
-    const activeApplications = JSON.parse(localStorage.getItem("sd_store_applications") || "[]");
+    const activeApplications = JSON.parse(localStorage.getItem("sd_vendor_applications") || "[]");
     const localPayload = {
       ...formData,
       id: uniqueId,
@@ -495,7 +495,7 @@ export default function StoreRegistrationPage() {
       assignedUrl: activeCustomUrl || `bhulia.com/store/${uniqueId}`
     };
     activeApplications.push(localPayload);
-    localStorage.setItem("sd_store_applications", JSON.stringify(activeApplications));
+    localStorage.setItem("sd_vendor_applications", JSON.stringify(activeApplications));
 
     setFormSubmitted(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -655,11 +655,11 @@ export default function StoreRegistrationPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Store Name</label>
+                      <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Store/Vendor Name</label>
                       <input 
                         type="text" 
-                        name="storeName" 
-                        value={formData.storeName} 
+                        name="vendorName" 
+                        value={formData.vendorName} 
                         onChange={handleInputChange} 
                         placeholder="e.g. Sambalpur Heritage Handloom Store"
                         className="w-full bg-[#051815] border border-[#C5A059]/40 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 outline-none focus:border-[#C5A059]"
@@ -1020,7 +1020,7 @@ export default function StoreRegistrationPage() {
                       </div>
 
                       <div 
-                        onClick={() => startCamera("storeImages")}
+                        onClick={() => startCamera("vendorImages")}
                         className="bg-[#051815]/50 border border-dashed border-[#C5A059]/30 rounded-2xl p-5 flex flex-col justify-center items-center gap-3 text-center cursor-pointer hover:bg-[#0A3A35]/30 transition-colors"
                       >
                         <span className="text-2xl">📸</span>
@@ -1034,11 +1034,11 @@ export default function StoreRegistrationPage() {
                     </div>
 
                     {/* Previews */}
-                    {formData.storeImages.length > 0 && (
+                    {formData.vendorImages.length > 0 && (
                       <div className="pt-3">
-                        <span className="text-[10px] text-gray-300 font-bold uppercase tracking-widest block mb-2">Uploaded Images ({formData.storeImages.length}):</span>
+                        <span className="text-[10px] text-gray-300 font-bold uppercase tracking-widest block mb-2">Uploaded Images ({formData.vendorImages.length}):</span>
                         <div className="flex flex-wrap gap-2">
-                          {formData.storeImages.map((img, idx) => (
+                          {formData.vendorImages.map((img, idx) => (
                             <div key={idx} className="relative w-16 h-16 rounded-xl border border-[#C5A059]/40 overflow-hidden bg-black group">
                               <img src={img.preview} className="object-cover w-full h-full" alt="showcase preview" />
                               <button 
@@ -1047,7 +1047,7 @@ export default function StoreRegistrationPage() {
                                   e.stopPropagation();
                                   setFormData((prev) => ({
                                     ...prev,
-                                    storeImages: prev.storeImages.filter((_, i) => i !== idx)
+                                    vendorImages: prev.vendorImages.filter((_, i) => i !== idx)
                                   }));
                                 }}
                                 className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-xs text-red-400 font-bold transition-opacity"
@@ -1461,8 +1461,8 @@ export default function StoreRegistrationPage() {
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 text-xs">
                       <div className="space-y-1.5">
-                        <p className="text-gray-400">Store Name:</p>
-                        <p className="text-white font-bold">{formData.storeName}</p>
+                        <p className="text-gray-400">Store/Vendor Name:</p>
+                        <p className="text-white font-bold">{formData.vendorName}</p>
                       </div>
                       <div className="space-y-1.5">
                         <p className="text-gray-400">Owner Name:</p>
@@ -1589,7 +1589,7 @@ export default function StoreRegistrationPage() {
             <h2 className="text-2xl sm:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Application Received Successfully!</h2>
             
             <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-              Your application for <strong>{formData.storeName}</strong> is registered under verification ticket ID: <code className="text-[#C5A059] font-mono">STR-{"1A2B3C"}</code>. 
+              Your application for <strong>{formData.vendorName}</strong> is registered under verification ticket ID: <code className="text-[#C5A059] font-mono">STR-{"1A2B3C"}</code>. 
             </p>
 
             <div className="bg-[#051815] border border-[#C5A059]/30 rounded-2xl p-4 text-xs text-left text-gray-200 space-y-2 leading-relaxed">

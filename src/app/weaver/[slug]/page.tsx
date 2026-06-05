@@ -31,7 +31,7 @@ export default function WeaverStorePage() {
 
       // Filter products belonging to this weaver
       const wProducts = products.filter(p => 
-        p.ownerId === weaver.id || 
+        p.sellerId === weaver.id || 
         (p.weaverName && p.weaverName.toLowerCase().includes(weaver.title?.toLowerCase() || ""))
       );
       setMappedProducts(wProducts);

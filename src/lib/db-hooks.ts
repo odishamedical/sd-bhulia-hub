@@ -34,7 +34,7 @@ export interface Weaver {
   pendingChanges?: any;
 }
 
-export interface Store {
+export interface Vendor {
   id: string;
   slug: string;
   title: string;
@@ -57,28 +57,13 @@ export interface Store {
   pendingChanges?: any;
 }
 
-export interface Franchise {
-  id: string;
-  slug: string;
-  name: string;
-  city: string;
-  phone: string;
-  whatsapp: string;
-  address: string;
-  img: string;
-  tier: "Silver" | "Gold" | "Diamond";
-  status: "pending_approval" | "approved";
-  invitedCount: number;
-  totalSales: number;
-  commissionEarned: number;
-  userId?: string;
-  userEmail?: string;
-  pendingChanges?: any;
-}
 
 export interface Order {
   id: string;
   orderId: string;
+  parentOrderId?: string;
+  sellerId?: string;
+  sellerType?: string;
   productName: string;
   productPrice: string;
   quantity: number;
@@ -107,6 +92,9 @@ export interface Customer {
   address: string;
   pin: string;
   createdAt: string;
+  totalSales?: number;
+  commissionEarned?: number;
+  userId?: string;
 }
 
 export interface AuthUser {
@@ -315,53 +303,30 @@ export function useResellers() {
   return { resellers, loading };
 }
 
-export function useStores() {
-  const [stores, setStores] = useState<Store[]>([]);
+export function useVendors() {
+  const [vendors, setStores] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, "stores"));
+    const q = query(collection(db, "vendors"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data: Store[] = [];
+      const data: Vendor[] = [];
       snapshot.forEach((doc) => {
-        data.push({ id: doc.id, ...doc.data() } as Store);
+        data.push({ id: doc.id, ...doc.data() } as Vendor);
       });
-      setStores(data);
+      setVendors(data);
       setLoading(false);
     }, (error) => {
-      console.error("Error fetching stores: ", error);
+      console.error("Error fetching vendors: ", error);
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  return { stores, loading };
+  return { vendors, loading };
 }
 
-export function useFranchises() {
-  const [franchises, setFranchises] = useState<Franchise[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const q = query(collection(db, "franchises"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data: Franchise[] = [];
-      snapshot.forEach((doc) => {
-        data.push({ id: doc.id, ...doc.data() } as Franchise);
-      });
-      setFranchises(data);
-      setLoading(false);
-    }, (error) => {
-      console.error("Error fetching franchises: ", error);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  return { franchises, loading };
-}
 
 export function useOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -414,20 +379,20 @@ export function useWeaverBySlug(slug: string) {
   return { weaver, loading };
 }
 
-export function useStoreBySlug(slug: string) {
-  const [store, setStore] = useState<Store | null>(null);
+export function useVendorBySlug(slug: string) {
+  const [vendor, setStore] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!slug) return;
 
-    const q = query(collection(db, "stores"), where("slug", "==", slug));
+    const q = query(collection(db, "vendors"), where("slug", "==", slug));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if (!snapshot.empty) {
         const doc = snapshot.docs[0];
-        setStore({ id: doc.id, ...doc.data() } as Store);
+        setVendor({ id: doc.id, ...doc.data() } as Vendor);
       } else {
-        setStore(null);
+        setVendor(null);
       }
       setLoading(false);
     }, (error) => {
@@ -438,35 +403,9 @@ export function useStoreBySlug(slug: string) {
     return () => unsubscribe();
   }, [slug]);
 
-  return { store, loading };
+  return { vendor, loading };
 }
 
-export function useFranchiseBySlug(slug: string) {
-  const [franchise, setFranchise] = useState<Franchise | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!slug) return;
-
-    const q = query(collection(db, "franchises"), where("slug", "==", slug));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      if (!snapshot.empty) {
-        const doc = snapshot.docs[0];
-        setFranchise({ id: doc.id, ...doc.data() } as Franchise);
-      } else {
-        setFranchise(null);
-      }
-      setLoading(false);
-    }, (error) => {
-      console.error("Error fetching franchise by slug: ", error);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [slug]);
-
-  return { franchise, loading };
-}
 
 // ============================================================================
 // CREATE / UPDATE / DELETE FUNCTIONS
@@ -527,9 +466,9 @@ export async function deleteWeaver(id: string) {
   }
 }
 
-export async function addStore(store: Partial<Omit<Store, 'id'>>, customId?: string) {
+export async function addVendor(store: Partial<Omit<Store, 'id'>>, customId?: string) {
   try {
-    const docRef = customId ? doc(db, "stores", customId) : doc(collection(db, "stores"));
+    const docRef = customId ? doc(db, "vendors", customId) : doc(collection(db, "vendors"));
     await setDoc(docRef, store);
     return { success: true, id: docRef.id };
   } catch (error) {
@@ -538,9 +477,9 @@ export async function addStore(store: Partial<Omit<Store, 'id'>>, customId?: str
   }
 }
 
-export async function deleteStore(id: string) {
+export async function deleteVendor(id: string) {
   try {
-    await deleteDoc(doc(db, "stores", id));
+    await deleteDoc(doc(db, "vendors", id));
     return { success: true };
   } catch (error) {
     console.error("Error deleting store:", error);
@@ -548,28 +487,11 @@ export async function deleteStore(id: string) {
   }
 }
 
-export async function addFranchise(franchise: Partial<Omit<Franchise, 'id'>>, customId?: string) {
-  try {
-    const docRef = customId ? doc(db, "franchises", customId) : doc(collection(db, "franchises"));
-    await setDoc(docRef, franchise);
-    return { success: true, id: docRef.id };
-  } catch (error) {
-    console.error("Error adding franchise:", error);
-    return { success: false, error };
-  }
 }
 
-export async function deleteFranchise(id: string) {
-  try {
-    await deleteDoc(doc(db, "franchises", id));
-    return { success: true };
-  } catch (error) {
-    console.error("Error deleting franchise:", error);
-    return { success: false, error };
-  }
 }
 
-export async function updateDocumentStatus(collectionName: "weavers" | "stores" | "franchises" | "products", id: string, updates: any) {
+export async function updateDocumentStatus(collectionName: "weavers" | "vendors" | "resellers" | "products", id: string, updates: any) {
   try {
     const docRef = doc(db, collectionName, id);
     await updateDoc(docRef, updates);
@@ -580,18 +502,18 @@ export async function updateDocumentStatus(collectionName: "weavers" | "stores" 
   }
 }
 
-export async function approveFranchiseAndUserRole(franchiseId: string, userId?: string) {
+export async function approveResellerAndUserRole(resellerId: string, userId?: string) {
   try {
-    const franchiseRef = doc(db, "franchises", franchiseId);
-    await updateDoc(franchiseRef, { status: "approved" });
+    const resellerRef = doc(db, "resellers", resellerId);
+    await updateDoc(resellerRef, { status: "approved" });
     
     if (userId && userId !== "demo_user") {
       const userRef = doc(db, "users", userId);
-      await updateDoc(userRef, { role: "franchisee" });
+      await updateDoc(userRef, { role: "resellere" });
     }
     return { success: true };
   } catch (error) {
-    console.error("Error approving franchise:", error);
+    console.error("Error approving reseller:", error);
     return { success: false, error };
   }
 }
@@ -601,22 +523,22 @@ export async function addOrder(order: Partial<Omit<Order, 'id'>>) {
     const docRef = doc(collection(db, "orders"));
     await setDoc(docRef, { ...order, id: docRef.id });
     
-    // Check if referralId exists to increment franchise promoter stats
+    // Check if referralId exists to increment reseller promoter stats
     if (order.referralId) {
-      const franchiseRef = doc(db, "franchises", order.referralId);
-      const franchiseDoc = await getDoc(franchiseRef);
+      const resellerRef = doc(db, "resellers", order.referralId);
+      const resellerDoc = await getDoc(resellerRef);
       
-      if (franchiseDoc.exists()) {
-        const franchiseData = franchiseDoc.data();
+      if (resellerDoc.exists()) {
+        const resellerData = resellerDoc.data();
         const priceNum = parseInt(order.productPrice?.replace(/[^0-9]/g, '') || "0");
         const qty = order.quantity || 1;
         const totalCost = priceNum * qty;
         const commission = Math.round(totalCost * 0.05); // 5% commission rate
         
-        const newTotalSales = (franchiseData.totalSales || 0) + 1;
-        const newTier = (franchiseData.tier === "Silver" && newTotalSales >= 50) ? "Gold" : franchiseData.tier;
+        const newTotalSales = (resellerData.totalSales || 0) + 1;
+        const newTier = (resellerData.tier === "Silver" && newTotalSales >= 50) ? "Gold" : resellerData.tier;
 
-        await updateDoc(franchiseRef, {
+        await updateDoc(resellerRef, {
           totalSales: increment(1),
           commissionEarned: increment(commission),
           tier: newTier
@@ -636,10 +558,10 @@ export async function deleteUserRecord(role: string, id: string) {
   try {
     let collectionName = "";
     if (role === "weaver") collectionName = "weavers";
-    else if (role === "shop" || role === "store") collectionName = "stores";
+    else if (role === "shop" || role === "vendor") collectionName = "vendors";
     else if (role === "customer") collectionName = "customers";
     else if (role === "reseller") collectionName = "resellers";
-    else if (role === "franchisee" || role === "franchise") collectionName = "franchises";
+    else if (role === "resellere" || role === "reseller") collectionName = "resellers";
     else collectionName = "users"; // Fallback to auth users collection
 
     if (collectionName) {
@@ -656,10 +578,10 @@ export async function suspendUserRecord(role: string, id: string) {
   try {
     let collectionName = "";
     if (role === "weaver") collectionName = "weavers";
-    else if (role === "shop" || role === "store") collectionName = "stores";
+    else if (role === "shop" || role === "vendor") collectionName = "vendors";
     else if (role === "customer") collectionName = "customers";
     else if (role === "reseller") collectionName = "resellers";
-    else if (role === "franchisee" || role === "franchise") collectionName = "franchises";
+    else if (role === "resellere" || role === "reseller") collectionName = "resellers";
     else collectionName = "users"; // Fallback to auth users collection
 
     if (collectionName) {
