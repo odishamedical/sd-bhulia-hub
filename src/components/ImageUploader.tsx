@@ -67,48 +67,59 @@ export default function ImageUploader({
 
     // Auto-apply default crop instantly to ensure data isn't lost if they forget to click "Apply Crop"
     const img = new Image();
-    img.src = src;
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      let targetWidth = 500;
-      let targetHeight = 500;
+      try {
+        const canvas = document.createElement("canvas");
+        let targetWidth = 500;
+        let targetHeight = 500;
 
-      if (aspectRatio === "portrait") {
-        targetWidth = 540;
-        targetHeight = 960;
-      } else if (aspectRatio === "landscape") {
-        targetWidth = 1000;
-        targetHeight = 400;
-      }
-
-      canvas.width = targetWidth;
-      canvas.height = targetHeight;
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.fillStyle = "#051815";
-        ctx.fillRect(0, 0, targetWidth, targetHeight);
-
-        let drawWidth = targetWidth;
-        let drawHeight = targetHeight;
-        const imgRatio = img.width / img.height;
-        const targetRatio = targetWidth / targetHeight;
-
-        if (imgRatio > targetRatio) {
-          drawWidth = targetHeight * imgRatio;
-        } else {
-          drawHeight = targetWidth / imgRatio;
+        if (aspectRatio === "portrait") {
+          targetWidth = 540;
+          targetHeight = 960;
+        } else if (aspectRatio === "landscape") {
+          targetWidth = 1000;
+          targetHeight = 400;
         }
 
-        const x = (targetWidth - drawWidth) / 2;
-        const y = (targetHeight - drawHeight) / 2;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.fillStyle = "#051815";
+          ctx.fillRect(0, 0, targetWidth, targetHeight);
 
-        ctx.drawImage(img, x, y, drawWidth, drawHeight);
-        onChange(canvas.toDataURL("image/jpeg", 0.85));
-      } else {
+          let drawWidth = targetWidth;
+          let drawHeight = targetHeight;
+          const imgRatio = img.width / img.height;
+          const targetRatio = targetWidth / targetHeight;
+
+          if (imgRatio > targetRatio) {
+            drawWidth = targetHeight * imgRatio;
+          } else {
+            drawHeight = targetWidth / imgRatio;
+          }
+
+          const x = (targetWidth - drawWidth) / 2;
+          const y = (targetHeight - drawHeight) / 2;
+
+          ctx.drawImage(img, x, y, drawWidth, drawHeight);
+          onChange(canvas.toDataURL("image/jpeg", 0.85));
+        } else {
+          onChange(src);
+        }
+      } catch (e) {
+        console.error("Auto-crop failed:", e);
         onChange(src);
+      } finally {
+        setIsProcessing(false);
       }
+    };
+    img.onerror = () => {
+      console.error("Image load failed");
+      onChange(src);
       setIsProcessing(false);
     };
+    img.src = src;
   };
 
   const loadFileAndProcess = (file: File) => {
@@ -194,53 +205,60 @@ export default function ImageUploader({
   const handleApplyCrop = () => {
     if (!rawImageSrc) return;
     const img = new Image();
-    img.src = rawImageSrc;
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      let targetWidth = 500;
-      let targetHeight = 500;
+      try {
+        const canvas = document.createElement("canvas");
+        let targetWidth = 500;
+        let targetHeight = 500;
 
-      if (aspectRatio === "portrait") {
-        targetWidth = 540;
-        targetHeight = 960;
-      } else if (aspectRatio === "landscape") {
-        targetWidth = 1000;
-        targetHeight = 400; // 5:2 ratio
-      }
-
-      canvas.width = targetWidth;
-      canvas.height = targetHeight;
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        // Render background color
-        ctx.fillStyle = "#051815";
-        ctx.fillRect(0, 0, targetWidth, targetHeight);
-
-        let drawWidth = targetWidth;
-        let drawHeight = targetHeight;
-        const imgRatio = img.width / img.height;
-        const targetRatio = targetWidth / targetHeight;
-
-        if (imgRatio > targetRatio) {
-          drawWidth = targetHeight * imgRatio;
-        } else {
-          drawHeight = targetWidth / imgRatio;
+        if (aspectRatio === "portrait") {
+          targetWidth = 540;
+          targetHeight = 960;
+        } else if (aspectRatio === "landscape") {
+          targetWidth = 1000;
+          targetHeight = 400; // 5:2 ratio
         }
 
-        drawWidth *= scale;
-        drawHeight *= scale;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          // Render background color
+          ctx.fillStyle = "#051815";
+          ctx.fillRect(0, 0, targetWidth, targetHeight);
 
-        const x = (targetWidth - drawWidth) / 2 + offsetX;
-        const y = (targetHeight - drawHeight) / 2 + offsetY;
+          let drawWidth = targetWidth;
+          let drawHeight = targetHeight;
+          const imgRatio = img.width / img.height;
+          const targetRatio = targetWidth / targetHeight;
 
-        ctx.drawImage(img, x, y, drawWidth, drawHeight);
-        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.85);
-        onChange(compressedBase64);
-      } else {
-        onChange(rawImageSrc);
+          if (imgRatio > targetRatio) {
+            drawWidth = targetHeight * imgRatio;
+          } else {
+            drawHeight = targetWidth / imgRatio;
+          }
+
+          drawWidth *= scale;
+          drawHeight *= scale;
+
+          const x = (targetWidth - drawWidth) / 2 + offsetX;
+          const y = (targetHeight - drawHeight) / 2 + offsetY;
+
+          ctx.drawImage(img, x, y, drawWidth, drawHeight);
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.85);
+          onChange(compressedBase64);
+        } else {
+          onChange(rawImageSrc);
+        }
+        setRawImageSrc(null);
+      } catch (e) {
+        console.error("Apply crop failed:", e);
       }
-      setRawImageSrc(null);
     };
+    img.onerror = () => {
+      console.error("Image load failed during apply crop");
+    };
+    img.src = rawImageSrc;
   };
 
   const clearImage = () => {
