@@ -233,11 +233,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   // Accordion Button
                   <button 
                     onClick={() => toggleCategory(category.title)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all ${isPathActive ? 'bg-blue-50/50' : 'hover:bg-gray-50'}`}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all ${isPathActive ? 'bg-[#0070F3] text-white' : 'hover:bg-gray-50'}`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-lg grayscale opacity-80">{category.icon}</span>
-                      <span className={`text-sm font-semibold ${isPathActive ? 'text-blue-700' : 'text-gray-700'}`}>
+                      <span className={`text-sm font-semibold ${isPathActive ? 'text-white' : 'text-gray-700'}`}>
                         {category.title}
                       </span>
                     </div>
@@ -256,7 +256,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   // Direct Link
                   <Link 
                     href={category.path || "#"}
-                    className={`w-full flex items-center px-3 py-2.5 rounded-xl transition-all ${pathname === category.path ? 'bg-blue-50 text-blue-700 shadow-sm border border-blue-100/50' : 'text-gray-700 hover:bg-gray-50'}`}
+                    className={`w-full flex items-center px-3 py-2.5 rounded-xl transition-all ${pathname === category.path ? 'bg-[#0070F3] text-white shadow-md border border-[#005BB5]' : 'text-gray-700 hover:bg-gray-50'}`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-lg grayscale opacity-80">{category.icon}</span>
@@ -274,7 +274,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <Link 
                           key={sub.name} 
                           href={sub.path}
-                          className={`px-3 py-2 rounded-lg text-[13px] font-medium transition-colors ${isSubActive ? 'text-blue-700 bg-blue-50/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`}
+                          className={`px-3 py-2 rounded-lg text-[13px] font-medium transition-colors ${isSubActive ? 'text-white font-bold bg-[#0070F3]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`}
                         >
                           {sub.name}
                         </Link>

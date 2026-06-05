@@ -89,7 +89,7 @@ export default function DashboardLayout({
                     onTabChange(item.id);
                     setMobileMenuOpen(false);
                   }} 
-                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${activeTab === item.id ? "bg-[#FFF4ED] text-[#E57138]" : "text-gray-600 hover:bg-gray-50"}`}
+                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${activeTab === item.id ? "bg-[#0070F3] text-white" : "text-gray-600 hover:bg-gray-50"}`}
                 >
                   <span className="text-lg">{item.icon || "▪"}</span> {item.label}
                 </button>
