@@ -149,7 +149,7 @@ export default function KycResolutionDesk() {
                   <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-5 align-top">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white bg-gradient-to-br from-gray-400 to-gray-600 shadow-inner">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-gray-900 bg-gradient-to-br from-gray-400 to-gray-600 shadow-inner">
                           {user.displayName ? user.displayName.charAt(0).toUpperCase() : "?"}
                         </div>
                         <div>
@@ -192,7 +192,7 @@ export default function KycResolutionDesk() {
                           </button>
                           <button 
                             onClick={() => handleAction(user.id, "approve")}
-                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs shadow-md transition-colors"
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-gray-900 font-bold rounded-lg text-xs shadow-md transition-colors"
                           >
                             Approve
                           </button>

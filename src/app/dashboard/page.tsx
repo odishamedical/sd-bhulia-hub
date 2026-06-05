@@ -1177,6 +1177,32 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document ID / Number</label>
                   <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} placeholder="Enter the ID number" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
                 </div>
+                
+                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 mb-6">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Stock Quantity</label>
+                    <input type="number" min="1" value={stockQuantity} onChange={e => setStockQuantity(Number(e.target.value))} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <label className="flex items-start space-x-3 cursor-pointer mb-3">
+                      <input type="checkbox" checked={allowResellerMargin} onChange={e => setAllowResellerMargin(e.target.checked)} className="form-checkbox text-[#E57138] rounded w-5 h-5 mt-0.5 focus:ring-[#E57138]" />
+                      <div>
+                        <span className="text-sm text-gray-900 font-bold block">Allow Reseller Promotion?</span>
+                        <span className="text-xs text-gray-500">Opt-in to allow resellers to market your product.</span>
+                      </div>
+                    </label>
+                    {allowResellerMargin && (
+                      <div className="animate-in fade-in slide-in-from-top-2">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Margin Percentage (Min 5%)</label>
+                        <input type="number" min="5" max="90" value={resellerMarginPercentage} onChange={e => setResellerMarginPercentage(Math.max(5, Number(e.target.value)))} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                        <div className="text-xs text-green-600 font-bold mt-2">
+                          Resellers will sell this at a ₹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount.
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Document Scan (PDF/JPG)</label>
                   <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer">

@@ -18,7 +18,7 @@ export default function AdminProductsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#C5A059]">Products Directory</h1>
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900">Products Directory</h1>
           <p className="text-gray-300 text-xs mt-1">Manage the live saree catalog.</p>
         </div>
         <Link 
@@ -30,12 +30,12 @@ export default function AdminProductsPage() {
       </div>
 
       {loading ? (
-        <div className="text-[#C5A059] font-mono text-xs animate-pulse p-4">Loading catalog...</div>
+        <div className="text-gray-900 font-mono text-xs animate-pulse p-4">Loading catalog...</div>
       ) : (
-        <div className="bg-[#0B2B26]/80 border border-[#C5A059]/30 rounded-3xl overflow-hidden shadow-xl">
+        <div className="bg-white shadow-sm border border-gray-200/80 border border-[#C5A059]/30 rounded-3xl overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-gray-200">
-              <thead className="text-xs uppercase bg-[#0A3A35] text-[#C5A059] font-bold tracking-widest border-b border-[#C5A059]/30">
+              <thead className="text-xs uppercase bg-[#0A3A35] text-gray-900 font-bold tracking-widest border-b border-[#C5A059]/30">
                 <tr>
                   <th className="px-6 py-4">Image</th>
                   <th className="px-6 py-4">Title & Weave</th>
@@ -53,17 +53,17 @@ export default function AdminProductsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 font-medium">
-                      <div className="text-white font-serif">{product.title}</div>
+                      <div className="text-gray-900 font-serif">{product.title}</div>
                       <div className="text-[10px] text-gray-400 mt-1 uppercase tracking-widest">{product.category} • {product.weave}</div>
                     </td>
-                    <td className="px-6 py-4 font-bold text-[#C5A059]">{product.price}</td>
+                    <td className="px-6 py-4 font-bold text-gray-900">{product.price}</td>
                     <td className="px-6 py-4 text-xs font-mono">{product.time}</td>
                     <td className="px-6 py-4 text-right space-x-4">
                       <a 
                         href={`/product/${product.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[#C5A059] hover:underline font-bold text-xs uppercase tracking-wider"
+                        className="text-gray-900 hover:underline font-bold text-xs uppercase tracking-wider"
                       >
                         View Product
                       </a>
