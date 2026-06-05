@@ -26,6 +26,7 @@ export default function ImageUploader({
   const [scale, setScale] = useState(1);
   const [offsetX, setOffsetX] = useState(0);
   const [offsetY, setOffsetY] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -47,9 +48,9 @@ export default function ImageUploader({
       class: "aspect-square max-w-[240px]",
     },
     portrait: {
-      label: "Tall Portrait (4:5 Ratio)",
-      desc: "Recommended: 800 x 1000 pixels (for Product listings)",
-      class: "aspect-[4/5] max-w-[220px]",
+      label: "Tall Portrait (9:16 Ratio)",
+      desc: "Recommended: 900 x 1600 pixels (for Product listings)",
+      class: "aspect-[9/16] max-w-[220px]",
     },
     landscape: {
       label: "Widescreen / Landscape (16:9 or 5:2 Ratio)",
@@ -73,8 +74,8 @@ export default function ImageUploader({
       let targetHeight = 500;
 
       if (aspectRatio === "portrait") {
-        targetWidth = 480;
-        targetHeight = 600;
+        targetWidth = 540;
+        targetHeight = 960;
       } else if (aspectRatio === "landscape") {
         targetWidth = 1000;
         targetHeight = 400;
@@ -106,10 +107,12 @@ export default function ImageUploader({
       } else {
         onChange(src);
       }
+      setIsProcessing(false);
     };
   };
 
   const loadFileAndProcess = (file: File) => {
+    setIsProcessing(true);
     const reader = new FileReader();
     reader.onload = (e) => {
       if (e.target?.result) {
@@ -198,8 +201,8 @@ export default function ImageUploader({
       let targetHeight = 500;
 
       if (aspectRatio === "portrait") {
-        targetWidth = 480;
-        targetHeight = 600;
+        targetWidth = 540;
+        targetHeight = 960;
       } else if (aspectRatio === "landscape") {
         targetWidth = 1000;
         targetHeight = 400; // 5:2 ratio
@@ -245,7 +248,7 @@ export default function ImageUploader({
   };
 
   return (
-    <div className="space-y-3 bg-blue-50/50 border border-blue-200 rounded-2xl p-4">
+    <div className="space-y-3 bg-blue-50/50 border border-blue-200 rounded-2xl p-4 relative">
       {/* Header Guideline */}
       <div className="flex justify-between items-start">
         <div>
@@ -254,6 +257,15 @@ export default function ImageUploader({
           <span className="block text-[8px] text-gray-500 font-mono italic">{sizeGuidelines.desc}</span>
         </div>
       </div>
+
+      {isProcessing && (
+        <div className="absolute inset-0 bg-white/80 z-50 flex items-center justify-center rounded-2xl border border-blue-200">
+          <div className="text-center space-y-2">
+            <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className="text-xs font-bold text-blue-900">Processing Image...</div>
+          </div>
+        </div>
+      )}
 
       {rawImageSrc ? (
         /* Image Adjustment Canvas Tool */
