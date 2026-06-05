@@ -63,6 +63,50 @@ export default function ImageUploader({
     setScale(1);
     setOffsetX(0);
     setOffsetY(0);
+
+    // Auto-apply default crop instantly to ensure data isn't lost if they forget to click "Apply Crop"
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      let targetWidth = 500;
+      let targetHeight = 500;
+
+      if (aspectRatio === "portrait") {
+        targetWidth = 480;
+        targetHeight = 600;
+      } else if (aspectRatio === "landscape") {
+        targetWidth = 1000;
+        targetHeight = 400;
+      }
+
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = "#051815";
+        ctx.fillRect(0, 0, targetWidth, targetHeight);
+
+        let drawWidth = targetWidth;
+        let drawHeight = targetHeight;
+        const imgRatio = img.width / img.height;
+        const targetRatio = targetWidth / targetHeight;
+
+        if (imgRatio > targetRatio) {
+          drawWidth = targetHeight * imgRatio;
+        } else {
+          drawHeight = targetWidth / imgRatio;
+        }
+
+        const x = (targetWidth - drawWidth) / 2;
+        const y = (targetHeight - drawHeight) / 2;
+
+        ctx.drawImage(img, x, y, drawWidth, drawHeight);
+        onChange(canvas.toDataURL("image/jpeg", 0.85));
+      } else {
+        onChange(src);
+      }
+    };
   };
 
   const loadFileAndProcess = (file: File) => {
