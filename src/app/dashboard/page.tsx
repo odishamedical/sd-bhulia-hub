@@ -901,52 +901,52 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
           ) : (
             <div>
               <div className="flex items-center gap-4 mb-8">
-                <button onClick={() => setIsAddInventoryOpen(false)} className="text-gray-400 hover:text-gray-900 transition-colors">
+                <button onClick={() => setIsAddInventoryOpen(false)} className="text-[#C5A059] hover:text-white transition-colors uppercase tracking-widest text-xs font-bold">
                   ← Back to Catalog
                 </button>
-                <h2 className="text-2xl font-bold text-gray-900">{editingProductId ? "Edit Inventory" : "Upload New Inventory"}</h2>
+                <h2 className="text-2xl font-serif text-white tracking-wider">{editingProductId ? "Edit Inventory" : "Upload New Inventory"}</h2>
               </div>
               
               <form className="space-y-6" onSubmit={handleUpload}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Basic Details */}
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
-                    <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-2">Product Name</label>
+                    <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-[#0A1021] border border-[#C5A059]/30 rounded-xl p-3 text-white shadow-inner focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none transition-all placeholder-gray-600" required />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
-                    <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required placeholder="e.g. 34500" />
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-2">Selling Price (₹)</label>
+                    <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-[#0A1021] border border-[#C5A059]/30 rounded-xl p-3 text-white shadow-inner focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none transition-all placeholder-gray-600" required placeholder="e.g. 34500" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">MRP (₹)</label>
-                    <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required placeholder="e.g. 42000" />
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-2">MRP (₹)</label>
+                    <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-[#0A1021] border border-[#C5A059]/30 rounded-xl p-3 text-white shadow-inner focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none transition-all placeholder-gray-600" required placeholder="e.g. 42000" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category</label>
-                    <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all">
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-2">Category</label>
+                    <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-[#0A1021] border border-[#C5A059]/30 rounded-xl p-3 text-white shadow-inner focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none transition-all placeholder-gray-600">
                       <option>Silk Masterpieces</option>
                       <option>Cotton Classics</option>
                       <option>Mix Pata</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name</label>
-                    <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-2">Original Weaver Name</label>
+                    <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-[#0A1021] border border-[#C5A059]/30 rounded-xl p-3 text-white shadow-inner focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none transition-all placeholder-gray-600" required />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Short Description</label>
-                    <textarea value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required rows={2} />
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-2">Short Description</label>
+                    <textarea value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-[#0A1021] border border-[#C5A059]/30 rounded-xl p-3 text-white shadow-inner focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none transition-all placeholder-gray-600" required rows={2} />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Long Artisan Story Description</label>
-                    <textarea value={productLongDesc} onChange={e => setProductLongDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required rows={4} />
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-2">Long Artisan Story Description</label>
+                    <textarea value={productLongDesc} onChange={e => setProductLongDesc(e.target.value)} className="w-full bg-[#0A1021] border border-[#C5A059]/30 rounded-xl p-3 text-white shadow-inner focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none transition-all placeholder-gray-600" required rows={4} />
                   </div>
                   
                   {/* Specs */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Saree Type</label>
-                    <select value={sareeType} onChange={e => setSareeType(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all">
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-2">Saree Type</label>
+                    <select value={sareeType} onChange={e => setSareeType(e.target.value)} className="w-full bg-[#0A1021] border border-[#C5A059]/30 rounded-xl p-3 text-white shadow-inner focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none transition-all placeholder-gray-600">
                       <option>Pure Silk</option>
                       <option>Pure Cotton</option>
                       <option>Mix Pata</option>
@@ -954,16 +954,16 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Color Palette</label>
-                    <input type="text" value={colorUse} onChange={e => setColorUse(e.target.value)} placeholder="e.g. Royal Blue & Gold" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-2">Color Palette</label>
+                    <input type="text" value={colorUse} onChange={e => setColorUse(e.target.value)} placeholder="e.g. Royal Blue & Gold" className="w-full bg-[#0A1021] border border-[#C5A059]/30 rounded-xl p-3 text-white shadow-inner focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none transition-all placeholder-gray-600" required />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Length</label>
-                    <input type="text" value={length} onChange={e => setLength(e.target.value)} placeholder="e.g. 6.2 Meters" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-2">Length</label>
+                    <input type="text" value={length} onChange={e => setLength(e.target.value)} placeholder="e.g. 6.2 Meters" className="w-full bg-[#0A1021] border border-[#C5A059]/30 rounded-xl p-3 text-white shadow-inner focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none transition-all placeholder-gray-600" required />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Blouse Status</label>
-                    <select value={hasBlouse ? "true" : "false"} onChange={e => setHasBlouse(e.target.value === "true")} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all">
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-2">Blouse Status</label>
+                    <select value={hasBlouse ? "true" : "false"} onChange={e => setHasBlouse(e.target.value === "true")} className="w-full bg-[#0A1021] border border-[#C5A059]/30 rounded-xl p-3 text-white shadow-inner focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none transition-all placeholder-gray-600">
                       <option value="true">With Blouse Piece</option>
                       <option value="false">Without Blouse Piece</option>
                     </select>
@@ -1213,7 +1213,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             </div>
 
             <div className="pt-6 border-t border-gray-100 flex justify-end">
-              <button type="submit" disabled={isSaving} className="bg-[#E57138] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#D56128] disabled:opacity-50 transition-colors shadow-[0_4px_14px_0_rgb(229,113,56,0.39)] hover:shadow-[0_6px_20px_rgba(229,113,56,0.23)]">
+              <button type="submit" disabled={isSaving} className="bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] px-8 py-3 rounded-xl font-bold disabled:opacity-50 shadow-[0_4px_14px_0_rgba(197,160,89,0.39)] hover:shadow-[0_6px_20px_rgba(197,160,89,0.23)] transition-all">
                 {isSaving ? "Saving..." : "Save Settings & Submit KYC"}
               </button>
             </div>
