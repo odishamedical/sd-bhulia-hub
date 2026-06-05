@@ -31,7 +31,7 @@ export default function TrackingPage() {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Active Tracking</h1>
-          <p className="text-gray-500 mt-2 font-medium">Unified tracking board integrated with Shiprocket courier APIs.</p>
+          <p className="text-gray-800 mt-2 font-semibold">Unified tracking board integrated with Shiprocket courier APIs.</p>
         </div>
         <button 
           onClick={handleSyncShiprocket}

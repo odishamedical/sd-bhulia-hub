@@ -60,8 +60,10 @@ export default function AdminProductsPage() {
                     <td className="px-6 py-4 font-bold text-gray-900">{product.price}</td>
                     <td className="px-6 py-4 text-xs font-mono">{product.time}</td>
                     <td className="px-6 py-4 font-medium">
-                      <div className="text-gray-900 font-bold">{product.vendorName || "Admin"}</div>
-                      <div className="text-[10px] text-gray-500 uppercase tracking-widest">{product.sellerType || "system"}</div>
+                      <a href={product.sellerType === 'weaver' ? '/admin/weavers' : '/admin/stores'} className="hover:bg-gray-100 p-2 -ml-2 rounded-lg transition-colors inline-block">
+                        <div className="text-[#0070F3] hover:text-[#005BB5] font-bold">{product.vendorName || "Admin"}</div>
+                        <div className="text-[10px] text-gray-500 uppercase tracking-widest">{product.sellerType || "system"}</div>
+                      </a>
                     </td>
                     <td className="px-6 py-4 text-right space-x-4">
                       <a 

@@ -18,7 +18,7 @@ export default function CouponsPage() {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Discount & Promo Engine</h1>
-          <p className="text-gray-500 mt-2 font-medium">Generate intelligent coupon codes for retail and wholesale pipelines.</p>
+          <p className="text-gray-800 mt-2 font-semibold">Generate intelligent coupon codes for retail and wholesale pipelines.</p>
         </div>
         <button onClick={handleGenerate} className="px-6 py-3 bg-blue-600 text-white rounded-xl text-sm font-bold shadow-[0_4px_14px_0_rgb(0,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)] hover:bg-blue-700 transition-all flex items-center gap-2">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>

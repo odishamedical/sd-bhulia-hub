@@ -19,7 +19,7 @@ export default function PushNotificationsPage() {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Push Notifications</h1>
-          <p className="text-gray-500 mt-2 font-medium">Broadcast mobile and desktop push notifications via Firebase Cloud Messaging.</p>
+          <p className="text-gray-800 mt-2 font-semibold">Broadcast mobile and desktop push notifications via Firebase Cloud Messaging.</p>
         </div>
       </header>
 

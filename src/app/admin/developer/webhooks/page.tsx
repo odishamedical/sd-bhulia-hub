@@ -29,7 +29,7 @@ export default function WebhooksPage() {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Developer Webhooks</h1>
-          <p className="text-gray-500 mt-2 font-medium">Manage event-driven HTTP callbacks to external systems (Shiprocket, Razorpay, ERP).</p>
+          <p className="text-gray-800 mt-2 font-semibold">Manage event-driven HTTP callbacks to external systems (Shiprocket, Razorpay, ERP).</p>
         </div>
         <button onClick={() => setShowModal(true)} className="px-6 py-3 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-[0_4px_14px_0_rgb(0,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.23)] hover:bg-black transition-all flex items-center gap-2">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>

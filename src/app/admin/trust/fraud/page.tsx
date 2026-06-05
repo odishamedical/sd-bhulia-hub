@@ -34,7 +34,7 @@ export default function FraudAnalysisPage() {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Fraud Analysis Center</h1>
-          <p className="text-gray-500 mt-2 font-medium">Identify and mitigate high-risk transactions across the ecosystem.</p>
+          <p className="text-gray-800 mt-2 font-semibold">Identify and mitigate high-risk transactions across the ecosystem.</p>
         </div>
       </header>
 

@@ -33,7 +33,7 @@ export default function DispatchPage() {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Active Dispatch</h1>
-          <p className="text-gray-500 mt-2 font-medium">Manage packing queue, generate AWBs, and schedule courier pickups.</p>
+          <p className="text-gray-800 mt-2 font-semibold">Manage packing queue, generate AWBs, and schedule courier pickups.</p>
         </div>
         <button 
           onClick={handleGenerateManifest}

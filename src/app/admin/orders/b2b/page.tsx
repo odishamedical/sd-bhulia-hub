@@ -39,7 +39,7 @@ export default function B2BOrdersPage() {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Wholesale & B2B Orders</h1>
-          <p className="text-gray-500 mt-2 font-medium">Manage bulk negotiations, MOQ tiers, and custom freight logistics.</p>
+          <p className="text-gray-800 mt-2 font-semibold">Manage bulk negotiations, MOQ tiers, and custom freight logistics.</p>
         </div>
         <button className="px-6 py-3 bg-blue-600 text-white rounded-xl text-sm font-bold shadow-[0_4px_14px_0_rgb(0,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)] hover:bg-blue-700 transition-all flex items-center gap-2">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"/></svg>

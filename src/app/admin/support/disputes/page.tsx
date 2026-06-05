@@ -47,7 +47,7 @@ export default function DisputesPage() {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Dispute Resolution Center</h1>
-          <p className="text-gray-500 mt-2 font-medium">Arbitrate conflicts between buyers and weavers. Manage Escrow releases and refunds.</p>
+          <p className="text-gray-800 mt-2 font-semibold">Arbitrate conflicts between buyers and weavers. Manage Escrow releases and refunds.</p>
         </div>
       </header>
 
