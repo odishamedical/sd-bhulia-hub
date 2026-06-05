@@ -65,7 +65,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
-        <div className="w-12 h-12 border-4 border-[#E57138] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-[#0070F3] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -199,7 +199,7 @@ function OnboardingFlow({ onComplete }: { onComplete: () => void }) {
         <p className="text-gray-500 text-center mb-6">Select your account type to proceed</p>
         
         <select 
-          className="w-full bg-gray-50 border border-gray-300 rounded-xl p-3 text-gray-900 mb-6 focus:border-[#E57138] focus:outline-none focus:ring-1 focus:ring-[#E57138]"
+          className="w-full bg-gray-50 border border-gray-300 rounded-xl p-3 text-gray-900 mb-6 focus:border-[#0070F3] focus:outline-none focus:ring-1 focus:ring-[#0070F3]"
           value={selectedRole}
           onChange={(e) => setSelectedRole(e.target.value)}
         >
@@ -212,7 +212,7 @@ function OnboardingFlow({ onComplete }: { onComplete: () => void }) {
         <button 
           onClick={handleContinue}
           disabled={loading}
-          className="w-full bg-[#E57138] text-white font-bold py-3 rounded-xl disabled:opacity-50 hover:bg-[#D56128] transition-colors"
+          className="w-full bg-[#0070F3] text-white font-bold py-3 rounded-xl disabled:opacity-50 hover:bg-[#005BB5] transition-colors"
         >
           {loading ? "Saving..." : `Continue as ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}`}
         </button>
@@ -237,19 +237,19 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
       {activeTab === "home" && (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between group hover:border-[#E57138]/30 transition-colors">
+            <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between group hover:border-[#0070F3]/30 transition-colors">
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Orders</h3>
                 <div className="text-sm text-gray-500">No recent orders found.</div>
               </div>
-              <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#E57138] font-bold text-left w-max group-hover:underline">View All Orders →</button>
+              <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View All Orders →</button>
             </div>
-            <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between group hover:border-[#E57138]/30 transition-colors">
+            <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between group hover:border-[#0070F3]/30 transition-colors">
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Wishlist Preview</h3>
                 <div className="text-sm text-gray-500">Your wishlist is empty.</div>
               </div>
-              <button onClick={() => onTabChange("wishlist")} className="mt-6 text-sm text-[#E57138] font-bold text-left w-max group-hover:underline">View Wishlist →</button>
+              <button onClick={() => onTabChange("wishlist")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View Wishlist →</button>
             </div>
             <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div>
@@ -265,7 +265,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in">
           <div className="flex flex-wrap gap-2 mb-6">
             {['All', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(f => (
-              <button key={f} className="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-50 text-gray-600 hover:bg-orange-50 hover:text-[#E57138] border border-gray-200 transition-colors">{f}</button>
+              <button key={f} className="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-[#0070F3] border border-gray-200 transition-colors">{f}</button>
             ))}
           </div>
           <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 flex flex-col md:flex-row gap-4 items-center justify-between hover:border-gray-200 transition-colors">
@@ -273,7 +273,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
               <p className="text-sm font-bold text-gray-900">Order #ORD-99382</p>
               <p className="text-xs text-gray-500 mt-1">Status: Dispatched via Bhulia Hub</p>
             </div>
-            <button className="px-5 py-2.5 bg-[#E57138] text-white text-xs font-bold rounded-xl hover:bg-[#D56128] transition-colors shadow-sm">Track Order (Bhulia Logistics)</button>
+            <button className="px-5 py-2.5 bg-[#0070F3] text-white text-xs font-bold rounded-xl hover:bg-[#005BB5] transition-colors shadow-sm">Track Order (Bhulia Logistics)</button>
           </div>
           <div className="text-center py-10 text-gray-400 text-sm font-medium">End of order history.</div>
         </div>
@@ -315,8 +315,8 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
             <h3 className="font-bold text-gray-900 mb-5">Raise a Ticket</h3>
             <form className="space-y-4">
-              <input type="text" placeholder="Subject" className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" />
-              <textarea rows={4} placeholder="Describe your issue..." className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all"></textarea>
+              <input type="text" placeholder="Subject" className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+              <textarea rows={4} placeholder="Describe your issue..." className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all"></textarea>
               <button type="button" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Submit Ticket</button>
             </form>
           </div>
@@ -329,7 +329,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="space-y-5">
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name</label>
-              <input type="text" className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" defaultValue="Customer User" />
+              <input type="text" className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" defaultValue="Customer User" />
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
@@ -337,7 +337,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Shipping Address</label>
-              <textarea className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" rows={3}></textarea>
+              <textarea className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={3}></textarea>
             </div>
             <button className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm mt-4">Save Changes</button>
           </div>
@@ -411,7 +411,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Master Weaver Hub</h1>
           <p className="text-gray-500 mt-2 font-medium">Manage your digital storefront and orders.</p>
         </div>
-        <button onClick={() => onTabChange("upload")} className="bg-[#E57138] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-sm self-start md:self-auto">
+        <button onClick={() => onTabChange("upload")} className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm self-start md:self-auto">
           + Upload Product
         </button>
       </header>
@@ -450,16 +450,16 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
-                <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
-                <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
               </div>
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category</label>
-              <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all">
+              <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all">
                 <option>Saree</option>
                 <option>Dupatta</option>
                 <option>Fabric</option>
@@ -467,25 +467,49 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Description & Details</label>
-              <textarea rows={4} value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required></textarea>
+              <textarea rows={4} value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required></textarea>
+            </div>
+            <div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Stock Quantity</label>
+                    <input type="number" min="1" value={stockQuantity} onChange={e => setStockQuantity(Number(e.target.value))} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 md:col-span-2">
+                    <label className="flex items-start space-x-3 cursor-pointer mb-3">
+                      <input type="checkbox" checked={allowResellerMargin} onChange={e => setAllowResellerMargin(e.target.checked)} className="form-checkbox text-[#0070F3] rounded w-5 h-5 mt-0.5 focus:ring-[#0070F3]" />
+                      <div>
+                        <span className="text-sm text-gray-900 font-bold block">Allow Reseller Promotion?</span>
+                        <span className="text-xs text-gray-500">Opt-in to allow resellers to market your product.</span>
+                      </div>
+                    </label>
+                    {allowResellerMargin && (
+                      <div className="animate-in fade-in slide-in-from-top-2 mt-4">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Margin Percentage (Min 5%)</label>
+                        <input type="number" min="5" max="90" value={resellerMarginPercentage} onChange={e => setResellerMarginPercentage(Math.max(5, Number(e.target.value)))} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
+                        <div className="text-xs text-green-600 font-bold mt-2">
+                          Resellers will sell this at a ₹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount.
+                        </div>
+                      </div>
+                    )}
+                  </div>
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Images (Max 4)</label>
               <div className="flex gap-4">
                 {[1,2,3,4].map(i => (
-                  <div key={i} className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center text-gray-400 hover:border-[#E57138] hover:text-[#E57138] cursor-pointer transition-colors bg-gray-50">+</div>
+                  <div key={i} className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center text-gray-400 hover:border-[#0070F3] hover:text-[#0070F3] cursor-pointer transition-colors bg-gray-50">+</div>
                 ))}
               </div>
             </div>
-            <div className="bg-orange-50 p-5 rounded-2xl border border-orange-100">
+            <div className="bg-blue-50 p-5 rounded-2xl border border-blue-100">
               <label className="flex items-start space-x-3 cursor-pointer">
-                <input type="checkbox" className="form-checkbox text-[#E57138] rounded w-5 h-5 mt-0.5 focus:ring-[#E57138]" required />
+                <input type="checkbox" className="form-checkbox text-[#0070F3] rounded w-5 h-5 mt-0.5 focus:ring-[#0070F3]" required />
                 <span className="text-sm text-gray-700 font-medium">I declare that this is an authentic, handwoven Sambalpuri handloom product. I understand Bhulia.com strictly enforces GI-Tag authenticity.</span>
               </label>
             </div>
             <div className="flex gap-4 pt-4">
               <button type="button" className="flex-1 bg-white border border-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">Save Draft</button>
-              <button type="submit" disabled={isUploading} className="flex-1 bg-[#E57138] text-white font-bold py-3 rounded-xl disabled:opacity-50 hover:bg-[#D56128] transition-colors shadow-sm">
+              <button type="submit" disabled={isUploading} className="flex-1 bg-[#0070F3] text-white font-bold py-3 rounded-xl disabled:opacity-50 hover:bg-[#005BB5] transition-colors shadow-sm">
                 {isUploading ? "Uploading to Database..." : "Submit for Approval"}
               </button>
             </div>
@@ -798,7 +822,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Vendor Hub</h1>
           <p className="text-gray-500 mt-2 font-medium">Manage your retail inventory and dispatch operations.</p>
         </div>
-        <button onClick={() => onTabChange("products")} className="bg-[#E57138] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-sm self-start md:self-auto">
+        <button onClick={() => onTabChange("products")} className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm self-start md:self-auto">
           + Add Inventory
         </button>
       </header>
@@ -836,7 +860,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   <div className="text-4xl mb-4">🛍️</div>
                   <h3 className="text-lg font-bold text-gray-900 mb-2">No Products Yet</h3>
                   <p className="text-gray-500 max-w-md mx-auto mb-6">You haven't added any products to your catalog. Add your first item to start selling.</p>
-                  <button onClick={handleAddNewClick} className="bg-[#E57138] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-sm">
+                  <button onClick={handleAddNewClick} className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm">
                     Upload First Product
                   </button>
                 </div>
@@ -887,7 +911,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                             </span>
                           </td>
                           <td className="py-4 text-right">
-                            <button onClick={() => handleEditClick(product)} className="text-[#E57138] font-bold text-xs hover:underline">
+                            <button onClick={() => handleEditClick(product)} className="text-[#0070F3] font-bold text-xs hover:underline">
                               Edit
                             </button>
                           </td>
@@ -912,19 +936,19 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   {/* Basic Details */}
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
-                    <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                    <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
-                    <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required placeholder="e.g. 34500" />
+                    <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required placeholder="e.g. 34500" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">MRP (₹)</label>
-                    <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required placeholder="e.g. 42000" />
+                    <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required placeholder="e.g. 42000" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category</label>
-                    <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all">
+                    <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all">
                       <option>Silk Masterpieces</option>
                       <option>Cotton Classics</option>
                       <option>Mix Pata</option>
@@ -932,21 +956,21 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name</label>
-                    <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                    <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Short Description</label>
-                    <textarea value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required rows={2} />
+                    <textarea value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required rows={2} />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Long Artisan Story Description</label>
-                    <textarea value={productLongDesc} onChange={e => setProductLongDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required rows={4} />
+                    <textarea value={productLongDesc} onChange={e => setProductLongDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required rows={4} />
                   </div>
                   
                   {/* Specs */}
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Saree Type</label>
-                    <select value={sareeType} onChange={e => setSareeType(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all">
+                    <select value={sareeType} onChange={e => setSareeType(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all">
                       <option>Pure Silk</option>
                       <option>Pure Cotton</option>
                       <option>Mix Pata</option>
@@ -955,20 +979,43 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Color Palette</label>
-                    <input type="text" value={colorUse} onChange={e => setColorUse(e.target.value)} placeholder="e.g. Royal Blue & Gold" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                    <input type="text" value={colorUse} onChange={e => setColorUse(e.target.value)} placeholder="e.g. Royal Blue & Gold" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Length</label>
-                    <input type="text" value={length} onChange={e => setLength(e.target.value)} placeholder="e.g. 6.2 Meters" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                    <input type="text" value={length} onChange={e => setLength(e.target.value)} placeholder="e.g. 6.2 Meters" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Blouse Status</label>
-                    <select value={hasBlouse ? "true" : "false"} onChange={e => setHasBlouse(e.target.value === "true")} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all">
+                    <select value={hasBlouse ? "true" : "false"} onChange={e => setHasBlouse(e.target.value === "true")} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all">
                       <option value="true">With Blouse Piece</option>
                       <option value="false">Without Blouse Piece</option>
                     </select>
                   </div>
                 </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Stock Quantity</label>
+                    <input type="number" min="1" value={stockQuantity} onChange={e => setStockQuantity(Number(e.target.value))} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 md:col-span-2">
+                    <label className="flex items-start space-x-3 cursor-pointer mb-3">
+                      <input type="checkbox" checked={allowResellerMargin} onChange={e => setAllowResellerMargin(e.target.checked)} className="form-checkbox text-[#0070F3] rounded w-5 h-5 mt-0.5 focus:ring-[#0070F3]" />
+                      <div>
+                        <span className="text-sm text-gray-900 font-bold block">Allow Reseller Promotion?</span>
+                        <span className="text-xs text-gray-500">Opt-in to allow resellers to market your product.</span>
+                      </div>
+                    </label>
+                    {allowResellerMargin && (
+                      <div className="animate-in fade-in slide-in-from-top-2 mt-4">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Margin Percentage (Min 5%)</label>
+                        <input type="number" min="5" max="90" value={resellerMarginPercentage} onChange={e => setResellerMarginPercentage(Math.max(5, Number(e.target.value)))} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
+                        <div className="text-xs text-green-600 font-bold mt-2">
+                          Resellers will sell this at a ₹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount.
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
                 {/* Images Section */}
                 <div className="pt-6 border-t border-gray-100">
@@ -982,7 +1029,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                 </div>
                 
                 <div className="flex justify-end pt-4 border-t border-gray-100">
-                  <button type="submit" disabled={isUploading} className="w-full md:w-auto bg-[#E57138] text-white px-8 py-3.5 font-bold rounded-xl disabled:opacity-50 hover:bg-[#D56128] transition-colors shadow-sm">
+                  <button type="submit" disabled={isUploading} className="w-full md:w-auto bg-[#0070F3] text-white px-8 py-3.5 font-bold rounded-xl disabled:opacity-50 hover:bg-[#005BB5] transition-colors shadow-sm">
                     {isUploading ? "Uploading to Database..." : "Submit Inventory for QC"}
                   </button>
                 </div>
@@ -1069,27 +1116,27 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Holder Name</label>
-                  <input type="text" placeholder="As per bank records" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                  <input type="text" placeholder="As per bank records" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Bank Name</label>
-                  <input type="text" placeholder="e.g. State Bank of India" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                  <input type="text" placeholder="e.g. State Bank of India" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Number</label>
-                  <input type="text" placeholder="Account Number" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none font-mono" required />
+                  <input type="text" placeholder="Account Number" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono" required />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">IFSC Code</label>
-                  <input type="text" placeholder="e.g. SBIN0001234" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none font-mono uppercase" required />
+                  <input type="text" placeholder="e.g. SBIN0001234" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono uppercase" required />
                 </div>
                 <div className="col-span-1 md:col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">UPI Details (Optional)</label>
-                  <input type="text" placeholder="yourname@upi" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none font-mono" />
+                  <input type="text" placeholder="yourname@upi" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono" />
                 </div>
               </div>
               <div className="flex justify-end mt-4">
-                <button type="submit" className="bg-[#E57138] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-[0_4px_14px_0_rgb(229,113,56,0.39)]">
+                <button type="submit" className="bg-[#0070F3] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-[0_4px_14px_0_rgb(229,113,56,0.39)]">
                   Save Bank Details
                 </button>
               </div>
@@ -1129,11 +1176,11 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Name</label>
-                    <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="e.g. Sonepur Silk Emporium" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                    <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="e.g. Sonepur Silk Emporium" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Description</label>
-                    <input type="text" value={publicDesc} onChange={e => setPublicDesc(e.target.value)} placeholder="e.g. Authentic handlooms direct from weavers." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                    <input type="text" value={publicDesc} onChange={e => setPublicDesc(e.target.value)} placeholder="e.g. Authentic handlooms direct from weavers." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
                   </div>
                 </div>
                 <div>
@@ -1152,11 +1199,11 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Business Phone Number</label>
-                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 9999999999" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 9999999999" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Number</label>
-                  <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} placeholder="+91 9999999999" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                  <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} placeholder="+91 9999999999" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
                 </div>
               </div>
             </div>
@@ -1166,7 +1213,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">KYC Document Type</label>
-                  <select value={kycType} onChange={e => setKycType(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required>
+                  <select value={kycType} onChange={e => setKycType(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required>
                     <option value="">Select Document Type...</option>
                     <option value="gst">GST Registration Number</option>
                     <option value="udyam">Aadhaar Udyam Number</option>
@@ -1175,34 +1222,9 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                 </div>
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document ID / Number</label>
-                  <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} placeholder="Enter the ID number" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] outline-none" required />
+                  <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} placeholder="Enter the ID number" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
                 </div>
                 
-                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 mb-6">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Stock Quantity</label>
-                    <input type="number" min="1" value={stockQuantity} onChange={e => setStockQuantity(Number(e.target.value))} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
-                  </div>
-                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                    <label className="flex items-start space-x-3 cursor-pointer mb-3">
-                      <input type="checkbox" checked={allowResellerMargin} onChange={e => setAllowResellerMargin(e.target.checked)} className="form-checkbox text-[#E57138] rounded w-5 h-5 mt-0.5 focus:ring-[#E57138]" />
-                      <div>
-                        <span className="text-sm text-gray-900 font-bold block">Allow Reseller Promotion?</span>
-                        <span className="text-xs text-gray-500">Opt-in to allow resellers to market your product.</span>
-                      </div>
-                    </label>
-                    {allowResellerMargin && (
-                      <div className="animate-in fade-in slide-in-from-top-2">
-                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Margin Percentage (Min 5%)</label>
-                        <input type="number" min="5" max="90" value={resellerMarginPercentage} onChange={e => setResellerMarginPercentage(Math.max(5, Number(e.target.value)))} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
-                        <div className="text-xs text-green-600 font-bold mt-2">
-                          Resellers will sell this at a ₹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount.
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Document Scan (PDF/JPG)</label>
                   <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer">
@@ -1213,7 +1235,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             </div>
 
             <div className="pt-6 border-t border-gray-100 flex justify-end">
-              <button type="submit" disabled={isSaving} className="bg-[#E57138] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#D56128] disabled:opacity-50 transition-colors shadow-[0_4px_14px_0_rgb(229,113,56,0.39)] hover:shadow-[0_6px_20px_rgba(229,113,56,0.23)]">
+              <button type="submit" disabled={isSaving} className="bg-[#0070F3] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors shadow-[0_4px_14px_0_rgb(229,113,56,0.39)] hover:shadow-[0_6px_20px_rgba(229,113,56,0.23)]">
                 {isSaving ? "Saving..." : "Save Settings & Submit KYC"}
               </button>
             </div>
@@ -1278,8 +1300,8 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
       
       {activeTab === "home" && (
         <div className="space-y-6 animate-in fade-in">
-          <div className="bg-orange-50 border border-orange-200 p-6 rounded-2xl flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-orange-500 text-xl shadow-sm shrink-0">⏳</div>
+          <div className="bg-blue-50 border border-blue-200 p-6 rounded-2xl flex items-start gap-4">
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-blue-500 text-xl shadow-sm shrink-0">⏳</div>
             <div>
               <h3 className="font-bold text-gray-900 text-lg">Activation Pending</h3>
               <p className="text-sm text-gray-600 mt-1">Our staff will contact you shortly to verify your identity and activate your storefront link.</p>
@@ -1313,25 +1335,25 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Customer Full Name</label>
-                <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Customer WhatsApp/Phone</label>
-                <input type="tel" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                <input type="tel" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
               </div>
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Shipping Address</label>
-              <textarea rows={3} value={address} onChange={e => setAddress(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required></textarea>
+              <textarea rows={3} value={address} onChange={e => setAddress(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required></textarea>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
-                <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
+                <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Payment Method</label>
-                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required>
+                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required>
                   <option value="">Select Method</option>
                   <option value="UPI">Send UPI Link to Customer</option>
                   <option value="COD">Cash on Delivery (₹100 Extra)</option>
@@ -1343,7 +1365,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
               <span className="text-xl">ℹ️</span>
               <p className="text-sm text-blue-800 font-medium">Proxy orders are shipped in your name. The customer will not see Bhulia.com pricing, ensuring your markup is protected.</p>
             </div>
-            <button type="submit" disabled={isOrdering} className="w-full bg-[#E57138] text-white font-bold py-3.5 rounded-xl disabled:opacity-50 hover:bg-[#D56128] transition-colors shadow-sm mt-4">
+            <button type="submit" disabled={isOrdering} className="w-full bg-[#0070F3] text-white font-bold py-3.5 rounded-xl disabled:opacity-50 hover:bg-[#005BB5] transition-colors shadow-sm mt-4">
               {isOrdering ? "Securing Order..." : "Place Proxy Order"}
             </button>
           </form>
@@ -1499,19 +1521,19 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
             </div>
             <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Live Products</h3>
-              <p className="text-3xl font-black text-[#E57138]">{productsLoading ? "..." : products.length}</p>
+              <p className="text-3xl font-black text-[#0070F3]">{productsLoading ? "..." : products.length}</p>
             </div>
             <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Verified Weavers</h3>
-              <p className="text-3xl font-black text-[#E57138]">{weaversLoading ? "..." : weavers.length}</p>
+              <p className="text-3xl font-black text-[#0070F3]">{weaversLoading ? "..." : weavers.length}</p>
             </div>
             <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Retail Stores</h3>
-              <p className="text-3xl font-black text-[#E57138]">{storesLoading ? "..." : stores.length}</p>
+              <p className="text-3xl font-black text-[#0070F3]">{storesLoading ? "..." : stores.length}</p>
             </div>
             <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Resellers</h3>
-              <p className="text-3xl font-black text-[#E57138]">{franchisesLoading ? "..." : franchises.length}</p>
+              <p className="text-3xl font-black text-[#0070F3]">{franchisesLoading ? "..." : franchises.length}</p>
             </div>
           </div>
 
@@ -1538,7 +1560,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
                         <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase">{item.type}</span>
                       </td>
                       <td className="py-4">
-                        <span className="text-[#E57138] font-bold">Pending Review</span>
+                        <span className="text-[#0070F3] font-bold">Pending Review</span>
                       </td>
                       <td className="py-4 text-right">
                         <button onClick={() => handleInspect(item)} className="px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition-colors">Review</button>
@@ -1595,10 +1617,10 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
           <h2 className="text-xl font-bold text-gray-900 mb-6">Product Approvals (GI-Tag Validation)</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pendingProducts.map(p => (
-              <div key={p.id} className="p-6 border border-gray-200 rounded-2xl flex flex-col justify-between group hover:border-[#E57138]/30 transition-colors">
+              <div key={p.id} className="p-6 border border-gray-200 rounded-2xl flex flex-col justify-between group hover:border-[#0070F3]/30 transition-colors">
                 <div>
                   <div className="font-bold text-gray-900 mb-1">{p.title}</div>
-                  <div className="text-sm font-bold text-[#E57138] mb-6">Price: {p.price}</div>
+                  <div className="text-sm font-bold text-[#0070F3] mb-6">Price: {p.price}</div>
                 </div>
                 <button onClick={() => handleInspect({ id: p.id, title: p.title, type: "products", data: p })} className="w-full py-2.5 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition-colors">
                   Verify Handloom Authenticity
@@ -1637,7 +1659,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
                       <div className="text-xs text-gray-500">{order.customerAddress}</div>
                     </td>
                     <td className="py-4">
-                      <select value={order.logisticsStatus || (order as any).status || "Pending QC"} onChange={(e) => updateOrderStatus(order.id, "logisticsStatus", e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#E57138]">
+                      <select value={order.logisticsStatus || (order as any).status || "Pending QC"} onChange={(e) => updateOrderStatus(order.id, "logisticsStatus", e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#0070F3]">
                         <option value="placed">Placed (Pending QC)</option>
                         <option value="QC Passed">QC Passed</option>
                         <option value="Pending Weaver Handover">Pending Weaver Handover</option>
@@ -1646,7 +1668,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
                       </select>
                     </td>
                     <td className="py-4 text-right">
-                      <button onClick={() => alert("Shiprocket AWB creation will pop up here.")} className="text-sm text-[#E57138] font-bold hover:underline">Generate AWB</button>
+                      <button onClick={() => alert("Shiprocket AWB creation will pop up here.")} className="text-sm text-[#0070F3] font-bold hover:underline">Generate AWB</button>
                     </td>
                   </tr>
                 ))}
@@ -1674,11 +1696,11 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
                   <tr key={order.id}>
                     <td className="py-4 font-mono text-xs text-gray-500">{order.orderId || order.id}</td>
                     <td className="py-4">
-                      <div className="font-bold text-[#E57138]">{order.productPrice || "TBD"}</div>
+                      <div className="font-bold text-[#0070F3]">{order.productPrice || "TBD"}</div>
                       <div className="text-xs font-bold text-gray-500 uppercase">{order.paymentMode || "Online"}</div>
                     </td>
                     <td className="py-4">
-                      <select value={order.paymentStatus || (order as any).status || "Escrow Locked"} onChange={(e) => updateOrderStatus(order.id, "paymentStatus", e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#E57138]">
+                      <select value={order.paymentStatus || (order as any).status || "Escrow Locked"} onChange={(e) => updateOrderStatus(order.id, "paymentStatus", e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#0070F3]">
                         <option value="Escrow Locked">Escrow Locked</option>
                         <option value="placed">Placed (Cash)</option>
                         <option value="Payout Pending (Weaver)">Payout Pending (Weaver)</option>
@@ -1705,7 +1727,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
           <div className="bg-white rounded-3xl p-8 w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl border border-gray-100">
             <div className="flex justify-between items-start border-b border-gray-100 pb-4 mb-6">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#E57138]">Ecosystem Verification</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0070F3]">Ecosystem Verification</span>
                 <h3 className="text-2xl font-black text-gray-900 mt-1">Inspect: {selectedItem.title}</h3>
               </div>
               <button onClick={() => setSelectedItem(null)} className="p-2 bg-gray-50 text-gray-500 rounded-full hover:bg-gray-100 transition-colors">✕</button>
@@ -1722,7 +1744,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
 
             <div className="flex justify-between gap-4">
               <button onClick={handleReject} disabled={isSubmitting} className="px-6 py-3 border border-red-200 text-red-600 font-bold rounded-xl hover:bg-red-50 transition-colors disabled:opacity-50">Reject</button>
-              <button onClick={handleApprove} disabled={isSubmitting} className="px-8 py-3 bg-[#E57138] text-white font-bold rounded-xl hover:bg-[#D56128] transition-colors shadow-sm disabled:opacity-50">Approve & Publish</button>
+              <button onClick={handleApprove} disabled={isSubmitting} className="px-8 py-3 bg-[#0070F3] text-white font-bold rounded-xl hover:bg-[#005BB5] transition-colors shadow-sm disabled:opacity-50">Approve & Publish</button>
             </div>
           </div>
         </div>

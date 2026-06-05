@@ -112,7 +112,7 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
               <span className="text-gray-300 text-sm">Subtotal</span>
               <span className="text-[#C5A059] text-xl font-serif font-bold">₹{cartTotal.toLocaleString()}</span>
             </div>
-            <button className="w-full py-3 bg-gradient-to-r from-[#E57138] to-[#D56128] text-white font-bold uppercase tracking-widest rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all">
+            <button className="w-full py-3 bg-[#0070F3] hover:bg-[#005BB5] text-white font-bold uppercase tracking-widest rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all">
               Proceed to Checkout
             </button>
           </div>

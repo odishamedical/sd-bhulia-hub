@@ -170,7 +170,7 @@ export default function CheckoutPage() {
         </div>
         <h2 className="text-3xl font-serif text-[#C5A059] mb-4">Your Cart is Empty</h2>
         <p className="text-gray-400 mb-8 max-w-md">Discover authentic Sambalpuri masterpieces and support our master weavers directly.</p>
-        <button onClick={() => router.push('/')} className="px-8 py-3 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] font-bold uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)]">
+        <button onClick={() => router.push('/')} className="px-8 py-3 bg-[#0070F3] hover:bg-[#005BB5] text-[#0A1021] font-bold uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)]">
           Continue Shopping
         </button>
       </div>
@@ -268,7 +268,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <button onClick={handlePayment} className="w-full mt-8 py-4 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] font-bold text-sm uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] flex justify-center items-center gap-2">
+          <button onClick={handlePayment} className="w-full mt-8 py-4 bg-[#0070F3] hover:bg-[#005BB5] text-[#0A1021] font-bold text-sm uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] flex justify-center items-center gap-2">
             <span>Pay securely with Razorpay</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
           </button>
