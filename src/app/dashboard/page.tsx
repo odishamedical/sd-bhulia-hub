@@ -608,6 +608,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [img4, setImg4] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isAddInventoryOpen, setIsAddInventoryOpen] = useState(false);
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
 
   // Settings State
   const [storeName, setStoreName] = useState("");
@@ -668,15 +669,52 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
     setIsSaving(false);
   };
 
+  const handleEditClick = (product: any) => {
+    setEditingProductId(product.id);
+    setProductName(product.title || "");
+    setProductPrice(product.price || "");
+    setProductMrp(product.mrp || "");
+    setProductCategory(product.category || "Silk");
+    setProductDesc(product.desc || "");
+    setProductLongDesc(product.longDesc || "");
+    setSareeType(product.sareeType || "Silk");
+    setColorUse(product.colorUse || "");
+    setLength(product.length || "");
+    setHasBlouse(product.hasBlouse ?? true);
+    setOriginalWeaver(product.weaverName || "");
+    setProductImage(product.img || "");
+    setImg2(product.img2 || "");
+    setImg3(product.img3 || "");
+    setImg4(product.img4 || "");
+    setIsAddInventoryOpen(true);
+  };
+
+  const handleAddNewClick = () => {
+    setEditingProductId(null);
+    setProductName("");
+    setProductPrice("");
+    setProductMrp("");
+    setProductDesc("");
+    setProductLongDesc("");
+    setColorUse("");
+    setLength("");
+    setOriginalWeaver("");
+    setProductImage("");
+    setImg2("");
+    setImg3("");
+    setImg4("");
+    setIsAddInventoryOpen(true);
+  };
+
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!auth.currentUser) return;
     setIsUploading(true);
     try {
-      await addDoc(collection(db, "products"), {
+      const productData = {
         title: productName,
         slug: productName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-        price: productPrice, // Store as string with commas if formatted, or modify as needed
+        price: productPrice,
         mrp: productMrp,
         category: productCategory,
         desc: productDesc,
@@ -690,16 +728,31 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         img2: img2,
         img3: img3,
         img4: img4,
-        isGI: false,
-        isBhuliaVerified: true,
-        escrowStatus: "Payment Protected",
-        ownerId: auth.currentUser.uid,
-        ownerRole: "vendor",
-        status: "pending",
-        createdAt: serverTimestamp(),
-      });
-      alert("Inventory batch saved to Firestore and submitted for QC!");
+      };
+
+      if (editingProductId) {
+        await updateDoc(doc(db, "products", editingProductId), {
+          ...productData,
+          status: "pending", // Resubmit for QC on edit
+          updatedAt: serverTimestamp(),
+        });
+        alert("Inventory updated successfully and submitted for QC!");
+      } else {
+        await addDoc(collection(db, "products"), {
+          ...productData,
+          isGI: false,
+          isBhuliaVerified: true,
+          escrowStatus: "Payment Protected",
+          ownerId: auth.currentUser.uid,
+          ownerRole: "vendor",
+          status: "pending",
+          createdAt: serverTimestamp(),
+        });
+        alert("Inventory batch saved to Firestore and submitted for QC!");
+      }
+      
       setIsAddInventoryOpen(false);
+      setEditingProductId(null);
       setProductName("");
       setProductPrice("");
       setProductMrp("");
@@ -712,7 +765,6 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       setImg2("");
       setImg3("");
       setImg4("");
-      setIsAddInventoryOpen(false);
     } catch (error) {
       console.error(error);
       alert("Upload failed.");
@@ -755,7 +807,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             <div>
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-bold text-gray-900">Products Catalog</h2>
-                <button onClick={() => setIsAddInventoryOpen(true)} className="bg-[#1f2937] text-white px-5 py-2.5 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">
+                <button onClick={handleAddNewClick} className="bg-[#1f2937] text-white px-5 py-2.5 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">
                   + Add Inventory
                 </button>
               </div>
@@ -765,7 +817,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   <div className="text-4xl mb-4">🛍️</div>
                   <h3 className="text-lg font-bold text-gray-900 mb-2">No Products Yet</h3>
                   <p className="text-gray-500 max-w-md mx-auto mb-6">You haven't added any products to your catalog. Add your first item to start selling.</p>
-                  <button onClick={() => setIsAddInventoryOpen(true)} className="bg-[#E57138] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-sm">
+                  <button onClick={handleAddNewClick} className="bg-[#E57138] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#D56128] transition-colors shadow-sm">
                     Upload First Product
                   </button>
                 </div>
@@ -778,6 +830,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                         <th className="pb-4 font-bold">Price</th>
                         <th className="pb-4 font-bold">Category</th>
                         <th className="pb-4 font-bold">Status</th>
+                        <th className="pb-4 font-bold text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
@@ -786,7 +839,14 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                           <td className="py-4">
                             <div className="flex items-center gap-3">
                               <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
-                                <img src={product.img || "/bhulia-hero.png"} alt={product.title} className="w-full h-full object-cover" />
+                                <img 
+                                  src={product.img || "/bhulia-hero.png"} 
+                                  alt={product.title} 
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = "/bhulia-hero.png";
+                                  }}
+                                />
                               </div>
                               <div>
                                 <div className="font-bold text-gray-900">{product.title}</div>
@@ -807,6 +867,11 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                               {product.status.charAt(0).toUpperCase() + product.status.slice(1)}
                             </span>
                           </td>
+                          <td className="py-4 text-right">
+                            <button onClick={() => handleEditClick(product)} className="text-[#E57138] font-bold text-xs hover:underline">
+                              Edit
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -820,7 +885,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                 <button onClick={() => setIsAddInventoryOpen(false)} className="text-gray-400 hover:text-gray-900 transition-colors">
                   ← Back to Catalog
                 </button>
-                <h2 className="text-2xl font-bold text-gray-900">Upload New Inventory</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{editingProductId ? "Edit Inventory" : "Upload New Inventory"}</h2>
               </div>
               
               <form className="space-y-6" onSubmit={handleUpload}>

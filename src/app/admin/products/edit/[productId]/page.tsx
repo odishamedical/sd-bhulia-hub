@@ -53,7 +53,7 @@ export default function EditProductPage() {
     }
   }, [product]);
 
-  const handleUpdateProduct = async (e: React.FormEvent) => {
+  const handleUpdateProduct = async (e: React.FormEvent, statusOverride?: string) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -75,7 +75,8 @@ export default function EditProductPage() {
       weaverName,
       isGI: false, // Override to remove GI mention completely
       isBhuliaVerified: true, // Always true as requested
-      escrowStatus: "Payment Protected"
+      escrowStatus: "Payment Protected",
+      ...(statusOverride ? { status: statusOverride } : {})
     };
 
     const res = await updateDocumentStatus("products", productId, data);
@@ -189,12 +190,15 @@ export default function EditProductPage() {
         </section>
 
         {/* Submit */}
-        <div className="pt-6 flex justify-end gap-4 border-t border-[#C5A059]/20">
+        <div className="pt-6 flex flex-wrap justify-end gap-4 border-t border-[#C5A059]/20">
           <Link href="/admin/products" className="px-6 py-3 text-gray-300 font-bold text-xs uppercase tracking-wider hover:text-white transition-colors">
             Cancel
           </Link>
-          <button type="submit" disabled={isSubmitting} className="bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] hover:brightness-110 transition-all font-bold px-8 py-3 rounded-xl text-sm uppercase tracking-wider disabled:opacity-50 shadow-lg">
+          <button type="button" onClick={(e) => handleUpdateProduct(e)} disabled={isSubmitting} className="bg-transparent border border-[#C5A059] text-[#C5A059] hover:bg-[#C5A059]/10 transition-all font-bold px-8 py-3 rounded-xl text-sm uppercase tracking-wider disabled:opacity-50">
             {isSubmitting ? "Saving..." : "Save Changes"}
+          </button>
+          <button type="button" onClick={(e) => handleUpdateProduct(e, "live")} disabled={isSubmitting} className="bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] hover:brightness-110 transition-all font-bold px-8 py-3 rounded-xl text-sm uppercase tracking-wider disabled:opacity-50 shadow-lg">
+            {isSubmitting ? "Approving..." : "Approve & Go Live"}
           </button>
         </div>
       </form>

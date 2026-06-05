@@ -391,7 +391,14 @@ export default function ImageUploader({
           {/* Image Uploaded Preview */}
           {value && !cameraActive && (
             <div className="relative w-32 h-32 rounded-2xl overflow-hidden border border-gray-300 shadow-sm group">
-              <img src={value} alt="Profile preview" className="object-cover w-full h-full" />
+              <img 
+                src={value} 
+                alt="Profile preview" 
+                className="object-cover w-full h-full"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/bhulia-hero.png";
+                }}
+              />
               <button
                 type="button"
                 onClick={clearImage}
