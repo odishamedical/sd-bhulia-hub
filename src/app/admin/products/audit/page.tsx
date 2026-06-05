@@ -183,19 +183,19 @@ export default function GiTagAuditQueue() {
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-4">
                       <div>
                         <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Weaver</p>
-                        <p className="text-xs font-semibold text-gray-800">{product.weaverName || "Unknown"}</p>
+                        <p className="text-xs font-semibold text-gray-800">{(product as any).weaverName || "Unknown"}</p>
                       </div>
                       <div>
                         <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Cluster</p>
-                        <p className="text-xs font-semibold text-gray-800">{product.cluster || "N/A"}</p>
+                        <p className="text-xs font-semibold text-gray-800">{(product as any).cluster || "N/A"}</p>
                       </div>
                       <div>
                         <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Weave Type</p>
-                        <p className="text-xs font-semibold text-gray-800">{product.weave || "N/A"}</p>
+                        <p className="text-xs font-semibold text-gray-800">{(product as any).weave || "N/A"}</p>
                       </div>
                       <div>
                         <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Thread</p>
-                        <p className="text-xs font-semibold text-gray-800">{product.threadType || "N/A"}</p>
+                        <p className="text-xs font-semibold text-gray-800">{(product as any).threadType || "N/A"}</p>
                       </div>
                     </div>
                   </div>

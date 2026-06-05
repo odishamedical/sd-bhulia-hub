@@ -150,10 +150,10 @@ export default function KycResolutionDesk() {
                     <td className="px-6 py-5 align-top">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-gray-900 bg-gradient-to-br from-gray-400 to-gray-600 shadow-inner">
-                          {user.displayName ? user.displayName.charAt(0).toUpperCase() : "?"}
+                          {(user as any).displayName ? (user as any).displayName.charAt(0).toUpperCase() : "?"}
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900">{user.displayName || "Unregistered"}</p>
+                          <p className="font-bold text-gray-900">{(user as any).displayName || "Unregistered"}</p>
                           <p className="text-xs text-gray-500">{user.email || user.phone}</p>
                           <p className="text-[10px] text-gray-400 mt-1 font-mono">UID: {user.id.substring(0,8)}</p>
                         </div>
@@ -167,13 +167,13 @@ export default function KycResolutionDesk() {
                     <td className="px-6 py-5 text-xs text-gray-600">
                       {user.role === "weaver" ? (
                         <div>
-                          <p><span className="font-semibold">Cluster:</span> {user.cluster || "N/A"}</p>
-                          <p><span className="font-semibold">Village:</span> {user.village || "N/A"}</p>
+                          <p><span className="font-semibold">Cluster:</span> {(user as any).cluster || "N/A"}</p>
+                          <p><span className="font-semibold">Village:</span> {(user as any).village || "N/A"}</p>
                         </div>
                       ) : user.role === "store" ? (
                         <div>
                           <p><span className="font-semibold">Business:</span> {user.businessName || "N/A"}</p>
-                          <p><span className="font-semibold">GST:</span> {user.gstNumber || "N/A"}</p>
+                          <p><span className="font-semibold">GST:</span> {(user as any).gstNumber || "N/A"}</p>
                         </div>
                       ) : (
                         <p className="text-gray-400 italic">No extra metadata provided.</p>

@@ -177,14 +177,14 @@ export default function SupportHelpdeskPage() {
                       <span>•</span>
                       <span>From: {ticket.customerName}</span>
                       <span>•</span>
-                      <span>Opened: {new Date(ticket.createdAt).toLocaleString()}</span>
+                      <span>Opened: {new Date(ticket.createdAt as string).toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="p-6">
                   <div className="bg-blue-50/30 p-4 rounded-xl border border-blue-100/50 text-sm text-gray-800 mb-5 leading-relaxed">
-                    "{ticket.message}"
+                    "{(ticket as any).description}"
                   </div>
 
                   <div className="space-y-3">

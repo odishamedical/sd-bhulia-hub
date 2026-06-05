@@ -15,7 +15,7 @@ export default function TrackingPage() {
         ...order,
         awbNumber: `AWB-${Math.floor(Math.random() * 900000) + 100000}`,
         carrier: ["Shiprocket", "Delhivery", "BlueDart"][idx % 3],
-        trackingStatus: order.status === "delivered" ? "Delivered" : statuses[idx % 3],
+        trackingStatus: (order as any).status === "delivered" ? "Delivered" : statuses[idx % 3],
         lastUpdate: "Today, " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
       }));
       setTrackingData(activeTracking);

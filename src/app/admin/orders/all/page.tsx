@@ -192,13 +192,13 @@ export default function MasterOrdersPage() {
                     <td className="px-6 py-4 align-top">
                       <p className="font-bold text-gray-800">{order.customerName}</p>
                       <span className="inline-block mt-1 px-2 py-0.5 bg-purple-50 text-purple-700 text-[9px] font-bold uppercase rounded border border-purple-100">
-                        {order.source}
+                        {(order as any).source}
                       </span>
                     </td>
                     <td className="px-6 py-4 align-top">
                       <p className="font-bold text-gray-900">₹ {order.amount}</p>
-                      <p className={`text-[10px] font-bold uppercase mt-1 ${order.paymentStatus === 'paid' ? 'text-green-600' : 'text-amber-600'}`}>
-                        {order.paymentStatus.replace("_", " ")}
+                      <p className={`text-[10px] font-bold uppercase mt-1 ${(order as any).paymentStatus === 'paid' ? 'text-green-600' : 'text-amber-600'}`}>
+                        {(order as any).paymentStatus.replace("_", " ")}
                       </p>
                     </td>
                     <td className="px-6 py-4 align-top">

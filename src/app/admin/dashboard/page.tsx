@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { 
   useProducts,
   useWeavers,
-  useStores,
-  useFranchises,
+  useVendors,
+  useResellers,
   useOrders,
   updateDocumentStatus
 } from "@/lib/db-hooks";
@@ -13,8 +13,8 @@ import {
 export default function AdminDashboardPage() {
   const { products, loading: productsLoading } = useProducts();
   const { weavers, loading: weaversLoading } = useWeavers();
-  const { stores, loading: storesLoading } = useStores();
-  const { franchises, loading: franchisesLoading } = useFranchises();
+  const { vendors: stores, loading: storesLoading } = useVendors();
+  const { resellers: franchises, loading: franchisesLoading } = useResellers();
   const { orders } = useOrders(); // Removed ordersLoading since it's unused
 
   const [selectedItem, setSelectedItem] = useState<any>(null);

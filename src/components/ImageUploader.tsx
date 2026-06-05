@@ -62,7 +62,7 @@ export default function ImageUploader({
   const handleProcessImage = async (src: string) => {
     // Generate the base64 crop FIRST before showing the UI
     const autoCropBase64 = await new Promise<string>((resolve, reject) => {
-      const img = new Image();
+      const img = new window.Image();
       img.onload = () => {
         try {
           const canvas = document.createElement("canvas");
@@ -206,7 +206,7 @@ export default function ImageUploader({
 
   const handleApplyCrop = () => {
     if (!rawImageSrc) return;
-    const img = new Image();
+    const img = new window.Image();
     img.onload = () => {
       try {
         const canvas = document.createElement("canvas");

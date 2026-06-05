@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useFranchises, addFranchise, deleteFranchise, updateDocumentStatus, approveFranchiseAndUserRole } from "@/lib/db-hooks";
+import { useResellers, addReseller, deleteReseller, updateDocumentStatus, approveResellerAndUserRole } from "@/lib/db-hooks";
 import ImageUploader from "@/components/ImageUploader";
 
 export default function AdminFranchisesPage() {
-  const { franchises, loading } = useFranchises();
+  const { resellers: franchises, loading } = useResellers();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingFranchise, setEditingFranchise] = useState<any | null>(null);
@@ -74,7 +74,7 @@ export default function AdminFranchisesPage() {
         alert("Error updating franchise partner");
       }
     } else {
-      const res = await addFranchise(data);
+      const res = await addReseller(data);
       if (res.success) {
         handleCloseModal();
       } else {
@@ -86,7 +86,7 @@ export default function AdminFranchisesPage() {
 
   const handleDelete = async (id: string, name: string) => {
     if (confirm(`Are you sure you want to remove "${name}" franchise partner?`)) {
-      await deleteFranchise(id);
+      await deleteReseller(id);
     }
   };
 
@@ -163,7 +163,7 @@ export default function AdminFranchisesPage() {
                         <button 
                           onClick={async () => {
                              if (confirm(`Approve franchise "${franchise.name}"?`)) {
-                               await approveFranchiseAndUserRole(franchise.id, franchise.userId);
+                               const res = await approveResellerAndUserRole(franchise.id, franchise.userId);
                              }
                           }}
                           className="text-green-400 hover:text-green-300 font-bold text-xs uppercase tracking-wider cursor-pointer"

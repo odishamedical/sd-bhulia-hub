@@ -8,8 +8,10 @@ import { useParams, useRouter } from "next/navigation";
 import { MASTER_STORES } from "@/app/vendor/data";
 import { MASTER_FRANCHISES, DEFAULT_FRANCHISE, FranchiseListing } from "@/app/reseller/data";
 import { MASTER_PRODUCTS, Product } from "@/lib/products";
+import { useCart } from "@/context/CartContext";
 
 export default function DynamicSlugPage() {
+  const { addToCart, addToWishlist, wishlist } = useCart();
   const params = useParams();
   const router = useRouter();
   const rawSlug = typeof params?.slug === "string" ? params.slug : "";
@@ -461,8 +463,23 @@ export default function DynamicSlugPage() {
                               <span>📘 Share</span>
                             </button>
                           </div>
+                          
+                          <div className="grid grid-cols-2 gap-2 mt-2">
+                            <button 
+                              onClick={() => addToCart(prod)}
+                              className="w-full py-2 bg-gradient-to-r from-[#E57138] to-[#D56128] text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all text-center block"
+                            >
+                              Add to Cart
+                            </button>
+                            <button 
+                              onClick={() => addToWishlist(prod)}
+                              className={`w-full py-2 border ${wishlist.some(w => w.id === prod.id) ? 'bg-[#C5A059] text-[#0A1021] border-[#C5A059]' : 'border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10'} font-bold text-xs uppercase tracking-wider rounded-xl transition-all text-center block`}
+                            >
+                              {wishlist.some(w => w.id === prod.id) ? '❤️ Saved' : '🤍 Wishlist'}
+                            </button>
+                          </div>
 
-                          <Link href={`/product/${prod.slug}?ref=${franchise.id}`} className="w-full py-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-wider rounded-xl hover:brightness-110 transition-all text-center block">
+                          <Link href={`/product/${prod.slug}?ref=${franchise.id}`} className="w-full py-2 bg-[#0A3A35] border border-[#C5A059]/30 text-[#C5A059] font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-[#0D4B45] transition-all text-center block mt-2">
                             View details
                           </Link>
                         </div>

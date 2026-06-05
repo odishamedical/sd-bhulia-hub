@@ -409,16 +409,16 @@ function ProfileContent() {
                       <div key={idx} className="bg-[#051815] border border-[#C5A059]/30 rounded-xl p-5 hover:border-[#C5A059]/50 transition-colors">
                         <div className="flex justify-between items-start mb-4">
                           <div>
-                            <span className="font-bold text-white text-sm">{order.id}</span>
-                            <span className="ml-3 px-2 py-0.5 bg-[#0D4B45] text-[#4ADE80] text-[10px] font-bold uppercase rounded">{order.status}</span>
-                            <p className="text-gray-400 text-xs mt-1">Placed on: {order.date}</p>
+                            <span className="font-bold text-white text-sm">{(order as any).id}</span>
+                            <span className="ml-3 px-2 py-0.5 bg-[#0D4B45] text-[#4ADE80] text-[10px] font-bold uppercase rounded">{(order as any).status}</span>
+                            <p className="text-gray-400 text-xs mt-1">Placed on: {(order as any).date}</p>
                           </div>
                           <div className="text-right">
                             <span className="text-[#C5A059] font-bold">{order.total}</span>
                           </div>
                         </div>
                         <div className="border-t border-[#C5A059]/10 pt-4 flex justify-between items-center">
-                          <p className="text-sm text-gray-300">{order.items[0]} {order.items.length > 1 && `+ ${order.items.length - 1} more`}</p>
+                          <p className="text-sm text-gray-300">{(order as any).items[0]} {(order as any).items.length > 1 && `+ ${(order as any).items.length - 1} more`}</p>
                           <button className="text-xs font-bold text-[#C5A059] hover:text-white transition-colors uppercase tracking-wider">Track Package →</button>
                         </div>
                       </div>
@@ -440,8 +440,8 @@ function ProfileContent() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {addresses.map(addr => (
-                    <div key={addr.id} className="bg-[#0A2520] border border-[#C5A059]/20 rounded-2xl p-5 relative">
-                      {addr.isDefault && (
+                    <div key={(addr as any).id} className="bg-[#0A2520] border border-[#C5A059]/20 rounded-2xl p-5 relative">
+                      {(addr as any).isDefault && (
                         <span className="absolute top-4 right-4 text-[9px] bg-[#C5A059]/20 text-[#C5A059] px-2 py-1 rounded uppercase tracking-widest font-bold">Default</span>
                       )}
                       <p className="font-bold text-white mb-2">{name}</p>

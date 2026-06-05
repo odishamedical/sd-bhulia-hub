@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useStores, addStore, deleteStore, updateDocumentStatus } from "@/lib/db-hooks";
+import { useVendors, addVendor, deleteVendor, updateDocumentStatus } from "@/lib/db-hooks";
 import ImageUploader from "@/components/ImageUploader";
 
 export default function AdminStoresPage() {
-  const { stores, loading } = useStores();
+  const { vendors: stores, loading } = useVendors();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingStore, setEditingStore] = useState<any | null>(null);
@@ -71,14 +71,14 @@ export default function AdminStoresPage() {
     };
 
     if (editingStore) {
-      const res = await updateDocumentStatus("stores", editingStore.id, data);
+      const res = await updateDocumentStatus("vendors", editingStore.id, data);
       if (res.success) {
         handleCloseModal();
       } else {
         alert("Error updating store profile");
       }
     } else {
-      const res = await addStore(data);
+      const res = await addVendor(data);
       if (res.success) {
         handleCloseModal();
       } else {
@@ -90,7 +90,7 @@ export default function AdminStoresPage() {
 
   const handleDelete = async (id: string, title: string) => {
     if (confirm(`Are you sure you want to remove "${title}" store?`)) {
-      await deleteStore(id);
+      await deleteVendor(id);
     }
   };
 

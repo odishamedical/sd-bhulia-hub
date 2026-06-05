@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { addFranchise } from "@/lib/db-hooks";
+import { addReseller } from "@/lib/db-hooks";
 
 export default function ResellerRegistrationPage() {
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -94,8 +94,8 @@ export default function ResellerRegistrationPage() {
     };
 
     try {
-      const res = await addFranchise(payload, uniqueId);
-      if (!res.success) {
+      const res = await addReseller(payload);
+      if (!(res as any).success) {
         setValidationError("Database Error submitting application. Please try again.");
         setIsSubmitting(false);
         window.scrollTo({ top: 0, behavior: "smooth" });

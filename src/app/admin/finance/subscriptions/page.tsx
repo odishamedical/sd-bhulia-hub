@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useWeavers, useStores } from "@/lib/db-hooks";
+import { useWeavers, useVendors } from "@/lib/db-hooks";
 
 export default function SubscriptionsPage() {
   const { weavers } = useWeavers();
-  const { stores } = useStores();
+  const { vendors: stores } = useVendors();
   const [subscribers, setSubscribers] = useState<any[]>([]);
 
   useEffect(() => {

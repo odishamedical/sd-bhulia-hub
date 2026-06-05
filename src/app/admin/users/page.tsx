@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addStore, addCustomer, addReseller, deleteUserRecord, suspendUserRecord } from "@/lib/db-hooks";
+import { useWeavers, useVendors, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addVendor, addCustomer, addReseller, deleteUserRecord, suspendUserRecord } from "@/lib/db-hooks";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers();
-  const { stores } = useStores();
+  const { vendors: stores } = useVendors();
   const { orders } = useOrders();
   const { customers } = useCustomers();
   const { authUsers } = useAuthUsers();
@@ -58,7 +58,7 @@ export default function UserManagementPage() {
       state: w.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "Odisha",
       district: w.address?.split(",")?.[1]?.trim() || "Sambalpur",
       volume: Math.floor(Math.random() * 500000) + 50000,
-      purchasedProductIds: [],
+      purchasedProductIds: [] as any[],
       subStatus: w.subscription?.status || "free_trial",
       whatsapp: w.whatsapp || "N/A",
       address: w.address || "N/A",
@@ -75,7 +75,7 @@ export default function UserManagementPage() {
       state: ["Maharashtra", "Delhi", "Karnataka"][idx % 3],
       district: ["Mumbai", "New Delhi", "Bangalore"][idx % 3],
       volume: Math.floor(Math.random() * 1000000) + 100000,
-      purchasedProductIds: [],
+      purchasedProductIds: [] as any[],
       subStatus: s.subscription?.status || "free_trial",
       whatsapp: s.whatsapp || "N/A",
       address: s.address || "N/A",
@@ -109,7 +109,7 @@ export default function UserManagementPage() {
       district: c.district || "N/A",
       country: c.country || "India",
       volume: 0,
-      purchasedProductIds: [],
+      purchasedProductIds: [] as any[],
       whatsapp: c.whatsapp || "N/A",
       address: c.address || "N/A",
       email: c.email || "N/A",
@@ -125,7 +125,7 @@ export default function UserManagementPage() {
       district: "N/A",
       country: "N/A",
       volume: 0,
-      purchasedProductIds: [],
+      purchasedProductIds: [] as any[],
       whatsapp: "N/A",
       address: "N/A",
       email: u.email || "N/A",
@@ -141,7 +141,7 @@ export default function UserManagementPage() {
       district: r.district || "N/A",
       country: r.country || "India",
       volume: 0,
-      purchasedProductIds: [],
+      purchasedProductIds: [] as any[],
       whatsapp: r.whatsapp || "N/A",
       address: r.address || "N/A",
       email: r.email || "N/A",
@@ -244,7 +244,7 @@ export default function UserManagementPage() {
         });
         alert(`Master Weaver Profile Generated!\nPublic Link: bhulia.com/weaver/${generatedSlug}`);
       } else if (newUserRole === "shop") {
-        await addStore({
+        await addVendor({
           slug: generatedSlug,
           title: newUserName,
           desc: `Premium handloom store located in ${newUserDistrict || newUserState || "Odisha"}.`,
@@ -503,7 +503,7 @@ export default function UserManagementPage() {
                     </td>
                     <td className="py-4 px-6">
                       <div className="font-bold text-gray-700">{user.district}</div>
-                      <div className="text-xs text-gray-500">{user.state}, {user.country}</div>
+                      <div className="text-xs text-gray-500">{user.state}, {(user as any).country}</div>
                     </td>
                     <td className="py-4 px-6 text-right">
                       <div className="font-black text-gray-900">₹{user.volume.toLocaleString()}</div>

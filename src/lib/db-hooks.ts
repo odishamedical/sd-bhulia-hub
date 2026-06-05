@@ -107,6 +107,7 @@ export interface AuthUser {
 
 export interface Reseller {
   id: string;
+  slug?: string;
   name: string;
   email: string;
   phone: string;
@@ -314,7 +315,7 @@ export function useVendors() {
       snapshot.forEach((doc) => {
         data.push({ id: doc.id, ...doc.data() } as Vendor);
       });
-      setVendors(data);
+      setStores(data);
       setLoading(false);
     }, (error) => {
       console.error("Error fetching vendors: ", error);
@@ -390,9 +391,9 @@ export function useVendorBySlug(slug: string) {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if (!snapshot.empty) {
         const doc = snapshot.docs[0];
-        setVendor({ id: doc.id, ...doc.data() } as Vendor);
+        setStore({ id: doc.id, ...doc.data() } as Vendor);
       } else {
-        setVendor(null);
+        setStore(null);
       }
       setLoading(false);
     }, (error) => {
@@ -494,6 +495,16 @@ export async function updateDocumentStatus(collectionName: "weavers" | "vendors"
     return { success: true };
   } catch (error) {
     console.error(`Error updating document ${id} in ${collectionName}:`, error);
+    return { success: false, error };
+  }
+}
+
+export async function deleteReseller(id: string) {
+  try {
+    await deleteDoc(doc(db, "resellers", id));
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting reseller:", error);
     return { success: false, error };
   }
 }

@@ -9,8 +9,8 @@ import {
   useOrders,
   useProducts,
   useWeavers,
-  useStores,
-  useFranchises,
+  useVendors,
+  useResellers,
   updateDocumentStatus
 } from "@/lib/db-hooks";
 
@@ -379,7 +379,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         price: Number(productPrice),
         category: productCategory,
         description: productDesc,
-        sellerId: auth.currentUser.uid,
+        sellerId: auth.currentUser?.uid,
         sellerType: "weaver",
         status: "pending",
         stockQuantity: Number(stockQuantity),
@@ -647,7 +647,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
     setIsSaving(true);
     try {
       // Create or update the store profile
-      await updateDoc(doc(db, "stores", auth.currentUser.uid), {
+      await updateDoc(doc(db, "stores", auth.currentUser?.uid), {
         title: storeName,
         desc: publicDesc,
         img: storeLogo || "/bhulia-hero.png",
@@ -660,7 +660,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       }).catch(async (error) => {
         // If it doesn't exist, create it
         const { setDoc } = await import("firebase/firestore");
-        await setDoc(doc(db, "stores", auth.currentUser.uid), {
+        await setDoc(doc(db, "stores", auth.currentUser?.uid), {
           id: auth.currentUser!.uid,
           slug: storeName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
           title: storeName,
@@ -762,7 +762,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
           ...productData,
                     isBhuliaVerified: true,
           escrowStatus: "Payment Protected",
-          sellerId: auth.currentUser.uid,
+          sellerId: auth.currentUser?.uid,
           sellerType: "vendor",
           status: "pending",
           createdAt: serverTimestamp(),
@@ -879,11 +879,11 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                           <td className="py-4 font-medium text-gray-500">{product.category || "Silk"}</td>
                           <td className="py-4">
                             <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                              product.status === "approved" ? "bg-green-50 text-green-700 border-green-200" :
-                              product.status === "rejected" ? "bg-red-50 text-red-700 border-red-200" :
+                              (product as any).status === "approved" ? "bg-green-50 text-green-700 border-green-200" :
+                              (product as any).status === "rejected" ? "bg-red-50 text-red-700 border-red-200" :
                               "bg-yellow-50 text-yellow-700 border-yellow-200"
                             }`}>
-                              {product.status.charAt(0).toUpperCase() + product.status.slice(1)}
+                              {(product as any).status.charAt(0).toUpperCase() + (product as any).status.slice(1)}
                             </span>
                           </td>
                           <td className="py-4 text-right">
@@ -1248,7 +1248,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
         pinCode,
         address,
         paymentMethod,
-        resellerId: auth.currentUser.uid,
+        resellerId: auth.currentUser?.uid,
         status: "placed",
         hubStatus: "pending",
         createdAt: serverTimestamp(),
@@ -1400,8 +1400,8 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
 function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
   const { products, loading: productsLoading } = useProducts();
   const { weavers, loading: weaversLoading } = useWeavers();
-  const { stores, loading: storesLoading } = useStores();
-  const { franchises, loading: franchisesLoading } = useFranchises();
+  const { vendors: stores, loading: storesLoading } = useVendors();
+  const { resellers: franchises, loading: franchisesLoading } = useResellers();
   const { orders, loading: ordersLoading } = useOrders();
 
   const [selectedItem, setSelectedItem] = useState<any>(null);

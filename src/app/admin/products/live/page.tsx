@@ -18,7 +18,7 @@ export default function LiveProductsPage() {
   );
 
   const handleToggleHide = async (product: any) => {
-    const newHiddenStatus = !product.isHidden;
+    const newHiddenStatus = !(product as any).isHidden;
     const res = await updateDocumentStatus("products", product.id, { isHidden: newHiddenStatus });
     if (res.success) {
       alert(`Product ${newHiddenStatus ? 'hidden from' : 'made visible on'} storefront.`);
@@ -114,7 +114,7 @@ export default function LiveProductsPage() {
                 </tr>
               ) : filteredProducts.length > 0 ? (
                 filteredProducts.map(product => (
-                  <tr key={product.id} className={`group transition-colors ${product.isHidden ? 'bg-gray-50/50 grayscale-[0.5] opacity-60' : 'hover:bg-blue-50/30'}`}>
+                  <tr key={product.id} className={`group transition-colors ${(product as any).isHidden ? 'bg-gray-50/50 grayscale-[0.5] opacity-60' : 'hover:bg-blue-50/30'}`}>
                     <td className="py-3 px-6">
                       <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden relative">
                         {product.images?.[0] ? (
@@ -126,7 +126,7 @@ export default function LiveProductsPage() {
                     </td>
                     <td className="py-3 px-6">
                       <div className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">{product.title}</div>
-                      <div className="text-xs text-gray-500 font-mono mt-0.5">ID: {product.id} • SKU: {product.sku || 'N/A'}</div>
+                      <div className="text-xs text-gray-500 font-mono mt-0.5">ID: {product.id} • SKU: {(product as any).sku || 'N/A'}</div>
                     </td>
                     <td className="py-3 px-6">
                       <input 
@@ -138,16 +138,16 @@ export default function LiveProductsPage() {
                     <td className="py-3 px-6">
                       <input 
                         type="number" 
-                        defaultValue={product.stock || 1} 
+                        defaultValue={(product as any).stock || 1} 
                         className="w-full bg-transparent border-b border-dashed border-gray-300 focus:border-blue-500 focus:bg-blue-50 outline-none py-1 font-bold text-gray-900 transition-all"
                       />
                     </td>
                     <td className="py-3 px-6 text-center">
                       <button 
                         onClick={() => handleToggleHide(product)}
-                        className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border ${product.isHidden ? 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200' : 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'}`}
+                        className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border ${(product as any).isHidden ? 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200' : 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'}`}
                       >
-                        {product.isHidden ? "Hidden" : "Live"}
+                        {(product as any).isHidden ? "Hidden" : "Live"}
                       </button>
                     </td>
                     <td className="py-3 px-6 text-right">

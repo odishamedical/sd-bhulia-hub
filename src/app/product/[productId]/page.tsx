@@ -7,9 +7,11 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useProductBySlug, useProducts, addOrder } from "@/lib/db-hooks";
 import { MASTER_FRANCHISES } from "@/app/reseller/data";
+import { useCart } from "@/context/CartContext";
 import ProfileBlockerModal from "../../../components/ProfileBlockerModal";
 
 export default function ProductDetailPage() {
+  const { addToCart, addToWishlist, wishlist } = useCart();
   const params = useParams();
   const rawId = typeof params?.productId === "string" ? params.productId : "";
   const productSlug = rawId.toLowerCase();
@@ -431,6 +433,21 @@ export default function ProductDetailPage() {
               <div className="space-y-2 border-t border-[#C5A059]/20 pt-4 text-gray-200">
                 <h3 className="text-xs uppercase tracking-widest text-[#C5A059] font-bold">Artisan Masterpiece Story</h3>
                 <p className="text-xs sm:text-sm font-sans leading-relaxed">{product.longDesc}</p>
+              </div>
+              {/* Action Buttons */}
+              <div className="grid grid-cols-2 gap-4 mt-6">
+                <button 
+                  onClick={() => addToCart(product)}
+                  className="w-full py-4 bg-gradient-to-r from-[#E57138] to-[#D56128] text-white font-bold uppercase tracking-wider rounded-xl shadow-[0_0_15px_rgba(229,113,56,0.3)] hover:shadow-[0_0_25px_rgba(229,113,56,0.5)] hover:-translate-y-1 transition-all"
+                >
+                  🛒 Add to Cart
+                </button>
+                <button 
+                  onClick={() => addToWishlist(product)}
+                  className={`w-full py-4 border-2 ${wishlist.some(w => w.id === product.id) ? 'bg-[#C5A059]/20 border-[#C5A059] text-[#C5A059]' : 'border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10'} font-bold uppercase tracking-wider rounded-xl transition-all`}
+                >
+                  {wishlist.some(w => w.id === product.id) ? '❤️ Saved to Wishlist' : '🤍 Add to Wishlist'}
+                </button>
               </div>
             </div>
 

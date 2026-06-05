@@ -36,9 +36,11 @@ export interface Product {
   weavingDuration?: string;
   length?: string;
   hasBlouse?: boolean;
-  isBhuliaVerified?: boolean;
   sellerId?: string; // Links product to a specific Weaver or Vendor
-  sellerType?: "weaver" | "vendor";
+  sellerType?: "weaver" | "vendor" | "store";
+  vendorName?: string;
+  status?: string;
+  images?: string[];
 }
 
 
