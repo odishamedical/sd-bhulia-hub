@@ -487,10 +487,6 @@ export async function deleteVendor(id: string) {
   }
 }
 
-}
-
-}
-
 export async function updateDocumentStatus(collectionName: "weavers" | "vendors" | "resellers" | "products", id: string, updates: any) {
   try {
     const docRef = doc(db, collectionName, id);

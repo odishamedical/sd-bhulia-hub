@@ -6,7 +6,7 @@ import UserMenu from "@/components/UserMenu";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useProductBySlug, useProducts, addOrder } from "@/lib/db-hooks";
-import { MASTER_FRANCHISES } from "@/app/franchise/data";
+import { MASTER_FRANCHISES } from "@/app/reseller/data";
 import ProfileBlockerModal from "../../../components/ProfileBlockerModal";
 
 export default function ProductDetailPage() {
