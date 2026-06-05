@@ -170,25 +170,25 @@ export default function StaffDelegationPage() {
       {/* Header */}
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Staff & Delegation</h1>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Staff & Delegation</h1>
           <p className="text-sm text-gray-500 mt-1">Manage Sub-Admins and control their exact module access.</p>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] hover:opacity-90 text-white px-5 py-2.5 rounded-lg font-semibold text-sm shadow-md transition-all flex items-center gap-2"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-semibold text-sm shadow-md transition-all flex items-center gap-2"
         >
           <span>+</span> Appoint New Admin
         </button>
       </div>
 
       {/* Main Table */}
-      <div className="bg-[#0B2B26] rounded-2xl shadow-sm border border-[#C5A059]/30 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         {isLoading ? (
           <div className="p-10 text-center text-gray-500 animate-pulse">Loading Staff Roster...</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-[#0A3A35] border-b border-[#C5A059]/30 text-gray-400 uppercase tracking-wider font-semibold text-[11px]">
+              <thead className="bg-gray-50 border-b border-gray-200 text-gray-600 uppercase tracking-wider font-semibold text-[11px]">
                 <tr>
                   <th className="px-6 py-4">Admin Details</th>
                   <th className="px-6 py-4">Role Status</th>
@@ -201,33 +201,33 @@ export default function StaffDelegationPage() {
                   const perms = admin.permissions || DEFAULT_PERMISSIONS;
 
                   return (
-                    <tr key={admin.id} className="hover:bg-[#0A3A35]/50 transition-colors">
+                    <tr key={admin.id} className="hover:bg-gray-50/50 transition-colors">
                       <td className="px-6 py-5 align-top">
                         <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-inner ${isSuper ? 'bg-gradient-to-br from-[#996515] to-[#C5A059]' : 'bg-gray-300 text-gray-300'}`}>
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-inner ${isSuper ? 'bg-gradient-to-br from-blue-500 to-purple-600' : 'bg-gray-300 text-gray-700'}`}>
                             {admin.displayName.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <p className="font-bold text-white">{admin.displayName}</p>
+                            <p className="font-bold text-gray-900">{admin.displayName}</p>
                             <p className="text-xs text-gray-500">{admin.email}</p>
                             <p className="text-[10px] text-gray-400 mt-1 font-mono">ID: {admin.id.substring(0,8)}...</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-5 align-top">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${isSuper ? 'bg-[#C5A059]/20 text-[#C5A059]' : 'bg-gray-100 text-gray-300'}`}>
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${isSuper ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700'}`}>
                           {isSuper ? '👑 Super Admin' : '🛡️ Sub-Admin'}
                         </span>
                         {savingId === admin.id && (
-                          <div className="mt-3 text-xs text-[#C5A059] font-semibold animate-pulse flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full bg-[#0A3A35]0 animate-ping"></span>
+                          <div className="mt-3 text-xs text-blue-600 font-semibold animate-pulse flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
                             Syncing...
                           </div>
                         )}
                       </td>
                       <td className="px-6 py-5">
                         {isSuper ? (
-                          <div className="text-xs text-[#C5A059] font-semibold bg-[#0A3A35] px-4 py-2 rounded-lg inline-block border border-[#C5A059]/40">
+                          <div className="text-xs text-blue-600 font-semibold bg-blue-50 px-4 py-2 rounded-lg inline-block border border-blue-100">
                             God Mode Enabled. Has access to all modules.
                           </div>
                         ) : (
@@ -283,37 +283,37 @@ export default function StaffDelegationPage() {
       {/* Add Admin Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-          <div className="bg-[#0B2B26] rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-[#C5A059]/20">
-            <div className="p-6 border-b border-[#C5A059]/20">
-              <h3 className="text-xl font-bold text-white">Appoint Sub-Admin</h3>
+          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-gray-100">
+            <div className="p-6 border-b border-gray-100">
+              <h3 className="text-xl font-bold text-gray-900">Appoint Sub-Admin</h3>
               <p className="text-xs text-gray-500 mt-1">Elevate an existing registered user to an Admin role.</p>
             </div>
             <div className="p-6">
-              <label className="block text-xs font-bold text-gray-300 uppercase tracking-wide mb-2">User Email Address</label>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">User Email Address</label>
               <input 
                 type="email" 
                 value={searchEmail}
                 onChange={(e) => setSearchEmail(e.target.value)}
                 placeholder="e.g. employee@bhulia.com"
-                className="w-full px-4 py-3 bg-[#0A3A35] border border-[#C5A059]/30 rounded-xl focus:bg-[#0B2B26] focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
               />
               {searchStatus && (
-                <p className={`mt-3 text-sm font-medium ${searchStatus.includes("Error") || searchStatus.includes("not found") ? "text-red-600" : "text-[#C5A059]"}`}>
+                <p className={`mt-3 text-sm font-medium ${searchStatus.includes("Error") || searchStatus.includes("not found") ? "text-red-600" : "text-blue-600"}`}>
                   {searchStatus}
                 </p>
               )}
             </div>
-            <div className="p-4 bg-[#0A3A35] border-t border-[#C5A059]/20 flex justify-end gap-3">
+            <div className="p-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
               <button 
                 onClick={() => {setIsModalOpen(false); setSearchStatus(null); setSearchEmail("");}}
-                className="px-5 py-2 text-sm font-semibold text-gray-400 hover:text-white transition-colors"
+                className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors"
               >
                 Cancel
               </button>
               <button 
                 onClick={handlePromoteUser}
                 disabled={!searchEmail.includes("@")}
-                className="px-5 py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] text-white text-sm font-bold rounded-lg shadow-md hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-5 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg shadow-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Verify & Appoint
               </button>
@@ -337,10 +337,10 @@ function PermissionToggle({ label, checked, onChange, isDangerous = false }: { l
           checked={checked}
           onChange={(e) => onChange(e.target.checked)}
         />
-        <div className={`block w-10 h-6 rounded-full transition-colors ${checked ? (isDangerous ? 'bg-red-500' : 'bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021]') : 'bg-gray-200 border border-gray-300'}`}></div>
-        <div className={`dot absolute left-1 top-1 bg-[#0B2B26] w-4 h-4 rounded-full transition-transform ${checked ? 'translate-x-4 shadow-sm' : ''}`}></div>
+        <div className={`block w-10 h-6 rounded-full transition-colors ${checked ? (isDangerous ? 'bg-red-500' : 'bg-blue-600') : 'bg-gray-200 border border-gray-300'}`}></div>
+        <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${checked ? 'translate-x-4 shadow-sm' : ''}`}></div>
       </div>
-      <span className={`text-[13px] font-medium transition-colors ${checked ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>
+      <span className={`text-[13px] font-medium transition-colors ${checked ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-700'}`}>
         {label}
       </span>
     </label>
