@@ -124,13 +124,13 @@ export default function ImageUploader({
 
   const loadFileAndProcess = (file: File) => {
     setIsProcessing(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target?.result) {
-        handleProcessImage(e.target.result as string);
-      }
-    };
-    reader.readAsDataURL(file);
+    try {
+      const blobUrl = URL.createObjectURL(file);
+      handleProcessImage(blobUrl);
+    } catch (e) {
+      console.error("Failed to load file:", e);
+      setIsProcessing(false);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
