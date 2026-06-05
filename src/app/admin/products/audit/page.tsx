@@ -13,6 +13,40 @@ export default function GiTagAuditQueue() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
+  async function fetchPendingProducts() {
+    setIsLoading(true);
+    try {
+      const q = query(collection(db, "products"), where("status", "==", "pending_verification"));
+      const snapshot = await getDocs(q);
+      
+      const products: any[] = [];
+      snapshot.forEach((docSnap) => {
+        products.push({ id: docSnap.id, ...docSnap.data() });
+      });
+
+      // If no real data yet, we can mock one for the demo UI
+      if (products.length === 0 && process.env.NODE_ENV === "development") {
+        products.push({
+          id: "SAR-PEND-001",
+          title: "Nuapatna Ikat Cotton Saree",
+          category: "Cotton Classics",
+          weaverName: "Lokanath Meher",
+          price: "4500",
+          weave: "Single Ikat Cotton",
+          cluster: "Nuapatna Cluster",
+          threadType: "80 Count Handspun",
+          img: "/bhulia-hero.png"
+        });
+      }
+
+      setPendingProducts(products);
+    } catch (error) {
+      console.error("Failed to fetch pending products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Strict Protocol: Verify Access on Mount
   useEffect(() => {
     const verifyAccessAndFetch = async () => {
@@ -50,39 +84,7 @@ export default function GiTagAuditQueue() {
     verifyAccessAndFetch();
   }, []);
 
-  async function fetchPendingProducts() {
-    setIsLoading(true);
-    try {
-      const q = query(collection(db, "products"), where("status", "==", "pending_verification"));
-      const snapshot = await getDocs(q);
-      
-      const products: any[] = [];
-      snapshot.forEach((docSnap) => {
-        products.push({ id: docSnap.id, ...docSnap.data() });
-      });
 
-      // If no real data yet, we can mock one for the demo UI
-      if (products.length === 0 && process.env.NODE_ENV === "development") {
-        products.push({
-          id: "SAR-PEND-001",
-          title: "Nuapatna Ikat Cotton Saree",
-          category: "Cotton Classics",
-          weaverName: "Lokanath Meher",
-          price: "4500",
-          weave: "Single Ikat Cotton",
-          cluster: "Nuapatna Cluster",
-          threadType: "80 Count Handspun",
-          img: "/bhulia-hero.png"
-        });
-      }
-
-      setPendingProducts(products);
-    } catch (error) {
-      console.error("Failed to fetch pending products:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleAction = async (productId: string, action: "approve" | "reject") => {
     setProcessingId(productId);

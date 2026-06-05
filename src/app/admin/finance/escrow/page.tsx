@@ -12,43 +12,6 @@ export default function EscrowVaultPage() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
-  // Strict Protocol: Verify Access on Mount
-  useEffect(() => {
-    const verifyAccessAndFetch = async () => {
-      const email = localStorage.getItem("sd_current_user_email");
-      const role = localStorage.getItem("sd_current_user_role");
-
-      if (role === "super_admin") {
-        setHasPermission(true);
-        fetchEscrow();
-        return;
-      }
-
-      if (role === "admin" && email) {
-        try {
-          const q = query(collection(db, "users"), where("email", "==", email));
-          const snap = await getDocs(q);
-          if (!snap.empty) {
-            const adminData = snap.docs[0].data();
-            // Checking the granular "finance" permission
-            if (adminData.permissions?.finance === true) {
-              setHasPermission(true);
-              fetchEscrow();
-              return;
-            }
-          }
-        } catch (error) {
-          console.error("Permission check failed:", error);
-        }
-      }
-
-      setHasPermission(false);
-      setIsLoading(false);
-    };
-
-    verifyAccessAndFetch();
-  }, []);
-
   async function fetchEscrow() {
     setIsLoading(true);
     try {
@@ -94,6 +57,45 @@ export default function EscrowVaultPage() {
       setIsLoading(false);
     }
   };
+
+  // Strict Protocol: Verify Access on Mount
+  useEffect(() => {
+    const verifyAccessAndFetch = async () => {
+      const email = localStorage.getItem("sd_current_user_email");
+      const role = localStorage.getItem("sd_current_user_role");
+
+      if (role === "super_admin") {
+        setHasPermission(true);
+        fetchEscrow();
+        return;
+      }
+
+      if (role === "admin" && email) {
+        try {
+          const q = query(collection(db, "users"), where("email", "==", email));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            const adminData = snap.docs[0].data();
+            // Checking the granular "finance" permission
+            if (adminData.permissions?.finance === true) {
+              setHasPermission(true);
+              fetchEscrow();
+              return;
+            }
+          }
+        } catch (error) {
+          console.error("Permission check failed:", error);
+        }
+      }
+
+      setHasPermission(false);
+      setIsLoading(false);
+    };
+
+    verifyAccessAndFetch();
+  }, []);
+
+
 
   const handleAction = async (orderId: string, action: "release" | "refund") => {
     if (!confirm(`Are you absolutely sure you want to ${action} these funds? This action is irreversible and writes to the financial ledger.`)) return;

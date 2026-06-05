@@ -13,41 +13,6 @@ export default function MasterOrdersPage() {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [processingId, setProcessingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const verifyAccessAndFetch = async () => {
-      const email = localStorage.getItem("sd_current_user_email");
-      const role = localStorage.getItem("sd_current_user_role");
-
-      if (role === "super_admin") {
-        setHasPermission(true);
-        fetchOrders();
-        return;
-      }
-
-      if (role === "admin" && email) {
-        try {
-          const q = query(collection(db, "users"), where("email", "==", email));
-          const snap = await getDocs(q);
-          if (!snap.empty) {
-            const adminData = snap.docs[0].data();
-            if (adminData.permissions?.orders === true) {
-              setHasPermission(true);
-              fetchOrders();
-              return;
-            }
-          }
-        } catch (error) {
-          console.error("Permission check failed:", error);
-        }
-      }
-
-      setHasPermission(false);
-      setIsLoading(false);
-    };
-
-    verifyAccessAndFetch();
-  }, []);
-
   async function fetchOrders() {
     setIsLoading(true);
     try {
@@ -104,6 +69,43 @@ export default function MasterOrdersPage() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const verifyAccessAndFetch = async () => {
+      const email = localStorage.getItem("sd_current_user_email");
+      const role = localStorage.getItem("sd_current_user_role");
+
+      if (role === "super_admin") {
+        setHasPermission(true);
+        fetchOrders();
+        return;
+      }
+
+      if (role === "admin" && email) {
+        try {
+          const q = query(collection(db, "users"), where("email", "==", email));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            const adminData = snap.docs[0].data();
+            if (adminData.permissions?.orders === true) {
+              setHasPermission(true);
+              fetchOrders();
+              return;
+            }
+          }
+        } catch (error) {
+          console.error("Permission check failed:", error);
+        }
+      }
+
+      setHasPermission(false);
+      setIsLoading(false);
+    };
+
+    verifyAccessAndFetch();
+  }, []);
+
+
 
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     setProcessingId(orderId);

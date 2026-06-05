@@ -12,6 +12,24 @@ export default function KycResolutionDesk() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
+  async function fetchPendingKyc() {
+    setIsLoading(true);
+    try {
+      const q = query(collection(db, "users"), where("status", "==", "pending"));
+      const snapshot = await getDocs(q);
+      
+      const users: any[] = [];
+      snapshot.forEach((docSnap) => {
+        users.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      setPendingUsers(users);
+    } catch (error) {
+      console.error("Failed to fetch pending KYC:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Strict Protocol: Verify Access on Mount
   useEffect(() => {
     const verifyAccessAndFetch = async () => {
@@ -49,23 +67,7 @@ export default function KycResolutionDesk() {
     verifyAccessAndFetch();
   }, []);
 
-  async function fetchPendingKyc() {
-    setIsLoading(true);
-    try {
-      const q = query(collection(db, "users"), where("status", "==", "pending"));
-      const snapshot = await getDocs(q);
-      
-      const users: any[] = [];
-      snapshot.forEach((docSnap) => {
-        users.push({ id: docSnap.id, ...docSnap.data() });
-      });
-      setPendingUsers(users);
-    } catch (error) {
-      console.error("Failed to fetch pending KYC:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
 
   const handleAction = async (userId: string, action: "approve" | "reject") => {
     setProcessingId(userId);

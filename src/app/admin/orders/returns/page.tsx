@@ -12,6 +12,37 @@ export default function ReturnsQueuePage() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
+  async function fetchReturns() {
+    setIsLoading(true);
+    try {
+      const q = query(collection(db, "orders"), where("status", "==", "return_requested"));
+      const snapshot = await getDocs(q);
+      
+      const returns: any[] = [];
+      snapshot.forEach((docSnap) => {
+        returns.push({ id: docSnap.id, ...docSnap.data() });
+      });
+
+      if (returns.length === 0 && process.env.NODE_ENV === "development") {
+        returns.push({
+          id: "ORD-99125",
+          customerName: "Sunil Pradhan",
+          productTitle: "Bomkai Cotton Saree",
+          amount: "6,500",
+          status: "return_requested",
+          date: "2026-06-01T10:00:00Z",
+          returnReason: "Color does not match the photo on website.",
+        });
+      }
+
+      setReturnRequests(returns);
+    } catch (error) {
+      console.error("Failed to fetch return requests:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const verifyAccessAndFetch = async () => {
       const email = localStorage.getItem("sd_current_user_email");
@@ -47,36 +78,7 @@ export default function ReturnsQueuePage() {
     verifyAccessAndFetch();
   }, []);
 
-  async function fetchReturns() {
-    setIsLoading(true);
-    try {
-      const q = query(collection(db, "orders"), where("status", "==", "return_requested"));
-      const snapshot = await getDocs(q);
-      
-      const returns: any[] = [];
-      snapshot.forEach((docSnap) => {
-        returns.push({ id: docSnap.id, ...docSnap.data() });
-      });
 
-      if (returns.length === 0 && process.env.NODE_ENV === "development") {
-        returns.push({
-          id: "ORD-99125",
-          customerName: "Sunil Pradhan",
-          productTitle: "Bomkai Cotton Saree",
-          amount: "6,500",
-          status: "return_requested",
-          date: "2026-06-01T10:00:00Z",
-          returnReason: "Color does not match the photo on website.",
-        });
-      }
-
-      setReturnRequests(returns);
-    } catch (error) {
-      console.error("Failed to fetch return requests:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleAction = async (orderId: string, action: "approve" | "reject") => {
     setProcessingId(orderId);

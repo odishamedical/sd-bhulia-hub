@@ -11,42 +11,6 @@ export default function LowStockDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
-  // Strict Protocol: Verify Access on Mount
-  useEffect(() => {
-    const verifyAccessAndFetch = async () => {
-      const email = localStorage.getItem("sd_current_user_email");
-      const role = localStorage.getItem("sd_current_user_role");
-
-      if (role === "super_admin") {
-        setHasPermission(true);
-        fetchStockAlerts();
-        return;
-      }
-
-      if (role === "admin" && email) {
-        try {
-          const q = query(collection(db, "users"), where("email", "==", email));
-          const snap = await getDocs(q);
-          if (!snap.empty) {
-            const adminData = snap.docs[0].data();
-            if (adminData.permissions?.products === true) {
-              setHasPermission(true);
-              fetchStockAlerts();
-              return;
-            }
-          }
-        } catch (error) {
-          console.error("Permission check failed:", error);
-        }
-      }
-
-      setHasPermission(false);
-      setIsLoading(false);
-    };
-
-    verifyAccessAndFetch();
-  }, []);
-
   async function fetchStockAlerts() {
     setIsLoading(true);
     try {
@@ -83,6 +47,44 @@ export default function LowStockDashboard() {
       setIsLoading(false);
     }
   };
+
+  // Strict Protocol: Verify Access on Mount
+  useEffect(() => {
+    const verifyAccessAndFetch = async () => {
+      const email = localStorage.getItem("sd_current_user_email");
+      const role = localStorage.getItem("sd_current_user_role");
+
+      if (role === "super_admin") {
+        setHasPermission(true);
+        fetchStockAlerts();
+        return;
+      }
+
+      if (role === "admin" && email) {
+        try {
+          const q = query(collection(db, "users"), where("email", "==", email));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            const adminData = snap.docs[0].data();
+            if (adminData.permissions?.products === true) {
+              setHasPermission(true);
+              fetchStockAlerts();
+              return;
+            }
+          }
+        } catch (error) {
+          console.error("Permission check failed:", error);
+        }
+      }
+
+      setHasPermission(false);
+      setIsLoading(false);
+    };
+
+    verifyAccessAndFetch();
+  }, []);
+
+
 
   if (hasPermission === null) {
     return <div className="py-20 text-blue-600 font-bold uppercase tracking-widest text-xs text-center animate-pulse">Verifying Security Clearance...</div>;

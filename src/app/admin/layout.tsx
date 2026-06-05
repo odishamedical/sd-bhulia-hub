@@ -242,10 +242,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      {/* @ts-ignore */}
+                      {/* @ts-expect-error Type string cannot be used to index pendingCounts */}
                       {category.badgeId && pendingCounts[category.badgeId] > 0 && (
                         <span className="flex items-center justify-center w-5 h-5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)] text-[10px] text-white font-bold">
-                          {/* @ts-ignore */}
+                          {/* @ts-expect-error Type string cannot be used to index pendingCounts */}
                           {pendingCounts[category.badgeId]}
                         </span>
                       )}

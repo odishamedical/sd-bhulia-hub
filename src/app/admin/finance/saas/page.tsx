@@ -12,41 +12,6 @@ export default function SaasBillingPage() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const verifyAccessAndFetch = async () => {
-      const email = localStorage.getItem("sd_current_user_email");
-      const role = localStorage.getItem("sd_current_user_role");
-
-      if (role === "super_admin") {
-        setHasPermission(true);
-        fetchSubscriptions();
-        return;
-      }
-
-      if (role === "admin" && email) {
-        try {
-          const q = query(collection(db, "users"), where("email", "==", email));
-          const snap = await getDocs(q);
-          if (!snap.empty) {
-            const adminData = snap.docs[0].data();
-            if (adminData.permissions?.finance === true) {
-              setHasPermission(true);
-              fetchSubscriptions();
-              return;
-            }
-          }
-        } catch (error) {
-          console.error("Permission check failed:", error);
-        }
-      }
-
-      setHasPermission(false);
-      setIsLoading(false);
-    };
-
-    verifyAccessAndFetch();
-  }, []);
-
   async function fetchSubscriptions() {
     setIsLoading(true);
     try {
@@ -90,6 +55,43 @@ export default function SaasBillingPage() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const verifyAccessAndFetch = async () => {
+      const email = localStorage.getItem("sd_current_user_email");
+      const role = localStorage.getItem("sd_current_user_role");
+
+      if (role === "super_admin") {
+        setHasPermission(true);
+        fetchSubscriptions();
+        return;
+      }
+
+      if (role === "admin" && email) {
+        try {
+          const q = query(collection(db, "users"), where("email", "==", email));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            const adminData = snap.docs[0].data();
+            if (adminData.permissions?.finance === true) {
+              setHasPermission(true);
+              fetchSubscriptions();
+              return;
+            }
+          }
+        } catch (error) {
+          console.error("Permission check failed:", error);
+        }
+      }
+
+      setHasPermission(false);
+      setIsLoading(false);
+    };
+
+    verifyAccessAndFetch();
+  }, []);
+
+
 
   const handleAction = async (subId: string, action: "revoke" | "remind") => {
     setProcessingId(subId);

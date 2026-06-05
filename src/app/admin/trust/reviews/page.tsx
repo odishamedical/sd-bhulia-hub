@@ -12,41 +12,6 @@ export default function ReviewModerationQueue() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const verifyAccessAndFetch = async () => {
-      const email = localStorage.getItem("sd_current_user_email");
-      const role = localStorage.getItem("sd_current_user_role");
-
-      if (role === "super_admin") {
-        setHasPermission(true);
-        fetchPendingReviews();
-        return;
-      }
-
-      if (role === "admin" && email) {
-        try {
-          const q = query(collection(db, "users"), where("email", "==", email));
-          const snap = await getDocs(q);
-          if (!snap.empty) {
-            const adminData = snap.docs[0].data();
-            if (adminData.permissions?.kyc === true) {
-              setHasPermission(true);
-              fetchPendingReviews();
-              return;
-            }
-          }
-        } catch (error) {
-          console.error("Permission check failed:", error);
-        }
-      }
-
-      setHasPermission(false);
-      setIsLoading(false);
-    };
-
-    verifyAccessAndFetch();
-  }, []);
-
   async function fetchPendingReviews() {
     setIsLoading(true);
     try {
@@ -82,6 +47,43 @@ export default function ReviewModerationQueue() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const verifyAccessAndFetch = async () => {
+      const email = localStorage.getItem("sd_current_user_email");
+      const role = localStorage.getItem("sd_current_user_role");
+
+      if (role === "super_admin") {
+        setHasPermission(true);
+        fetchPendingReviews();
+        return;
+      }
+
+      if (role === "admin" && email) {
+        try {
+          const q = query(collection(db, "users"), where("email", "==", email));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            const adminData = snap.docs[0].data();
+            if (adminData.permissions?.kyc === true) {
+              setHasPermission(true);
+              fetchPendingReviews();
+              return;
+            }
+          }
+        } catch (error) {
+          console.error("Permission check failed:", error);
+        }
+      }
+
+      setHasPermission(false);
+      setIsLoading(false);
+    };
+
+    verifyAccessAndFetch();
+  }, []);
+
+
 
   const handleAction = async (reviewId: string, action: "approve" | "reject") => {
     setProcessingId(reviewId);

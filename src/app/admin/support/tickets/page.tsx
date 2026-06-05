@@ -13,43 +13,6 @@ export default function SupportHelpdeskPage() {
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState<{ [key: string]: string }>({});
 
-  // Strict Protocol: Verify Access on Mount
-  useEffect(() => {
-    const verifyAccessAndFetch = async () => {
-      const email = localStorage.getItem("sd_current_user_email");
-      const role = localStorage.getItem("sd_current_user_role");
-
-      if (role === "super_admin") {
-        setHasPermission(true);
-        fetchOpenTickets();
-        return;
-      }
-
-      if (role === "admin" && email) {
-        try {
-          const q = query(collection(db, "users"), where("email", "==", email));
-          const snap = await getDocs(q);
-          if (!snap.empty) {
-            const adminData = snap.docs[0].data();
-            // Checking the granular "support" permission
-            if (adminData.permissions?.support === true) {
-              setHasPermission(true);
-              fetchOpenTickets();
-              return;
-            }
-          }
-        } catch (error) {
-          console.error("Permission check failed:", error);
-        }
-      }
-
-      setHasPermission(false);
-      setIsLoading(false);
-    };
-
-    verifyAccessAndFetch();
-  }, []);
-
   async function fetchOpenTickets() {
     setIsLoading(true);
     try {
@@ -88,6 +51,45 @@ export default function SupportHelpdeskPage() {
       setIsLoading(false);
     }
   };
+
+  // Strict Protocol: Verify Access on Mount
+  useEffect(() => {
+    const verifyAccessAndFetch = async () => {
+      const email = localStorage.getItem("sd_current_user_email");
+      const role = localStorage.getItem("sd_current_user_role");
+
+      if (role === "super_admin") {
+        setHasPermission(true);
+        fetchOpenTickets();
+        return;
+      }
+
+      if (role === "admin" && email) {
+        try {
+          const q = query(collection(db, "users"), where("email", "==", email));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            const adminData = snap.docs[0].data();
+            // Checking the granular "support" permission
+            if (adminData.permissions?.support === true) {
+              setHasPermission(true);
+              fetchOpenTickets();
+              return;
+            }
+          }
+        } catch (error) {
+          console.error("Permission check failed:", error);
+        }
+      }
+
+      setHasPermission(false);
+      setIsLoading(false);
+    };
+
+    verifyAccessAndFetch();
+  }, []);
+
+
 
   const handleAction = async (ticketId: string, action: "resolve" | "escalate") => {
     setProcessingId(ticketId);
