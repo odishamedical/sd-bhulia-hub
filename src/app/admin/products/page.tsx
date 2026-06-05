@@ -41,6 +41,7 @@ export default function AdminProductsPage() {
                   <th className="px-6 py-4">Title & Weave</th>
                   <th className="px-6 py-4">Price</th>
                   <th className="px-6 py-4">Weaving Time</th>
+                  <th className="px-6 py-4">Uploaded By</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -58,6 +59,10 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-6 py-4 font-bold text-gray-900">{product.price}</td>
                     <td className="px-6 py-4 text-xs font-mono">{product.time}</td>
+                    <td className="px-6 py-4 font-medium">
+                      <div className="text-gray-900 font-bold">{product.vendorName || "Admin"}</div>
+                      <div className="text-[10px] text-gray-500 uppercase tracking-widest">{product.sellerType || "system"}</div>
+                    </td>
                     <td className="px-6 py-4 text-right space-x-4">
                       <a 
                         href={`/product/${product.slug}`}
