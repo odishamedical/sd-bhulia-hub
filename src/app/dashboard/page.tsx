@@ -1227,9 +1227,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                 
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Document Scan (PDF/JPG)</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer">
-                    <span className="text-gray-500 font-medium text-sm">Click to upload or drag and drop your document file here</span>
-                  </div>
+                  <input type="file" className="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-[#0070F3] file:text-white hover:file:bg-[#005BB5] border border-gray-200 rounded-xl p-2 cursor-pointer bg-white transition-all shadow-sm" accept=".pdf,.jpg,.jpeg,.png" required />
                 </div>
               </div>
             </div>
