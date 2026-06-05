@@ -31,6 +31,11 @@ const nextConfig: NextConfig = {
         destination: '/dashboard',
         permanent: true,
       },
+      {
+        source: '/shop/:slug',
+        destination: '/store/:slug',
+        permanent: true,
+      },
     ]
   },
 };
