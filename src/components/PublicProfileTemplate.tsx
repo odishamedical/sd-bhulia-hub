@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/lib/products";
+import { useState, useEffect } from "react";
 
 export interface PublicProfileProps {
   type: "weaver" | "store";
@@ -25,6 +26,12 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
   const badgeText = isWeaver ? "Bhulia.com Verified Weavers" : "Bhulia.com Verified Sambalpuri Shop";
   const badgeColor = isWeaver ? "text-[#C5A059] border-[#C5A059]" : "text-blue-400 border-blue-400";
   const badgeBg = isWeaver ? "bg-[#C5A059]/10" : "bg-blue-400/10";
+  const [userRole, setUserRole] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserRole(localStorage.getItem("sd_current_user_role"));
+    }
+  }, []);
 
   return (
     <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 py-8 flex flex-col gap-8 relative z-10">
@@ -105,7 +112,12 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
                     <p className="text-[10px] text-gray-400 uppercase tracking-widest">{product.category}</p>
                   </div>
                   <div className="flex justify-between items-center border-t border-[#C5A059]/20 pt-3">
-                    <span className="text-lg font-serif font-bold text-[#C5A059]">₹{product.price?.toLocaleString() || product.price}</span>
+                    <div className="flex flex-col">
+                      <span className={`text-lg font-serif font-bold ${userRole === "reseller" && product.allowResellerMargin ? "text-gray-400 line-through text-sm" : "text-[#C5A059]"}`}>₹{product.price?.toLocaleString() || product.price}</span>
+                      {userRole === "reseller" && product.allowResellerMargin && product.resellerPrice && (
+                        <span className="text-lg font-serif font-bold text-green-400">₹{product.resellerPrice}</span>
+                      )}
+                    </div>
                     <Link href={`/product/${product.slug || product.id}`} className="px-3 py-1.5 bg-[#C5A059]/20 text-[#C5A059] text-xs font-bold uppercase rounded hover:bg-[#C5A059] hover:text-[#0A1021] transition-colors">
                       View
                     </Link>

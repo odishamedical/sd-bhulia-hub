@@ -315,8 +315,8 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
             <h3 className="font-bold text-gray-900 mb-5">Raise a Ticket</h3>
             <form className="space-y-4">
-              <input type="text" placeholder="Subject" className="w-full border border-gray-200 bg-white rounded-xl p-3 text-sm focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" />
-              <textarea rows={4} placeholder="Describe your issue..." className="w-full border border-gray-200 bg-white rounded-xl p-3 text-sm focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors"></textarea>
+              <input type="text" placeholder="Subject" className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" />
+              <textarea rows={4} placeholder="Describe your issue..." className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all"></textarea>
               <button type="button" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Submit Ticket</button>
             </form>
           </div>
@@ -329,7 +329,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="space-y-5">
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name</label>
-              <input type="text" className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:border-[#E57138] focus:outline-none" defaultValue="Customer User" />
+              <input type="text" className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" defaultValue="Customer User" />
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
@@ -337,7 +337,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Shipping Address</label>
-              <textarea className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:border-[#E57138] focus:outline-none" rows={3}></textarea>
+              <textarea className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" rows={3}></textarea>
             </div>
             <button className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm mt-4">Save Changes</button>
           </div>
@@ -360,6 +360,10 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [productPrice, setProductPrice] = useState("");
   const [productCategory, setProductCategory] = useState("Saree");
   const [productDesc, setProductDesc] = useState("");
+  const [stockQuantity, setStockQuantity] = useState(1);
+  const [allowResellerMargin, setAllowResellerMargin] = useState(false);
+  const [resellerMarginPercentage, setResellerMarginPercentage] = useState(5);
+  const [productImage, setProductImage] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const { orders } = useOrders();
 
@@ -378,6 +382,14 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         sellerId: auth.currentUser.uid,
         sellerType: "weaver",
         status: "pending",
+        stockQuantity: Number(stockQuantity),
+        inStock: Number(stockQuantity) > 0,
+        img: productImage || "https://images.unsplash.com/photo-1605814526362-790100f91eb8?w=800&q=80",
+        isBhuliaVerified: true,
+        escrowStatus: "Payment Protected",
+        allowResellerMargin,
+        resellerMarginPercentage: allowResellerMargin ? Number(resellerMarginPercentage) : 0,
+        resellerPrice: allowResellerMargin ? String(Math.floor(Number(productPrice) * (1 - Number(resellerMarginPercentage) / 100))) : undefined,
         createdAt: serverTimestamp(),
       });
       alert("Product saved to Firestore and sent for Admin Approval!");
@@ -438,16 +450,16 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
-                <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
-                <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
               </div>
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category</label>
-              <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors">
+              <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all">
                 <option>Saree</option>
                 <option>Dupatta</option>
                 <option>Fabric</option>
@@ -455,7 +467,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Description & Details</label>
-              <textarea rows={4} value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required></textarea>
+              <textarea rows={4} value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required></textarea>
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Images (Max 4)</label>
@@ -609,6 +621,9 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [isUploading, setIsUploading] = useState(false);
   const [isAddInventoryOpen, setIsAddInventoryOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [stockQuantity, setStockQuantity] = useState(1);
+  const [allowResellerMargin, setAllowResellerMargin] = useState(false);
+  const [resellerMarginPercentage, setResellerMarginPercentage] = useState(5);
 
   // Settings State
   const [storeName, setStoreName] = useState("");
@@ -728,6 +743,11 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         img2: img2,
         img3: img3,
         img4: img4,
+        stockQuantity: Number(stockQuantity),
+        inStock: Number(stockQuantity) > 0,
+        allowResellerMargin,
+        resellerMarginPercentage: allowResellerMargin ? Number(resellerMarginPercentage) : 0,
+        resellerPrice: allowResellerMargin ? String(Math.floor(Number(productPrice) * (1 - Number(resellerMarginPercentage) / 100))) : undefined,
       };
 
       if (editingProductId) {
@@ -892,19 +912,19 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   {/* Basic Details */}
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
-                    <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                    <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
-                    <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required placeholder="e.g. 34500" />
+                    <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required placeholder="e.g. 34500" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">MRP (₹)</label>
-                    <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required placeholder="e.g. 42000" />
+                    <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required placeholder="e.g. 42000" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category</label>
-                    <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors">
+                    <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all">
                       <option>Silk Masterpieces</option>
                       <option>Cotton Classics</option>
                       <option>Mix Pata</option>
@@ -912,21 +932,21 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name</label>
-                    <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                    <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Short Description</label>
-                    <textarea value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required rows={2} />
+                    <textarea value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required rows={2} />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Long Artisan Story Description</label>
-                    <textarea value={productLongDesc} onChange={e => setProductLongDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required rows={4} />
+                    <textarea value={productLongDesc} onChange={e => setProductLongDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required rows={4} />
                   </div>
                   
                   {/* Specs */}
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Saree Type</label>
-                    <select value={sareeType} onChange={e => setSareeType(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors">
+                    <select value={sareeType} onChange={e => setSareeType(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all">
                       <option>Pure Silk</option>
                       <option>Pure Cotton</option>
                       <option>Mix Pata</option>
@@ -935,15 +955,15 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Color Palette</label>
-                    <input type="text" value={colorUse} onChange={e => setColorUse(e.target.value)} placeholder="e.g. Royal Blue & Gold" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                    <input type="text" value={colorUse} onChange={e => setColorUse(e.target.value)} placeholder="e.g. Royal Blue & Gold" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Length</label>
-                    <input type="text" value={length} onChange={e => setLength(e.target.value)} placeholder="e.g. 6.2 Meters" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                    <input type="text" value={length} onChange={e => setLength(e.target.value)} placeholder="e.g. 6.2 Meters" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Blouse Status</label>
-                    <select value={hasBlouse ? "true" : "false"} onChange={e => setHasBlouse(e.target.value === "true")} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors">
+                    <select value={hasBlouse ? "true" : "false"} onChange={e => setHasBlouse(e.target.value === "true")} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all">
                       <option value="true">With Blouse Piece</option>
                       <option value="false">Without Blouse Piece</option>
                     </select>
@@ -1267,25 +1287,25 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Customer Full Name</label>
-                <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Customer WhatsApp/Phone</label>
-                <input type="tel" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                <input type="tel" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
               </div>
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Shipping Address</label>
-              <textarea rows={3} value={address} onChange={e => setAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required></textarea>
+              <textarea rows={3} value={address} onChange={e => setAddress(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required></textarea>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
-                <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Payment Method</label>
-                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required>
+                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#E57138] outline-none transition-all" required>
                   <option value="">Select Method</option>
                   <option value="UPI">Send UPI Link to Customer</option>
                   <option value="COD">Cash on Delivery (₹100 Extra)</option>

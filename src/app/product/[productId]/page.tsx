@@ -365,10 +365,23 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Pricing section */}
-              <div className="flex items-baseline gap-4 border-t border-b border-[#C5A059]/20 py-4">
-                <span className="text-3xl font-serif font-bold text-[#C5A059]">{product.price}</span>
-                <span className="text-sm text-gray-400 line-through">{product.mrp || `₹ ${(parseFloat(product.price.replace(/[^0-9]/g, '')) * 1.2).toLocaleString('en-IN')}`}</span>
-                <span className="text-xs text-green-400 font-bold">Direct Weaver Price</span>
+              <div className="flex flex-col gap-2 border-t border-b border-[#C5A059]/20 py-4">
+                <div className="flex items-baseline gap-4">
+                  <span className={`text-3xl font-serif font-bold ${userRole === "reseller" && product.allowResellerMargin ? "text-gray-400 line-through text-2xl" : "text-[#C5A059]"}`}>{product.price}</span>
+                  {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
+                    <span className="text-sm text-gray-400 line-through">{product.mrp || `₹ ${(parseFloat(product.price.replace(/[^0-9]/g, '')) * 1.2).toLocaleString('en-IN')}`}</span>
+                  )}
+                  {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
+                    <span className="text-xs text-green-400 font-bold">Direct Weaver Price</span>
+                  )}
+                </div>
+                
+                {userRole === "reseller" && product.allowResellerMargin && product.resellerPrice && (
+                  <div className="flex items-baseline gap-4 mt-1 bg-[#C5A059]/10 p-2 rounded-lg border border-[#C5A059]/30">
+                    <span className="text-3xl font-serif font-bold text-green-400">₹{product.resellerPrice}</span>
+                    <span className="text-xs text-[#C5A059] font-bold uppercase tracking-wider">Your Reseller Margin ({product.resellerMarginPercentage}%)</span>
+                  </div>
+                )}
               </div>
 
               {/* Short Description */}

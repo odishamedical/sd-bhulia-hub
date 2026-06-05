@@ -17,6 +17,10 @@ export interface Product {
   rating: string;
   img: string;
   inStock: boolean;
+  stockQuantity?: number;
+  allowResellerMargin?: boolean;
+  resellerMarginPercentage?: number;
+  resellerPrice?: string;
   img2?: string;
   img3?: string;
   img4?: string;

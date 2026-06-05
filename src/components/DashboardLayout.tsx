@@ -57,9 +57,17 @@ export default function DashboardLayout({
 
       <div className="max-w-[1500px] w-full px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-8">
         
-        {/* LEFT SIDEBAR - WHITE SAAS STYLE */}
-        <aside className={`w-full lg:w-72 shrink-0 space-y-6 ${mobileMenuOpen ? 'block' : 'hidden lg:block'}`}>
-          <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-6">
+        {/* MOBILE BACKDROP */}
+        {mobileMenuOpen && (
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+
+        {/* LEFT SIDEBAR - SLIDE IN DRAWER */}
+        <aside className={`fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:w-72 shrink-0 space-y-6 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="bg-white lg:rounded-3xl shadow-sm lg:border border-gray-200 p-6 h-full overflow-y-auto">
             
             {/* Top Identity Block */}
             <div className="flex items-center gap-4 border-b border-gray-100 pb-5 mb-5">
