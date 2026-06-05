@@ -59,67 +59,69 @@ export default function ImageUploader({
     }
   }[aspectRatio];
 
-  const handleProcessImage = (src: string) => {
+  const handleProcessImage = async (src: string) => {
+    // Generate the base64 crop FIRST before showing the UI
+    const autoCropBase64 = await new Promise<string>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          let targetWidth = 500;
+          let targetHeight = 500;
+
+          if (aspectRatio === "portrait") {
+            targetWidth = 540;
+            targetHeight = 960;
+          } else if (aspectRatio === "landscape") {
+            targetWidth = 1000;
+            targetHeight = 400;
+          }
+
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.fillStyle = "#051815";
+            ctx.fillRect(0, 0, targetWidth, targetHeight);
+
+            let drawWidth = targetWidth;
+            let drawHeight = targetHeight;
+            const imgRatio = img.width / img.height;
+            const targetRatio = targetWidth / targetHeight;
+
+            if (imgRatio > targetRatio) {
+              drawWidth = targetHeight * imgRatio;
+            } else {
+              drawHeight = targetWidth / imgRatio;
+            }
+
+            const x = (targetWidth - drawWidth) / 2;
+            const y = (targetHeight - drawHeight) / 2;
+
+            ctx.drawImage(img, x, y, drawWidth, drawHeight);
+            resolve(canvas.toDataURL("image/jpeg", 0.85));
+          } else {
+            reject("No context");
+          }
+        } catch (e) {
+          reject(e);
+        }
+      };
+      img.onerror = reject;
+      img.src = src;
+    }).catch((e) => {
+      console.error("Auto-crop failed:", e);
+      return src; // Fallback
+    });
+
+    // Now safely update the state!
+    onChange(autoCropBase64);
+    
     setRawImageSrc(src);
     setScale(1);
     setOffsetX(0);
     setOffsetY(0);
-
-    // Auto-apply default crop instantly to ensure data isn't lost if they forget to click "Apply Crop"
-    const img = new Image();
-    img.onload = () => {
-      try {
-        const canvas = document.createElement("canvas");
-        let targetWidth = 500;
-        let targetHeight = 500;
-
-        if (aspectRatio === "portrait") {
-          targetWidth = 540;
-          targetHeight = 960;
-        } else if (aspectRatio === "landscape") {
-          targetWidth = 1000;
-          targetHeight = 400;
-        }
-
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.fillStyle = "#051815";
-          ctx.fillRect(0, 0, targetWidth, targetHeight);
-
-          let drawWidth = targetWidth;
-          let drawHeight = targetHeight;
-          const imgRatio = img.width / img.height;
-          const targetRatio = targetWidth / targetHeight;
-
-          if (imgRatio > targetRatio) {
-            drawWidth = targetHeight * imgRatio;
-          } else {
-            drawHeight = targetWidth / imgRatio;
-          }
-
-          const x = (targetWidth - drawWidth) / 2;
-          const y = (targetHeight - drawHeight) / 2;
-
-          ctx.drawImage(img, x, y, drawWidth, drawHeight);
-          onChange(canvas.toDataURL("image/jpeg", 0.85));
-        } else {
-          onChange(src);
-        }
-      } catch (e) {
-        console.error("Auto-crop failed:", e);
-        onChange(src);
-      } finally {
-        setIsProcessing(false);
-      }
-    };
-    img.onerror = () => {
-      console.error("Image load failed");
-      onChange(src);
-      setIsProcessing(false);
-    };
-    img.src = src;
+    setIsProcessing(false);
   };
 
   const loadFileAndProcess = (file: File) => {
