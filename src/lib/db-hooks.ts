@@ -187,6 +187,62 @@ export function useProducts() {
   return { products, loading };
 }
 
+export function useProductBySlug(slug: string) {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!slug) {
+      setLoading(false);
+      return;
+    }
+    const q = query(collection(db, "products"), where("slug", "==", slug));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (!snapshot.empty) {
+        const doc = snapshot.docs[0];
+        setProduct({ id: doc.id, ...doc.data() } as Product);
+      } else {
+        setProduct(null);
+      }
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching product by slug: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [slug]);
+
+  return { product, loading };
+}
+
+export function useProductById(id: string) {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+    const unsubscribe = onSnapshot(doc(db, "products", id), (docSnap) => {
+      if (docSnap.exists()) {
+        setProduct({ id: docSnap.id, ...docSnap.data() } as Product);
+      } else {
+        setProduct(null);
+      }
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching product by id: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [id]);
+
+  return { product, loading };
+}
+
 export function useWeavers() {
   const [weavers, setWeavers] = useState<Weaver[]>([]);
   const [loading, setLoading] = useState(true);

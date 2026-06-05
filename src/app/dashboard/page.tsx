@@ -593,9 +593,19 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   // Upload Form State
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
+  const [productMrp, setProductMrp] = useState("");
+  const [productCategory, setProductCategory] = useState("Silk");
+  const [productDesc, setProductDesc] = useState("");
+  const [productLongDesc, setProductLongDesc] = useState("");
+  const [sareeType, setSareeType] = useState("Silk");
+  const [colorUse, setColorUse] = useState("");
+  const [length, setLength] = useState("");
+  const [hasBlouse, setHasBlouse] = useState(true);
   const [originalWeaver, setOriginalWeaver] = useState("");
-  const [stockQuantity, setStockQuantity] = useState("1");
   const [productImage, setProductImage] = useState("");
+  const [img2, setImg2] = useState("");
+  const [img3, setImg3] = useState("");
+  const [img4, setImg4] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isAddInventoryOpen, setIsAddInventoryOpen] = useState(false);
 
@@ -665,21 +675,43 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
     try {
       await addDoc(collection(db, "products"), {
         title: productName,
-        price: Number(productPrice),
-        originalWeaver: originalWeaver,
-        stockQuantity: Number(stockQuantity),
-        img: productImage || "/bhulia-hero.png",
+        slug: productName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        price: productPrice, // Store as string with commas if formatted, or modify as needed
+        mrp: productMrp,
+        category: productCategory,
+        desc: productDesc,
+        longDesc: productLongDesc || productDesc,
+        sareeType: sareeType,
+        colorUse: colorUse,
+        length: length,
+        hasBlouse: hasBlouse,
+        weaverName: originalWeaver,
+        img: productImage || "https://images.unsplash.com/photo-1605814526362-790100f91eb8?w=800&q=80",
+        img2: img2,
+        img3: img3,
+        img4: img4,
+        isGI: false,
+        isBhuliaVerified: true,
+        escrowStatus: "Payment Protected",
         ownerId: auth.currentUser.uid,
         ownerRole: "vendor",
         status: "pending",
         createdAt: serverTimestamp(),
       });
       alert("Inventory batch saved to Firestore and submitted for QC!");
+      setIsAddInventoryOpen(false);
       setProductName("");
       setProductPrice("");
+      setProductMrp("");
+      setProductDesc("");
+      setProductLongDesc("");
+      setColorUse("");
+      setLength("");
       setOriginalWeaver("");
-      setStockQuantity("1");
       setProductImage("");
+      setImg2("");
+      setImg3("");
+      setImg4("");
       setIsAddInventoryOpen(false);
     } catch (error) {
       console.error(error);
@@ -744,7 +776,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                       <tr className="border-b border-gray-100 text-xs uppercase tracking-wider text-gray-400">
                         <th className="pb-4 font-bold">Product</th>
                         <th className="pb-4 font-bold">Price</th>
-                        <th className="pb-4 font-bold">Stock</th>
+                        <th className="pb-4 font-bold">Category</th>
                         <th className="pb-4 font-bold">Status</th>
                       </tr>
                     </thead>
@@ -758,14 +790,14 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                               </div>
                               <div>
                                 <div className="font-bold text-gray-900">{product.title}</div>
-                                {product.originalWeaver && (
-                                  <div className="text-xs text-gray-500">Weaver: {product.originalWeaver}</div>
+                                {product.weaverName && (
+                                  <div className="text-xs text-gray-500">Weaver: {product.weaverName}</div>
                                 )}
                               </div>
                             </div>
                           </td>
-                          <td className="py-4 font-bold text-gray-900">₹{product.price.toLocaleString()}</td>
-                          <td className="py-4 font-medium text-gray-500">{product.stockQuantity} in stock</td>
+                          <td className="py-4 font-bold text-gray-900">₹{Number(product.price).toLocaleString()}</td>
+                          <td className="py-4 font-medium text-gray-500">{product.category || "Silk"}</td>
                           <td className="py-4">
                             <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
                               product.status === "approved" ? "bg-green-50 text-green-700 border-green-200" :
@@ -792,33 +824,76 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
               </div>
               
               <form className="space-y-6" onSubmit={handleUpload}>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  <div className="lg:col-span-1">
-                    <ImageUploader 
-                      label="Product Photo" 
-                      value={productImage} 
-                      onChange={setProductImage} 
-                      aspectRatio="portrait"
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Basic Details */}
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
+                    <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
+                    <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required placeholder="e.g. 34500" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">MRP (₹)</label>
+                    <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required placeholder="e.g. 42000" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category</label>
+                    <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors">
+                      <option>Silk Masterpieces</option>
+                      <option>Cotton Classics</option>
+                      <option>Mix Pata</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name</label>
+                    <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Short Description</label>
+                    <textarea value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required rows={2} />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Long Artisan Story Description</label>
+                    <textarea value={productLongDesc} onChange={e => setProductLongDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required rows={4} />
                   </div>
                   
-                  <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="md:col-span-2">
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
-                      <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
-                      <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Stock Quantity</label>
-                      <input type="number" min="1" value={stockQuantity} onChange={e => setStockQuantity(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name (Optional)</label>
-                      <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" />
-                    </div>
+                  {/* Specs */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Saree Type</label>
+                    <select value={sareeType} onChange={e => setSareeType(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors">
+                      <option>Pure Silk</option>
+                      <option>Pure Cotton</option>
+                      <option>Mix Pata</option>
+                      <option>Tissue</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Color Palette</label>
+                    <input type="text" value={colorUse} onChange={e => setColorUse(e.target.value)} placeholder="e.g. Royal Blue & Gold" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Length</label>
+                    <input type="text" value={length} onChange={e => setLength(e.target.value)} placeholder="e.g. 6.2 Meters" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Blouse Status</label>
+                    <select value={hasBlouse ? "true" : "false"} onChange={e => setHasBlouse(e.target.value === "true")} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#E57138] focus:ring-1 focus:ring-[#E57138] focus:outline-none transition-colors">
+                      <option value="true">With Blouse Piece</option>
+                      <option value="false">Without Blouse Piece</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Images Section */}
+                <div className="pt-6 border-t border-gray-100">
+                  <h3 className="text-sm font-bold text-gray-900 mb-4">Product Images</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <ImageUploader label="Main Photo" value={productImage} onChange={setProductImage} aspectRatio="portrait" />
+                    <ImageUploader label="Photo 2" value={img2} onChange={setImg2} aspectRatio="portrait" />
+                    <ImageUploader label="Photo 3" value={img3} onChange={setImg3} aspectRatio="portrait" />
+                    <ImageUploader label="Photo 4" value={img4} onChange={setImg4} aspectRatio="portrait" />
                   </div>
                 </div>
                 

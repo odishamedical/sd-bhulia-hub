@@ -94,7 +94,7 @@ export default function ProductDetailPage() {
     if (!product) return;
     const finalRef = customRefId || userUid;
     const shareUrl = `${window.location.origin}/product/${product.slug}?ref=${finalRef}`;
-    const message = `Check out this gorgeous authentic GI-Tagged ${product.title} from Bhulia Hub! Direct weaver-to-consumer escrow purchase. ${shareUrl}`;
+    const message = `Check out this gorgeous authentic ${product.title} from Bhulia Hub! Direct weaver-to-consumer escrow purchase. ${shareUrl}`;
 
     if (platform === "whatsapp") {
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, "_blank");
@@ -263,11 +263,10 @@ export default function ProductDetailPage() {
                 <Image src={activeImg || product.img} alt={product.title} fill className="object-cover animate-fadeIn" />
               </div>
               
-              {product.isGI && (
-                <div className="absolute top-4 left-4 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold shadow-lg border border-[#C5A059]">
-                  ✓ GI-TAG VERIFIED ARTISAN MASTERPIECE
-                </div>
-              )}
+              {/* Authenticity badge - replacing GI Tag with Bhulia Verified */}
+              <div className="absolute top-4 left-4 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold shadow-lg border border-[#C5A059]">
+                ✓ BHULIA.COM VERIFIED SAMBALPURI
+              </div>
 
               {product.isBhuliaVerified && (
                 <div className="absolute bottom-4 right-4 z-20 flex flex-col items-center justify-center p-2 rounded-2xl bg-gradient-to-b from-[#FFF5C0] via-[#D4AF37] via-[#C5A059] to-[#8A5A00] border-2 border-[#FFF0A5] shadow-[0_12px_30px_rgba(0,0,0,0.85),inset_0_3px_4px_rgba(255,255,255,0.9)] w-24 h-24 transform rotate-12 animate-pulse" style={{ animationDuration: '3s' }}>
@@ -372,47 +371,32 @@ export default function ProductDetailPage() {
                 <span className="text-xs text-green-400 font-bold">Direct Weaver Price</span>
               </div>
 
-              {/* Weaver Specs details */}
+              {/* Short Description */}
+              <div className="text-gray-300 text-sm italic border-l-2 border-[#C5A059] pl-3 py-1">
+                {product.desc || product.longDesc?.substring(0, 100) + '...'}
+              </div>
+
+              {/* Weaver Specs details - Minimalist Schema */}
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
-                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Weaving Cluster</span>
-                  <span className="text-xs font-semibold text-white">{product.village || "Dasrajpur"}, {product.cluster || "Sonepur Cluster"}</span>
-                </div>
-                <div>
-                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Weaving Duration</span>
-                  <span className="text-xs font-semibold text-[#C5A059]">{product.weavingDuration || product.time || "35 Days"}</span>
-                </div>
-                <div>
                   <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Saree Type</span>
-                  <span className="text-xs font-semibold text-white">{product.sareeType || product.category || "Silk(pata)"}</span>
-                </div>
-                <div>
-                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Manufacturing Process</span>
-                  <span className="text-xs font-semibold text-white">{product.manufacturingProcess || product.weave || "Double Ikat(double bandha)"}</span>
-                </div>
-                <div>
-                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Design Theme</span>
-                  <span className="text-xs font-semibold text-white">{product.designType || "Pasapali(saptapar)"}</span>
-                </div>
-                <div>
-                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Thread Type</span>
-                  <span className="text-xs font-semibold text-white">{product.threadType || product.yarnType || "100 Count"}</span>
+                  <span className="text-xs font-semibold text-white">{product.sareeType || "Handloom"}</span>
                 </div>
                 <div>
                   <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Color Palette</span>
-                  <span className="text-xs font-semibold text-white">{product.colorUse || "Organic Dyes"}</span>
-                </div>
-                <div>
-                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Weaver / Designer</span>
-                  <span className="text-xs font-semibold text-white">{product.weaverName || "Master Weaver"} / {product.designerName || "Traditional"}</span>
+                  <span className="text-xs font-semibold text-white">{product.colorUse || "Traditional Colors"}</span>
                 </div>
                 <div>
                   <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Length & Blouse</span>
-                  <span className="text-xs font-semibold text-white">{product.length || "6.2 Meters"} {product.hasBlouse ? "(With Blouse)" : "(No Blouse)"}</span>
+                  <span className="text-xs font-semibold text-white">{product.length || "6.2 Meters"} {product.hasBlouse ? "(With Blouse)" : ""}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Weaver / Designer</span>
+                  <span className="text-xs font-semibold text-white">{product.weaverName || "Master Weaver"}</span>
                 </div>
                 <div>
                   <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Escrow Protocol</span>
-                  <span className="text-xs font-semibold text-green-400">{product.escrowStatus || "100% Escrow Protected"}</span>
+                  <span className="text-xs font-semibold text-green-400">Payment Protected</span>
                 </div>
               </div>
 
