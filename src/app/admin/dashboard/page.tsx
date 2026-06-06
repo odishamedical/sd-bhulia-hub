@@ -19,6 +19,10 @@ export default function AdminDashboardPage() {
 
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editedFields, setEditedFields] = useState<any>({});
+  const [isRejecting, setIsRejecting] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [sellerName, setSellerName] = useState("Unknown");
 
   // Group pending items
   const pendingWeavers = weavers.filter(w => w.status === "pending_approval" || (w.status as string) === "pending");
@@ -38,13 +42,39 @@ export default function AdminDashboardPage() {
     return acc + (parseInt(priceStr) || 0);
   }, 0);
 
-  const handleInspect = (item: any) => setSelectedItem(item);
+  const handleInspect = (item: any) => {
+    setSelectedItem(item);
+    setEditedFields({ ...item.data });
+    setIsRejecting(false);
+    setRejectionReason("");
+    
+    // Find Seller Name if applicable
+    if (item.type === "products" && item.data.sellerId) {
+      const weaver = weavers.find(w => w.id === item.data.sellerId);
+      if (weaver) {
+        setSellerName((weaver as any).title || (weaver as any).slug || "Weaver");
+        return;
+      }
+      const store = stores.find(s => s.id === item.data.sellerId);
+      if (store) {
+        setSellerName((store as any).title || (store as any).slug || "Retail Store");
+        return;
+      }
+      setSellerName("Unknown User");
+    } else {
+      setSellerName("");
+    }
+  };
 
   const handleApprove = async () => {
     if (!selectedItem) return;
     setIsSubmitting(true);
     const { id, type, data } = selectedItem;
-    let updates: any = { status: "approved" };
+    
+    // Merge edited fields (omitting protected fields)
+    let updates: any = { ...editedFields, status: "approved", rejectionReason: null };
+    delete updates.id;
+    delete updates.pendingChanges;
 
     if (data.pendingChanges) {
       updates = { ...updates, ...data.pendingChanges, pendingChanges: null };
@@ -66,18 +96,27 @@ export default function AdminDashboardPage() {
 
   const handleReject = async () => {
     if (!selectedItem) return;
-    if (!window.confirm("Are you sure you want to reject this item?")) return;
+    if (!isRejecting) {
+        setIsRejecting(true);
+        return;
+    }
+    if (!rejectionReason.trim()) {
+        alert("Please provide a rejection reason so the user knows what to fix.");
+        return;
+    }
+    
     setIsSubmitting(true);
     const { id, type, data } = selectedItem;
     
-    let updates: any = { status: "rejected" };
+    let updates: any = { status: "rejected", rejectionReason };
     if (data.pendingChanges) {
-      updates = { status: "approved", pendingChanges: null };
+      // Reverting pending changes means keeping the old approved status but clearing the draft
+      updates = { status: "approved", pendingChanges: null, rejectionReason };
     }
     
     const res = await updateDocumentStatus(type, id, updates);
     if (res.success) {
-      alert("Application rejected.");
+      alert("Application rejected with comments.");
       setSelectedItem(null);
     } else {
       alert("Error rejecting application");
@@ -178,22 +217,65 @@ export default function AdminDashboardPage() {
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Ecosystem Verification</span>
                 <h3 className="text-2xl font-black text-gray-900 mt-1">Inspect: {selectedItem.title}</h3>
+                {sellerName && <p className="text-sm font-bold text-gray-600 mt-1">Uploaded by: <span className="text-blue-600">{sellerName}</span></p>}
               </div>
               <button onClick={() => setSelectedItem(null)} className="p-2 bg-gray-50 text-gray-500 rounded-full hover:bg-gray-100 transition-colors">✕</button>
             </div>
 
+            <div className="bg-blue-50 text-blue-800 text-xs font-bold p-3 rounded-lg mb-6 border border-blue-100">
+              💡 You can edit these fields directly before approving to quickly fix typos!
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-6 rounded-2xl border border-gray-100 mb-8">
-              {Object.keys(selectedItem.data).filter(key => key !== "id" && key !== "status" && key !== "pendingChanges" && key !== "layoutConfig").map(key => (
+              {Object.keys(editedFields).filter(key => key !== "id" && key !== "status" && key !== "pendingChanges" && key !== "layoutConfig" && key !== "rejectionReason").map(key => (
                 <div key={key} className="space-y-1 bg-white p-3 rounded-xl border border-gray-100">
-                  <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">{key}</span>
-                  <span className="text-sm font-medium text-gray-900 break-words">{String(selectedItem.data[key])}</span>
+                  <label className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block">{key}</label>
+                  {typeof editedFields[key] === "string" && editedFields[key].length > 50 ? (
+                      <textarea 
+                          value={editedFields[key]} 
+                          onChange={(e) => setEditedFields({...editedFields, [key]: e.target.value})}
+                          className="w-full text-sm font-medium text-gray-900 border border-gray-200 rounded p-1 outline-none focus:border-blue-500"
+                          rows={3}
+                      />
+                  ) : typeof editedFields[key] === "boolean" ? (
+                      <select 
+                          value={String(editedFields[key])} 
+                          onChange={(e) => setEditedFields({...editedFields, [key]: e.target.value === "true"})}
+                          className="w-full text-sm font-medium text-gray-900 border border-gray-200 rounded p-1 outline-none focus:border-blue-500"
+                      >
+                          <option value="true">True</option>
+                          <option value="false">False</option>
+                      </select>
+                  ) : (
+                      <input 
+                          type="text" 
+                          value={String(editedFields[key])} 
+                          onChange={(e) => setEditedFields({...editedFields, [key]: typeof editedFields[key] === 'number' ? Number(e.target.value) : e.target.value})}
+                          className="w-full text-sm font-medium text-gray-900 border border-gray-200 rounded p-1 outline-none focus:border-blue-500"
+                      />
+                  )}
                 </div>
               ))}
             </div>
 
+            {isRejecting && (
+                <div className="mb-6 animate-in fade-in slide-in-from-top-2">
+                    <label className="block text-xs font-bold text-red-600 uppercase tracking-wider mb-2">Rejection Reason (Required)</label>
+                    <textarea 
+                        value={rejectionReason}
+                        onChange={(e) => setRejectionReason(e.target.value)}
+                        placeholder="Explain why this is being rejected so the user can fix it..."
+                        className="w-full border-2 border-red-200 rounded-xl p-3 text-sm focus:border-red-500 outline-none"
+                        rows={3}
+                    />
+                </div>
+            )}
+
             <div className="flex justify-between gap-4 pt-4 border-t border-gray-100">
-              <button onClick={handleReject} disabled={isSubmitting} className="px-6 py-3 border-2 border-red-100 text-red-600 font-bold rounded-xl hover:bg-red-50 hover:border-red-200 transition-all disabled:opacity-50 w-1/3">Reject</button>
-              <button onClick={handleApprove} disabled={isSubmitting} className="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/20 transition-all disabled:opacity-50 w-2/3">Approve & Publish to Hub</button>
+              <button onClick={handleReject} disabled={isSubmitting} className="px-6 py-3 border-2 border-red-100 text-red-600 font-bold rounded-xl hover:bg-red-50 hover:border-red-200 transition-all disabled:opacity-50 w-1/3">
+                  {isRejecting ? "Confirm Reject" : "Reject"}
+              </button>
+              <button onClick={handleApprove} disabled={isSubmitting || isRejecting} className="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/20 transition-all disabled:opacity-50 w-2/3">Approve & Publish to Hub</button>
             </div>
           </div>
         </div>

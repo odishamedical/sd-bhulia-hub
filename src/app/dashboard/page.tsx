@@ -416,9 +416,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             </a>
           </div>
         </div>
-        <button onClick={() => onTabChange("upload")} className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm self-start md:self-auto">
-          + Upload Product
-        </button>
+        
       </header>
 
       {activeTab === "home" && (
@@ -448,6 +446,54 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         </div>
       )}
 
+      {activeTab === "products" && (
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-5xl animate-in fade-in">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">My Products</h2>
+            <button onClick={() => onTabChange("upload")} className="bg-[#1f2937] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">
+              + Upload New
+            </button>
+          </div>
+          {weaverProducts.length === 0 ? (
+             <div className="text-center py-16 text-gray-500">No products found.</div>
+          ) : (
+            <div className="overflow-x-auto rounded-xl border border-gray-100">
+              <table className="w-full text-left">
+                <thead className="bg-gray-50 border-b border-gray-100 text-xs uppercase text-gray-500">
+                  <tr>
+                    <th className="p-4 font-bold">Product</th>
+                    <th className="p-4 font-bold">Price</th>
+                    <th className="p-4 font-bold">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {weaverProducts.map(p => (
+                    <tr key={p.id}>
+                      <td className="p-4 font-bold text-gray-900">{p.title}</td>
+                      <td className="p-4 text-gray-500">₹{p.price}</td>
+                      <td className="p-4">
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                          (p as any).status === "approved" ? "bg-green-50 text-green-700 border-green-200" :
+                          (p as any).status === "rejected" ? "bg-red-50 text-red-700 border-red-200" :
+                          "bg-yellow-50 text-yellow-700 border-yellow-200"
+                        }`}>
+                          {((p as any).status || "pending").toUpperCase()}
+                        </span>
+                        {(p as any).status === "rejected" && (p as any).rejectionReason && (
+                          <div className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded border border-red-100 max-w-xs">
+                            <span className="font-bold">Reason:</span> {(p as any).rejectionReason}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+      
       {activeTab === "upload" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
           <h2 className="text-2xl font-bold text-gray-900 mb-8">Upload New Sambalpuri Saree</h2>
@@ -525,7 +571,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       {activeTab === "orders" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 animate-in fade-in">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Order Management</h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[600px] overflow-y-auto rounded-xl border border-gray-100">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-100 text-xs uppercase tracking-widest text-gray-500 bg-gray-50">
@@ -610,7 +656,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                 <div className="font-bold text-gray-900 mb-1">KYC Documents</div>
                 <div className="text-sm text-gray-500 font-medium">Aadhaar / Artisan Card</div>
               </div>
-              <span className="px-4 py-1.5 bg-green-50 text-green-700 border border-green-200 rounded-full text-xs font-bold">Approved</span>
+              <span className="px-4 py-1.5 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-full text-xs font-bold">Pending Approval</span>
             </div>
             <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
               <div>
@@ -649,6 +695,8 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [img4, setImg4] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isAddInventoryOpen, setIsAddInventoryOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [stockQuantity, setStockQuantity] = useState(1);
   const [allowResellerMargin, setAllowResellerMargin] = useState(false);
@@ -668,7 +716,13 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const { products } = useProducts();
 
   const vendorOrders = orders.filter(o => o.logisticsStatus !== "Delivered");
-  const vendorProducts = products.filter(p => p.sellerId === auth.currentUser?.uid);
+  const vendorProductsRaw = products.filter(p => p.sellerId === auth.currentUser?.uid);
+  const vendorProducts = vendorProductsRaw.filter(p => {
+    const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const productStatus = p.status || "pending";
+    const matchesStatus = statusFilter === "all" || productStatus === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -832,9 +886,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             </a>
           </div>
         </div>
-        <button onClick={() => onTabChange("products")} className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm self-start md:self-auto">
-          + Add Inventory
-        </button>
+        
       </header>
 
       {activeTab === "home" && (
@@ -858,14 +910,42 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-5xl animate-in fade-in">
           {!isAddInventoryOpen ? (
             <div>
-              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900">Products Catalog</h2>
-                <button onClick={handleAddNewClick} className="bg-[#1f2937] text-white px-5 py-2.5 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Products Catalog</h2>
+                  <p className="text-sm text-gray-500 mt-1">Manage and track your inventory.</p>
+                </div>
+                <button onClick={handleAddNewClick} className="bg-[#1f2937] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-black transition-colors shadow-sm w-full md:w-auto">
                   + Add Inventory
                 </button>
               </div>
 
-              {vendorProducts.length === 0 ? (
+              {vendorProductsRaw.length > 0 && (
+                <div className="flex flex-col md:flex-row gap-4 mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                  <div className="flex-1 relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+                    <input 
+                      type="text" 
+                      placeholder="Search products by name..." 
+                      className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none text-sm"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  <select 
+                    className="py-2 px-4 rounded-xl border border-gray-200 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none text-sm bg-white"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="approved">Approved</option>
+                    <option value="pending">Pending QC</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+              )}
+
+              {vendorProductsRaw.length === 0 ? (
                 <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50">
                   <div className="text-4xl mb-4">🛍️</div>
                   <h3 className="text-lg font-bold text-gray-900 mb-2">No Products Yet</h3>
@@ -875,7 +955,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   </button>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto max-h-[600px] overflow-y-auto rounded-xl border border-gray-100">
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="border-b border-gray-100 text-xs uppercase tracking-wider text-gray-400">
@@ -920,9 +1000,11 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                               {(product as any).status.charAt(0).toUpperCase() + (product as any).status.slice(1)}
                             </span>
                           </td>
-                          <td className="py-4 text-right">
-                            <a href={"/product/" + product.id} target="_blank" className="text-gray-500 font-bold text-xs hover:text-gray-900 hover:underline mr-4">View Live ↗</a>
-                            <button onClick={() => handleEditClick(product)} className="text-[#0070F3] font-bold text-xs hover:underline">
+                          <td className="py-4 text-right whitespace-nowrap">
+                            <a href={"/product/" + product.slug} target="_blank" className="inline-block bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors mr-2">
+                              View Live ↗
+                            </a>
+                            <button onClick={() => handleEditClick(product)} className="inline-block bg-blue-50 text-[#0070F3] border border-blue-100 hover:bg-blue-100 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors">
                               Edit
                             </button>
                           </td>
@@ -1053,7 +1135,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       {activeTab === "orders" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 animate-in fade-in">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Order Management</h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[600px] overflow-y-auto rounded-xl border border-gray-100">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-100 text-xs uppercase tracking-widest text-gray-500 bg-gray-50">
@@ -1268,12 +1350,73 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isOrdering, setIsOrdering] = useState(false);
 
+  // Bank State
+  const [bankName, setBankName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [ifsc, setIfsc] = useState("");
+  const [isSavingBank, setIsSavingBank] = useState(false);
+  const [bankSaved, setBankSaved] = useState(false);
+
+  // KYC State
+  const [kycType, setKycType] = useState("aadhaar");
+  const [kycDocUrl, setKycDocUrl] = useState("");
+  const [isSubmittingKyc, setIsSubmittingKyc] = useState(false);
+  const [kycSubmitted, setKycSubmitted] = useState(false);
+
+  const handleSaveBank = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth.currentUser) return;
+    setIsSavingBank(true);
+    try {
+      await addDoc(collection(db, "kyc_verifications"), {
+        userId: auth.currentUser.uid,
+        userEmail: auth.currentUser.email,
+        type: "bank",
+        bankName,
+        accountNumber,
+        ifsc,
+        status: "pending",
+        createdAt: serverTimestamp(),
+      });
+      setBankSaved(true);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save bank details");
+    }
+    setIsSavingBank(false);
+  };
+
+  const handleSubmitKyc = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth.currentUser || !kycDocUrl) {
+      alert("Please upload a document first.");
+      return;
+    }
+    setIsSubmittingKyc(true);
+    try {
+      await addDoc(collection(db, "kyc_verifications"), {
+        userId: auth.currentUser.uid,
+        userEmail: auth.currentUser.email,
+        type: "identity",
+        documentType: kycType,
+        documentUrl: kycDocUrl,
+        status: "pending",
+        createdAt: serverTimestamp(),
+      });
+      setKycSubmitted(true);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to submit KYC");
+    }
+    setIsSubmittingKyc(false);
+  };
+
   const handleProxyOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!auth.currentUser) return;
     setIsOrdering(true);
     try {
-      await addDoc(collection(db, "orders"), {
+      await addDoc(collection(db, "proxy_orders"), {
         customerName,
         customerPhone,
         pinCode,
@@ -1548,7 +1691,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
 
           <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
             <h2 className="text-xl font-bold text-gray-900 mb-6">Global Action Queue</h2>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto max-h-[600px] overflow-y-auto rounded-xl border border-gray-100">
               <table className="w-full text-left">
                 <thead>
                   <tr className="text-xs uppercase text-gray-500 border-b border-gray-100">
@@ -1591,7 +1734,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
       {activeTab === "kyc" && (
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 animate-in fade-in">
           <h2 className="text-xl font-bold text-gray-900 mb-6">User KYC & Verification</h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[600px] overflow-y-auto rounded-xl border border-gray-100">
             <table className="w-full text-left">
               <thead>
                 <tr className="text-xs uppercase text-gray-500 border-b border-gray-100">
@@ -1646,7 +1789,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
       {activeTab === "logistics" && (
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 animate-in fade-in">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Logistics & Order Fulfillment</h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[600px] overflow-y-auto rounded-xl border border-gray-100">
             <table className="w-full text-left">
               <thead>
                 <tr className="text-xs uppercase text-gray-500 border-b border-gray-100">
@@ -1690,7 +1833,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
       {activeTab === "finance" && (
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 animate-in fade-in">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Escrow & Reseller Finance</h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[600px] overflow-y-auto rounded-xl border border-gray-100">
             <table className="w-full text-left">
               <thead>
                 <tr className="text-xs uppercase text-gray-500 border-b border-gray-100">

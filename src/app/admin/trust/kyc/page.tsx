@@ -20,8 +20,16 @@ export default function KycResolutionDesk() {
       
       const users: any[] = [];
       snapshot.forEach((docSnap) => {
-        users.push({ id: docSnap.id, ...docSnap.data() });
+        users.push({ id: docSnap.id, ...docSnap.data(), type: "user_approval" });
       });
+
+      const q2 = query(collection(db, "kyc_verifications"), where("status", "==", "pending"));
+      const snap2 = await getDocs(q2);
+      
+      snap2.forEach((docSnap) => {
+        users.push({ id: docSnap.id, ...docSnap.data(), type: "document_verification" });
+      });
+
       setPendingUsers(users);
     } catch (error) {
       console.error("Failed to fetch pending KYC:", error);
@@ -69,20 +77,48 @@ export default function KycResolutionDesk() {
 
 
 
-  const handleAction = async (userId: string, action: "approve" | "reject") => {
-    setProcessingId(userId);
+  const handleAction = async (item: any, action: "approve" | "reject") => {
+    let rejectionReason = null;
+    if (action === "reject") {
+        const reason = window.prompt("Please provide a rejection reason so the applicant knows what to fix:");
+        if (reason === null) return; // User cancelled
+        if (!reason.trim()) {
+            alert("A rejection reason is required.");
+            return;
+        }
+        rejectionReason = reason;
+    }
+
+    setProcessingId(item.id);
     try {
-      const userRef = doc(db, "users", userId);
-      const updates = action === "approve" 
-        ? { status: "active", kycStatus: "verified", verifiedAt: new Date().toISOString() }
-        : { status: "rejected", kycStatus: "rejected", rejectedAt: new Date().toISOString() };
-      
-      await updateDoc(userRef, updates);
+      if (item.type === "user_approval") {
+        const userRef = doc(db, "users", item.id);
+        const updates = action === "approve" 
+          ? { status: "active", kycStatus: "verified", verifiedAt: new Date().toISOString() }
+          : { status: "rejected", kycStatus: "rejected", rejectedAt: new Date().toISOString(), rejectionReason };
+        await updateDoc(userRef, updates);
+      } else if (item.type === "document_verification") {
+        const docRef = doc(db, "kyc_verifications", item.id);
+        const updates = action === "approve" 
+          ? { status: "approved", verifiedAt: new Date().toISOString() }
+          : { status: "rejected", rejectedAt: new Date().toISOString(), rejectionReason };
+        await updateDoc(docRef, updates);
+
+        // Also update the user's document status if approved
+        if (action === "approve" && item.userId) {
+            const userRef = doc(db, "users", item.userId);
+            if (item.documentType === "bank") {
+                await updateDoc(userRef, { bankVerified: true });
+            } else {
+                await updateDoc(userRef, { identityVerified: true });
+            }
+        }
+      }
       
       // Remove from list optimistically
-      setPendingUsers(prev => prev.filter(u => u.id !== userId));
+      setPendingUsers(prev => prev.filter(u => u.id !== item.id));
     } catch (error) {
-      console.error(`Failed to ${action} user:`, error);
+      console.error(`Failed to ${action} item:`, error);
       alert(`Action failed. Ensure you have the required Firestore permissions.`);
       fetchPendingKyc(); // Revert optimistic update
     } finally {
@@ -165,13 +201,28 @@ export default function KycResolutionDesk() {
                       </span>
                     </td>
                     <td className="px-6 py-5 text-xs text-gray-600">
-                      {user.role === "weaver" ? (
+                      {(user as any).type === "document_verification" ? (
                         <div>
+                           <p className="text-sm font-bold text-blue-600 uppercase mb-1">{(user as any).documentType || "BANK"} UPLOAD</p>
+                           { (user as any).documentUrl ? (
+                             <a href={(user as any).documentUrl} target="_blank" className="underline text-blue-500">View Document ↗</a>
+                           ) : (
+                             <div>
+                                <p><span className="font-semibold">Bank:</span> {(user as any).bankName}</p>
+                                <p><span className="font-semibold">A/C:</span> {(user as any).accountNumber}</p>
+                                <p><span className="font-semibold">IFSC:</span> {(user as any).ifsc}</p>
+                             </div>
+                           )}
+                        </div>
+                      ) : user.role === "weaver" ? (
+                        <div>
+                          <p className="text-sm font-bold text-gray-900 uppercase mb-1">NEW ACCOUNT</p>
                           <p><span className="font-semibold">Cluster:</span> {(user as any).cluster || "N/A"}</p>
                           <p><span className="font-semibold">Village:</span> {(user as any).village || "N/A"}</p>
                         </div>
                       ) : user.role === "store" ? (
                         <div>
+                          <p className="text-sm font-bold text-gray-900 uppercase mb-1">NEW ACCOUNT</p>
                           <p><span className="font-semibold">Business:</span> {user.businessName || "N/A"}</p>
                           <p><span className="font-semibold">GST:</span> {(user as any).gstNumber || "N/A"}</p>
                         </div>
@@ -185,13 +236,13 @@ export default function KycResolutionDesk() {
                       ) : (
                         <div className="flex items-center justify-end gap-2">
                           <button 
-                            onClick={() => handleAction(user.id, "reject")}
+                            onClick={() => handleAction(user, "reject")}
                             className="px-4 py-2 border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 font-bold rounded-lg text-xs transition-colors"
                           >
                             Reject
                           </button>
                           <button 
-                            onClick={() => handleAction(user.id, "approve")}
+                            onClick={() => handleAction(user, "approve")}
                             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-gray-900 font-bold rounded-lg text-xs shadow-md transition-colors"
                           >
                             Approve
