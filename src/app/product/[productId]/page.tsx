@@ -235,7 +235,7 @@ export default function ProductDetailPage() {
                   ))
                 ) : products.slice(0, 5).map((item, idx) => (
                   <div key={idx} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
-                    <div className="relative w-full h-48 sm:h-64 overflow-hidden bg-[#0B2B26] rounded-t-xl">
+                    <div className="relative w-full aspect-[9/16] overflow-hidden bg-[#0B2B26] rounded-t-xl">
                       <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                       <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
                         {item.id}
@@ -260,9 +260,9 @@ export default function ProductDetailPage() {
             
             {/* Left Side: Large image & trust badges */}
             <div className="lg:col-span-6 space-y-6">
-            <div className="relative w-full h-[320px] sm:h-[500px] rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl bg-[#0B2B26] p-0.5">
+            <div className="relative w-full aspect-[9/16] sm:max-h-[650px] sm:aspect-auto rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl bg-[#0B2B26] p-0.5">
               <div className="relative w-full h-full rounded-[22px] overflow-hidden">
-                <Image src={activeImg || product.img} alt={product.title} fill className="object-cover animate-fadeIn" />
+                <Image src={activeImg || product.img} alt={product.title} fill className="object-contain sm:object-contain animate-fadeIn" />
               </div>
               
               {/* Authenticity badge - replacing GI Tag with Bhulia Verified */}
@@ -286,12 +286,12 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Product Gallery Thumbnails */}
-            <div className="grid grid-cols-4 gap-3 mt-4">
-              {[product.img, product.img2, product.img3, product.img4].filter(Boolean).map((image, index) => (
+            <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 mt-4">
+              {[product.img, product.img2, product.img3, product.img4, ...(product.images || [])].filter(Boolean).map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setActiveImg(image || "")}
-                  className={`relative aspect-square rounded-2xl overflow-hidden border bg-[#0B2B26] p-0.5 transition-all cursor-pointer ${
+                  className={`relative aspect-[9/16] rounded-2xl overflow-hidden border bg-[#0B2B26] p-0.5 transition-all cursor-pointer ${
                     activeImg === image ? "border-[#C5A059] ring-1 ring-[#C5A059]/40" : "border-[#C5A059]/20 hover:border-[#C5A059]/50"
                   }`}
                 >

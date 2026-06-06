@@ -21,6 +21,7 @@ export default function AddProductPage() {
   const [img2, setImg2] = useState("");
   const [img3, setImg3] = useState("");
   const [img4, setImg4] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   
   // Handloom Specs
   const [sareeType, setSareeType] = useState("Silk");
@@ -44,6 +45,7 @@ export default function AddProductPage() {
       img2,
       img3,
       img4,
+      images: images.filter(Boolean),
       category,
       sareeType,
       colorUse,
@@ -155,7 +157,28 @@ export default function AddProductPage() {
             <ImageUploader value={img2} onChange={setImg2} label="Product Photo 2" aspectRatio="portrait" />
             <ImageUploader value={img3} onChange={setImg3} label="Product Photo 3" aspectRatio="portrait" />
             <ImageUploader value={img4} onChange={setImg4} label="Product Photo 4" aspectRatio="portrait" />
+            
+            {images.map((imgUrl, idx) => (
+              <ImageUploader 
+                key={idx} 
+                value={imgUrl} 
+                onChange={(val) => {
+                  const newImages = [...images];
+                  newImages[idx] = val;
+                  setImages(newImages);
+                }} 
+                label={`Additional Photo ${idx + 1}`} 
+                aspectRatio="portrait" 
+              />
+            ))}
           </div>
+          <button 
+            type="button" 
+            onClick={() => setImages([...images, ""])}
+            className="mt-4 px-4 py-2 border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 rounded-xl text-xs uppercase tracking-wider font-bold transition-colors"
+          >
+            + Add Another Image
+          </button>
         </section>
 
         {/* Submit */}

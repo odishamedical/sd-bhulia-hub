@@ -479,10 +479,19 @@ export default function ImageUploader({
                   (e.target as HTMLImageElement).src = "/bhulia-hero.png";
                 }}
               />
+              <a
+                href={value}
+                download="bhulia-original-photo.jpg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/75 hover:bg-blue-600/90 text-white px-2 py-1 rounded text-[10px] uppercase font-bold tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap cursor-pointer shadow z-10"
+              >
+                ⬇ Download
+              </a>
               <button
                 type="button"
                 onClick={clearImage}
-                className="absolute top-2 right-2 bg-black/75 hover:bg-red-600/90 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center text-xs transition-colors shadow cursor-pointer"
+                className="absolute top-2 right-2 bg-black/75 hover:bg-red-600/90 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center text-xs transition-colors shadow cursor-pointer z-10"
               >
                 ✕
               </button>
