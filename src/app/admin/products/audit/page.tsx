@@ -121,7 +121,7 @@ export default function GiTagAuditQueue() {
 
   if (hasPermission === false) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl shadow-sm">
+      <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <h3 className="font-bold text-lg mb-2 flex items-center gap-2"><span className="text-2xl">🛑</span> Access Denied</h3>
         <p>You do not have the required `Global Catalog` permissions to audit GI-Tag claims.</p>
       </div>
@@ -157,7 +157,7 @@ export default function GiTagAuditQueue() {
         ) : (
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {pendingProducts.map((product) => (
-              <div key={product.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col sm:flex-row transition-shadow hover:shadow-md">
+              <div key={product.id} className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden flex flex-col sm:flex-row transition-shadow hover:shadow-md">
                 
                 {/* Image Section */}
                 <div className="w-full sm:w-48 h-48 sm:h-auto bg-gray-100 relative shrink-0">

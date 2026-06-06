@@ -118,7 +118,7 @@ export default function AdminProductsPage() {
           <div className="bg-white shadow-sm border border-gray-200/80 border border-[#C5A059]/30 rounded-3xl overflow-hidden shadow-xl">
           <div className="overflow-x-auto max-h-[700px] overflow-y-auto custom-scrollbar">
             <table className="w-full text-left text-sm text-gray-200">
-              <thead className="text-xs uppercase bg-[#0A3A35] text-gray-900 font-bold tracking-widest border-b border-[#C5A059]/30">
+              <thead className="text-xs uppercase bg-[#0A3A35] text-[#C5A059] font-bold tracking-widest border-b border-[#C5A059]/30">
                 <tr>
                   <th className="px-6 py-4">Image</th>
                   <th className="px-6 py-4">Title & Weave</th>

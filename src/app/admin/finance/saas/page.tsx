@@ -143,7 +143,7 @@ export default function SaasBillingPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
         {isLoading ? (
           <div className="p-10 text-center text-gray-500 animate-pulse">Fetching Stripe Webhooks...</div>
         ) : subscriptions.length === 0 ? (

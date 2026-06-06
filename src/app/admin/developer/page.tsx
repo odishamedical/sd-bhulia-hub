@@ -107,7 +107,7 @@ export default function DeveloperHubPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
           <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2"><span>🔑</span> Active API Keys</h2>
           <button 
@@ -146,7 +146,7 @@ export default function DeveloperHubPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
           <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2"><span>🪝</span> Webhook Endpoints</h2>
           <button className="px-4 py-2 border border-gray-300 hover:bg-gray-100 text-gray-800 font-bold rounded-lg text-xs transition-all">

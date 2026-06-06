@@ -92,7 +92,7 @@ export default function LowStockDashboard() {
 
   if (hasPermission === false) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl shadow-sm">
+      <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <h3 className="font-bold text-lg mb-2">Access Denied</h3>
         <p>You do not have `Global Catalog` permissions to view inventory levels.</p>
       </div>
@@ -108,7 +108,7 @@ export default function LowStockDashboard() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
         {isLoading ? (
           <div className="p-10 text-center text-gray-500 animate-pulse">Checking global inventory...</div>
         ) : stockAlerts.length === 0 ? (

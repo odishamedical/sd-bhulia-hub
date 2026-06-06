@@ -74,7 +74,7 @@ export default function MarketingDashboardPage() {
 
   if (hasPermission === false) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl shadow-sm">
+      <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <h3 className="font-bold text-lg mb-2">Access Denied</h3>
         <p>You do not have `Growth & Marketing` permissions.</p>
       </div>
@@ -90,7 +90,7 @@ export default function MarketingDashboardPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
         {/* Tabs */}
         <div className="flex border-b border-gray-100 overflow-x-auto">
           <button 

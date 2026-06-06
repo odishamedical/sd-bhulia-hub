@@ -95,7 +95,7 @@ export default function TaxReportingPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-100 bg-gray-50">
           <h2 className="text-lg font-bold text-gray-800">Generate Compliance Export</h2>
         </div>

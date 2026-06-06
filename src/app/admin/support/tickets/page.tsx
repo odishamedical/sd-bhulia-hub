@@ -125,7 +125,7 @@ export default function SupportHelpdeskPage() {
 
   if (hasPermission === false) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl shadow-sm">
+      <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <h3 className="font-bold text-lg mb-2 flex items-center gap-2"><span className="text-2xl">🛑</span> Access Denied</h3>
         <p>You do not have the required `Support & Disputes` permissions to view customer tickets.</p>
       </div>
@@ -150,9 +150,9 @@ export default function SupportHelpdeskPage() {
 
       <div className="bg-transparent">
         {isLoading ? (
-          <div className="bg-white rounded-2xl border border-gray-200 p-10 text-center text-gray-500 animate-pulse">Fetching Open Tickets...</div>
+          <div className="bg-white rounded-3xl border border-gray-100 p-10 text-center text-gray-500 animate-pulse">Fetching Open Tickets...</div>
         ) : tickets.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-200 p-16 text-center shadow-sm">
+          <div className="bg-white rounded-3xl border border-gray-100 p-16 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
             <div className="text-5xl mb-4">🏆</div>
             <h3 className="text-xl font-bold text-gray-900">Inbox Zero</h3>
             <p className="text-gray-500 text-sm mt-1">All customer issues have been resolved.</p>
@@ -160,7 +160,7 @@ export default function SupportHelpdeskPage() {
         ) : (
           <div className="grid grid-cols-1 gap-6">
             {tickets.map((ticket) => (
-              <div key={ticket.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-shadow hover:shadow-md">
+              <div key={ticket.id} className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden transition-shadow hover:shadow-md">
                 <div className="p-5 border-b border-gray-100 flex justify-between items-start bg-gray-50/50">
                   <div>
                     <div className="flex items-center gap-3 mb-1">
