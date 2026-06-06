@@ -264,6 +264,86 @@ export default function Home() {
 
         </div>
 
+        {/* --- ALGORITHMIC PRODUCT ROWS --- */}
+        {!productsLoading && products.length > 0 && (
+          <div className="space-y-12 pb-8">
+            {/* Trending This Week Row */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-4">
+                  <h3 className="text-xl md:text-3xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] flex items-center gap-2">
+                    <span className="text-2xl">🔥</span> Trending This Week
+                  </h3>
+                  <div className="hidden sm:block flex-1 w-32 h-[1px] bg-gradient-to-r from-[#C5A059]/60 to-transparent"></div>
+                </div>
+                <Link href="/search" className="text-xs font-bold text-[#C5A059] uppercase tracking-widest hover:underline whitespace-nowrap">View All</Link>
+              </div>
+              
+              <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                {[...products].sort(() => 0.5 - Math.random()).slice(0, 8).map(item => (
+                  <div key={item.id} className="min-w-[240px] md:min-w-[280px] snap-start shrink-0 bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
+                    <div className="relative w-full h-48 sm:h-56 overflow-hidden bg-[#0B2B26] rounded-t-xl">
+                      <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                    </div>
+                    <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
+                      <div>
+                        <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.title}</h4>
+                        <p className="text-base font-serif font-bold text-[#C5A059]">₹{item.price}</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <button onClick={() => addToCart(item)} className="bhulia-gold-button w-full py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] font-bold text-[10px] uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md cursor-pointer">
+                          Add to Cart
+                        </button>
+                        <Link href={`/product/${item.slug}`} className="w-full py-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] font-bold text-[10px] uppercase tracking-wider rounded-xl hover:bg-[#0D4B45] transition-all shadow-md flex items-center justify-center">
+                          View
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* New Arrivals Row */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-4">
+                  <h3 className="text-xl md:text-3xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] flex items-center gap-2">
+                    <span className="text-2xl">✨</span> New Arrivals
+                  </h3>
+                  <div className="hidden sm:block flex-1 w-32 h-[1px] bg-gradient-to-r from-[#C5A059]/60 to-transparent"></div>
+                </div>
+                <Link href="/search?sort=newest" className="text-xs font-bold text-[#C5A059] uppercase tracking-widest hover:underline whitespace-nowrap">View All</Link>
+              </div>
+              
+              <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                {[...products].slice(-8).reverse().map(item => (
+                  <div key={item.id} className="min-w-[240px] md:min-w-[280px] snap-start shrink-0 bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
+                    <div className="relative w-full h-48 sm:h-56 overflow-hidden bg-[#0B2B26] rounded-t-xl">
+                      <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#C5A059] text-[#0A1021] text-[9px] font-bold uppercase tracking-widest rounded shadow">New</span>
+                    </div>
+                    <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
+                      <div>
+                        <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.title}</h4>
+                        <p className="text-base font-serif font-bold text-[#C5A059]">₹{item.price}</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <button onClick={() => addToCart(item)} className="bhulia-gold-button w-full py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] font-bold text-[10px] uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md cursor-pointer">
+                          Add to Cart
+                        </button>
+                        <Link href={`/product/${item.slug}`} className="w-full py-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] font-bold text-[10px] uppercase tracking-wider rounded-xl hover:bg-[#0D4B45] transition-all shadow-md flex items-center justify-center">
+                          View
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* --- DYNAMIC CMS RENDERER --- */}
         {cmsLayout?.dynamicEnabled ? (
           <div className="space-y-8 md:space-y-12">

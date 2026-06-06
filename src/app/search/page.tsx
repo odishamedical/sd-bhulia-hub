@@ -21,11 +21,12 @@ function SearchContent() {
   const [selectedMaterial, setSelectedMaterial] = useState(searchParams?.get("material") || "");
   const [selectedDesign, setSelectedDesign] = useState(searchParams?.get("design") || "");
   
-  // Custom price logic
   const minPriceParam = searchParams?.get("minPrice");
   const maxPriceParam = searchParams?.get("maxPrice");
   const priceRange = (minPriceParam && maxPriceParam) ? `${minPriceParam}-${maxPriceParam}` : "";
   const [selectedPrice, setSelectedPrice] = useState(priceRange);
+  
+  const [selectedSort, setSelectedSort] = useState(searchParams?.get("sort") || "newest");
 
   useEffect(() => {
     let result = [...products];
@@ -48,8 +49,22 @@ function SearchContent() {
       });
     }
 
+    if (selectedSort === "price-low-high") {
+      result.sort((a, b) => {
+        const pa = typeof a.price === 'number' ? a.price : Number(String(a.price).replace(/[^0-9.]/g, '')) || 0;
+        const pb = typeof b.price === 'number' ? b.price : Number(String(b.price).replace(/[^0-9.]/g, '')) || 0;
+        return pa - pb;
+      });
+    } else if (selectedSort === "price-high-low") {
+      result.sort((a, b) => {
+        const pa = typeof a.price === 'number' ? a.price : Number(String(a.price).replace(/[^0-9.]/g, '')) || 0;
+        const pb = typeof b.price === 'number' ? b.price : Number(String(b.price).replace(/[^0-9.]/g, '')) || 0;
+        return pb - pa;
+      });
+    }
+
     setFilteredProducts(result);
-  }, [products, selectedCategory, selectedMaterial, selectedDesign, selectedPrice]);
+  }, [products, selectedCategory, selectedMaterial, selectedDesign, selectedPrice, selectedSort]);
 
   const updateFilters = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams?.toString() || "");
@@ -197,6 +212,24 @@ function SearchContent() {
 
           {/* Results Grid */}
           <div className="lg:col-span-3">
+            <div className="flex justify-between items-center mb-6">
+              <span className="text-sm text-gray-400">{filteredProducts.length} Results Found</span>
+              <div className="flex items-center gap-2">
+                <span className="hidden sm:inline text-xs text-[#C5A059] font-bold uppercase tracking-widest">Sort By:</span>
+                <select 
+                  value={selectedSort}
+                  onChange={(e) => {
+                    setSelectedSort(e.target.value);
+                    updateFilters("sort", e.target.value);
+                  }}
+                  className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-xl px-4 py-2 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
+                >
+                  <option value="newest">Newest Arrivals</option>
+                  <option value="price-low-high">Price: Low to High</option>
+                  <option value="price-high-low">Price: High to Low</option>
+                </select>
+              </div>
+            </div>
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {[...Array(8)].map((_, i) => (

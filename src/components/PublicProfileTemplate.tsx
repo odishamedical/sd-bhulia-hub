@@ -56,6 +56,15 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
             {profile.name}
           </h1>
           
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex text-[#D4AF37] text-sm">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <div className="text-xs font-bold text-gray-300">
+              <span className="text-white">4.9/5</span> (120+ Verified Orders)
+            </div>
+          </div>
+          
           <div className="text-sm font-semibold text-white uppercase tracking-widest mb-4 opacity-90">
             📍 {profile.district}, {profile.state}
           </div>
