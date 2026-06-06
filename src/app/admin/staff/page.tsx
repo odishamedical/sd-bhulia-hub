@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, updateDoc, addDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 // Define the structure of an admin user
