@@ -455,7 +455,7 @@ export default function UserManagementPage() {
         )}
 
         {/* Main Data Grid */}
-        <div className="flex-1 bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden flex flex-col h-[calc(100vh-140px)]">
+        <div className="flex-1 bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden flex flex-col">
           <div className="p-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between gap-4">
             <div className="relative w-full max-w-xl">
               <input 
@@ -472,7 +472,7 @@ export default function UserManagementPage() {
             </div>
           </div>
 
-          <div className="flex-1 overflow-auto p-0">
+          <div className="flex-1 overflow-x-auto p-0">
             <table className="w-full text-left border-collapse relative">
               <thead className="sticky top-0 bg-white shadow-sm z-10">
                 <tr className="text-[10px] uppercase tracking-widest text-gray-500 border-b border-gray-100">
