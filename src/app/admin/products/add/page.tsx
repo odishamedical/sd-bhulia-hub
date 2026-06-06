@@ -23,6 +23,12 @@ export default function AddProductPage() {
   const [img4, setImg4] = useState("");
   const [images, setImages] = useState<string[]>([]);
   
+  const [imgCaption, setImgCaption] = useState("");
+  const [img2Caption, setImg2Caption] = useState("");
+  const [img3Caption, setImg3Caption] = useState("");
+  const [img4Caption, setImg4Caption] = useState("");
+  const [imagesCaptions, setImagesCaptions] = useState<string[]>([]);
+  
   // Handloom Specs
   const [sareeType, setSareeType] = useState("Silk");
   const [colorUse, setColorUse] = useState("");
@@ -46,6 +52,7 @@ export default function AddProductPage() {
       img3,
       img4,
       images: images.filter(Boolean),
+      imageCaptions: [imgCaption, img2Caption, img3Caption, img4Caption, ...imagesCaptions],
       category,
       sareeType,
       colorUse,
@@ -153,10 +160,10 @@ export default function AddProductPage() {
         <section className="space-y-4">
           <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">3. Product Gallery</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ImageUploader value={img} onChange={setImg} label="Main Product Photo (Image 1)" aspectRatio="portrait" />
-            <ImageUploader value={img2} onChange={setImg2} label="Product Photo 2" aspectRatio="portrait" />
-            <ImageUploader value={img3} onChange={setImg3} label="Product Photo 3" aspectRatio="portrait" />
-            <ImageUploader value={img4} onChange={setImg4} label="Product Photo 4" aspectRatio="portrait" />
+            <ImageUploader value={img} onChange={setImg} label="Main Product Photo (Image 1)" aspectRatio="portrait" captionValue={imgCaption} onCaptionChange={setImgCaption} />
+            <ImageUploader value={img2} onChange={setImg2} label="Product Photo 2" aspectRatio="portrait" captionValue={img2Caption} onCaptionChange={setImg2Caption} />
+            <ImageUploader value={img3} onChange={setImg3} label="Product Photo 3" aspectRatio="portrait" captionValue={img3Caption} onCaptionChange={setImg3Caption} />
+            <ImageUploader value={img4} onChange={setImg4} label="Product Photo 4" aspectRatio="portrait" captionValue={img4Caption} onCaptionChange={setImg4Caption} />
             
             {images.map((imgUrl, idx) => (
               <ImageUploader 
@@ -167,6 +174,12 @@ export default function AddProductPage() {
                   newImages[idx] = val;
                   setImages(newImages);
                 }} 
+                captionValue={imagesCaptions[idx] || ""}
+                onCaptionChange={(val) => {
+                  const newCaptions = [...imagesCaptions];
+                  newCaptions[idx] = val;
+                  setImagesCaptions(newCaptions);
+                }}
                 label={`Additional Photo ${idx + 1}`} 
                 aspectRatio="portrait" 
               />
@@ -174,7 +187,10 @@ export default function AddProductPage() {
           </div>
           <button 
             type="button" 
-            onClick={() => setImages([...images, ""])}
+            onClick={() => {
+              setImages([...images, ""]);
+              setImagesCaptions([...imagesCaptions, ""]);
+            }}
             className="mt-4 px-4 py-2 border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 rounded-xl text-xs uppercase tracking-wider font-bold transition-colors"
           >
             + Add Another Image

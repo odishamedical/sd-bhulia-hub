@@ -9,13 +9,17 @@ interface ImageUploaderProps {
   onChange: (val: string) => void;
   label?: string;
   aspectRatio?: "square" | "portrait" | "landscape";
+  captionValue?: string;
+  onCaptionChange?: (val: string) => void;
 }
 
 export default function ImageUploader({ 
   value, 
   onChange, 
   label = "Upload Image",
-  aspectRatio = "square" 
+  aspectRatio = "square",
+  captionValue,
+  onCaptionChange
 }: ImageUploaderProps) {
   const [dragActive, setDragActive] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
@@ -496,6 +500,19 @@ export default function ImageUploader({
                 ✕
               </button>
             </div>
+            
+            {onCaptionChange && (
+              <div className="mt-2 w-full max-w-[220px]">
+                <input
+                  type="text"
+                  placeholder="Alt text / Description (SEO)"
+                  value={captionValue || ""}
+                  onChange={(e) => onCaptionChange(e.target.value)}
+                  className="w-full bg-blue-50/50 border border-blue-200 text-blue-900 rounded-lg px-3 py-2 text-xs placeholder:text-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all"
+                />
+              </div>
+            )}
+          </div>
           )}
         </div>
       )}

@@ -41,6 +41,7 @@ export interface Product {
   vendorName?: string;
   status?: string;
   images?: string[];
+  imageCaptions?: string[];
 }
 
 

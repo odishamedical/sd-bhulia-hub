@@ -365,6 +365,15 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [allowResellerMargin, setAllowResellerMargin] = useState(false);
   const [resellerMarginPercentage, setResellerMarginPercentage] = useState(5);
   const [productImage, setProductImage] = useState("");
+  const [img2, setImg2] = useState("");
+  const [img3, setImg3] = useState("");
+  const [img4, setImg4] = useState("");
+  
+  const [imgCaption, setImgCaption] = useState("");
+  const [img2Caption, setImg2Caption] = useState("");
+  const [img3Caption, setImg3Caption] = useState("");
+  const [img4Caption, setImg4Caption] = useState("");
+
   const [isUploading, setIsUploading] = useState(false);
   const { orders } = useOrders();
 
@@ -386,6 +395,11 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         stockQuantity: Number(stockQuantity),
         inStock: Number(stockQuantity) > 0,
         img: productImage || "https://images.unsplash.com/photo-1605814526362-790100f91eb8?w=800&q=80",
+        img2,
+        img3,
+        img4,
+        images: [productImage, img2, img3, img4].filter(Boolean),
+        imageCaptions: [imgCaption, img2Caption, img3Caption, img4Caption],
         isBhuliaVerified: true,
         escrowStatus: "Payment Protected",
         allowResellerMargin,
@@ -397,6 +411,14 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       setProductName("");
       setProductPrice("");
       setProductDesc("");
+      setProductImage("");
+      setImg2("");
+      setImg3("");
+      setImg4("");
+      setImgCaption("");
+      setImg2Caption("");
+      setImg3Caption("");
+      setImg4Caption("");
       onTabChange("home");
     } catch (error) {
       console.error(error);
@@ -547,10 +569,11 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Images (Max 4)</label>
-              <div className="flex gap-4">
-                {[1,2,3,4].map(i => (
-                  <div key={i} className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center text-gray-400 hover:border-[#0070F3] hover:text-[#0070F3] cursor-pointer transition-colors bg-gray-50">+</div>
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <ImageUploader label="Main Photo" value={productImage} onChange={setProductImage} aspectRatio="portrait" captionValue={imgCaption} onCaptionChange={setImgCaption} />
+                <ImageUploader label="Photo 2" value={img2} onChange={setImg2} aspectRatio="portrait" captionValue={img2Caption} onCaptionChange={setImg2Caption} />
+                <ImageUploader label="Photo 3" value={img3} onChange={setImg3} aspectRatio="portrait" captionValue={img3Caption} onCaptionChange={setImg3Caption} />
+                <ImageUploader label="Photo 4" value={img4} onChange={setImg4} aspectRatio="portrait" captionValue={img4Caption} onCaptionChange={setImg4Caption} />
               </div>
             </div>
             <div className="bg-blue-50 p-5 rounded-2xl border border-blue-100">
@@ -694,6 +717,12 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [img2, setImg2] = useState("");
   const [img3, setImg3] = useState("");
   const [img4, setImg4] = useState("");
+  
+  const [imgCaption, setImgCaption] = useState("");
+  const [img2Caption, setImg2Caption] = useState("");
+  const [img3Caption, setImg3Caption] = useState("");
+  const [img4Caption, setImg4Caption] = useState("");
+  
   const [isUploading, setIsUploading] = useState(false);
   const [isAddInventoryOpen, setIsAddInventoryOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -785,6 +814,13 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
     setImg2(product.img2 || "");
     setImg3(product.img3 || "");
     setImg4(product.img4 || "");
+    
+    const caps = product.imageCaptions || [];
+    setImgCaption(caps[0] || "");
+    setImg2Caption(caps[1] || "");
+    setImg3Caption(caps[2] || "");
+    setImg4Caption(caps[3] || "");
+    
     setIsAddInventoryOpen(true);
   };
 
@@ -802,6 +838,10 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
     setImg2("");
     setImg3("");
     setImg4("");
+    setImgCaption("");
+    setImg2Caption("");
+    setImg3Caption("");
+    setImg4Caption("");
     setIsAddInventoryOpen(true);
   };
 
@@ -827,6 +867,8 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         img2: img2,
         img3: img3,
         img4: img4,
+        images: [productImage, img2, img3, img4].filter(Boolean),
+        imageCaptions: [imgCaption, img2Caption, img3Caption, img4Caption],
         stockQuantity: Number(stockQuantity),
         inStock: Number(stockQuantity) > 0,
         allowResellerMargin,
@@ -844,7 +886,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       } else {
         await addDoc(collection(db, "products"), {
           ...productData,
-                    isBhuliaVerified: true,
+          isBhuliaVerified: true,
           escrowStatus: "Payment Protected",
           sellerId: auth.currentUser?.uid,
           sellerType: "vendor",
@@ -868,6 +910,10 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       setImg2("");
       setImg3("");
       setImg4("");
+      setImgCaption("");
+      setImg2Caption("");
+      setImg3Caption("");
+      setImg4Caption("");
     } catch (error) {
       console.error(error);
       alert("Upload failed.");
@@ -1115,10 +1161,10 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                 <div className="pt-6 border-t border-gray-100">
                   <h3 className="text-sm font-bold text-gray-900 mb-4">Product Images</h3>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <ImageUploader label="Main Photo" value={productImage} onChange={setProductImage} aspectRatio="portrait" />
-                    <ImageUploader label="Photo 2" value={img2} onChange={setImg2} aspectRatio="portrait" />
-                    <ImageUploader label="Photo 3" value={img3} onChange={setImg3} aspectRatio="portrait" />
-                    <ImageUploader label="Photo 4" value={img4} onChange={setImg4} aspectRatio="portrait" />
+                    <ImageUploader label="Main Photo" value={productImage} onChange={setProductImage} aspectRatio="portrait" captionValue={imgCaption} onCaptionChange={setImgCaption} />
+                    <ImageUploader label="Photo 2" value={img2} onChange={setImg2} aspectRatio="portrait" captionValue={img2Caption} onCaptionChange={setImg2Caption} />
+                    <ImageUploader label="Photo 3" value={img3} onChange={setImg3} aspectRatio="portrait" captionValue={img3Caption} onCaptionChange={setImg3Caption} />
+                    <ImageUploader label="Photo 4" value={img4} onChange={setImg4} aspectRatio="portrait" captionValue={img4Caption} onCaptionChange={setImg4Caption} />
                   </div>
                 </div>
                 
