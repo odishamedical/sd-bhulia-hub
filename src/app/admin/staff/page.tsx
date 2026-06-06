@@ -44,6 +44,11 @@ export default function StaffDelegationPage() {
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [newPermissions, setNewPermissions] = useState({...DEFAULT_PERMISSIONS});
+  
+  const [mode, setMode] = useState<"existing" | "new">("existing");
+  const [newEmail, setNewEmail] = useState("");
+  const [newName, setNewName] = useState("");
+  const [newAddress, setNewAddress] = useState("");
 
   useEffect(() => {
       if (isModalOpen && allUsers.length === 0) {
@@ -139,24 +144,41 @@ export default function StaffDelegationPage() {
   };
 
   const handlePromoteUser = async () => {
-    if (!selectedUserId) {
-        setSearchStatus("Please select a user.");
-        return;
-    }
     setSearchStatus("Promoting user to Admin...");
     try {
-      const userRef = doc(db, "users", selectedUserId);
-      await updateDoc(userRef, {
-        role: "admin",
-        permissions: newPermissions
-      });
+      if (mode === "existing") {
+          if (!selectedUserId) {
+              setSearchStatus("Please select a user.");
+              return;
+          }
+          const userRef = doc(db, "users", selectedUserId);
+          await updateDoc(userRef, {
+            role: "admin",
+            permissions: newPermissions
+          });
+      } else {
+          if (!newEmail) {
+              setSearchStatus("Please enter an email address.");
+              return;
+          }
+          const { addDoc } = await import("firebase/firestore");
+          await addDoc(collection(db, "users"), {
+              email: newEmail,
+              displayName: newName,
+              address: newAddress,
+              role: "admin",
+              permissions: newPermissions
+          });
+      }
       
       setIsModalOpen(false);
       setSelectedUserId("");
+      setNewEmail("");
+      setNewName("");
+      setNewAddress("");
       setNewPermissions({...DEFAULT_PERMISSIONS});
       setSearchStatus(null);
       fetchAdmins(); // Refresh list
-
     } catch (err) {
       setSearchStatus("Error performing promotion.");
       console.error(err);
@@ -296,17 +318,41 @@ export default function StaffDelegationPage() {
               <p className="text-xs text-gray-500 mt-1">Elevate an existing registered user to an Admin role.</p>
             </div>
             <div className="p-6">
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Select User from System</label>
-              <select 
-                  value={selectedUserId}
-                  onChange={(e) => setSelectedUserId(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all mb-6"
-              >
-                  <option value="">-- Choose a User --</option>
-                  {allUsers.map(u => (
-                      <option key={u.id} value={u.id}>{u.displayName || u.email} ({u.role}) - {u.email}</option>
-                  ))}
-              </select>
+              <div className="flex gap-4 mb-6">
+                  <button onClick={() => setMode("existing")} className={`flex-1 py-2 text-xs font-bold uppercase rounded-lg border ${mode === "existing" ? "bg-blue-50 border-blue-500 text-blue-700" : "bg-gray-50 border-gray-200 text-gray-500"}`}>Existing User</button>
+                  <button onClick={() => setMode("new")} className={`flex-1 py-2 text-xs font-bold uppercase rounded-lg border ${mode === "new" ? "bg-blue-50 border-blue-500 text-blue-700" : "bg-gray-50 border-gray-200 text-gray-500"}`}>Invite New</button>
+              </div>
+
+              {mode === "existing" ? (
+                  <>
+                      <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Select User from System</label>
+                      <select 
+                          value={selectedUserId}
+                          onChange={(e) => setSelectedUserId(e.target.value)}
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all mb-6"
+                      >
+                          <option value="">-- Choose a User --</option>
+                          {allUsers.map(u => (
+                              <option key={u.id} value={u.id}>{u.displayName || u.email} ({u.role === "franchisee" ? "reseller" : u.role}) - {u.email}</option>
+                          ))}
+                      </select>
+                  </>
+              ) : (
+                  <div className="space-y-4 mb-6">
+                      <div>
+                          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Email Address *</label>
+                          <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="employee@bhulia.com" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none" />
+                      </div>
+                      <div>
+                          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Full Name (Optional)</label>
+                          <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. John Doe" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none" />
+                      </div>
+                      <div>
+                          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Address / Branch (Optional)</label>
+                          <input type="text" value={newAddress} onChange={(e) => setNewAddress(e.target.value)} placeholder="e.g. Bargarh Hub" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none" />
+                      </div>
+                  </div>
+              )}
 
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">Assign Permissions</label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6 bg-gray-50 p-4 rounded-xl border border-gray-200">
