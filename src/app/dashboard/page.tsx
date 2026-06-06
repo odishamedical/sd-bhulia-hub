@@ -957,6 +957,9 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
    4. RESELLER DASHBOARD
    ========================================== */
 function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
+  const { products, loading: productsLoading } = useProducts();
+  const resellerProducts = products.filter(p => p.allowResellerMargin === true);
+
   // Proxy Order State
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -1077,7 +1080,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">My Curated Products</h3>
-              <div className="text-3xl font-black text-gray-900">0</div>
+              <div className="text-3xl font-black text-gray-900">{resellerProducts.length}</div>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Commission Earned</h3>
@@ -1090,8 +1093,50 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
       {activeTab === "curation" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 animate-in fade-in">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Curate Products</h2>
-          <p className="text-gray-500 mb-8 font-medium">Browse the master catalog and select products to display on your personal link.</p>
-          <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium">No products in catalog yet.</div>
+          <p className="text-gray-500 mb-8 font-medium">Browse the master catalog and select products to display on your personal link. Share these links on WhatsApp or Facebook to earn commissions!</p>
+          
+          {productsLoading ? (
+            <div className="text-center py-16 text-gray-500 font-medium">Loading catalog...</div>
+          ) : resellerProducts.length === 0 ? (
+            <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium">No products available for resale yet.</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {resellerProducts.map(product => {
+                const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/product/${product.slug}?ref=${auth.currentUser?.uid}` : "";
+                return (
+                  <div key={product.id} className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                    <img src={product.img} alt={product.title} className="w-full h-48 object-cover" />
+                    <div className="p-4 flex flex-col flex-1">
+                      <h3 className="font-bold text-gray-900 truncate mb-1">{product.title}</h3>
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-sm font-medium text-gray-500 line-through">₹{product.price}</span>
+                        <span className="text-lg font-black text-[#0070F3]">₹{product.resellerPrice}</span>
+                      </div>
+                      <div className="text-xs text-green-600 font-bold mb-4 bg-green-50 px-2 py-1 rounded w-max">
+                        Your Margin: {product.resellerMarginPercentage}%
+                      </div>
+                      <div className="mt-auto space-y-2">
+                        <button onClick={() => {
+                          navigator.clipboard.writeText(shareUrl);
+                          alert("Affiliate link copied to clipboard!");
+                        }} className="w-full py-2 bg-gray-100 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-200 transition-colors">
+                          Copy Link
+                        </button>
+                        <div className="grid grid-cols-2 gap-2">
+                          <a href={`https://wa.me/?text=${encodeURIComponent("Check out this authentic handloom product: " + shareUrl)}`} target="_blank" rel="noreferrer" className="w-full py-2 bg-[#25D366] text-white font-bold text-sm rounded-xl hover:bg-[#128C7E] transition-colors text-center flex items-center justify-center gap-1">
+                            WhatsApp
+                          </a>
+                          <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noreferrer" className="w-full py-2 bg-[#1877F2] text-white font-bold text-sm rounded-xl hover:bg-[#166FE5] transition-colors text-center flex items-center justify-center gap-1">
+                            Facebook
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
