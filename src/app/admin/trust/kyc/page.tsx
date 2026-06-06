@@ -160,7 +160,7 @@ export default function KycResolutionDesk() {
       </div>
 
       {/* Main Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
         {isLoading ? (
           <div className="p-10 text-center text-gray-500 animate-pulse">Scanning Global Queue...</div>
         ) : pendingUsers.length === 0 ? (
@@ -196,7 +196,13 @@ export default function KycResolutionDesk() {
                       </div>
                     </td>
                     <td className="px-6 py-5 align-top">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
+                        user.role === 'weaver' ? 'bg-orange-100 text-orange-800 border-orange-200' :
+                        user.role === 'shop' ? 'bg-purple-100 text-purple-800 border-purple-200' :
+                        user.role === 'reseller' ? 'bg-green-100 text-green-800 border-green-200' :
+                        user.role === 'customer' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                        'bg-gray-100 text-gray-800 border-gray-200'
+                      }`}>
                         {user.role || "Unknown"}
                       </span>
                     </td>
@@ -243,7 +249,7 @@ export default function KycResolutionDesk() {
                           </button>
                           <button 
                             onClick={() => handleAction(user, "approve")}
-                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-gray-900 font-bold rounded-lg text-xs shadow-md transition-colors"
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs shadow-md transition-colors"
                           >
                             Approve
                           </button>
