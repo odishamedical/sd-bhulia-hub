@@ -163,7 +163,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="h-screen bg-gray-50/50 text-gray-800 font-sans flex flex-col md:flex-row overflow-hidden w-full">
+    <div className="h-screen bg-gray-50 text-gray-800 font-sans flex flex-col md:flex-row overflow-hidden w-full">
       
       {/* Mobile Header (Visible only on small screens) */}
       <div className="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-50">
