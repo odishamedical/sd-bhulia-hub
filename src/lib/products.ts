@@ -25,13 +25,15 @@ export interface Product {
   img3?: string;
   img4?: string;
   // Handloom attributes
-  sareeType?: "Cotton" | "Silk(pata)" | "Mix Pata(silk)";
-  manufacturingProcess?: "Single Ikat(bandha)" | "Double Ikat(double bandha)" | "Bomkei";
-  designType?: "Pasapali(saptapar)" | "Traditional Design" | "Modern Design";
+  sareeType?: string; // Legacy field for material
+  material?: string; // New explicit material field
+  manufacturingProcess?: string; // Legacy field for process
+  designType?: string; // Legacy field for design
+  design?: string; // New explicit design field
   weaverName?: string;
   designerName?: string;
   creatorName?: string;
-  threadType?: "80 Count" | "100 Count" | "120 Count" | string;
+  threadType?: string;
   colorUse?: string;
   weavingDuration?: string;
   length?: string;

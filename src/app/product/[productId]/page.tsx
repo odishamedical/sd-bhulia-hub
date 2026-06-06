@@ -394,9 +394,9 @@ export default function ProductDetailPage() {
             {/* Core specs details */}
             <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-xl text-white space-y-6">
               <div>
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-[10px] font-bold uppercase tracking-widest mb-3">
+                <Link href={`/search?category=${encodeURIComponent(product.category || '')}`} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-[10px] font-bold uppercase tracking-widest mb-3 hover:bg-[#C5A059]/40 transition-colors cursor-pointer">
                   <span>{product.category}</span>
-                </span>
+                </Link>
                 <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#C5A059] leading-tight">{product.title}</h2>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-yellow-400 font-bold">★★★★★</span>
@@ -432,8 +432,12 @@ export default function ProductDetailPage() {
               {/* Weaver Specs details - Minimalist Schema */}
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
-                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Saree Type</span>
-                  <span className="text-xs font-semibold text-white">{product.sareeType || "Handloom"}</span>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Material</span>
+                  <Link href={`/search?material=${encodeURIComponent(product.material || product.sareeType || '')}`} className="text-xs font-semibold text-white hover:text-[#C5A059] transition-colors underline decoration-[#C5A059]/50 underline-offset-4">{product.material || product.sareeType || "Handloom"}</Link>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Design</span>
+                  <Link href={`/search?design=${encodeURIComponent(product.design || '')}`} className="text-xs font-semibold text-white hover:text-[#C5A059] transition-colors underline decoration-[#C5A059]/50 underline-offset-4">{product.design || "Traditional"}</Link>
                 </div>
                 <div>
                   <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Color Palette</span>

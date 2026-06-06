@@ -374,6 +374,18 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [img3Caption, setImg3Caption] = useState("");
   const [img4Caption, setImg4Caption] = useState("");
 
+  const [productMrp, setProductMrp] = useState("");
+  const [productLongDesc, setProductLongDesc] = useState("");
+  const [originalWeaver, setOriginalWeaver] = useState("");
+  const [sareeType, setSareeType] = useState("");
+  const [material, setMaterial] = useState("");
+  const [design, setDesign] = useState("");
+  const [colorUse, setColorUse] = useState("");
+  const [length, setLength] = useState("");
+  const [hasBlouse, setHasBlouse] = useState(false);
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [isAddInventoryOpen, setIsAddInventoryOpen] = useState(false);
+
   const [isUploading, setIsUploading] = useState(false);
   const { orders } = useOrders();
 
@@ -395,7 +407,9 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         category: productCategory,
         desc: productDesc,
         longDesc: productLongDesc || productDesc,
-        sareeType: sareeType,
+        sareeType: material || sareeType, // Fallback for backwards compat
+        material: material,
+        design: design,
         colorUse: colorUse,
         length: length,
         hasBlouse: hasBlouse,
@@ -625,11 +639,15 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category</label>
-                    <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all">
-                      <option>Silk Masterpieces</option>
-                      <option>Cotton Classics</option>
-                      <option>Mix Pata</option>
-                    </select>
+                    <input list="categoryList" value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="Select or type category..." required />
+                    <datalist id="categoryList">
+                      <option value="Saree" />
+                      <option value="Dress material" />
+                      <option value="Bedsheet" />
+                      <option value="RedyMade shirts" />
+                      <option value="Redy made Kurti" />
+                      <option value="Kurti dress material" />
+                    </datalist>
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name</label>
@@ -646,13 +664,26 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                   
                   {/* Specs */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Saree Type</label>
-                    <select value={sareeType} onChange={e => setSareeType(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all">
-                      <option>Pure Silk</option>
-                      <option>Pure Cotton</option>
-                      <option>Mix Pata</option>
-                      <option>Tissue</option>
-                    </select>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Material</label>
+                    <input list="materialList" value={material} onChange={e => setMaterial(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="Select or type material..." required />
+                    <datalist id="materialList">
+                      <option value="Pure Cotton" />
+                      <option value="Pure Silk (Pata)" />
+                      <option value="Mix Silk(Pata) (Silk+Polyster)" />
+                      <option value="Mix Cotton (Cotton+Polyster)" />
+                    </datalist>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Design</label>
+                    <input list="designList" value={design} onChange={e => setDesign(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="Select or type design..." required />
+                    <datalist id="designList">
+                      <option value="Sambalpuri Ikat (Bandha)" />
+                      <option value="Sambalpuri Traditional Ikat Design" />
+                      <option value="Sambalpuri Modern Ikat Design" />
+                      <option value="Sambalpuri Double Ikat (Pashapali/Saptapar)" />
+                      <option value="Bomkei" />
+                      <option value="Bomkei+Ikat" />
+                    </datalist>
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Color Palette</label>
@@ -933,67 +964,6 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isOrdering, setIsOrdering] = useState(false);
-
-  // Bank State
-  const [bankName, setBankName] = useState("");
-  const [accountNumber, setAccountNumber] = useState("");
-  const [ifsc, setIfsc] = useState("");
-  const [isSavingBank, setIsSavingBank] = useState(false);
-  const [bankSaved, setBankSaved] = useState(false);
-
-  // KYC State
-  const [kycType, setKycType] = useState("aadhaar");
-  const [kycDocUrl, setKycDocUrl] = useState("");
-  const [isSubmittingKyc, setIsSubmittingKyc] = useState(false);
-  const [kycSubmitted, setKycSubmitted] = useState(false);
-
-  const handleSaveBank = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!auth.currentUser) return;
-    setIsSavingBank(true);
-    try {
-      await addDoc(collection(db, "kyc_verifications"), {
-        userId: auth.currentUser.uid,
-        userEmail: auth.currentUser.email,
-        type: "bank",
-        bankName,
-        accountNumber,
-        ifsc,
-        status: "pending",
-        createdAt: serverTimestamp(),
-      });
-      setBankSaved(true);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to save bank details");
-    }
-    setIsSavingBank(false);
-  };
-
-  const handleSubmitKyc = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!auth.currentUser || !kycDocUrl) {
-      alert("Please upload a document first.");
-      return;
-    }
-    setIsSubmittingKyc(true);
-    try {
-      await addDoc(collection(db, "kyc_verifications"), {
-        userId: auth.currentUser.uid,
-        userEmail: auth.currentUser.email,
-        type: "identity",
-        documentType: kycType,
-        documentUrl: kycDocUrl,
-        status: "pending",
-        createdAt: serverTimestamp(),
-      });
-      setKycSubmitted(true);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to submit KYC");
-    }
-    setIsSubmittingKyc(false);
-  };
 
   // Bank State
   const [bankName, setBankName] = useState("");

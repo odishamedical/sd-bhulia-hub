@@ -34,7 +34,9 @@ export default function EditProductPage() {
   const [imagesCaptions, setImagesCaptions] = useState<string[]>([]);
   
   // Handloom Specs
-  const [sareeType, setSareeType] = useState("Silk");
+  const [sareeType, setSareeType] = useState("");
+  const [material, setMaterial] = useState("");
+  const [design, setDesign] = useState("");
   const [colorUse, setColorUse] = useState("");
   const [length, setLength] = useState("");
   const [hasBlouse, setHasBlouse] = useState(true);
@@ -51,9 +53,14 @@ export default function EditProductPage() {
       setImg(product.img || "");
       setImg2(product.img2 || "");
       setImg3(product.img3 || "");
+      setImg3(product.img3 || "");
       setImg4(product.img4 || "");
       setImages(product.images || []);
       
+      setSareeType(product.sareeType || "");
+      setMaterial(product.material || product.sareeType || "");
+      setDesign(product.design || "");
+
       const caps = product.imageCaptions || [];
       setImgCaption(caps[0] || "");
       setImg2Caption(caps[1] || "");
@@ -86,7 +93,9 @@ export default function EditProductPage() {
       images: images.filter(Boolean),
       imageCaptions: [imgCaption, img2Caption, img3Caption, img4Caption, ...imagesCaptions],
       category,
-      sareeType,
+      sareeType: material || sareeType,
+      material,
+      design,
       colorUse,
       length,
       hasBlouse,
@@ -136,11 +145,15 @@ export default function EditProductPage() {
             </div>
             <div>
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Category</label>
-              <select value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
-                <option>Silk Masterpieces</option>
-                <option>Cotton Classics</option>
-                <option>Mix Pata</option>
-              </select>
+              <input list="categoryList" value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="Select or type category..." required />
+              <datalist id="categoryList">
+                <option value="Saree" />
+                <option value="Dress material" />
+                <option value="Bedsheet" />
+                <option value="RedyMade shirts" />
+                <option value="Redy made Kurti" />
+                <option value="Kurti dress material" />
+              </datalist>
             </div>
             <div>
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Selling Price (₹)</label>
@@ -166,13 +179,26 @@ export default function EditProductPage() {
           <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">2. Handloom Specs</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Saree Type</label>
-              <select value={sareeType} onChange={e => setSareeType(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
-                <option>Pure Silk</option>
-                <option>Pure Cotton</option>
-                <option>Mix Pata</option>
-                <option>Tissue</option>
-              </select>
+              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Product Material</label>
+              <input list="materialList" value={material} onChange={e => setMaterial(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="Select or type material..." required />
+              <datalist id="materialList">
+                <option value="Pure Cotton" />
+                <option value="Pure Silk (Pata)" />
+                <option value="Mix Silk(Pata) (Silk+Polyster)" />
+                <option value="Mix Cotton (Cotton+Polyster)" />
+              </datalist>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Product Design</label>
+              <input list="designList" value={design} onChange={e => setDesign(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="Select or type design..." required />
+              <datalist id="designList">
+                <option value="Sambalpuri Ikat (Bandha)" />
+                <option value="Sambalpuri Traditional Ikat Design" />
+                <option value="Sambalpuri Modern Ikat Design" />
+                <option value="Sambalpuri Double Ikat (Pashapali/Saptapar)" />
+                <option value="Bomkei" />
+                <option value="Bomkei+Ikat" />
+              </datalist>
             </div>
             <div>
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Color Palette</label>
