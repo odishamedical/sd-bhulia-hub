@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { addProduct } from "@/lib/db-hooks";
+import { addProduct, useWeavers, useVendors } from "@/lib/db-hooks";
 import ImageUploader from "@/components/ImageUploader";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -10,6 +10,9 @@ export default function AddProductPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { weavers } = useWeavers();
+  const { vendors } = useVendors();
+  
   // Form State (Shortened Schema)
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
@@ -37,6 +40,9 @@ export default function AddProductPage() {
   const [length, setLength] = useState("");
   const [hasBlouse, setHasBlouse] = useState(true);
   const [weaverName, setWeaverName] = useState("");
+  const [selectedSellerId, setSelectedSellerId] = useState("");
+
+  const allSellers = [...(weavers || []).map(w => ({...w, type: 'weaver'})), ...(vendors || []).map(v => ({...v, type: 'vendor'}))];
 
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,6 +69,8 @@ export default function AddProductPage() {
       length,
       hasBlouse,
       weaverName,
+      sellerId: selectedSellerId || undefined,
+      sellerType: selectedSellerId ? allSellers.find(s => s.id === selectedSellerId)?.type : undefined,
       isGI: false, // Explicitly false or completely removed from display
       isBhuliaVerified: true, // Auto true
       status: "approved",
@@ -173,6 +181,16 @@ export default function AddProductPage() {
             <div className="md:col-span-2">
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Weaver Name</label>
               <input required value={weaverName} onChange={e => setWeaverName(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="e.g. Master Weaver Nagarjuna Meher" />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Seller Account Linking</label>
+              <select value={selectedSellerId} onChange={e => setSelectedSellerId(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
+                <option value="">-- Unassigned (Bhulia Hub Centric) --</option>
+                {allSellers.map(seller => (
+                  <option key={seller.id} value={seller.id}>{seller.title || seller.name || "Unnamed"} ({seller.type})</option>
+                ))}
+              </select>
+              <p className="text-[10px] text-gray-400 mt-1">Linking an account ensures the product appears on their digital storefront.</p>
             </div>
           </div>
         </section>

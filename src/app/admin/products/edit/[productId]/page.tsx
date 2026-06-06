@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useProductById, updateDocumentStatus } from "@/lib/db-hooks";
+import { useProductById, updateDocumentStatus, useWeavers, useVendors } from "@/lib/db-hooks";
 import ImageUploader from "@/components/ImageUploader";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
@@ -13,6 +13,9 @@ export default function EditProductPage() {
   
   const { product, loading } = useProductById(productId);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { weavers } = useWeavers();
+  const { vendors } = useVendors();
 
   // Form State (Shortened Schema)
   const [title, setTitle] = useState("");
@@ -41,6 +44,9 @@ export default function EditProductPage() {
   const [length, setLength] = useState("");
   const [hasBlouse, setHasBlouse] = useState(true);
   const [weaverName, setWeaverName] = useState("");
+  const [selectedSellerId, setSelectedSellerId] = useState("");
+
+  const allSellers = [...(weavers || []).map(w => ({...w, type: 'weaver'})), ...(vendors || []).map(v => ({...v, type: 'vendor'}))];
 
   useEffect(() => {
     if (product) {
@@ -73,6 +79,7 @@ export default function EditProductPage() {
       setLength(product.length || "");
       setHasBlouse(product.hasBlouse ?? true);
       setWeaverName(product.weaverName || "");
+      setSelectedSellerId(product.sellerId || "");
     }
   }, [product]);
 
@@ -100,6 +107,8 @@ export default function EditProductPage() {
       length,
       hasBlouse,
       weaverName,
+      sellerId: selectedSellerId || undefined,
+      sellerType: selectedSellerId ? allSellers.find(s => s.id === selectedSellerId)?.type : undefined,
       isGI: false, // Override to remove GI mention completely
       isBhuliaVerified: true, // Always true as requested
       escrowStatus: "Payment Protected",
@@ -218,6 +227,16 @@ export default function EditProductPage() {
             <div className="md:col-span-2">
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Weaver Name</label>
               <input required value={weaverName} onChange={e => setWeaverName(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Seller Account Linking</label>
+              <select value={selectedSellerId} onChange={e => setSelectedSellerId(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
+                <option value="">-- Unassigned (Bhulia Hub Centric) --</option>
+                {allSellers.map(seller => (
+                  <option key={seller.id} value={seller.id}>{seller.title || seller.name || "Unnamed"} ({seller.type})</option>
+                ))}
+              </select>
+              <p className="text-[10px] text-gray-400 mt-1">Linking an account ensures the product appears on their digital storefront.</p>
             </div>
           </div>
         </section>
