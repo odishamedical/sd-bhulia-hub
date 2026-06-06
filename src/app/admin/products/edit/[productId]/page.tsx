@@ -45,6 +45,8 @@ export default function EditProductPage() {
   const [hasBlouse, setHasBlouse] = useState(true);
   const [weaverName, setWeaverName] = useState("");
   const [selectedSellerId, setSelectedSellerId] = useState("");
+  const [allowResellerMargin, setAllowResellerMargin] = useState(false);
+  const [resellerMarginPercentage, setResellerMarginPercentage] = useState(5);
 
   const allSellers = [...(weavers || []).map(w => ({...w, type: 'weaver'})), ...(vendors || []).map(v => ({...v, type: 'vendor'}))];
 
@@ -80,12 +82,16 @@ export default function EditProductPage() {
       setHasBlouse(product.hasBlouse ?? true);
       setWeaverName(product.weaverName || "");
       setSelectedSellerId(product.sellerId || "");
+      setAllowResellerMargin(product.allowResellerMargin || false);
+      setResellerMarginPercentage(product.resellerMarginPercentage || 5);
     }
   }, [product]);
 
   const handleUpdateProduct = async (e: React.FormEvent, statusOverride?: string) => {
     e.preventDefault();
     setIsSubmitting(true);
+    
+    const parsedPrice = parseInt(price.replace(/[^0-9]/g, "")) || 0;
 
     const data = {
       title,
@@ -109,6 +115,9 @@ export default function EditProductPage() {
       weaverName,
       sellerId: selectedSellerId || undefined,
       sellerType: selectedSellerId ? allSellers.find(s => s.id === selectedSellerId)?.type : undefined,
+      allowResellerMargin,
+      resellerMarginPercentage: allowResellerMargin ? Number(resellerMarginPercentage) : 0,
+      resellerPrice: allowResellerMargin ? String(Math.floor(parsedPrice * (1 - Number(resellerMarginPercentage) / 100))) : undefined,
       isGI: false, // Override to remove GI mention completely
       isBhuliaVerified: true, // Always true as requested
       escrowStatus: "Payment Protected",
@@ -241,9 +250,30 @@ export default function EditProductPage() {
           </div>
         </section>
 
+        {/* Reseller Settings */}
+        <section className="space-y-4">
+          <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">3. Reseller Commission</h2>
+          <div className="bg-[#051815] p-4 rounded-xl border border-[#C5A059]/20">
+            <div className="flex items-start gap-3">
+              <input type="checkbox" checked={allowResellerMargin} onChange={e => setAllowResellerMargin(e.target.checked)} className="mt-1 w-4 h-4 rounded border-gray-300 text-[#C5A059] focus:ring-[#C5A059]" />
+              <div>
+                <label className="text-sm font-bold text-white block">Allow Reseller Promotion?</label>
+                <p className="text-xs text-gray-400">Opt-in to allow resellers to market this product.</p>
+              </div>
+            </div>
+            {allowResellerMargin && (
+              <div className="mt-4 pl-7">
+                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Reseller Margin (%)</label>
+                <input type="number" min="5" max="90" value={resellerMarginPercentage} onChange={e => setResellerMarginPercentage(Math.max(5, Number(e.target.value)))} className="w-full md:w-1/2 bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" />
+                <p className="text-xs text-gray-400 mt-1">Resellers will sell this at a ₹{Math.floor((parseInt(price.replace(/[^0-9]/g, "")) || 0) * (Number(resellerMarginPercentage) / 100))} discount.</p>
+              </div>
+            )}
+          </div>
+        </section>
+
         {/* Media Section */}
         <section className="space-y-4">
-          <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">3. Product Gallery</h2>
+          <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">4. Product Gallery</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <ImageUploader value={img} onChange={setImg} label="Main Product Photo (Image 1)" aspectRatio="portrait" captionValue={imgCaption} onCaptionChange={setImgCaption} />
             <ImageUploader value={img2} onChange={setImg2} label="Product Photo 2" aspectRatio="portrait" captionValue={img2Caption} onCaptionChange={setImg2Caption} />
