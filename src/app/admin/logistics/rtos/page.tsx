@@ -1,5 +1,6 @@
 "use client";
 
+import PremiumMetricCard from "@/components/PremiumMetricCard";
 import React, { useState, useEffect } from "react";
 import { useOrders } from "@/lib/db-hooks";
 
@@ -35,18 +36,9 @@ export default function RTOsPage() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-red-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total RTO Rate</h3>
-          <p className="text-4xl font-black text-red-600">4.2%</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-orange-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">In Transit to Hub</h3>
-          <p className="text-4xl font-black text-orange-600">{rtoData.filter(r => r.rtoStatus === "Returning to Hub").length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-blue-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pending Restock</h3>
-          <p className="text-4xl font-black text-blue-600">{rtoData.filter(r => r.rtoStatus === "Received at Hub").length}</p>
-        </div>
+        <PremiumMetricCard title="Total RTO Rate" value={<>4.2%</>} index={0} />
+        <PremiumMetricCard title="In Transit to Hub" value={<>{rtoData.filter(r => r.rtoStatus === "Returning to Hub").length}</>} index={1} />
+        <PremiumMetricCard title="Pending Restock" value={<>{rtoData.filter(r => r.rtoStatus === "Received at Hub").length}</>} index={2} />
       </div>
 
       <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">

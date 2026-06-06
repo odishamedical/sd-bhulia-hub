@@ -1,5 +1,6 @@
 "use client";
 
+import PremiumMetricCard from "@/components/PremiumMetricCard";
 import React, { useState, useEffect } from "react";
 import { useOrders } from "@/lib/db-hooks";
 
@@ -39,21 +40,9 @@ export default function FraudAnalysisPage() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-red-100 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
-          <h3 className="text-xs font-bold text-red-500 uppercase tracking-wider mb-2 relative z-10">Critical Alerts</h3>
-          <p className="text-4xl font-black text-gray-900 relative z-10">{flaggedOrders.filter(o => o.riskScore > 85).length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-orange-100 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
-          <h3 className="text-xs font-bold text-orange-500 uppercase tracking-wider mb-2 relative z-10">Elevated Risk</h3>
-          <p className="text-4xl font-black text-gray-900 relative z-10">{flaggedOrders.filter(o => o.riskScore > 60 && o.riskScore <= 85).length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-green-100 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
-          <h3 className="text-xs font-bold text-green-500 uppercase tracking-wider mb-2 relative z-10">Funds Held in Escrow</h3>
-          <p className="text-4xl font-black text-gray-900 relative z-10">₹1,24,000</p>
-        </div>
+        <PremiumMetricCard title="Critical Alerts" value={<>{flaggedOrders.filter(o => o.riskScore > 85).length}</>} index={0} />
+        <PremiumMetricCard title="Elevated Risk" value={<>{flaggedOrders.filter(o => o.riskScore > 60 && o.riskScore <= 85).length}</>} index={1} />
+        <PremiumMetricCard title="Funds Held in Escrow" value={<>₹1,24,000</>} index={2} />
       </div>
 
       <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">

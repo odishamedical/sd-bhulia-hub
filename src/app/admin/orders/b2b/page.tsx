@@ -1,5 +1,6 @@
 "use client";
 
+import PremiumMetricCard from "@/components/PremiumMetricCard";
 import React, { useState, useEffect } from "react";
 import { useOrders, updateDocumentStatus } from "@/lib/db-hooks";
 
@@ -48,22 +49,10 @@ export default function B2BOrdersPage() {
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-blue-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Active Negotiations</h3>
-          <p className="text-3xl font-black text-blue-600">{b2bOrders.filter(o => o.negotiationStatus === "Negotiating").length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Proforma Sent</h3>
-          <p className="text-3xl font-black text-gray-900">{b2bOrders.filter(o => o.negotiationStatus === "Proforma Sent").length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-green-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">In Production</h3>
-          <p className="text-3xl font-black text-green-600">{b2bOrders.filter(o => o.negotiationStatus === "In Production").length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total B2B Value</h3>
-          <p className="text-3xl font-black text-gray-900">₹45.2 L</p>
-        </div>
+        <PremiumMetricCard title="Active Negotiations" value={<>{b2bOrders.filter(o => o.negotiationStatus === "Negotiating").length}</>} index={0} />
+        <PremiumMetricCard title="Proforma Sent" value={<>{b2bOrders.filter(o => o.negotiationStatus === "Proforma Sent").length}</>} index={1} />
+        <PremiumMetricCard title="In Production" value={<>{b2bOrders.filter(o => o.negotiationStatus === "In Production").length}</>} index={2} />
+        <PremiumMetricCard title="Total B2B Value" value={<>₹45.2 L</>} index={3} />
       </div>
 
       <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">

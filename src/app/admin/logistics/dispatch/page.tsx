@@ -1,5 +1,6 @@
 "use client";
 
+import PremiumMetricCard from "@/components/PremiumMetricCard";
 import React, { useState, useEffect } from "react";
 import { useOrders } from "@/lib/db-hooks";
 
@@ -46,18 +47,9 @@ export default function DispatchPage() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-orange-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pending Packaging</h3>
-          <p className="text-4xl font-black text-orange-600">{dispatchQueue.length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">SLA Breaches (Urgent)</h3>
-          <p className="text-4xl font-black text-red-600">{dispatchQueue.filter(o => o.sla === "Urgent").length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Today's Pickups Scheduled</h3>
-          <p className="text-4xl font-black text-gray-900">0</p>
-        </div>
+        <PremiumMetricCard title="Pending Packaging" value={<>{dispatchQueue.length}</>} index={0} />
+        <PremiumMetricCard title="SLA Breaches (Urgent)" value={<>{dispatchQueue.filter(o => o.sla === "Urgent").length}</>} index={1} />
+        <PremiumMetricCard title="Today's Pickups Scheduled" value={<>0</>} index={2} />
       </div>
 
       <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">

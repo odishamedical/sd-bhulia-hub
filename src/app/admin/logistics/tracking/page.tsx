@@ -1,5 +1,6 @@
 "use client";
 
+import PremiumMetricCard from "@/components/PremiumMetricCard";
 import React, { useState, useEffect } from "react";
 import { useOrders } from "@/lib/db-hooks";
 
@@ -43,22 +44,10 @@ export default function TrackingPage() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Picked Up</h3>
-          <p className="text-3xl font-black text-blue-600">{trackingData.filter(o => o.trackingStatus === "Picked Up").length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">In Transit</h3>
-          <p className="text-3xl font-black text-orange-600">{trackingData.filter(o => o.trackingStatus === "In Transit").length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Out for Delivery</h3>
-          <p className="text-3xl font-black text-purple-600">{trackingData.filter(o => o.trackingStatus === "Out for Delivery").length}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Delivered Today</h3>
-          <p className="text-3xl font-black text-green-600">{trackingData.filter(o => o.trackingStatus === "Delivered").length}</p>
-        </div>
+        <PremiumMetricCard title="Picked Up" value={<>{trackingData.filter(o => o.trackingStatus === "Picked Up").length}</>} index={0} />
+        <PremiumMetricCard title="In Transit" value={<>{trackingData.filter(o => o.trackingStatus === "In Transit").length}</>} index={1} />
+        <PremiumMetricCard title="Out for Delivery" value={<>{trackingData.filter(o => o.trackingStatus === "Out for Delivery").length}</>} index={2} />
+        <PremiumMetricCard title="Delivered Today" value={<>{trackingData.filter(o => o.trackingStatus === "Delivered").length}</>} index={3} />
       </div>
 
       <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">

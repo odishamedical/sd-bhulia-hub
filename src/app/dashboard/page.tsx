@@ -1,5 +1,6 @@
 "use client";
 
+import PremiumMetricCard from "@/components/PremiumMetricCard";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db } from "@/lib/firebase";
@@ -1667,26 +1668,11 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
       {activeTab === "overview" && (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Catalog Value</h3>
-              <p className="text-3xl font-black text-gray-900">₹{totalCatalogValue.toLocaleString()}</p>
-            </div>
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Live Products</h3>
-              <p className="text-3xl font-black text-[#0070F3]">{productsLoading ? "..." : products.length}</p>
-            </div>
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Verified Weavers</h3>
-              <p className="text-3xl font-black text-[#0070F3]">{weaversLoading ? "..." : weavers.length}</p>
-            </div>
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Retail Stores</h3>
-              <p className="text-3xl font-black text-[#0070F3]">{storesLoading ? "..." : stores.length}</p>
-            </div>
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Resellers</h3>
-              <p className="text-3xl font-black text-[#0070F3]">{franchisesLoading ? "..." : franchises.length}</p>
-            </div>
+            <PremiumMetricCard title="Total Catalog Value" value={<>₹{totalCatalogValue.toLocaleString()}</>} index={0} />
+            <PremiumMetricCard title="Live Products" value={<>{productsLoading ? "..." : products.length}</>} index={1} />
+            <PremiumMetricCard title="Verified Weavers" value={<>{weaversLoading ? "..." : weavers.length}</>} index={2} />
+            <PremiumMetricCard title="Retail Stores" value={<>{storesLoading ? "..." : stores.length}</>} index={3} />
+            <PremiumMetricCard title="Resellers" value={<>{franchisesLoading ? "..." : franchises.length}</>} index={4} />
           </div>
 
           <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">

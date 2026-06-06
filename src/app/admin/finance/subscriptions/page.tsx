@@ -1,5 +1,6 @@
 "use client";
 
+import PremiumMetricCard from "@/components/PremiumMetricCard";
 import React, { useState, useEffect } from "react";
 import { useWeavers, useVendors } from "@/lib/db-hooks";
 
@@ -52,22 +53,10 @@ export default function SubscriptionsPage() {
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Monthly Recurring Revenue (MRR)</h3>
-          <p className="text-3xl font-black text-blue-600">₹{Math.floor(mrr).toLocaleString()}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Annual Run Rate (ARR)</h3>
-          <p className="text-3xl font-black text-green-600">₹{Math.floor(arr).toLocaleString()}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Active Subscribers</h3>
-          <p className="text-3xl font-black text-gray-900">{activeCount}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-red-50 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-red-500 uppercase tracking-wider mb-2">Churned Accounts</h3>
-          <p className="text-3xl font-black text-red-600">{churnedCount}</p>
-        </div>
+        <PremiumMetricCard title="Monthly Recurring Revenue (MRR)" value={<>₹{Math.floor(mrr).toLocaleString()}</>} index={0} />
+        <PremiumMetricCard title="Annual Run Rate (ARR)" value={<>₹{Math.floor(arr).toLocaleString()}</>} index={1} />
+        <PremiumMetricCard title="Active Subscribers" value={<>{activeCount}</>} index={2} />
+        <PremiumMetricCard title="Churned Accounts" value={<>{churnedCount}</>} index={3} />
       </div>
 
       <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">

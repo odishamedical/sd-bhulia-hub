@@ -1,5 +1,6 @@
 "use client";
 
+import PremiumMetricCard from "@/components/PremiumMetricCard";
 import React, { useState, useEffect } from "react";
 import { useOrders, useProducts } from "@/lib/db-hooks";
 
@@ -60,18 +61,9 @@ export default function TaxGSTPage() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Tax Liability (Q2)</h3>
-          <p className="text-4xl font-black text-gray-900">₹{totalCollected.toLocaleString()}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Handloom Goods (5% GST)</h3>
-          <p className="text-3xl font-black text-blue-600">₹{totalProductTax.toLocaleString()}</p>
-        </div>
-        <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Platform Services (18% GST)</h3>
-          <p className="text-3xl font-black text-orange-600">₹{totalFeeTax.toLocaleString()}</p>
-        </div>
+        <PremiumMetricCard title="Total Tax Liability (Q2)" value={<>₹{totalCollected.toLocaleString()}</>} index={0} />
+        <PremiumMetricCard title="Handloom Goods (5% GST)" value={<>₹{totalProductTax.toLocaleString()}</>} index={1} />
+        <PremiumMetricCard title="Platform Services (18% GST)" value={<>₹{totalFeeTax.toLocaleString()}</>} index={2} />
       </div>
 
       <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
