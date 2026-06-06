@@ -470,49 +470,50 @@ export default function ImageUploader({
 
           {/* Image Uploaded Preview */}
           {value && !cameraActive && (
-            <div className={`relative rounded-2xl overflow-hidden border border-gray-300 shadow-sm group ${
-              aspectRatio === "portrait" ? "w-32 aspect-[9/16]" : 
-              aspectRatio === "landscape" ? "w-64 aspect-[5/2]" : 
-              "w-32 h-32"
-            }`}>
-              <img 
-                src={value} 
-                alt="Profile preview" 
-                className="object-cover w-full h-full"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/bhulia-hero.png";
-                }}
-              />
-              <a
-                href={value}
-                download="bhulia-original-photo.jpg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/75 hover:bg-blue-600/90 text-white px-2 py-1 rounded text-[10px] uppercase font-bold tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap cursor-pointer shadow z-10"
-              >
-                ⬇ Download
-              </a>
-              <button
-                type="button"
-                onClick={clearImage}
-                className="absolute top-2 right-2 bg-black/75 hover:bg-red-600/90 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center text-xs transition-colors shadow cursor-pointer z-10"
-              >
-                ✕
-              </button>
-            </div>
-            
-            {onCaptionChange && (
-              <div className="mt-2 w-full max-w-[220px]">
-                <input
-                  type="text"
-                  placeholder="Alt text / Description (SEO)"
-                  value={captionValue || ""}
-                  onChange={(e) => onCaptionChange(e.target.value)}
-                  className="w-full bg-blue-50/50 border border-blue-200 text-blue-900 rounded-lg px-3 py-2 text-xs placeholder:text-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all"
+            <div className="flex flex-col gap-2">
+              <div className={`relative rounded-2xl overflow-hidden border border-gray-300 shadow-sm group ${
+                aspectRatio === "portrait" ? "w-32 aspect-[9/16]" : 
+                aspectRatio === "landscape" ? "w-64 aspect-[5/2]" : 
+                "w-32 h-32"
+              }`}>
+                <img 
+                  src={value} 
+                  alt="Profile preview" 
+                  className="object-cover w-full h-full"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "/bhulia-hero.png";
+                  }}
                 />
+                <a
+                  href={value}
+                  download="bhulia-original-photo.jpg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/75 hover:bg-blue-600/90 text-white px-2 py-1 rounded text-[10px] uppercase font-bold tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap cursor-pointer shadow z-10"
+                >
+                  ⬇ Download
+                </a>
+                <button
+                  type="button"
+                  onClick={clearImage}
+                  className="absolute top-2 right-2 bg-black/75 hover:bg-red-600/90 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center text-xs transition-colors shadow cursor-pointer z-10"
+                >
+                  ✕
+                </button>
               </div>
-            )}
-          </div>
+              
+              {onCaptionChange && (
+                <div className="w-full max-w-[220px]">
+                  <input
+                    type="text"
+                    placeholder="Alt text / Description (SEO)"
+                    value={captionValue || ""}
+                    onChange={(e) => onCaptionChange(e.target.value)}
+                    className="w-full bg-blue-50/50 border border-blue-200 text-blue-900 rounded-lg px-3 py-2 text-xs placeholder:text-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all"
+                  />
+                </div>
+              )}
+            </div>
           )}
         </div>
       )}
