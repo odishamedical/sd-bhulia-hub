@@ -39,8 +39,26 @@ export default function StaffDelegationPage() {
 
   // For the Add Admin Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchEmail, setSearchEmail] = useState("");
   const [searchStatus, setSearchStatus] = useState<string | null>(null);
+  
+  const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState<string>("");
+  const [newPermissions, setNewPermissions] = useState({...DEFAULT_PERMISSIONS});
+
+  useEffect(() => {
+      if (isModalOpen && allUsers.length === 0) {
+          getDocs(collection(db, "users")).then(snap => {
+              const users: any[] = [];
+              snap.forEach(d => {
+                  const data = d.data();
+                  if (data.role !== "admin" && data.role !== "super_admin") {
+                      users.push({ id: d.id, ...data });
+                  }
+              });
+              setAllUsers(users);
+          });
+      }
+  }, [isModalOpen]);
 
   useEffect(() => {
     // Basic verification - this panel should only load for super_admin
@@ -121,32 +139,21 @@ export default function StaffDelegationPage() {
   };
 
   const handlePromoteUser = async () => {
-    setSearchStatus("Searching...");
+    if (!selectedUserId) {
+        setSearchStatus("Please select a user.");
+        return;
+    }
+    setSearchStatus("Promoting user to Admin...");
     try {
-      const q = query(collection(db, "users"), where("email", "==", searchEmail.trim()));
-      const snap = await getDocs(q);
-      if (snap.empty) {
-        setSearchStatus("User not found with this email.");
-        return;
-      }
-      
-      const userDoc = snap.docs[0];
-      const userData = userDoc.data();
-      
-      if (userData.role === "admin" || userData.role === "super_admin") {
-        setSearchStatus("User is already an admin!");
-        return;
-      }
-
-      // Promote
-      setSearchStatus("Promoting user to Admin...");
-      await updateDoc(userDoc.ref, {
+      const userRef = doc(db, "users", selectedUserId);
+      await updateDoc(userRef, {
         role: "admin",
-        permissions: { ...DEFAULT_PERMISSIONS }
+        permissions: newPermissions
       });
       
       setIsModalOpen(false);
-      setSearchEmail("");
+      setSelectedUserId("");
+      setNewPermissions({...DEFAULT_PERMISSIONS});
       setSearchStatus(null);
       fetchAdmins(); // Refresh list
 
@@ -289,33 +296,43 @@ export default function StaffDelegationPage() {
               <p className="text-xs text-gray-500 mt-1">Elevate an existing registered user to an Admin role.</p>
             </div>
             <div className="p-6">
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">User Email Address</label>
-              <input 
-                type="email" 
-                value={searchEmail}
-                onChange={(e) => setSearchEmail(e.target.value)}
-                placeholder="e.g. employee@bhulia.com"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
-              />
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Select User from System</label>
+              <select 
+                  value={selectedUserId}
+                  onChange={(e) => setSelectedUserId(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all mb-6"
+              >
+                  <option value="">-- Choose a User --</option>
+                  {allUsers.map(u => (
+                      <option key={u.id} value={u.id}>{u.displayName || u.email} ({u.role}) - {u.email}</option>
+                  ))}
+              </select>
+
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">Assign Permissions</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                  {Object.keys(DEFAULT_PERMISSIONS).map((key) => (
+                      <label key={key} className="flex items-center gap-2 cursor-pointer">
+                          <input 
+                              type="checkbox" 
+                              checked={(newPermissions as any)[key]}
+                              onChange={(e) => setNewPermissions({...newPermissions, [key]: e.target.checked})}
+                              className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                          />
+                          <span className="text-xs font-semibold text-gray-700 uppercase">{key}</span>
+                      </label>
+                  ))}
+              </div>
+
               {searchStatus && (
-                <p className={`mt-3 text-sm font-medium ${searchStatus.includes("Error") || searchStatus.includes("not found") ? "text-red-600" : "text-blue-600"}`}>
+                <p className={`mt-2 text-xs font-semibold ${searchStatus.includes("Error") || searchStatus.includes("not found") ? "text-red-500" : "text-blue-500"}`}>
                   {searchStatus}
                 </p>
               )}
             </div>
-            <div className="p-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
-              <button 
-                onClick={() => {setIsModalOpen(false); setSearchStatus(null); setSearchEmail("");}}
-                className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handlePromoteUser}
-                disabled={!searchEmail.includes("@")}
-                className="px-5 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg shadow-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Verify & Appoint
+            <div className="p-6 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 rounded-b-2xl">
+              <button onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">Cancel</button>
+              <button onClick={handlePromoteUser} className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md transition-colors">
+                Appoint Sub-Admin
               </button>
             </div>
           </div>
