@@ -41,6 +41,23 @@ export default function ProductDetailPage() {
   const [bgColor, setBgColor] = useState<string>("rgba(197,160,89,0.15)");
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
+  const allImages = product ? [product.img, product.img2, product.img3, product.img4, ...(product.images || [])].filter(Boolean) : [];
+  const currentImageIndex = allImages.indexOf(activeImg || (product?.img || ""));
+
+  const handleNextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (allImages.length === 0) return;
+    const nextIndex = (currentImageIndex + 1) % allImages.length;
+    setActiveImg(allImages[nextIndex] || "");
+  };
+
+  const handlePrevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (allImages.length === 0) return;
+    const prevIndex = (currentImageIndex - 1 + allImages.length) % allImages.length;
+    setActiveImg(allImages[prevIndex] || "");
+  };
+
   useEffect(() => {
     if (product) {
       setActiveImg(product.img);
@@ -308,7 +325,7 @@ export default function ProductDetailPage() {
 
             {/* Product Gallery Thumbnails */}
             <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 mt-4">
-              {[product.img, product.img2, product.img3, product.img4, ...(product.images || [])].filter(Boolean).map((image, index) => (
+              {allImages.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setActiveImg(image || "")}
@@ -543,12 +560,38 @@ export default function ProductDetailPage() {
       {/* Interactive Zoom Lightbox */}
       {isLightboxOpen && (
         <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn" onClick={() => setIsLightboxOpen(false)}>
-          <div className="relative w-full max-w-5xl h-full max-h-[90vh]">
+          
+          {/* Previous Button */}
+          {allImages.length > 1 && (
+            <button 
+              onClick={handlePrevImage}
+              className="absolute left-4 sm:left-12 z-50 p-4 text-white/50 hover:text-[#C5A059] hover:bg-white/5 rounded-full transition-all backdrop-blur-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-14 sm:w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
+
+          <div className="relative w-full max-w-5xl h-full max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
             <Image src={activeImg || product.img} alt="Zoomed Product" fill className="object-contain" />
           </div>
+
+          {/* Next Button */}
+          {allImages.length > 1 && (
+            <button 
+              onClick={handleNextImage}
+              className="absolute right-4 sm:right-12 z-50 p-4 text-white/50 hover:text-[#C5A059] hover:bg-white/5 rounded-full transition-all backdrop-blur-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-14 sm:w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
+
           <button className="absolute top-6 right-6 text-white text-opacity-70 hover:text-[#C5A059] text-4xl font-light transition-all transform hover:scale-110 hover:rotate-90">✕</button>
           <div className="absolute bottom-6 left-0 right-0 text-center text-[#C5A059] text-xs font-mono uppercase tracking-widest opacity-70 pointer-events-none">
-            Click anywhere to close
+            Click outside to close
           </div>
         </div>
       )}
