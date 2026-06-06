@@ -53,6 +53,7 @@ export default function Header() {
               </div>
             </div>
             <Link href="/#weaver-boutiques" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Boutiques</Link>
+            <Link href="/search" className="hover:text-[#C5A059] transition-colors pb-1 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg> Search</Link>
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
           </nav>
@@ -77,6 +78,10 @@ export default function Header() {
               </div>
             )}
             
+            <Link href="/search" className="hidden sm:flex items-center justify-center w-10 h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0 shadow">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </Link>
+
             <button onClick={() => setIsCartOpen(true)} className="hidden sm:flex items-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
               <span>Cart ({cartCount})</span>
@@ -110,6 +115,7 @@ export default function Header() {
               </div>
             </div>
             <Link href="/#weaver-boutiques" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-2 border-b border-[#C5A059]/20">Weaver Boutiques</Link>
+            <Link href="/search" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-2 border-b border-[#C5A059]/20 flex items-center gap-2"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg> Search Collections</Link>
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-2 border-b border-[#C5A059]/20">About Us</Link>
             <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-2 border-b border-[#C5A059]/20">Contact Us</Link>
             
