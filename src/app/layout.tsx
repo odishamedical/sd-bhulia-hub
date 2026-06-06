@@ -33,6 +33,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import Header from "@/components/Header";
+import GlobalSearchConsole from "@/components/GlobalSearchConsole";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 
@@ -52,6 +53,7 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             <Header />
+            <GlobalSearchConsole />
             <div className="flex-1 flex flex-col min-h-[calc(100vh-200px)] relative pb-16 lg:pb-0">
               {children}
             </div>
