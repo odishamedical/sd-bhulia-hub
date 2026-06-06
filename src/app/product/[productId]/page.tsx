@@ -260,9 +260,9 @@ export default function ProductDetailPage() {
             
             {/* Left Side: Large image & trust badges */}
             <div className="lg:col-span-6 space-y-6">
-            <div className="relative w-full aspect-[9/16] sm:max-h-[650px] sm:aspect-auto rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl bg-[#0B2B26] p-0.5">
+            <div className="relative w-full max-w-[400px] mx-auto aspect-[9/16] rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl bg-[#0B2B26] p-0.5">
               <div className="relative w-full h-full rounded-[22px] overflow-hidden">
-                <Image src={activeImg || product.img} alt={product.title} fill className="object-contain sm:object-contain animate-fadeIn" />
+                <Image src={activeImg || product.img} alt={product.title} fill className="object-cover animate-fadeIn" />
               </div>
               
               {/* Authenticity badge - replacing GI Tag with Bhulia Verified */}
@@ -286,7 +286,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Product Gallery Thumbnails */}
-            <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 mt-4">
+            <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 mt-4 max-w-[400px] mx-auto">
               {[product.img, product.img2, product.img3, product.img4, ...(product.images || [])].filter(Boolean).map((image, index) => (
                 <button
                   key={index}
