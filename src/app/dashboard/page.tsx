@@ -384,477 +384,14 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
     if (!auth.currentUser) return;
     setIsUploading(true);
     try {
-      await addDoc(collection(db, "products"), {
-        title: productName,
-        price: Number(productPrice),
-        category: productCategory,
-        description: productDesc,
-        sellerId: auth.currentUser?.uid,
-        sellerType: "weaver",
-        status: "pending",
-        stockQuantity: Number(stockQuantity),
-        inStock: Number(stockQuantity) > 0,
-        img: productImage || "https://images.unsplash.com/photo-1605814526362-790100f91eb8?w=800&q=80",
-        img2,
-        img3,
-        img4,
-        images: [productImage, img2, img3, img4].filter(Boolean),
-        imageCaptions: [imgCaption, img2Caption, img3Caption, img4Caption],
-        isBhuliaVerified: true,
-        escrowStatus: "Payment Protected",
-        allowResellerMargin,
-        resellerMarginPercentage: allowResellerMargin ? Number(resellerMarginPercentage) : 0,
-        resellerPrice: allowResellerMargin ? String(Math.floor(Number(productPrice) * (1 - Number(resellerMarginPercentage) / 100))) : undefined,
-        createdAt: serverTimestamp(),
-      });
-      alert("Product saved to Firestore and sent for Admin Approval!");
-      setProductName("");
-      setProductPrice("");
-      setProductDesc("");
-      setProductImage("");
-      setImg2("");
-      setImg3("");
-      setImg4("");
-      setImgCaption("");
-      setImg2Caption("");
-      setImg3Caption("");
-      setImg4Caption("");
-      onTabChange("home");
-    } catch (error) {
-      console.error(error);
-      alert("Upload failed.");
-    }
-    setIsUploading(false);
-  };
+      const parsedPrice = Number(productPrice.toString().replace(/[^0-9.]/g, '')) || 0;
+      const parsedMrp = Number(productMrp.toString().replace(/[^0-9.]/g, '')) || 0;
 
-  return (
-    <div className="space-y-6">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Master Weaver Hub</h1>
-          <div className="flex items-center gap-3 mt-2">
-            <p className="text-gray-500 font-medium">Manage your digital storefront and orders.</p>
-            <a href={"/weaver/" + (auth.currentUser?.displayName?.toLowerCase().replace(/\s+/g, '-') || 'demo')} target="_blank" className="text-xs font-bold text-[#0070F3] hover:underline flex items-center gap-1 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-              View Storefront ↗
-            </a>
-          </div>
-        </div>
-        
-      </header>
-
-      {activeTab === "home" && (
-        <div className="space-y-8 animate-in fade-in">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Wallet Balance</h3>
-              <div className="text-3xl font-black text-gray-900">₹0</div>
-            </div>
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Subscription</h3>
-              <div className="text-xl font-bold text-green-500 mt-1">Active</div>
-            </div>
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Approvals</h3>
-              <div className="text-3xl font-black text-gray-900">0</div>
-            </div>
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">New Orders</h3>
-              <div className="text-3xl font-black text-gray-900">0</div>
-            </div>
-          </div>
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900 mb-6">Notifications Timeline</h3>
-            <div className="text-sm text-gray-500 font-medium">No recent activity.</div>
-          </div>
-        </div>
-      )}
-
-      {activeTab === "products" && (
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-5xl animate-in fade-in">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">My Products</h2>
-            <button onClick={() => onTabChange("upload")} className="bg-[#1f2937] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">
-              + Upload New
-            </button>
-          </div>
-          {weaverProducts.length === 0 ? (
-             <div className="text-center py-16 text-gray-500">No products found.</div>
-          ) : (
-            <div className="overflow-x-auto rounded-xl border border-gray-100">
-              <table className="w-full text-left">
-                <thead className="bg-gray-50 border-b border-gray-100 text-xs uppercase text-gray-500">
-                  <tr>
-                    <th className="p-4 font-bold">Product</th>
-                    <th className="p-4 font-bold">Price</th>
-                    <th className="p-4 font-bold">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {weaverProducts.map(p => (
-                    <tr key={p.id}>
-                      <td className="p-4 font-bold text-gray-900">{p.title}</td>
-                      <td className="p-4 text-gray-500">₹{p.price}</td>
-                      <td className="p-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                          (p as any).status === "approved" ? "bg-green-50 text-green-700 border-green-200" :
-                          (p as any).status === "rejected" ? "bg-red-50 text-red-700 border-red-200" :
-                          "bg-yellow-50 text-yellow-700 border-yellow-200"
-                        }`}>
-                          {((p as any).status || "pending").toUpperCase()}
-                        </span>
-                        {(p as any).status === "rejected" && (p as any).rejectionReason && (
-                          <div className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded border border-red-100 max-w-xs">
-                            <span className="font-bold">Reason:</span> {(p as any).rejectionReason}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
-      
-      {activeTab === "upload" && (
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Upload New Sambalpuri Saree</h2>
-          <form className="space-y-6" onSubmit={handleUpload}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
-                <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
-                <input type="number" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category</label>
-              <select value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all">
-                <option>Saree</option>
-                <option>Dupatta</option>
-                <option>Fabric</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Description & Details</label>
-              <textarea rows={4} value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required></textarea>
-            </div>
-            <div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Stock Quantity</label>
-                    <input type="number" min="1" value={stockQuantity} onChange={e => setStockQuantity(Number(e.target.value))} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
-                  </div>
-                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 md:col-span-2">
-                    <label className="flex items-start space-x-3 cursor-pointer mb-3">
-                      <input type="checkbox" checked={allowResellerMargin} onChange={e => setAllowResellerMargin(e.target.checked)} className="form-checkbox text-[#0070F3] rounded w-5 h-5 mt-0.5 focus:ring-[#0070F3]" />
-                      <div>
-                        <span className="text-sm text-gray-900 font-bold block">Allow Reseller Promotion?</span>
-                        <span className="text-xs text-gray-500">Opt-in to allow resellers to market your product.</span>
-                      </div>
-                    </label>
-                    {allowResellerMargin && (
-                      <div className="animate-in fade-in slide-in-from-top-2 mt-4">
-                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Margin Percentage (Min 5%)</label>
-                        <input type="number" min="5" max="90" value={resellerMarginPercentage} onChange={e => setResellerMarginPercentage(Math.max(5, Number(e.target.value)))} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
-                        <div className="text-xs text-green-600 font-bold mt-2">
-                          Resellers will sell this at a ₹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount.
-                        </div>
-                      </div>
-                    )}
-                  </div>
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Images (Max 4)</label>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <ImageUploader label="Main Photo" value={productImage} onChange={setProductImage} aspectRatio="portrait" captionValue={imgCaption} onCaptionChange={setImgCaption} />
-                <ImageUploader label="Photo 2" value={img2} onChange={setImg2} aspectRatio="portrait" captionValue={img2Caption} onCaptionChange={setImg2Caption} />
-                <ImageUploader label="Photo 3" value={img3} onChange={setImg3} aspectRatio="portrait" captionValue={img3Caption} onCaptionChange={setImg3Caption} />
-                <ImageUploader label="Photo 4" value={img4} onChange={setImg4} aspectRatio="portrait" captionValue={img4Caption} onCaptionChange={setImg4Caption} />
-              </div>
-            </div>
-            <div className="bg-blue-50 p-5 rounded-2xl border border-blue-100">
-              <label className="flex items-start space-x-3 cursor-pointer">
-                <input type="checkbox" className="form-checkbox text-[#0070F3] rounded w-5 h-5 mt-0.5 focus:ring-[#0070F3]" required />
-                <span className="text-sm text-gray-700 font-medium">I declare that this is an authentic, handwoven Sambalpuri handloom product. I understand Bhulia.com strictly enforces GI-Tag authenticity.</span>
-              </label>
-            </div>
-            <div className="flex gap-4 pt-4">
-              <button type="button" className="flex-1 bg-white border border-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">Save Draft</button>
-              <button type="submit" disabled={isUploading} className="flex-1 bg-[#0070F3] text-white font-bold py-3 rounded-xl disabled:opacity-50 hover:bg-[#005BB5] transition-colors shadow-sm">
-                {isUploading ? "Uploading to Database..." : "Submit for Approval"}
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {activeTab === "orders" && (
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 animate-in fade-in">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Order Management</h2>
-          <div className="overflow-x-auto max-h-[600px] overflow-y-auto rounded-xl border border-gray-100">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-gray-100 text-xs uppercase tracking-widest text-gray-500 bg-gray-50">
-                  <th className="py-4 px-4 font-bold rounded-tl-xl">Order ID</th>
-                  <th className="py-4 px-4 font-bold">Product</th>
-                  <th className="py-4 px-4 font-bold">Status</th>
-                  <th className="py-4 px-4 font-bold rounded-tr-xl">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {weaverOrders.length > 0 ? weaverOrders.map(order => (
-                  <tr key={order.id} className="text-sm hover:bg-gray-50 transition-colors group">
-                    <td className="py-4 px-4 text-gray-500 font-mono text-xs">{order.orderId || order.id}</td>
-                    <td className="py-4 px-4 text-gray-900 font-bold">{order.productName || "Proxy Order"}</td>
-                    <td className="py-4 px-4">
-                      <span className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded-full text-xs font-bold">
-                        {order.logisticsStatus || "Pending Sourcing"}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4">
-                      {(!order.logisticsStatus || order.logisticsStatus === "Pending Sourcing") && (
-                        <button 
-                          onClick={async () => {
-                            if (!confirm("Confirm dispatch to Bhulia QC Hub? This will generate a Shiprocket AWB.")) return;
-                            try {
-                              await updateDoc(doc(db, "orders", order.id), {
-                                logisticsStatus: "Dispatched via Hub",
-                                awbGenerated: true
-                              });
-                              alert(`Shiprocket AWB Generated Successfully for ${order.id}. Order is now tracked to QC Hub!`);
-                            } catch (e) {
-                              alert("Failed to generate AWB.");
-                            }
-                          }}
-                          className="px-4 py-2 bg-green-50 text-green-700 hover:bg-green-100 transition-colors rounded-lg text-xs font-bold border border-green-200"
-                        >
-                          Dispatch to Hub
-                        </button>
-                      )}
-                      {(order.logisticsStatus === "Dispatched via Hub") && (
-                        <span className="text-xs text-gray-500 font-medium">AWB Generated</span>
-                      )}
-                    </td>
-                  </tr>
-                )) : (
-                  <tr>
-                    <td colSpan={4} className="py-16 text-center text-gray-500 font-medium text-sm">No active orders to dispatch.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {activeTab === "wallet" && (
-        <div className="space-y-6 animate-in fade-in">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Funds in Escrow (Pending QC)</div>
-              <div className="text-3xl font-black text-gray-900">₹0</div>
-            </div>
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Completed Payouts</div>
-              <div className="text-3xl font-black text-green-600">₹0</div>
-            </div>
-          </div>
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-            <h3 className="font-bold text-gray-900 mb-4">Bank Details</h3>
-            <p className="text-sm text-gray-500 font-medium">No bank account linked. Please add Jan Dhan or standard bank details for payouts.</p>
-            <button className="mt-6 px-6 py-2.5 border border-gray-200 text-gray-900 font-bold rounded-xl hover:bg-gray-50 transition-colors">Add Bank Account</button>
-          </div>
-        </div>
-      )}
-
-      {activeTab === "verification" && (
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-3xl animate-in fade-in">
-          <h2 className="text-xl font-bold text-gray-900 mb-8">Identity & Subscription</h2>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
-              <div>
-                <div className="font-bold text-gray-900 mb-1">KYC Documents</div>
-                <div className="text-sm text-gray-500 font-medium">Aadhaar / Artisan Card</div>
-              </div>
-              <span className="px-4 py-1.5 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-full text-xs font-bold">Pending Approval</span>
-            </div>
-            <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
-              <div>
-                <div className="font-bold text-gray-900 mb-1">Platform Subscription</div>
-                <div className="text-sm text-gray-500 font-medium">₹5,000 / year</div>
-              </div>
-              <button className="bg-[#1f2937] text-white px-6 py-2.5 text-sm font-bold rounded-xl hover:bg-black transition-colors shadow-sm">Renew Now</button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-/* ==========================================
-   3. VENDOR / SHOP DASHBOARD
-   ========================================== */
-function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
-  // Upload Form State
-  const [productName, setProductName] = useState("");
-  const [productPrice, setProductPrice] = useState("");
-  const [productMrp, setProductMrp] = useState("");
-  const [productCategory, setProductCategory] = useState("Silk");
-  const [productDesc, setProductDesc] = useState("");
-  const [productLongDesc, setProductLongDesc] = useState("");
-  const [sareeType, setSareeType] = useState("Silk");
-  const [colorUse, setColorUse] = useState("");
-  const [length, setLength] = useState("");
-  const [hasBlouse, setHasBlouse] = useState(true);
-  const [originalWeaver, setOriginalWeaver] = useState("");
-  const [productImage, setProductImage] = useState("");
-  const [img2, setImg2] = useState("");
-  const [img3, setImg3] = useState("");
-  const [img4, setImg4] = useState("");
-  
-  const [imgCaption, setImgCaption] = useState("");
-  const [img2Caption, setImg2Caption] = useState("");
-  const [img3Caption, setImg3Caption] = useState("");
-  const [img4Caption, setImg4Caption] = useState("");
-  
-  const [isUploading, setIsUploading] = useState(false);
-  const [isAddInventoryOpen, setIsAddInventoryOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [editingProductId, setEditingProductId] = useState<string | null>(null);
-  const [stockQuantity, setStockQuantity] = useState(1);
-  const [allowResellerMargin, setAllowResellerMargin] = useState(false);
-  const [resellerMarginPercentage, setResellerMarginPercentage] = useState(5);
-
-  // Settings State
-  const [storeName, setStoreName] = useState("");
-  const [publicDesc, setPublicDesc] = useState("");
-  const [storeLogo, setStoreLogo] = useState("");
-  const [phone, setPhone] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
-  const [kycType, setKycType] = useState("");
-  const [kycId, setKycId] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
-
-  const { orders } = useOrders();
-  const { products } = useProducts();
-
-  const vendorOrders = orders.filter(o => o.logisticsStatus !== "Delivered");
-  const vendorProductsRaw = products.filter(p => p.sellerId === auth.currentUser?.uid);
-  const vendorProducts = vendorProductsRaw.filter(p => {
-    const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const productStatus = p.status || "pending";
-    const matchesStatus = statusFilter === "all" || productStatus === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
-
-  const handleSaveSettings = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!auth.currentUser) return;
-    setIsSaving(true);
-    try {
-      // Create or update the store profile
-      await updateDoc(doc(db, "stores", auth.currentUser?.uid), {
-        title: storeName,
-        desc: publicDesc,
-        img: storeLogo || "/bhulia-hero.png",
-        phone,
-        whatsapp,
-        kycType,
-        kycId,
-        status: "pending_approval",
-        updatedAt: serverTimestamp()
-      }).catch(async (error) => {
-        // If it doesn't exist, create it
-        const { setDoc } = await import("firebase/firestore");
-        await setDoc(doc(db, "stores", auth.currentUser?.uid), {
-          id: auth.currentUser!.uid,
-          slug: storeName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-          title: storeName,
-          desc: publicDesc,
-          img: storeLogo || "/bhulia-hero.png",
-          phone,
-          whatsapp,
-          kycType,
-          kycId,
-          tier: "Silver",
-          status: "pending_approval",
-          productLimit: 50,
-          createdAt: serverTimestamp()
-        });
-      });
-      alert("Settings saved successfully! KYC is under review.");
-    } catch (e) {
-      console.error(e);
-      alert("Failed to save settings.");
-    }
-    setIsSaving(false);
-  };
-
-  const handleEditClick = (product: any) => {
-    setEditingProductId(product.id);
-    setProductName(product.title || "");
-    setProductPrice(product.price || "");
-    setProductMrp(product.mrp || "");
-    setProductCategory(product.category || "Silk");
-    setProductDesc(product.desc || "");
-    setProductLongDesc(product.longDesc || "");
-    setSareeType(product.sareeType || "Silk");
-    setColorUse(product.colorUse || "");
-    setLength(product.length || "");
-    setHasBlouse(product.hasBlouse ?? true);
-    setOriginalWeaver(product.weaverName || "");
-    setProductImage(product.img || "");
-    setImg2(product.img2 || "");
-    setImg3(product.img3 || "");
-    setImg4(product.img4 || "");
-    
-    const caps = product.imageCaptions || [];
-    setImgCaption(caps[0] || "");
-    setImg2Caption(caps[1] || "");
-    setImg3Caption(caps[2] || "");
-    setImg4Caption(caps[3] || "");
-    
-    setIsAddInventoryOpen(true);
-  };
-
-  const handleAddNewClick = () => {
-    setEditingProductId(null);
-    setProductName("");
-    setProductPrice("");
-    setProductMrp("");
-    setProductDesc("");
-    setProductLongDesc("");
-    setColorUse("");
-    setLength("");
-    setOriginalWeaver("");
-    setProductImage("");
-    setImg2("");
-    setImg3("");
-    setImg4("");
-    setImgCaption("");
-    setImg2Caption("");
-    setImg3Caption("");
-    setImg4Caption("");
-    setIsAddInventoryOpen(true);
-  };
-
-  const handleUpload = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!auth.currentUser) return;
-    setIsUploading(true);
-    try {
       const productData = {
         title: productName,
         slug: productName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-        price: productPrice,
-        mrp: productMrp,
+        price: parsedPrice,
+        mrp: parsedMrp,
         category: productCategory,
         desc: productDesc,
         longDesc: productLongDesc || productDesc,
@@ -873,7 +410,7 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         inStock: Number(stockQuantity) > 0,
         allowResellerMargin,
         resellerMarginPercentage: allowResellerMargin ? Number(resellerMarginPercentage) : 0,
-        resellerPrice: allowResellerMargin ? String(Math.floor(Number(productPrice) * (1 - Number(resellerMarginPercentage) / 100))) : undefined,
+        resellerPrice: allowResellerMargin ? String(Math.floor(parsedPrice * (1 - Number(resellerMarginPercentage) / 100))) : undefined,
       };
 
       if (editingProductId) {
@@ -1396,6 +933,67 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isOrdering, setIsOrdering] = useState(false);
+
+  // Bank State
+  const [bankName, setBankName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [ifsc, setIfsc] = useState("");
+  const [isSavingBank, setIsSavingBank] = useState(false);
+  const [bankSaved, setBankSaved] = useState(false);
+
+  // KYC State
+  const [kycType, setKycType] = useState("aadhaar");
+  const [kycDocUrl, setKycDocUrl] = useState("");
+  const [isSubmittingKyc, setIsSubmittingKyc] = useState(false);
+  const [kycSubmitted, setKycSubmitted] = useState(false);
+
+  const handleSaveBank = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth.currentUser) return;
+    setIsSavingBank(true);
+    try {
+      await addDoc(collection(db, "kyc_verifications"), {
+        userId: auth.currentUser.uid,
+        userEmail: auth.currentUser.email,
+        type: "bank",
+        bankName,
+        accountNumber,
+        ifsc,
+        status: "pending",
+        createdAt: serverTimestamp(),
+      });
+      setBankSaved(true);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save bank details");
+    }
+    setIsSavingBank(false);
+  };
+
+  const handleSubmitKyc = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth.currentUser || !kycDocUrl) {
+      alert("Please upload a document first.");
+      return;
+    }
+    setIsSubmittingKyc(true);
+    try {
+      await addDoc(collection(db, "kyc_verifications"), {
+        userId: auth.currentUser.uid,
+        userEmail: auth.currentUser.email,
+        type: "identity",
+        documentType: kycType,
+        documentUrl: kycDocUrl,
+        status: "pending",
+        createdAt: serverTimestamp(),
+      });
+      setKycSubmitted(true);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to submit KYC");
+    }
+    setIsSubmittingKyc(false);
+  };
 
   // Bank State
   const [bankName, setBankName] = useState("");
