@@ -9,6 +9,7 @@ import { useProductBySlug, useProducts, addOrder } from "@/lib/db-hooks";
 import { MASTER_FRANCHISES } from "@/app/reseller/data";
 import { useCart } from "@/context/CartContext";
 import ProfileBlockerModal from "../../../components/ProfileBlockerModal";
+import { FastAverageColor } from 'fast-average-color';
 
 export default function ProductDetailPage() {
   const { addToCart, addToWishlist, wishlist } = useCart();
@@ -37,12 +38,28 @@ export default function ProductDetailPage() {
   const [isOrdering, setIsOrdering] = useState<boolean>(false);
   const [showProfileBlocker, setShowProfileBlocker] = useState(false);
   const [activeImg, setActiveImg] = useState<string>("");
+  const [bgColor, setBgColor] = useState<string>("rgba(197,160,89,0.15)");
+  const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (product) {
       setActiveImg(product.img);
     }
   }, [product]);
+
+  useEffect(() => {
+    if (activeImg) {
+      const fac = new FastAverageColor();
+      fac.getColorAsync(activeImg, { crossOrigin: 'anonymous' })
+        .then(color => {
+          setBgColor(color.rgba);
+        })
+        .catch(e => {
+          console.log("Color extraction error:", e);
+          setBgColor("rgba(197,160,89,0.15)");
+        });
+    }
+  }, [activeImg]);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -167,7 +184,8 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <main className="relative flex-1 w-full bg-[#051815] text-white font-sans flex flex-col min-h-screen">
+    <main className="relative flex-1 w-full text-white font-sans flex flex-col min-h-screen transition-colors duration-1000 overflow-x-hidden" style={{ backgroundColor: bgColor ? `color-mix(in srgb, ${bgColor} 8%, #051815)` : '#051815' }}>
+      <div className="absolute top-0 left-0 w-full h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[var(--bg-glow)] via-transparent to-transparent pointer-events-none opacity-40 blur-[100px] transition-all duration-1000 z-0" style={{ '--bg-glow': bgColor } as React.CSSProperties}></div>
       
       {/* Top Sticky Header */}
       
@@ -256,13 +274,16 @@ export default function ProductDetailPage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start relative z-10">
             
             {/* Left Side: Large image & trust badges */}
             <div className="lg:col-span-6 space-y-6">
-            <div className="relative w-full max-w-[400px] mx-auto aspect-[9/16] rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl bg-[#0B2B26] p-0.5">
-              <div className="relative w-full h-full rounded-[22px] overflow-hidden">
-                <Image src={activeImg || product.img} alt={product.title} fill className="object-cover animate-fadeIn" />
+            <div 
+              onClick={() => setIsLightboxOpen(true)}
+              className="relative w-full flex justify-center items-center rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-black/40 p-1 cursor-zoom-in group transition-all duration-500 hover:border-[#C5A059]"
+            >
+              <div className="relative w-full h-[50vh] sm:h-[70vh] rounded-[22px] overflow-hidden">
+                <Image src={activeImg || product.img} alt={product.title} fill className="object-contain transition-transform duration-700 group-hover:scale-105 animate-fadeIn" />
               </div>
               
               {/* Authenticity badge - replacing GI Tag with Bhulia Verified */}
@@ -286,7 +307,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Product Gallery Thumbnails */}
-            <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 mt-4 max-w-[400px] mx-auto">
+            <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 mt-4">
               {[product.img, product.img2, product.img3, product.img4, ...(product.images || [])].filter(Boolean).map((image, index) => (
                 <button
                   key={index}
@@ -351,7 +372,7 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Right Side: Specific Details and direct checkout */}
-          <div className="lg:col-span-6 space-y-6">
+          <div className="lg:col-span-6 space-y-6 lg:sticky lg:top-24 h-max pb-12">
             
             {/* Core specs details */}
             <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-xl text-white space-y-6">
@@ -517,6 +538,19 @@ export default function ProductDetailPage() {
       
       {showProfileBlocker && (
         <ProfileBlockerModal onClose={() => setShowProfileBlocker(false)} />
+      )}
+
+      {/* Interactive Zoom Lightbox */}
+      {isLightboxOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn" onClick={() => setIsLightboxOpen(false)}>
+          <div className="relative w-full max-w-5xl h-full max-h-[90vh]">
+            <Image src={activeImg || product.img} alt="Zoomed Product" fill className="object-contain" />
+          </div>
+          <button className="absolute top-6 right-6 text-white text-opacity-70 hover:text-[#C5A059] text-4xl font-light transition-all transform hover:scale-110 hover:rotate-90">✕</button>
+          <div className="absolute bottom-6 left-0 right-0 text-center text-[#C5A059] text-xs font-mono uppercase tracking-widest opacity-70 pointer-events-none">
+            Click anywhere to close
+          </div>
+        </div>
       )}
     </main>
   );
