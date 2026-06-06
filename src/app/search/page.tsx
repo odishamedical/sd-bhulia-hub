@@ -252,7 +252,7 @@ function SearchContent() {
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {filteredProducts.map((item) => (
                   <div key={item.id} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
-                    <div className="relative w-full h-48 sm:h-56 overflow-hidden bg-[#0B2B26] rounded-t-xl">
+                    <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] overflow-hidden bg-[#0B2B26] rounded-t-xl">
                       <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                       <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
                         {item.id}

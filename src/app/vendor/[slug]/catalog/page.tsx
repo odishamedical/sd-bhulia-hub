@@ -122,7 +122,7 @@ export default function StoreCatalogPage() {
           {filteredSarees.map((saree) => (
             <div key={saree.id} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5 text-white">
               
-              <div className="relative w-full h-56 sm:h-72 overflow-hidden bg-[#0B2B26] rounded-t-xl">
+              <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] overflow-hidden bg-[#0B2B26] rounded-t-xl">
                 <Image src={saree.img} alt={saree.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                 <span className="absolute top-2.5 right-2.5 px-2 py-0.5 bg-[#C5A059] text-[#0A1021] text-[9px] font-bold uppercase tracking-widest rounded shadow">{saree.weave}</span>
               </div>
