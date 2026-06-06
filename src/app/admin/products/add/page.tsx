@@ -17,6 +17,7 @@ export default function AddProductPage() {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [mrp, setMrp] = useState("");
+  const [stockQuantity, setStockQuantity] = useState<number>(1);
   const [category, setCategory] = useState("Silk");
   const [desc, setDesc] = useState("");
   const [longDesc, setLongDesc] = useState("");
@@ -81,7 +82,9 @@ export default function AddProductPage() {
       isGI: false, // Explicitly false or completely removed from display
       isBhuliaVerified: true, // Auto true
       status: "approved",
-      escrowStatus: "Payment Protected"
+      escrowStatus: "Payment Protected",
+      stockQuantity: Number(stockQuantity),
+      inStock: Number(stockQuantity) > 0
     };
 
     const res = await addProduct(data);
@@ -132,6 +135,10 @@ export default function AddProductPage() {
             <div>
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">MRP (₹)</label>
               <input required value={mrp} onChange={e => setMrp(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="e.g. ₹ 42,000" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Stock Quantity</label>
+              <input required value={stockQuantity} onChange={e => setStockQuantity(Number(e.target.value))} type="number" min="1" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="1" />
             </div>
           </div>
           <div>

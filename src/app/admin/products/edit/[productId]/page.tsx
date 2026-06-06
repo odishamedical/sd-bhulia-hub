@@ -21,6 +21,7 @@ export default function EditProductPage() {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [mrp, setMrp] = useState("");
+  const [stockQuantity, setStockQuantity] = useState<number>(1);
   const [category, setCategory] = useState("Silk");
   const [desc, setDesc] = useState("");
   const [longDesc, setLongDesc] = useState("");
@@ -55,6 +56,7 @@ export default function EditProductPage() {
       setTitle(product.title || "");
       setPrice(product.price || "");
       setMrp(product.mrp || "");
+      setStockQuantity(product.stockQuantity ?? (product.inStock ? 1 : 0));
       setCategory(product.category || "Silk");
       setDesc(product.desc || "");
       setLongDesc(product.longDesc || "");
@@ -121,6 +123,8 @@ export default function EditProductPage() {
       isGI: false, // Override to remove GI mention completely
       isBhuliaVerified: true, // Always true as requested
       escrowStatus: "Payment Protected",
+      stockQuantity: Number(stockQuantity),
+      inStock: Number(stockQuantity) > 0,
       ...(statusOverride ? { status: statusOverride } : {})
     };
 
@@ -180,6 +184,10 @@ export default function EditProductPage() {
             <div>
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">MRP (₹)</label>
               <input required value={mrp} onChange={e => setMrp(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Stock Quantity</label>
+              <input required value={stockQuantity} onChange={e => setStockQuantity(Number(e.target.value))} type="number" min="0" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" />
             </div>
           </div>
           <div>
