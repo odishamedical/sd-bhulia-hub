@@ -5,7 +5,7 @@ import { Ticket } from "@/types";
 import React, { useState, useEffect } from "react";
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-
+import TicketCard from "@/components/TicketCard";
 export default function SupportHelpdeskPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -159,80 +159,8 @@ export default function SupportHelpdeskPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6">
-            {tickets.map((ticket) => (
-              <div key={ticket.id} className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden transition-shadow hover:shadow-md">
-                <div className="p-5 border-b border-gray-100 flex justify-between items-start bg-gray-50/50">
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className="font-bold text-gray-900 text-lg">{ticket.subject}</h3>
-                      {ticket.priority === 'high' && (
-                        <span className="bg-red-100 text-red-800 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded">High Priority</span>
-                      )}
-                      {ticket.priority === 'medium' && (
-                        <span className="bg-orange-100 text-orange-800 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded">Medium Priority</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-4 text-xs text-gray-500 font-mono">
-                      <span>ID: {ticket.id}</span>
-                      <span>•</span>
-                      <span>From: {ticket.customerName}</span>
-                      <span>•</span>
-                      <span>Opened: {new Date(ticket.createdAt as string).toLocaleString()}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6">
-                  <div className="bg-blue-50/30 p-4 rounded-xl border border-blue-100/50 text-sm text-gray-800 mb-5 leading-relaxed">
-                    "{(ticket as any).description}"
-                  </div>
-
-                  <div className="space-y-3">
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide">Reply to Customer</label>
-                    <textarea 
-                      value={replyText[ticket.id] || ""}
-                      onChange={(e) => handleReplyChange(ticket.id, e.target.value)}
-                      placeholder="Type your official response here..."
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all resize-none h-24"
-                    />
-                  </div>
-
-                  <div className="mt-5 flex items-center justify-between">
-                    {processingId === ticket.id ? (
-                      <div className="text-xs font-bold text-blue-600 animate-pulse flex items-center gap-2">
-                        <span className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></span>
-                        Closing Ticket...
-                      </div>
-                    ) : (
-                      <>
-                        <button 
-                          onClick={() => handleAction(ticket.id, "escalate")}
-                          className="text-xs font-bold text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors border border-transparent hover:border-red-100"
-                        >
-                          Escalate to Super Admin
-                        </button>
-                        <div className="flex gap-3">
-                          <button 
-                            className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-xl text-xs transition-colors"
-                            onClick={() => {
-                              alert("Email sent to customer!");
-                              handleReplyChange(ticket.id, "");
-                            }}
-                          >
-                            Send Reply Only
-                          </button>
-                          <button 
-                            onClick={() => handleAction(ticket.id, "resolve")}
-                            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center gap-2"
-                          >
-                            <span>✅</span> Mark as Resolved
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
+            {tickets.map((ticket, i) => (
+              <TicketCard key={ticket.id} ticket={ticket} index={i} />
             ))}
           </div>
         )}
