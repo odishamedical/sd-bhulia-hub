@@ -64,6 +64,25 @@ export default function DispatchPage() {
 
       alert(`Success! AWB ${data.awb_code} generated via ${data.courier_name}.`);
 
+      // -------------------------------------------------------------
+      // PHASE 8: TRIGGER NOTIFICATION (WHATSAPP)
+      // -------------------------------------------------------------
+      try {
+        const phone = order.customerInfo?.phone || "919876543210";
+        await fetch("/api/notifications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "whatsapp",
+            toPhone: phone,
+            templateName: "order_shipped",
+            whatsappComponents: [{ type: "body", parameters: [{ type: "text", text: data.awb_code }] }]
+          })
+        });
+      } catch (err) {
+        console.error("Failed to trigger shipping notification", err);
+      }
+
     } catch (err: any) {
       console.error(err);
       alert("Failed to generate AWB: " + err.message);

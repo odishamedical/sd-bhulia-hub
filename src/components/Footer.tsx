@@ -140,7 +140,7 @@ export default function Footer() {
           <div className="space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Stay Updated</h4>
             <p className="text-xs text-gray-300 leading-relaxed">
-              Subscribe for daily live silk rates, artisan drop announcements, and exclusive GI collection releases.
+              Subscribe for daily live silk rates, artisan drop announcements, and exclusive Bhulia.com verified collection releases.
             </p>
             <div className="flex items-center gap-2 bg-[#0B2B26] border border-[#C5A059]/40 rounded-xl p-1.5 shadow-inner">
               <input type="email" placeholder="Email Address" className="w-full bg-transparent px-3 py-1.5 text-xs text-white placeholder-gray-400 focus:outline-none" />
@@ -157,7 +157,7 @@ export default function Footer() {
           <div className="flex gap-6">
             <Link href="/p/privacy-policy" className="hover:text-[#C5A059] transition-colors">Privacy Policy</Link>
             <Link href="/p/terms-of-service" className="hover:text-[#C5A059] transition-colors">Terms of Service</Link>
-            <Link href="/p/gi-registry-clearance" className="hover:text-[#C5A059] transition-colors">GI Registry Clearance</Link>
+            <Link href="/p/bhulia-registry-clearance" className="hover:text-[#C5A059] transition-colors">Bhulia.com Registry Clearance</Link>
           </div>
         </div>
 

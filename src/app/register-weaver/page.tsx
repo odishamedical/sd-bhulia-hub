@@ -577,7 +577,7 @@ export default function WeaverRegistrationPage() {
                         <option key={dist} value={dist}>{dist}, Odisha</option>
                       ))}
                     </select>
-                    <p className="text-[9px] text-gray-400 italic">Pre-filtered to the seven official Geographical Indication (GI) protected districts for Sambalpuri handloom.</p>
+                    <p className="text-[9px] text-gray-400 italic">Pre-filtered to the seven official Bhulia.com protected districts for Sambalpuri handloom.</p>
                   </div>
                 </div>
               )}
@@ -893,7 +893,7 @@ export default function WeaverRegistrationPage() {
                         </div>
                         {formData.giCertFilePreview && (
                           <div className="relative w-10 h-10 rounded border border-[#C5A059] overflow-hidden mt-0.5">
-                            <img src={formData.giCertFilePreview} className="object-cover w-full h-full" alt="GI Cert preview" />
+                            <img src={formData.giCertFilePreview} className="object-cover w-full h-full" alt="Bhulia.com Cert preview" />
                           </div>
                         )}
                       </div>

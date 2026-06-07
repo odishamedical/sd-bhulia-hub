@@ -172,7 +172,7 @@ export default function EditProductPage() {
       resellerPrice: allowResellerMargin ? String(Math.floor(parsedPrice * (1 - Number(resellerMarginPercentage) / 100))) : null,
       isSpecialOffer,
       specialOfferTag: isSpecialOffer ? specialOfferTag : null,
-      isGI: false, // Override to remove GI mention completely
+      isGI: false, // Override to remove Bhulia.com mention completely
       isBhuliaVerified: true, // Always true as requested
       escrowStatus: "Payment Protected",
       stockQuantity: Number(stockQuantity),

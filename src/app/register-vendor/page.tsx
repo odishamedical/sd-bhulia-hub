@@ -848,7 +848,7 @@ export default function VendorRegistrationPage() {
                     />
                   </div>
 
-                  {/* Handloom Mark / GI Cert upload */}
+                  {/* Handloom Mark / Bhulia.com Cert upload */}
                   <div className="space-y-2">
                     <label className="text-xs text-gray-300 font-bold uppercase tracking-wider block">Handloom Mark or Bhulia.com Certificate (Optional)</label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -884,7 +884,7 @@ export default function VendorRegistrationPage() {
                         </div>
                         {formData.giCertFilePreview && (
                           <div className="relative w-12 h-12 rounded-lg border border-[#C5A059] overflow-hidden mt-1">
-                            <img src={formData.giCertFilePreview} className="object-cover w-full h-full" alt="GI Cert preview" />
+                            <img src={formData.giCertFilePreview} className="object-cover w-full h-full" alt="Bhulia.com Cert preview" />
                           </div>
                         )}
                       </div>

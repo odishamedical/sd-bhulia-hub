@@ -608,13 +608,13 @@ export default function Home() {
             </h3>
 
             <p className="text-sm text-gray-200 font-sans leading-relaxed">
-              Every masterpiece includes an immutable physical GI Certificate and Silk Mark hologram, guaranteeing absolute authenticity and protecting Odisha's ancient weaving heritage.
+              Every masterpiece includes an immutable physical Bhulia.com Certificate and Silk Mark hologram, guaranteeing absolute authenticity and protecting Odisha's ancient weaving heritage.
             </p>
           </div>
 
           <div className="relative z-10 flex flex-col sm:flex-row gap-4 shrink-0 w-full md:w-auto">
             <button className="px-8 py-4 bg-[#0A3A35] border border-[#C5A059] hover:bg-[#0D4B45] text-[#C5A059] hover:text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all cursor-pointer">
-              Inspect GI Registry
+              Inspect Bhulia.com Registry
             </button>
           </div>
         </div>

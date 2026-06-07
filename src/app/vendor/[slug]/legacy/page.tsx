@@ -75,7 +75,7 @@ export default function StoreLegacyPage() {
             
             <div className="space-y-4 text-sm">
               <div className="flex justify-between items-center bg-[#051815] p-3 rounded-xl border border-[#C5A059]/20">
-                <span className="text-xs text-gray-400">GI Certificate:</span>
+                <span className="text-xs text-gray-400">Bhulia.com Certificate:</span>
                 <span className="font-mono text-xs font-bold text-[#C5A059]">{store.giTagNumber.split(":")[1] || store.giTagNumber}</span>
               </div>
 

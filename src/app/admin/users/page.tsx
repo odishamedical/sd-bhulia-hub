@@ -651,7 +651,7 @@ export default function UserManagementPage() {
                     <select value={newUserDistrict} onChange={e => setNewUserDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
                       <option value="">Select District</option>
                       {["Bargarh", "Sonepur", "Sambalpur", "Bolangir", "Nuapada", "Boudh", "Jharsuguda"].map(d => (
-                        <option key={d} value={d}>{d} (GI-Approved)</option>
+                        <option key={d} value={d}>{d} (Bhulia.com-Approved)</option>
                       ))}
                     </select>
                   ) : (

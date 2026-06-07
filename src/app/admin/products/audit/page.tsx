@@ -165,7 +165,7 @@ export default function GiTagAuditQueue() {
                   <div className="absolute inset-0 flex items-center justify-center text-4xl bg-gray-200">
                     📸
                   </div>
-                  {/* Simulated GI Badge */}
+                  {/* Simulated Bhulia.com Badge */}
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[9px] font-bold text-gray-800 shadow-sm uppercase tracking-wider flex items-center gap-1 border border-white/50">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Unverified
                   </div>

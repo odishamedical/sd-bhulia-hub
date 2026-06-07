@@ -5,125 +5,70 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePendingCounts } from "@/hooks/usePendingCounts";
 
-// Define the sidebar structure
+// Consolidate sidebar into 6 Core Hubs for better UX
 const SIDEBAR_CATEGORIES = [
   {
-    title: "Dashboard",
+    title: "Ecosystem Dashboard",
     icon: "📊",
     path: "/admin/dashboard",
-    subLinks: []
-  },
-  {
-    title: "Staff & Delegation",
-    icon: "👥",
-    path: "/admin/staff",
-    subLinks: []
-  },
-  {
-    title: "Ecosystem Hub",
-    icon: "🌍",
-    path: "/admin/users",
     subLinks: [
-      { name: "Master Weavers", path: "/admin/weavers" },
-      { name: "Retail Stores", path: "/admin/stores" },
-      { name: "Franchises", path: "/admin/franchises" },
-      { name: "All Users", path: "/admin/users" }
+      { name: "Global Overview", path: "/admin/dashboard" },
+      { name: "Staff & Delegation", path: "/admin/staff" }
     ]
   },
   {
-    title: "Trust, Safety & Risk",
-    icon: "🛡️",
-    badgeId: "kyc",
-    subLinks: [
-      { name: "KYC Verification", path: "/admin/trust/kyc" },
-      { name: "Review Moderation", path: "/admin/trust/reviews" },
-      { name: "Fraud Analysis", path: "/admin/trust/fraud" },
-    ]
-  },
-  {
-    title: "Global Catalog",
-    icon: "🏷️",
-    badgeId: "products",
-    subLinks: [
-      { name: "Bhulia.com Audit", path: "/admin/products/audit" },
-      { name: "Product Catalog", path: "/admin/products" },
-      { name: "Live Inventory DB", path: "/admin/products/live" },
-      { name: "Low Stock Alerts", path: "/admin/products/stock" },
-    ]
-  },
-  {
-    title: "Commerce & Orders",
+    title: "Commerce Hub",
     icon: "🛒",
     badgeId: "orders",
     subLinks: [
       { name: "All Orders", path: "/admin/orders/all" },
-      { name: "Returns & Exchanges", path: "/admin/orders/returns" },
-      { name: "B2B / Wholesale", path: "/admin/orders/b2b" },
-      { name: "Abandoned Carts", path: "/admin/orders/abandoned" },
-    ]
-  },
-  {
-    title: "Finance & Subs",
-    icon: "💰",
-    badgeId: "finance",
-    subLinks: [
       { name: "Vendor Payouts", path: "/admin/finance/payouts" },
-      { name: "SaaS Subscriptions", path: "/admin/finance/subscriptions" },
-      { name: "Tax & GST Reports", path: "/admin/finance/tax" },
+      { name: "Live Inventory DB", path: "/admin/products/live" },
+      { name: "Product Catalog", path: "/admin/products" },
+      { name: "Bhulia.com Audit", path: "/admin/products/audit" },
+      { name: "Returns & B2B", path: "/admin/orders/returns" }
     ]
   },
   {
-    title: "Shipments",
+    title: "User Management",
+    icon: "👥",
+    subLinks: [
+      { name: "Master Weavers", path: "/admin/weavers" },
+      { name: "Retail Stores", path: "/admin/stores" },
+      { name: "Franchises / Resellers", path: "/admin/franchises" },
+      { name: "All Registered Users", path: "/admin/users" }
+    ]
+  },
+  {
+    title: "Logistics & Support",
     icon: "🚚",
     badgeId: "logistics",
     subLinks: [
       { name: "Active Dispatch", path: "/admin/logistics/dispatch" },
-      { name: "Shiprocket Sync", path: "/admin/logistics/tracking" },
-      { name: "API Integrations", path: "/admin/logistics/integrations" },
-      { name: "RTOs", path: "/admin/logistics/rtos" },
-    ]
-  },
-  {
-    title: "Support",
-    icon: "💬",
-    badgeId: "support",
-    subLinks: [
+      { name: "Carrier Sync & Tracking", path: "/admin/logistics/tracking" },
       { name: "Customer Tickets", path: "/admin/support/tickets" },
-      { name: "Disputes", path: "/admin/support/disputes" },
+      { name: "Disputes", path: "/admin/support/disputes" }
     ]
   },
   {
-    title: "Page Builder & Design",
-    icon: "✨",
+    title: "Growth Engine",
+    icon: "🚀",
     subLinks: [
-      { name: "Active Routes", path: "/admin/cms/routes" },
-      { name: "Homepage CMS Builder", path: "/admin/cms" },
-      { name: "Vendor CMS Manager", path: "/admin/vendor-cms" },
-      { name: "Theme Editor", path: "/admin/marketing/theme" },
+      { name: "Homepage CMS", path: "/admin/cms" },
+      { name: "Vendor CMS Builder", path: "/admin/vendor-cms" },
+      { name: "Coupons & Offers", path: "/admin/marketing/coupons" },
+      { name: "SEO & Campaigns", path: "/admin/marketing/seo" }
     ]
   },
   {
-    title: "Marketing & Growth",
-    icon: "🎨",
-    subLinks: [
-      { name: "Ad Banners", path: "/admin/marketing/ads" },
-      { name: "Coupon Codes", path: "/admin/marketing/coupons" },
-      { name: "Push Notifications", path: "/admin/marketing/push" },
-      { name: "SEO & Redirects", path: "/admin/marketing/seo" },
-    ]
-  },
-  {
-    title: "Developer & API",
-    icon: "🔌",
-    subLinks: [
-      { name: "Integrations & Webhooks", path: "/admin/developer/webhooks" },
-    ]
-  },
-  {
-    title: "Platform Settings",
+    title: "Settings & Trust",
     icon: "⚙️",
+    badgeId: "kyc",
     subLinks: [
       { name: "Global Settings", path: "/admin/settings" },
+      { name: "KYC Verification", path: "/admin/trust/kyc" },
+      { name: "Fraud Analysis", path: "/admin/trust/fraud" },
+      { name: "API & Webhooks", path: "/admin/developer/webhooks" }
     ]
   }
 ];
@@ -211,18 +156,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Sidebar Navigation */}
       <aside className={`
-        fixed md:relative top-0 left-0 h-full w-72 bg-white border-r border-gray-200 flex flex-col shrink-0 z-50
-        transition-transform duration-300 ease-in-out shadow-[4px_0_24px_rgba(0,0,0,0.02)]
+        fixed md:relative top-0 left-0 h-full w-72 bg-[#051815] border-r border-[#10332c] flex flex-col shrink-0 z-50
+        transition-transform duration-300 ease-in-out shadow-[4px_0_30px_rgba(0,0,0,0.5)]
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
       `}>
         {/* Sidebar Header */}
-        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+        <div className="p-6 border-b border-[#10332c] flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-gray-900 tracking-tight">Bhulia Hub</h1>
-            <p className="text-[10px] text-blue-600 font-semibold mt-1 uppercase tracking-widest flex items-center gap-1.5">
+            <h1 className="text-xl font-black text-[#C5A059] font-serif tracking-tight">Bhulia Hub</h1>
+            <p className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-widest flex items-center gap-1.5">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C5A059] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C5A059]"></span>
               </span>
               Super Admin
             </p>
@@ -255,11 +200,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   // Accordion Button
                   <button 
                     onClick={() => toggleCategory(category.title)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all ${isPathActive ? 'bg-[#0070F3] text-white' : 'hover:bg-gray-50'}`}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all border border-transparent ${isPathActive ? 'bg-[#10332c] text-[#C5A059] border-[#C5A059]/30 shadow-lg' : 'hover:bg-[#0A221E]'}`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-lg grayscale opacity-80">{category.icon}</span>
-                      <span className={`text-sm font-semibold ${isPathActive ? 'text-white' : 'text-gray-700'}`}>
+                      <span className="text-lg opacity-90">{category.icon}</span>
+                      <span className={`text-sm font-semibold ${isPathActive ? 'text-white' : 'text-gray-400'}`}>
                         {category.title}
                       </span>
                     </div>
@@ -278,25 +223,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   // Direct Link
                   <Link 
                     href={category.path || "#"}
-                    className={`w-full flex items-center px-3 py-2.5 rounded-xl transition-all ${pathname === category.path ? 'bg-[#0070F3] text-white shadow-md border border-[#005BB5]' : 'text-gray-700 hover:bg-gray-50'}`}
+                    className={`w-full flex items-center px-3 py-2.5 rounded-xl transition-all border border-transparent ${pathname === category.path ? 'bg-[#10332c] text-[#C5A059] border-[#C5A059]/30 shadow-lg' : 'text-gray-400 hover:bg-[#0A221E]'}`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-lg grayscale opacity-80">{category.icon}</span>
-                      <span className="text-sm font-semibold">{category.title}</span>
+                      <span className="text-lg opacity-90">{category.icon}</span>
+                      <span className={`text-sm font-semibold ${pathname === category.path ? 'text-white' : ''}`}>{category.title}</span>
                     </div>
                   </Link>
                 )}
 
                 {/* Expanded Sub-links */}
                 {hasSubLinks && isExpanded && (
-                  <div className="mt-1 mb-2 ml-10 pl-3 border-l-2 border-gray-100 flex flex-col space-y-1">
+                  <div className="mt-1 mb-2 ml-10 pl-3 border-l-2 border-[#10332c] flex flex-col space-y-1">
                     {category.subLinks.map((sub) => {
                       const isSubActive = pathname?.startsWith(sub.path);
                       return (
                         <Link 
                           key={sub.name} 
                           href={sub.path}
-                          className={`px-3 py-2 rounded-lg text-[13px] font-medium transition-colors ${isSubActive ? 'text-white font-bold bg-[#0070F3]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'}`}
+                          className={`px-3 py-2 rounded-lg text-[13px] font-medium transition-colors ${isSubActive ? 'text-[#C5A059] font-bold bg-[#0A221E]' : 'text-gray-500 hover:text-gray-300 hover:bg-[#0A221E]'}`}
                         >
                           {sub.name}
                         </Link>
@@ -310,8 +255,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-gray-100 bg-gray-50/30">
-          <a href="https://sd-auth-center.vercel.app/launcher" className="flex items-center justify-center gap-2 w-full py-2.5 border border-gray-200 text-gray-600 bg-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm">
+        <div className="p-4 border-t border-[#10332c] bg-[#0A221E]/50">
+          <a href="https://sd-auth-center.vercel.app/launcher" className="flex items-center justify-center gap-2 w-full py-2.5 border border-[#C5A059]/30 text-[#C5A059] bg-[#051815] rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#10332c] transition-all shadow-sm">
             Exit to Launcher
           </a>
         </div>

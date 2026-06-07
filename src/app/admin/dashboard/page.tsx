@@ -87,6 +87,34 @@ export default function AdminDashboardPage() {
 
     const res = await updateDocumentStatus(type, id, updates);
     if (res.success) {
+      // -------------------------------------------------------------
+      // PHASE 8: TRIGGER NOTIFICATION (WHATSAPP & EMAIL)
+      // -------------------------------------------------------------
+      try {
+        if (type === "weavers" || type === "stores" || type === "franchises") {
+           // Provide fallback phone/email if not in data for simulation
+           const phone = data.contactNumber || data.whatsappNumber || data.phone || "919876543210";
+           const email = data.emailAddress || data.email || "vendor@example.com";
+           const name = data.vendorName || data.ownerName || data.name || "Partner";
+
+           await fetch("/api/notifications", {
+             method: "POST",
+             headers: { "Content-Type": "application/json" },
+             body: JSON.stringify({
+               type: "both",
+               toPhone: phone,
+               toEmail: email,
+               templateName: "account_approved",
+               whatsappComponents: [{ type: "body", parameters: [{ type: "text", text: name }] }],
+               subject: `Bhulia.com: Your Account is Approved!`,
+               htmlContent: `<h2>Congratulations ${name}!</h2><p>Your Bhulia.com account has been approved and is now live.</p>`
+             })
+           });
+        }
+      } catch (err) {
+        console.error("Failed to trigger approval notification", err);
+      }
+
       alert("Successfully verified and published to Bhulia Hub!");
       setSelectedItem(null);
     } else {

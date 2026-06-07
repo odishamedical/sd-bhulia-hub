@@ -13,15 +13,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Simulate Official Government of India BIS / GI Registry Handshake
-    console.log(`[BIS API Gateway] Initiating secure handshake for GI Certificate: ${giTagNumber}...`);
+    // Simulate Official Government of India BIS / Bhulia.com Registry Handshake
+    console.log(`[BIS API Gateway] Initiating secure handshake for Bhulia.com Certificate: ${giTagNumber}...`);
     
-    // Pattern validation (e.g. OD-XXXX)
-    const isValidFormat = giTagNumber.includes("OD-") || giTagNumber.includes("GI-");
+    const isValidFormat = giTagNumber.includes("OD-") || giTagNumber.includes("GI-") || giTagNumber.includes("Bhulia-");
     
     if (!isValidFormat) {
       return NextResponse.json(
-        { verified: false, error: "Invalid Bhulia.com Certificate format. Must match official Odisha Registry pattern (e.g., GI-Cert: #OD-7492-SB)" },
+        { verified: false, error: "Invalid Bhulia.com Certificate format. Must match official Odisha Registry pattern (e.g., Bhulia-Cert: #OD-7492-SB)" },
         { status: 422 }
       );
     }

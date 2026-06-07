@@ -141,10 +141,10 @@ export default function Header() {
           <div className="whitespace-nowrap animate-marquee flex gap-16 text-[10px] sm:text-xs text-white/90 font-medium tracking-[0.2em] uppercase shrink-0 min-w-full">
             <span>BHULIA.COM - AUTHENTIC SAMBALPURI SAREES DIRECT FROM WEAVERS</span>
             <span>PURE SILK PATA • COTTON IKAT • BOMKAI • PASAPALLI</span>
-            <span>SAMBALPURI PRODUCTS APPROVED FOR GI TAG</span>
+            <span>BHULIA.COM VERIFIED SAMBALPURI PRODUCTS</span>
             <span>BHULIA.COM - AUTHENTIC SAMBALPURI SAREES DIRECT FROM WEAVERS</span>
             <span>PURE SILK PATA • COTTON IKAT • BOMKAI • PASAPALLI</span>
-            <span>SAMBALPURI PRODUCTS APPROVED FOR GI TAG</span>
+            <span>BHULIA.COM VERIFIED SAMBALPURI PRODUCTS</span>
           </div>
         </div>
       </header>
