@@ -478,12 +478,21 @@ export default function ProductDetailPage() {
               </div>
               {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-4 mt-6">
-                <button 
-                  onClick={() => addToCart(product)}
-                  className="w-full py-4 bg-gradient-to-r from-[#E57138] to-[#D56128] text-white font-bold uppercase tracking-wider rounded-xl shadow-[0_0_15px_rgba(229,113,56,0.3)] hover:shadow-[0_0_25px_rgba(229,113,56,0.5)] hover:-translate-y-1 transition-all"
-                >
-                  🛒 Add to Cart
-                </button>
+                {(product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0)) ? (
+                  <button 
+                    disabled
+                    className="w-full py-4 bg-gray-800 text-gray-500 font-bold uppercase tracking-wider rounded-xl cursor-not-allowed border border-gray-700"
+                  >
+                    SOLD OUT
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => addToCart(product)}
+                    className="w-full py-4 bg-gradient-to-r from-[#E57138] to-[#D56128] text-white font-bold uppercase tracking-wider rounded-xl shadow-[0_0_15px_rgba(229,113,56,0.3)] hover:shadow-[0_0_25px_rgba(229,113,56,0.5)] hover:-translate-y-1 transition-all"
+                  >
+                    🛒 Add to Cart
+                  </button>
+                )}
                 <button 
                   onClick={() => addToWishlist(product)}
                   className={`w-full py-4 border-2 ${wishlist.some(w => w.id === product.id) ? 'bg-[#C5A059]/20 border-[#C5A059] text-[#C5A059]' : 'border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10'} font-bold uppercase tracking-wider rounded-xl transition-all`}
@@ -529,9 +538,15 @@ export default function ProductDetailPage() {
                   </div>
 
                   <div className="pt-2">
-                    <button type="submit" disabled={isOrdering} className="bhulia-gold-button w-full py-3 text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl transition-all hover:brightness-110 cursor-pointer disabled:opacity-50">
-                      {isOrdering ? "Securing Payout Channel..." : "Order with D2C Payout Protection"}
-                    </button>
+                    {(product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0)) ? (
+                      <button type="button" disabled className="w-full py-3 bg-gray-800 border border-gray-700 text-gray-500 font-bold text-xs uppercase tracking-widest rounded-xl cursor-not-allowed">
+                        Out of Stock
+                      </button>
+                    ) : (
+                      <button type="submit" disabled={isOrdering} className="bhulia-gold-button w-full py-3 text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl transition-all hover:brightness-110 cursor-pointer disabled:opacity-50">
+                        {isOrdering ? "Securing Payout Channel..." : "Order with D2C Payout Protection"}
+                      </button>
+                    )}
                   </div>
                 </form>
               ) : (

@@ -47,18 +47,29 @@ export default function ProductCard({ product, role }: ProductCardProps) {
           </div>
         )}
 
+        {/* Sold Out Badge */}
+        {(product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0)) && (
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center z-20">
+            <div className="border-2 border-red-500 text-red-500 font-black text-xl tracking-[0.2em] uppercase px-4 py-2 rotate-[-15deg] bg-black/40">
+              SOLD OUT
+            </div>
+          </div>
+        )}
+
         {/* Hover Quick View / Add to Cart Overlay (PC Only) */}
-        <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-[#0A1021]/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300 hidden lg:flex flex-col gap-2">
-          <button 
-            onClick={(e) => {
-              e.preventDefault();
-              window.dispatchEvent(new CustomEvent('sd_add_to_cart', { detail: product }));
-            }}
-            className="w-full py-2 bg-white text-gray-900 text-xs font-bold uppercase tracking-wider rounded shadow-lg hover:bg-gray-100 transition-colors"
-          >
-            Quick Add
-          </button>
-        </div>
+        {!(product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0)) && (
+          <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-[#0A1021]/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300 hidden lg:flex flex-col gap-2 z-10">
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                window.dispatchEvent(new CustomEvent('sd_add_to_cart', { detail: product }));
+              }}
+              className="w-full py-2 bg-white text-gray-900 text-xs font-bold uppercase tracking-wider rounded shadow-lg hover:bg-gray-100 transition-colors"
+            >
+              Quick Add
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Product Details */}

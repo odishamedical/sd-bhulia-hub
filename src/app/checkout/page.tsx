@@ -5,7 +5,7 @@ import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { auth, db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, doc, updateDoc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
 export default function CheckoutPage() {
@@ -55,42 +55,82 @@ export default function CheckoutPage() {
       // 1. Simulate Payment Gateway Delay
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // 2. Generate Order in Firestore
-      // For Phase 2 Mock Payout, we check if there's a reseller ref in localstorage
+      // 2. Generate Order in Firestore (Cart Splitting by Seller)
       const referralId = localStorage.getItem("sd_reseller_ref") || null;
       
-      let totalCommission = 0;
-      if (referralId) {
-        cart.forEach(item => {
-          if (item.allowResellerMargin && item.resellerMarginPercentage) {
-             const priceNum = parseInt(item.price.replace(/[^0-9]/g, ""));
+      // Group items by sellerId
+      const groupedBySeller: Record<string, typeof cart> = {};
+      cart.forEach(item => {
+        const sellerId = item.sellerId || "bhulia-hub";
+        if (!groupedBySeller[sellerId]) groupedBySeller[sellerId] = [];
+        groupedBySeller[sellerId].push(item);
+      });
+
+      const parentOrderId = `P-ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+      
+      for (const sellerId of Object.keys(groupedBySeller)) {
+        const sellerItems = groupedBySeller[sellerId];
+        
+        let subTotal = 0;
+        let shippingTotal = 0;
+        let totalCommission = 0;
+
+        sellerItems.forEach(item => {
+          const priceNum = parseInt(item.price.replace(/[^0-9]/g, ""));
+          subTotal += priceNum * item.cartQuantity;
+          shippingTotal += (item.shippingCharge || 0);
+          
+          if (referralId && item.allowResellerMargin && item.resellerMarginPercentage) {
              totalCommission += (priceNum * item.cartQuantity) * (item.resellerMarginPercentage / 100);
           }
         });
-      }
-      
-      const platformShare = cartTotal * 0.05; // 5% platform fee
-      const vendorPayout = cartTotal - totalCommission - platformShare;
-      
-      const newOrder = {
-        userId: userUid || "guest",
-        customerInfo: formData,
-        items: cart,
-        totalAmount: finalTotal,
-        subTotal: cartTotal,
-        shippingTotal: shippingTotal,
-        resellerCommission: totalCommission,
-        platformShare: platformShare,
-        vendorPayout: vendorPayout,
-        status: "processing", // pending_dispatch
-        paymentStatus: "paid_mock",
-        referralId: referralId,
-        createdAt: serverTimestamp(),
-        // Mock routing defaults
-        assignedLogisticsPartner: "pending"
-      };
 
-      await addDoc(collection(db, "orders"), newOrder);
+        const platformShare = subTotal * 0.05; // 5% platform fee
+        const vendorPayout = subTotal - totalCommission - platformShare;
+
+        const subOrder = {
+          parentOrderId,
+          sellerId,
+          userId: userUid || "guest",
+          customerInfo: formData,
+          items: sellerItems,
+          totalAmount: subTotal + shippingTotal,
+          subTotal: subTotal,
+          shippingTotal: shippingTotal,
+          resellerCommission: totalCommission,
+          platformShare: platformShare,
+          vendorPayout: vendorPayout,
+          status: "processing", // pending_dispatch
+          paymentStatus: "paid_mock",
+          referralId: referralId,
+          createdAt: serverTimestamp(),
+          assignedLogisticsPartner: "pending"
+        };
+
+        // Create sub-order
+        await addDoc(collection(db, "orders"), subOrder);
+
+        // Deduct inventory
+        for (const item of sellerItems) {
+          try {
+            const productRef = doc(db, "products", item.id);
+            const productSnap = await getDoc(productRef);
+            
+            if (productSnap.exists()) {
+              const pData = productSnap.data();
+              const currentStock = pData.stockQuantity || 0;
+              const newStock = Math.max(0, currentStock - item.cartQuantity);
+              
+              await updateDoc(productRef, {
+                stockQuantity: newStock,
+                inStock: newStock > 0
+              });
+            }
+          } catch (e) {
+            console.error("Failed to deduct inventory for product", item.id, e);
+          }
+        }
+      }
 
       // 3. Clear Cart & Show Success
       clearCart();

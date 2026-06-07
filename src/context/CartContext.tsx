@@ -103,9 +103,18 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const addToCart = (product: Product) => {
+    if (product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0)) {
+      alert("This item is currently out of stock.");
+      return;
+    }
+
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
+        if (product.stockQuantity !== undefined && existing.cartQuantity >= product.stockQuantity) {
+          alert(`You cannot add more than ${product.stockQuantity} of this item.`);
+          return prev;
+        }
         return prev.map((item) =>
           item.id === product.id
             ? { ...item, cartQuantity: item.cartQuantity + 1 }
