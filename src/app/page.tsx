@@ -783,13 +783,13 @@ export default function Home() {
               </h3>
 
               <p className="text-sm text-gray-200 font-sans leading-relaxed">
-                Bhulia.com provides a global stage for Odisha's artisan communities, connecting you directly to individual weaver stores. We are more than a store; we are a sustainable ecosystem for craftsmanship.
+                Bhulia.com provides a global stage for Odisha&apos;s artisan communities, connecting you directly to individual weaver stores. We are more than a store; we are a sustainable ecosystem for craftsmanship.
               </p>
             </div>
 
             <div className="relative z-10 pt-6">
               <button className="px-6 py-3 bg-[#0A3A35] border border-[#C5A059] hover:bg-[#0D4B45] text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all cursor-pointer">
-                Read the Weaver's Story
+                Read the Weaver&apos;s Story
               </button>
             </div>
           </div>
