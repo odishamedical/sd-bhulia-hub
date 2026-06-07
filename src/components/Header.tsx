@@ -25,11 +25,11 @@ export default function Header() {
   return (
     <>
       {/* Top Sticky Header / Perfect Left-Center-Right Balance */}
-      <header className="sticky top-0 w-full z-50 bg-[#0B2B26] border-b border-[#C5A059]/40 px-4 sm:px-6 py-3 sm:py-4 shadow-lg flex flex-col gap-3">
+      <header className="sticky top-0 w-full z-50 bg-[#030504]/90 backdrop-blur-2xl border-b border-[#C5A059]/30 px-4 sm:px-6 py-4 sm:py-6 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8)] flex flex-col gap-3 transition-all duration-300">
         <div className="flex justify-between items-center gap-2 w-full">
           {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0">
-            <div className="relative w-8 sm:w-14 h-8 sm:h-14 rounded-full overflow-hidden border border-[#C5A059] sm:border-2 shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
+            <div className="relative w-10 sm:w-16 h-10 sm:h-16 rounded-full overflow-hidden border border-[#C5A059] sm:border-2 shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
               <Image src="/bhulia_logo_final.jpg" alt="Bhulia Gold Logo" fill className="object-cover" />
             </div>
             <div className="min-w-0">

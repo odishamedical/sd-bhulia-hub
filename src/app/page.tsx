@@ -202,22 +202,22 @@ export default function Home() {
                 className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${currentSlide === idx ? "opacity-100 z-10" : "opacity-0 z-0"}`}
               >
                 <Image src={slide.img} alt={slide.title} fill className="object-cover transform scale-105 transition-transform duration-[10000ms] ease-linear" style={{ transform: currentSlide === idx ? 'scale(1)' : 'scale(1.05)' }} />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#010a08] via-[#051815]/80 to-transparent opacity-95"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60"></div>
               </div>
             ))}
             
             {/* Overlay Content (Bottom Aligned) */}
-            <div className="relative z-20 h-full p-5 md:p-8 flex flex-col justify-end">
-              <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center gap-4 w-full">
+            <div className="relative z-20 h-full p-5 md:p-6 flex flex-col justify-end pb-4">
+              <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center gap-4 w-full bg-[#051815]/30 backdrop-blur-lg border border-white/10 p-5 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
                 
                 <div className="flex-1 max-w-xl">
-                  <h2 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-white leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] line-clamp-1 sm:line-clamp-2">
+                  <h2 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-white leading-tight drop-shadow-md line-clamp-1 sm:line-clamp-2">
                     {heroSlides[currentSlide].title} <span className="text-[#C5A059]">{heroSlides[currentSlide].subtitle}</span>
                   </h2>
                 </div>
 
                 <div className="shrink-0 w-full sm:w-auto">
-                  <button className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-[10px] sm:text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_25px_rgba(197,160,89,0.5)] cursor-pointer">
+                  <button className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-black text-xs uppercase tracking-widest rounded-xl hover:brightness-110 hover:scale-105 transition-all shadow-[0_0_25px_rgba(197,160,89,0.5)] cursor-pointer">
                     {heroSlides[currentSlide].btn}
                   </button>
                 </div>
