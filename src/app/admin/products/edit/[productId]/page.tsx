@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useProductById, updateDocumentStatus, useWeavers, useVendors } from "@/lib/db-hooks";
+import { updateDocumentStatus, useProductById, useWeavers, useVendors } from "@/lib/db-hooks";
+import { useTaxonomy, addTaxonomyItem } from "@/lib/taxonomy-hooks";
 import ImageUploader from "@/components/ImageUploader";
 import { useRouter, useParams } from "next/navigation";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -13,11 +14,17 @@ export default function EditProductPage() {
   const params = useParams();
   const productId = typeof params?.productId === "string" ? params.productId : "";
   
-  const { product, loading } = useProductById(productId);
+  const { product, loading: productLoading } = useProductById(productId);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { weavers } = useWeavers();
   const { vendors } = useVendors();
+  const { taxonomy } = useTaxonomy();
+
+  // Custom Taxonomy State
+  const [customCategory, setCustomCategory] = useState("");
+  const [customMaterial, setCustomMaterial] = useState("");
+  const [customDesign, setCustomDesign] = useState("");
 
   const [templates, setTemplates] = useState<any[]>([]);
 
@@ -118,6 +125,24 @@ export default function EditProductPage() {
     e.preventDefault();
     setIsSubmitting(true);
     
+    // Process Taxonomy
+    let finalCategory = category;
+    let finalMaterial = material;
+    let finalDesign = design;
+    
+    if (category === "Other" && customCategory.trim()) {
+      finalCategory = customCategory.trim();
+      await addTaxonomyItem("categories", finalCategory, "Vendor/Weaver");
+    }
+    if (material === "Other" && customMaterial.trim()) {
+      finalMaterial = customMaterial.trim();
+      await addTaxonomyItem("materials", finalMaterial, "Vendor/Weaver");
+    }
+    if (design === "Other" && customDesign.trim()) {
+      finalDesign = customDesign.trim();
+      await addTaxonomyItem("designs", finalDesign, "Vendor/Weaver");
+    }
+
     const parsedPrice = parseInt(price.replace(/[^0-9]/g, "")) || 0;
 
     const data = {
@@ -132,10 +157,10 @@ export default function EditProductPage() {
       img4,
       images: images.filter(Boolean),
       imageCaptions: [imgCaption, img2Caption, img3Caption, img4Caption, ...imagesCaptions],
-      category,
-      sareeType: material || sareeType,
-      material,
-      design,
+      category: finalCategory,
+      sareeType: finalMaterial || sareeType,
+      material: finalMaterial,
+      design: finalDesign,
       colorUse,
       length,
       hasBlouse,
@@ -198,15 +223,16 @@ export default function EditProductPage() {
             </div>
             <div>
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Category</label>
-              <input list="categoryList" value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="Select or type category..." required />
-              <datalist id="categoryList">
-                <option value="Saree" />
-                <option value="Dress material" />
-                <option value="Bedsheet" />
-                <option value="RedyMade shirts" />
-                <option value="Redy made Kurti" />
-                <option value="Kurti dress material" />
-              </datalist>
+              <select value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" required>
+                {!taxonomy.categories.includes(category) && category && category !== "Other" && (
+                  <option value={category}>{category}</option>
+                )}
+                {taxonomy.categories.map(c => <option key={c} value={c}>{c}</option>)}
+                <option value="Other">Other (Add Custom)</option>
+              </select>
+              {category === "Other" && (
+                <input required value={customCategory} onChange={e => setCustomCategory(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059] mt-2" placeholder="Type new category..." />
+              )}
             </div>
             <div>
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Selling Price (₹)</label>
@@ -237,25 +263,31 @@ export default function EditProductPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Product Material</label>
-              <input list="materialList" value={material} onChange={e => setMaterial(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="Select or type material..." required />
-              <datalist id="materialList">
-                <option value="Pure Cotton" />
-                <option value="Pure Silk (Pata)" />
-                <option value="Mix Silk(Pata) (Silk+Polyster)" />
-                <option value="Mix Cotton (Cotton+Polyster)" />
-              </datalist>
+              <select value={material} onChange={e => setMaterial(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" required>
+                {!taxonomy.materials.includes(material) && material && material !== "Other" && (
+                  <option value={material}>{material}</option>
+                )}
+                <option value="">Select Material...</option>
+                {taxonomy.materials.map(m => <option key={m} value={m}>{m}</option>)}
+                <option value="Other">Other (Add Custom)</option>
+              </select>
+              {material === "Other" && (
+                <input required value={customMaterial} onChange={e => setCustomMaterial(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059] mt-2" placeholder="Type new material..." />
+              )}
             </div>
             <div>
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Product Design</label>
-              <input list="designList" value={design} onChange={e => setDesign(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="Select or type design..." required />
-              <datalist id="designList">
-                <option value="Sambalpuri Ikat (Bandha)" />
-                <option value="Sambalpuri Traditional Ikat Design" />
-                <option value="Sambalpuri Modern Ikat Design" />
-                <option value="Sambalpuri Double Ikat (Pashapali/Saptapar)" />
-                <option value="Bomkei" />
-                <option value="Bomkei+Ikat" />
-              </datalist>
+              <select value={design} onChange={e => setDesign(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" required>
+                {!taxonomy.designs.includes(design) && design && design !== "Other" && (
+                  <option value={design}>{design}</option>
+                )}
+                <option value="">Select Design...</option>
+                {taxonomy.designs.map(d => <option key={d} value={d}>{d}</option>)}
+                <option value="Other">Other (Add Custom)</option>
+              </select>
+              {design === "Other" && (
+                <input required value={customDesign} onChange={e => setCustomDesign(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059] mt-2" placeholder="Type new design..." />
+              )}
             </div>
             <div>
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Color Palette</label>
