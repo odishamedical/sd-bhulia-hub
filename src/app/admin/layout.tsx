@@ -118,6 +118,13 @@ const SIDEBAR_CATEGORIES = [
     subLinks: [
       { name: "Integrations & Webhooks", path: "/admin/developer/webhooks" },
     ]
+  },
+  {
+    title: "Platform Settings",
+    icon: "⚙️",
+    subLinks: [
+      { name: "Global Settings", path: "/admin/settings" },
+    ]
   }
 ];
 

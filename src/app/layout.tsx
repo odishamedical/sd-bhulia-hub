@@ -36,6 +36,7 @@ import Header from "@/components/Header";
 import GlobalSearchConsole from "@/components/GlobalSearchConsole";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
+import GlobalMaintenanceGate from "@/components/GlobalMaintenanceGate";
 
 export default function RootLayout({
   children,
@@ -52,14 +53,16 @@ export default function RootLayout({
       <body className="font-sans min-h-full flex flex-col bg-[#051815] text-white overflow-x-hidden">
         <AuthProvider>
           <CartProvider>
-            <Header />
-            <GlobalSearchConsole />
-            <div className="flex-1 flex flex-col min-h-[calc(100vh-200px)] relative pb-16 lg:pb-0">
-              {children}
-            </div>
-            <Footer />
-            <BackToTopButton />
-            <MobileBottomNav />
+            <GlobalMaintenanceGate>
+              <Header />
+              <GlobalSearchConsole />
+              <div className="flex-1 flex flex-col min-h-[calc(100vh-200px)] relative pb-16 lg:pb-0">
+                {children}
+              </div>
+              <Footer />
+              <BackToTopButton />
+              <MobileBottomNav />
+            </GlobalMaintenanceGate>
           </CartProvider>
         </AuthProvider>
       </body>

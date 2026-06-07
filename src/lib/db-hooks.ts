@@ -609,4 +609,41 @@ export async function suspendUserRecord(role: string, id: string) {
   }
 }
 
+// ============================================================================
+// GLOBAL SETTINGS HOOKS
+// ============================================================================
 
+export interface GlobalSettings {
+  maintenanceMode: boolean;
+  maintenanceMessage?: string;
+  allowNewsletterSignup?: boolean;
+}
+
+export function useGlobalSettings() {
+  const [settings, setSettings] = useState<GlobalSettings | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, "settings", "global"), (docSnap) => {
+      if (docSnap.exists()) {
+        setSettings(docSnap.data() as GlobalSettings);
+      } else {
+        setSettings({ maintenanceMode: false });
+      }
+      setLoading(false);
+    });
+    return () => unsub();
+  }, []);
+
+  return { settings, loading };
+}
+
+export async function updateGlobalSettings(data: Partial<GlobalSettings>) {
+  try {
+    await setDoc(doc(db, "settings", "global"), data, { merge: true });
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating global settings:", error);
+    return { success: false, error };
+  }
+}

@@ -195,6 +195,7 @@ export default function CMSBuilderPage() {
             <button type="button" onClick={() => addRow("products")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Product Grid</button>
             <button type="button" onClick={() => addRow("multi_banner")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Multi Banner</button>
             <button type="button" onClick={() => addRow("split_banner_products")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Split Section</button>
+            <button type="button" onClick={() => addRow("testimonials")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Testimonials</button>
           </div>
         </div>
 
@@ -321,8 +322,8 @@ export default function CMSBuilderPage() {
                             </select>
                           </div>
                           <div>
-                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Product Limit (1 or 2 recommended)</label>
-                            <input type="number" value={row.productLimit || 2} onChange={e => updateRow(row.id, "productLimit", parseInt(e.target.value))} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" />
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Max Products to Show</label>
+                            <input type="number" value={row.productLimit || 8} onChange={e => updateRow(row.id, "productLimit", parseInt(e.target.value))} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" min={1} />
                           </div>
                           <div className="flex items-center gap-2">
                             <input type="checkbox" checked={row.featuredOnly || false} onChange={e => updateRow(row.id, "featuredOnly", e.target.checked)} className="w-4 h-4 bg-[#0A1021] border-[#C5A059] text-[#C5A059] rounded" />
@@ -373,6 +374,11 @@ export default function CMSBuilderPage() {
                   <div>
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Product Limit</label>
                     <input type="number" value={row.productLimit || 10} onChange={e => updateRow(row.id, "productLimit", parseInt(e.target.value))} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-[#C5A059] uppercase tracking-widest mb-1">Flash Sale End Time (Optional)</label>
+                    <input type="datetime-local" value={row.flashSaleEndTime || ""} onChange={e => updateRow(row.id, "flashSaleEndTime", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-[#C5A059] text-sm outline-none" />
+                    <p className="text-[10px] text-gray-500 mt-1">If set, a countdown clock will appear above this product grid.</p>
                   </div>
                   <div className="flex items-center gap-2 pt-6">
                     <input type="checkbox" checked={row.featuredOnly || false} onChange={e => updateRow(row.id, "featuredOnly", e.target.checked)} className="w-4 h-4 bg-[#051815] border-[#C5A059] text-[#C5A059] rounded" />
@@ -674,6 +680,57 @@ export default function CMSBuilderPage() {
                       }} className="bg-[#C5A059] text-[#0A1021] px-4 py-2 rounded font-bold text-xs uppercase">Upgrade to Modular Grid</button>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Testimonials Specific */}
+              {row.type === "testimonials" && (
+                <div className="md:col-span-2 space-y-4 border-t border-[#C5A059]/20 pt-4 mt-2">
+                  <div className="flex justify-between items-center">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Customer Testimonials</label>
+                    <button type="button" onClick={() => {
+                      const newTestimonials = [...(row.testimonials || []), { id: Date.now().toString(), text: "", authorName: "", rating: 5 }];
+                      updateRow(row.id, "testimonials", newTestimonials);
+                    }} className="text-xs text-[#C5A059] hover:underline font-bold">+ Add Testimonial</button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {(row.testimonials || []).map((t, tIdx) => (
+                      <div key={t.id} className="bg-[#0B2B26] p-4 rounded-xl border border-[#C5A059]/10 relative space-y-3">
+                        <button type="button" onClick={() => {
+                          const newTestimonials = [...row.testimonials!];
+                          newTestimonials.splice(tIdx, 1);
+                          updateRow(row.id, "testimonials", newTestimonials);
+                        }} className="absolute top-2 right-2 text-red-400 text-xs font-bold z-10">✕</button>
+                        
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Customer Name</label>
+                          <input type="text" value={t.authorName} onChange={e => {
+                            const newTestimonials = [...row.testimonials!];
+                            newTestimonials[tIdx].authorName = e.target.value;
+                            updateRow(row.id, "testimonials", newTestimonials);
+                          }} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-3 py-1.5 text-white text-xs outline-none" placeholder="e.g. Anjali Sharma" />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Review Text</label>
+                          <textarea value={t.text} onChange={e => {
+                            const newTestimonials = [...row.testimonials!];
+                            newTestimonials[tIdx].text = e.target.value;
+                            updateRow(row.id, "testimonials", newTestimonials);
+                          }} rows={3} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-3 py-1.5 text-white text-xs outline-none" placeholder="e.g. Absolutely beautiful authentic saree..."></textarea>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Star Rating (1-5)</label>
+                          <input type="number" min="1" max="5" value={t.rating} onChange={e => {
+                            const newTestimonials = [...row.testimonials!];
+                            newTestimonials[tIdx].rating = parseInt(e.target.value);
+                            updateRow(row.id, "testimonials", newTestimonials);
+                          }} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-3 py-1.5 text-white text-xs outline-none" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

@@ -32,7 +32,7 @@ export interface CMSColumn {
 
 export interface CMSRow {
   id: string;
-  type: "hero" | "multi_banner" | "split_banner_products" | "image_grid" | "products" | "adsense" | "banner";
+  type: "hero" | "multi_banner" | "split_banner_products" | "image_grid" | "products" | "adsense" | "banner" | "testimonials";
   
   // Local Theme Override
   themeOverride?: GlobalTheme;
@@ -80,9 +80,13 @@ export interface CMSRow {
   maxPrice?: number;
   featuredOnly?: boolean;
   discountOnly?: boolean;
+  flashSaleEndTime?: string; // ISO string
 
   // AdSense
   htmlCode?: string;
+
+  // Testimonials
+  testimonials?: Array<{ id: string; text: string; authorName: string; rating: number; avatar?: string }>;
 }
 
 export interface PlatformPage {
