@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { CMSRow } from "@/types/cms";
 
 // Placeholder components for the blocks - we will build these out fully later
 const HeroBlock = () => (
@@ -52,7 +53,7 @@ const AdSenseBlock = ({ htmlCode }: any) => (
   </div>
 );
 
-export default function DynamicRenderer({ rows }: { rows: any[] }) {
+export default function DynamicRenderer({ rows }: { rows: CMSRow[] }) {
   if (!rows || rows.length === 0) {
     return <div className="text-center p-8 text-gray-400 border border-dashed border-gray-600 rounded-xl">No CMS rows configured.</div>;
   }

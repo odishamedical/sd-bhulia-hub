@@ -93,6 +93,7 @@ const SIDEBAR_CATEGORIES = [
     title: "Page Builder & Design",
     icon: "✨",
     subLinks: [
+      { name: "Active Routes", path: "/admin/cms/routes" },
       { name: "Homepage CMS Builder", path: "/admin/cms" },
       { name: "Vendor CMS Manager", path: "/admin/vendor-cms" },
       { name: "Theme Editor", path: "/admin/marketing/theme" },

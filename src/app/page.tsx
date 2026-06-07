@@ -13,6 +13,7 @@ import { db } from "../lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import ProductCard from "../components/ProductCard";
 import DynamicRenderer from "../components/cms/DynamicRenderer";
+import { PlatformPage, ActiveRoutes } from "@/types/cms";
 
 interface CMSRow {
   id: string;
@@ -42,20 +43,27 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   
   // CMS State
-  const [cmsLayout, setCmsLayout] = useState<{ dynamicEnabled: boolean, rows: CMSRow[] } | null>(null);
+  const [activePage, setActivePage] = useState<PlatformPage | null>(null);
 
   useEffect(() => {
-    async function fetchCms() {
+    async function fetchActiveHomepage() {
       try {
-        const docSnap = await getDoc(doc(db, "platform_settings", "cms_homepage"));
-        if (docSnap.exists()) {
-          setCmsLayout(docSnap.data() as any);
+        const routesSnap = await getDoc(doc(db, "platform_settings", "active_routes"));
+        if (routesSnap.exists()) {
+          const activeRoutes = routesSnap.data() as ActiveRoutes;
+          if (activeRoutes.activeHomepageId) {
+            const pageSnap = await getDoc(doc(db, "platform_pages", activeRoutes.activeHomepageId));
+            if (pageSnap.exists()) {
+              setActivePage(pageSnap.data() as PlatformPage);
+              return;
+            }
+          }
         }
       } catch (err) {
-        console.error("Error fetching CMS layout", err);
+        console.error("Error fetching active homepage", err);
       }
     };
-    fetchCms();
+    fetchActiveHomepage();
   }, []);
 
   const heroSlides = [
@@ -191,8 +199,8 @@ export default function Home() {
       {/* Main Content Container */}
       <div className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6 relative z-10 space-y-6 md:space-y-12 overflow-hidden">
         
-        {cmsLayout?.dynamicEnabled ? (
-          <DynamicRenderer rows={cmsLayout.rows} />
+        {activePage ? (
+          <DynamicRenderer rows={activePage.rows} />
         ) : (
           <div className="w-full">
             {/* 1. Hero Section */}
