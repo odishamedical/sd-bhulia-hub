@@ -7,6 +7,10 @@ import { PlatformPage, CMSRow, GlobalTheme, PageStatus } from "@/types/cms";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import ImageUploader from "@/components/ImageUploader";
+import { useVendors, useWeavers } from "@/lib/db-hooks";
+
+const CATEGORIES = ["Saree", "Dupatta", "Dress Material", "Accessories"];
+const MATERIALS = ["Pure Silk", "Cotton", "Cotton Silk", "Linen"];
 
 export default function CMSBuilderPage() {
   const params = useParams();
@@ -16,6 +20,13 @@ export default function CMSBuilderPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [pageData, setPageData] = useState<PlatformPage | null>(null);
+
+  const { vendors: storeList } = useVendors();
+  const { weavers: weaverList } = useWeavers();
+  const allSellers = [
+    ...storeList.map(v => ({ id: v.id, name: v.storeName, type: "Store" })),
+    ...weaverList.map(w => ({ id: w.id, name: w.weaverName, type: "Weaver" }))
+  ];
 
   useEffect(() => {
     async function fetchTemplate() {
@@ -305,7 +316,10 @@ export default function CMSBuilderPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
                             <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Category</label>
-                            <input type="text" value={row.category || ""} onChange={e => updateRow(row.id, "category", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="e.g. Saree" />
+                            <select value={row.category || ""} onChange={e => updateRow(row.id, "category", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
+                              <option value="">-- All Categories --</option>
+                              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
                           </div>
                           <div>
                             <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Product Limit (1 or 2 recommended)</label>
@@ -331,15 +345,24 @@ export default function CMSBuilderPage() {
                 <>
                   <div>
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Category</label>
-                    <input type="text" value={row.category || ""} onChange={e => updateRow(row.id, "category", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="e.g. Saree" />
+                    <select value={row.category || ""} onChange={e => updateRow(row.id, "category", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
+                      <option value="">-- All Categories --</option>
+                      {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Material</label>
-                    <input type="text" value={row.productMaterial || ""} onChange={e => updateRow(row.id, "productMaterial", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="e.g. Pure Silk" />
+                    <select value={row.productMaterial || ""} onChange={e => updateRow(row.id, "productMaterial", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
+                      <option value="">-- All Materials --</option>
+                      {MATERIALS.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Vendor ID</label>
-                    <input type="text" value={row.vendorId || ""} onChange={e => updateRow(row.id, "vendorId", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="Leave empty for all" />
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Vendor / Weaver</label>
+                    <select value={row.vendorId || ""} onChange={e => updateRow(row.id, "vendorId", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
+                      <option value="">-- All Vendors & Weavers --</option>
+                      {allSellers.map(s => <option key={s.id} value={s.id}>{s.name} ({s.type})</option>)}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Product Limit</label>
@@ -420,7 +443,10 @@ export default function CMSBuilderPage() {
                     <h3 className="text-sm font-bold text-[#C5A059]">Products Configuration (Half Side)</h3>
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Category</label>
-                      <input type="text" value={row.category || ""} onChange={e => updateRow(row.id, "category", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="e.g. Saree" />
+                      <select value={row.category || ""} onChange={e => updateRow(row.id, "category", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
+                        <option value="">-- All Categories --</option>
+                        {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Product Limit (Shows as Grid)</label>
