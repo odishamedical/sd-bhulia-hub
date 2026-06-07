@@ -123,7 +123,7 @@ function SearchContent() {
 
   const handleSocialShare = (platform: "whatsapp" | "facebook", productName: string) => {
     const shareUrl = `${window.location.origin}/product/${encodeURIComponent(productName.toLowerCase().replace(/\s+/g, "-"))}`;
-    const message = `Explore the authentic GI-Tagged ${productName} directly from Odisha master weavers on Bhulia Hub! ${shareUrl}`;
+    const message = `Explore the authentic Bhulia.com Verified ${productName} directly from Odisha master weavers on Bhulia Hub! ${shareUrl}`;
 
     if (platform === "whatsapp") {
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, "_blank");
@@ -139,7 +139,7 @@ function SearchContent() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-2">Global Catalog Search</h1>
-          <p className="text-gray-300 text-sm">Browse 100% GI-Tag verified sovereign handloom masterpieces directly from the weavers.</p>
+          <p className="text-gray-300 text-sm">Browse 100% Bhulia.com verified sovereign handloom masterpieces directly from the weavers.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

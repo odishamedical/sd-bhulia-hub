@@ -40,7 +40,7 @@ const SIDEBAR_CATEGORIES = [
     icon: "🏷️",
     badgeId: "products",
     subLinks: [
-      { name: "GI-Tag Audit", path: "/admin/products/audit" },
+      { name: "Bhulia.com Audit", path: "/admin/products/audit" },
       { name: "Product Catalog", path: "/admin/products" },
       { name: "Live Inventory DB", path: "/admin/products/live" },
       { name: "Low Stock Alerts", path: "/admin/products/stock" },

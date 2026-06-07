@@ -44,7 +44,7 @@ export default function StoreLegacyPage() {
               Sambalpuri weaving (known as Bandha Kala) is a mathematically precise craft where warp and weft yarns are bound and resist-dyed before they touch the pit loom. Our society collects weavers from surrounding villages, ensuring standard wages, yarn supply, and direct market access.
             </p>
             <p className="text-sm text-gray-300 leading-relaxed font-sans">
-              Each piece represents between 15 to 60 days of continuous, highly concentrated manual work. By maintaining the integrity of these patterns (such as Pasapalli grids and temple borders), we keep this GI-tagged artform alive without relying on automated power looms.
+              Each piece represents between 15 to 60 days of continuous, highly concentrated manual work. By maintaining the integrity of these patterns (such as Pasapalli grids and temple borders), we keep this Bhulia.comged artform alive without relying on automated power looms.
             </p>
 
             {/* Verification Steps Indicator */}

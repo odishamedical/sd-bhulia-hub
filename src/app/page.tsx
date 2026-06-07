@@ -61,12 +61,12 @@ export default function Home() {
       badge: "Odisha Handloom Sovereign Hub",
       title: "Bhulia.com:",
       subtitle: "The Collective of Odisha's Master Weavers.",
-      desc: "Direct access to thousands of authentic handloom artisans, primary weaving societies, and GI-Tag verified masterpieces from multiple tenant stores.",
+      desc: "Direct access to thousands of authentic handloom artisans, primary weaving societies, and Bhulia.com verified masterpieces from multiple tenant stores.",
       img: "/hero_qc.png",
       btn: "Shop the Collections"
     },
     {
-      badge: "GI-Tag Verified Heritage",
+      badge: "Bhulia.com Verified Heritage",
       title: "Silk Masterpieces:",
       subtitle: "Authentic Double Ikat Pata.",
       desc: "Invest in 800 years of living heritage. Every silk thread is tie-dyed with mathematical precision and secured with D2C Jan Dhan payout.",
@@ -131,7 +131,7 @@ export default function Home() {
   // Dynamic Social Share Handler with Affiliate Tracking ID
   const handleSocialShare = (platform: "whatsapp" | "facebook", productName: string) => {
     const shareUrl = `${window.location.origin}/product/${encodeURIComponent(productName.toLowerCase().replace(/\s+/g, "-"))}?ref=${userUid}`;
-    const message = `Explore the authentic GI-Tagged ${productName} directly from Odisha master weavers on Bhulia Hub! ${shareUrl}`;
+    const message = `Explore the authentic Bhulia.com Verified ${productName} directly from Odisha master weavers on Bhulia Hub! ${shareUrl}`;
 
     if (platform === "whatsapp") {
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, "_blank");
@@ -460,7 +460,7 @@ export default function Home() {
               <h3 className="text-xl md:text-3xl font-serif font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] drop-shadow-[0_0_8px_rgba(197,160,89,0.3)] whitespace-nowrap">Explore Master Weaver Flagships</h3>
               <div className="flex-1 h-[1px] bg-gradient-to-r from-[#C5A059]/60 to-transparent shadow-[0_0_8px_rgba(197,160,89,0.5)]"></div>
             </div>
-            <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Browse verified sovereign D2C boutiques, village clusters, and GI-Tag registries</p>
+            <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Browse verified sovereign D2C boutiques, village clusters, and Bhulia.com registries</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
@@ -519,7 +519,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[
-              { title: "Weavers Onboarding", desc: "List your traditional pit looms, mint GI-Tagged sarees, and receive direct D2C payout payouts.", icon: "🧵", btn: "Apply as Weaver", href: "/register-weaver" },
+              { title: "Weavers Onboarding", desc: "List your traditional pit looms, mint Bhulia.com Verified sarees, and receive direct D2C payout payouts.", icon: "🧵", btn: "Apply as Weaver", href: "/register-weaver" },
               { title: "Store Owners Gateway", desc: "Register your Primary Weaving Cooperative Society (PWCS) or master boutique for global Spree sync.", icon: "🏛️", btn: "Apply as Store Owner", href: "/register-store" },
               { title: "Wholesalers Portal", desc: "Access bulk B2B handloom requisitions, custom Ikat commissioning lots, and tax-exempt export billing.", icon: "📦", btn: "Apply as Wholesaler", href: "#" },
               { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise", href: "/register-franchise" }
@@ -600,7 +600,7 @@ export default function Home() {
 
                 {/* Bottom Ticket */}
                 <div className="bg-[#0A2520] px-3 py-1.5 border-t border-[#C5A059]/20 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
-                  <span className="truncate">{item.escrowStatus || "🛡️ 100% GI-Tag Verified"}</span>
+                  <span className="truncate">{item.escrowStatus || "🛡️ 100% Bhulia.com Verified"}</span>
                 </div>
               </div>
             ))}
@@ -694,7 +694,7 @@ export default function Home() {
 
                 {/* Bottom Ticket */}
                 <div className="bg-[#0A2520] px-3 py-1.5 border-t border-[#C5A059]/20 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
-                  <span className="truncate">{item.escrowStatus || "🛡️ 100% GI-Tag Verified"}</span>
+                  <span className="truncate">{item.escrowStatus || "🛡️ 100% Bhulia.com Verified"}</span>
                 </div>
               </div>
             ))}
@@ -708,7 +708,7 @@ export default function Home() {
           <div className="space-y-4 max-w-2xl relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-xs font-bold uppercase tracking-widest">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse"></span>
-              <span>100% Silk Mark & GI-Tag Payout Protection</span>
+              <span>100% Silk Mark & Bhulia.com Payout Protection</span>
             </div>
             
             <h3 className="text-3xl md:text-4xl font-serif font-bold text-white leading-tight">
@@ -788,7 +788,7 @@ export default function Home() {
 
                 {/* Bottom Ticket */}
                 <div className="bg-[#0A2520] px-3 py-1.5 border-t border-[#C5A059]/20 text-[9px] font-mono text-gray-300 flex items-center justify-center gap-1 text-center leading-tight">
-                  <span className="truncate">{item.escrowStatus || "🛡️ 100% GI-Tag Verified"}</span>
+                  <span className="truncate">{item.escrowStatus || "🛡️ 100% Bhulia.com Verified"}</span>
                 </div>
               </div>
             ))}

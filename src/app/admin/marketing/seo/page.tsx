@@ -5,7 +5,7 @@ import React, { useState } from "react";
 
 export default function SEOPage() {
   const [seoData, setSeoData] = useState([
-    { id: 1, route: "/", title: "Shyam Dash Hub | Authentic Sambalpuri Handlooms", description: "Buy 100% authentic GI-tagged Sambalpuri cotton and silk sarees directly from the weavers of Odisha.", keywords: "sambalpuri saree, handloom, odisha weavers, silk saree, ikat", status: "Optimized" },
+    { id: 1, route: "/", title: "Shyam Dash Hub | Authentic Sambalpuri Handlooms", description: "Buy 100% authentic Bhulia.comged Sambalpuri cotton and silk sarees directly from the weavers of Odisha.", keywords: "sambalpuri saree, handloom, odisha weavers, silk saree, ikat", status: "Optimized" },
     { id: 2, route: "/admin", title: "Super Admin Hub | SD Ecosystem", description: "Secure internal administration panel for Shyam Dash Hub ecosystem.", keywords: "admin, dashboard", status: "No Index" },
     { id: 3, route: "/store/[slug]", title: "Official Franchise Store | SD Hub", description: "Visit our verified B2B franchise stores across India.", keywords: "franchise, b2b, retail, sambalpuri", status: "Needs Review" }
   ]);

@@ -123,7 +123,7 @@ export default function GiTagAuditQueue() {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <h3 className="font-bold text-lg mb-2 flex items-center gap-2"><span className="text-2xl">🛑</span> Access Denied</h3>
-        <p>You do not have the required `Global Catalog` permissions to audit GI-Tag claims.</p>
+        <p>You do not have the required `Global Catalog` permissions to audit Bhulia.com claims.</p>
       </div>
     );
   }
@@ -134,7 +134,7 @@ export default function GiTagAuditQueue() {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
-            GI-Tag Audit Queue
+            Bhulia.com Audit Queue
             <span className="bg-amber-100 text-amber-800 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border border-amber-200">Quality Control</span>
           </h1>
           <p className="text-sm text-gray-500 mt-1">Verify technical specifications before pushing sarees to the live public catalog.</p>

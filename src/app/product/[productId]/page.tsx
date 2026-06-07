@@ -303,7 +303,7 @@ export default function ProductDetailPage() {
                 <Image src={activeImg || product.img} alt={product.title} fill className="object-contain transition-transform duration-700 group-hover:scale-105 animate-fadeIn" />
               </div>
               
-              {/* Authenticity badge - replacing GI Tag with Bhulia Verified */}
+              {/* Authenticity badge - replacing Bhulia.com with Bhulia Verified */}
               <div className="absolute top-4 left-4 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold shadow-lg border border-[#C5A059]">
                 ✓ BHULIA.COM VERIFIED SAMBALPURI
               </div>

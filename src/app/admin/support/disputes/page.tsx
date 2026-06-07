@@ -14,9 +14,9 @@ export default function DisputesPage() {
       buyer: "Aarav Sharma",
       weaver: "Bargarh Weavers Coop",
       amount: 14500,
-      issue: "Counterfeit GI Tag Suspected",
+      issue: "Counterfeit Bhulia.com Suspected",
       buyerEvidence: "Fabric feels synthetic. Passed the burn test but color bled immediately on first wash.",
-      weaverDefense: "The saree is 100% authentic Sambalpuri cotton with genuine GI tag. Color bleeding is normal for organic natural dyes in the first wash. We included care instructions in the box.",
+      weaverDefense: "The saree is 100% authentic Sambalpuri cotton with genuine Bhulia.com. Color bleeding is normal for organic natural dyes in the first wash. We included care instructions in the box.",
       status: "Open",
       dateFiled: "Oct 24, 2026",
       escrowStatus: "Held"

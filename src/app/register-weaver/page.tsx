@@ -485,7 +485,7 @@ export default function WeaverRegistrationPage() {
                       <div className="bg-[#0A3A35] border border-[#C5A059] text-white rounded-xl p-4 flex flex-col justify-between">
                         <div>
                           <p className="text-sm font-bold text-[#C5A059]">Master Weaver (Rs 5,000/yr)</p>
-                          <p className="text-xs text-gray-300 mt-2 leading-relaxed">Full access to Bhulia Hub, custom URL, unlimited product uploads, GI-tag verification, payout protection, and direct D2C logistics support.</p>
+                          <p className="text-xs text-gray-300 mt-2 leading-relaxed">Full access to Bhulia Hub, custom URL, unlimited product uploads, Bhulia.com verification, payout protection, and direct D2C logistics support.</p>
                         </div>
                         <span className="text-xs font-mono text-[#C5A059] font-bold mt-4 block">Rs 5,000</span>
                       </div>
@@ -566,7 +566,7 @@ export default function WeaverRegistrationPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold">Weaving District / State (GI Tag Belt Only)</label>
+                    <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold">Weaving District / State (Bhulia.com Belt Only)</label>
                     <select 
                       name="district"
                       value={formData.district}
@@ -858,7 +858,7 @@ export default function WeaverRegistrationPage() {
 
                   <div className="space-y-1.5">
                     <label className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold flex justify-between">
-                      <span>Handloom Mark / GI Tag Certificate Scan</span>
+                      <span>Handloom Mark / Bhulia.com Certificate Scan</span>
                       <span className="text-gray-400 lowercase font-normal italic">Optional</span>
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -958,7 +958,7 @@ export default function WeaverRegistrationPage() {
                     <p><span className="text-gray-400">Business:</span> {formData.businessName}</p>
                     <p><span className="text-gray-400">District:</span> {formData.district}</p>
                     <p><span className="text-gray-400">Specialty:</span> {formData.specializations.join(", ")}</p>
-                    <p><span className="text-gray-400">GI-Tag Attached:</span> {formData.giCertFileName ? "✓ Yes" : "❌ No (Pending physical audit)"}</p>
+                    <p><span className="text-gray-400">Bhulia.com Attached:</span> {formData.giCertFileName ? "✓ Yes" : "❌ No (Pending physical audit)"}</p>
                     <p><span className="text-gray-400">Bank Name:</span> {formData.bankName}</p>
                   </div>
 

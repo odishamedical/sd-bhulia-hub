@@ -8,7 +8,7 @@ export async function POST(request: Request) {
 
     if (!giTagNumber || !artisanId) {
       return NextResponse.json(
-        { verified: false, error: "Missing mandatory GI-Tag parameters or Artisan ID" },
+        { verified: false, error: "Missing mandatory Bhulia.com parameters or Artisan ID" },
         { status: 400 }
       );
     }
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     
     if (!isValidFormat) {
       return NextResponse.json(
-        { verified: false, error: "Invalid GI-Tag Certificate format. Must match official Odisha Registry pattern (e.g., GI-Cert: #OD-7492-SB)" },
+        { verified: false, error: "Invalid Bhulia.com Certificate format. Must match official Odisha Registry pattern (e.g., GI-Cert: #OD-7492-SB)" },
         { status: 422 }
       );
     }
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       verified: true,
-      message: "GI-Tag Authenticated Successfully via BIS Registry & Synced to Live Firestore",
+      message: "Bhulia.com Authenticated Successfully via BIS Registry & Synced to Live Firestore",
       artisanId,
       giTagNumber,
       transactionId: `ESC-OD-${Math.floor(Math.random() * 800000 + 100000)}`,
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
     }, { status: 200 });
 
   } catch (error: any) {
-    console.error("[GI-Tag Verification Error]", error);
+    console.error("[Bhulia.com Verification Error]", error);
     return NextResponse.json(
       { verified: false, error: error?.message || "Internal Server Error during BIS Gateway Handshake" },
       { status: 500 }

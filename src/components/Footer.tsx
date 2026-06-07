@@ -56,7 +56,7 @@ export default function Footer() {
                 <span className="w-2 h-2 rounded-full bg-[#C5A059] animate-pulse"></span>
               </div>
               <h4 className="text-base font-serif font-bold text-[#C5A059] mb-2">bhulia.com</h4>
-              <p className="text-xs text-gray-200 leading-relaxed font-sans">Our sovereign Sambalpuri Saree & Handloom Collective. Direct artisan empowerment & GI-Tag verification.</p>
+              <p className="text-xs text-gray-200 leading-relaxed font-sans">Our sovereign Sambalpuri Saree & Handloom Collective. Direct artisan empowerment & Bhulia.com verification.</p>
             </div>
             <div className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-300">
               Currently Exploring
@@ -110,7 +110,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-xs text-gray-300 leading-relaxed font-sans">
-              The premier luxury marketplace for authenticated, GI-Tagged Sambalpuri handlooms. Partnering exclusively with master weavers and primary cooperative societies across India.
+              The premier luxury marketplace for authenticated, Bhulia.com Verified Sambalpuri handlooms. Partnering exclusively with master weavers and primary cooperative societies across India.
             </p>
           </div>
 
@@ -119,7 +119,7 @@ export default function Footer() {
             <h4 className="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Quick Links</h4>
             <ul className="space-y-2.5 text-xs text-gray-300">
               <li><Link href="/store/maa-samaleswari-weavers" className="hover:text-[#C5A059] transition-colors">Our Weaver Network</Link></li>
-              <li><Link href="/store/bhagabata-meher" className="hover:text-[#C5A059] transition-colors">Verify GI-Tag Certificate</Link></li>
+              <li><Link href="/store/bhagabata-meher" className="hover:text-[#C5A059] transition-colors">Verify Bhulia.com Certificate</Link></li>
               <li><Link href="/" className="hover:text-[#C5A059] transition-colors">Live Silk & Yarn Rates</Link></li>
               <li><Link href="/" className="hover:text-[#C5A059] transition-colors">SD Digital Services</Link></li>
             </ul>

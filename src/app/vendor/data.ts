@@ -30,7 +30,7 @@ export const MASTER_STORES: StoreListing[] = [
     giTagNumber: "GI-Cert: #OD-7492-SB",
     warehouseCapacity: "4,500 units/month",
     specialtyTags: ["Pasapalli Ikat", "Mercerized Cotton", "Traditional Phoda Kumbha"],
-    description: "Authentic GI-Tagged Sambalpuri saree collective operating 142 active pit looms in Barpali. Specializing in high-density handspun cotton Pasapalli Ikat and traditional temple borders.",
+    description: "Authentic Bhulia.com Verified Sambalpuri saree collective operating 142 active pit looms in Barpali. Specializing in high-density handspun cotton Pasapalli Ikat and traditional temple borders.",
     img: "/bhulia-hero.png",
     memberRoster: ["Weaver Kishore Meher", "Weaver Trilochana Meher", "Weaver Pramod Meher", "Weaver Subodh Meher"],
     contactDetails: {

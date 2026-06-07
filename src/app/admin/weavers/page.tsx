@@ -17,7 +17,7 @@ export default function AdminWeaversPage() {
   const [desc, setDesc] = useState("");
   const [img, setImg] = useState("");
   const [heroImg, setHeroImg] = useState("");
-  const [badge, setBadge] = useState("GI-Tag Verified Artisan");
+  const [badge, setBadge] = useState("Bhulia.com Verified Artisan");
 
   const handleEdit = (weaver: any) => {
     setEditingWeaver(weaver);
@@ -38,7 +38,7 @@ export default function AdminWeaversPage() {
     setDesc("");
     setImg("");
     setHeroImg("");
-    setBadge("GI-Tag Verified Artisan");
+    setBadge("Bhulia.com Verified Artisan");
   };
 
   const handleAddWeaver = async (e: React.FormEvent) => {
@@ -184,7 +184,7 @@ export default function AdminWeaversPage() {
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Verification Badge</label>
-                  <input required value={badge} onChange={e => setBadge(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="e.g. GI-Tag Verified Artisan" />
+                  <input required value={badge} onChange={e => setBadge(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="e.g. Bhulia.com Verified Artisan" />
                 </div>
               </div>
               

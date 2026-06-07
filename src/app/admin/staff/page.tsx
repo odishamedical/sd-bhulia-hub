@@ -267,7 +267,7 @@ export default function StaffDelegationPage() {
                               onChange={(val) => handlePermissionChange(admin.id, "kyc", val)} 
                             />
                             <PermissionToggle 
-                              label="Products (GI-Tag)" 
+                              label="Products (Bhulia.com)" 
                               checked={perms.products} 
                               onChange={(val) => handlePermissionChange(admin.id, "products", val)} 
                             />

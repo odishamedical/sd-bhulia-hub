@@ -1462,7 +1462,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
 
       {activeTab === "products" && (
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 animate-in fade-in">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Product Approvals (GI-Tag Validation)</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Product Approvals (Bhulia.com Validation)</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pendingProducts.map(p => (
               <div key={p.id} className="p-6 border border-gray-200 rounded-2xl flex flex-col justify-between group hover:border-[#0070F3]/30 transition-colors">

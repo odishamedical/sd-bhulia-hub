@@ -30,7 +30,7 @@ export function usePendingCounts() {
       setCounts(prev => ({ ...prev, kyc: snapshot.size }));
     });
 
-    // 2. Products (Pending GI-Tag Verification)
+    // 2. Products (Pending Bhulia.com Verification)
     const qProducts = query(collection(db, "products"), where("status", "==", "pending_verification"));
     const unsubProducts = onSnapshot(qProducts, (snapshot) => {
       setCounts(prev => ({ ...prev, products: snapshot.size }));
