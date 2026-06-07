@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/lib/products";
 import { useState, useEffect } from "react";
+import ProductCard from "./ProductCard";
 
 export interface PublicProfileProps {
   type: "weaver" | "store";
@@ -34,7 +35,7 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
   }, []);
 
   return (
-    <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 py-8 flex flex-col gap-8 relative z-10">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8 relative z-10">
       
       {/* Hero Section */}
       <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 flex flex-col lg:flex-row gap-8 shadow-xl">
@@ -109,30 +110,9 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
         </div>
 
         {products && products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
             {products.map((product) => (
-              <div key={product.id} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl text-white">
-                <div className="relative w-full aspect-square overflow-hidden bg-[#051815]">
-                  <Image src={product.images?.[0] || "/bhulia-hero.png"} alt={product.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                </div>
-                <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                  <div>
-                    <h4 className="font-bold text-white text-sm group-hover:text-[#C5A059] transition-colors mb-1 line-clamp-2">{product.title}</h4>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">{product.category}</p>
-                  </div>
-                  <div className="flex justify-between items-center border-t border-[#C5A059]/20 pt-3">
-                    <div className="flex flex-col">
-                      <span className={`text-lg font-serif font-bold ${userRole === "reseller" && product.allowResellerMargin ? "text-gray-400 line-through text-sm" : "text-[#C5A059]"}`}>₹{product.price?.toLocaleString() || product.price}</span>
-                      {userRole === "reseller" && product.allowResellerMargin && product.resellerPrice && (
-                        <span className="text-lg font-serif font-bold text-green-400">₹{product.resellerPrice}</span>
-                      )}
-                    </div>
-                    <Link href={`/product/${product.slug || product.id}`} className="px-3 py-1.5 bg-[#C5A059]/20 text-[#C5A059] text-xs font-bold uppercase rounded hover:bg-[#C5A059] hover:text-[#0A1021] transition-colors">
-                      View
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <ProductCard key={product.id} product={product} role={userRole} />
             ))}
           </div>
         ) : (

@@ -11,6 +11,7 @@ import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { db } from "../lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import ProductCard from "../components/ProductCard";
 
 interface CMSRow {
   id: string;
@@ -187,7 +188,7 @@ export default function Home() {
       )}
 
       {/* Main Content Container */}
-      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 relative z-10 space-y-6 md:space-y-8 overflow-hidden">
+      <div className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6 relative z-10 space-y-6 md:space-y-12 overflow-hidden">
         
         {/* 1. Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch">
@@ -279,32 +280,9 @@ export default function Home() {
                 <Link href="/search" className="text-xs font-bold text-[#C5A059] uppercase tracking-widest hover:underline whitespace-nowrap">View All</Link>
               </div>
               
-              <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                {[...products].sort(() => 0.5 - Math.random()).slice(0, 8).map(item => (
-                  <div key={item.id} className="min-w-[240px] md:min-w-[280px] snap-start shrink-0 bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
-                    <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] overflow-hidden bg-[#0B2B26] rounded-t-xl">
-                      <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                      {item.isSpecialOffer && (
-                        <div className="absolute top-0 right-0 m-2 px-2 py-1 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg flex items-center gap-1 z-10 animate-pulse">
-                          <span>🔥</span> {item.specialOfferTag || "Limited Time Offer"}
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
-                      <div>
-                        <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.title}</h4>
-                        <p className="text-base font-serif font-bold text-[#C5A059]">₹{item.price}</p>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 mt-2">
-                        <button onClick={() => addToCart(item)} className="bhulia-gold-button w-full py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] font-bold text-[10px] uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md cursor-pointer">
-                          Add to Cart
-                        </button>
-                        <Link href={`/product/${item.slug}`} className="w-full py-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] font-bold text-[10px] uppercase tracking-wider rounded-xl hover:bg-[#0D4B45] transition-all shadow-md flex items-center justify-center">
-                          View
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6 pt-2">
+                {[...products].sort(() => 0.5 - Math.random()).slice(0, 12).map(item => (
+                  <ProductCard key={item.id} product={item} role={userRole} />
                 ))}
               </div>
             </div>
@@ -322,30 +300,9 @@ export default function Home() {
                   <Link href="/search?specialOffer=true" className="text-xs font-bold text-red-400 uppercase tracking-widest hover:underline whitespace-nowrap">View All Deals</Link>
                 </div>
                 
-                <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                  {[...products].filter(p => p.isSpecialOffer).slice(0, 8).map(item => (
-                    <div key={item.id} className="min-w-[240px] md:min-w-[280px] snap-start shrink-0 bg-gradient-to-b from-[#1c0f08] to-[#0B2B26] border border-red-500/30 hover:border-red-500 rounded-2xl overflow-hidden flex flex-col justify-between group transition-all duration-300 shadow-[0_0_15px_rgba(255,50,0,0.1)] p-0.5">
-                      <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] overflow-hidden bg-[#0B2B26] rounded-t-xl">
-                        <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                        <div className="absolute top-0 right-0 m-2 px-2 py-1 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg flex items-center gap-1 z-10 animate-pulse">
-                          <span>🔥</span> {item.specialOfferTag || "Limited Time Offer"}
-                        </div>
-                      </div>
-                      <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
-                        <div>
-                          <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-red-400 transition-colors mb-0.5 leading-tight line-clamp-1">{item.title}</h4>
-                          <p className="text-base font-serif font-black text-red-400">₹{item.price}</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 mt-2">
-                          <button onClick={() => addToCart(item)} className="w-full py-2 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold text-[10px] uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md cursor-pointer">
-                            Add to Cart
-                          </button>
-                          <Link href={`/product/${item.slug}`} className="w-full py-2 bg-black/40 border border-red-500/40 text-red-400 font-bold text-[10px] uppercase tracking-wider rounded-xl hover:bg-black/60 transition-all shadow-md flex items-center justify-center">
-                            View Deal
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6 pt-2">
+                  {[...products].filter(p => p.isSpecialOffer).slice(0, 12).map(item => (
+                    <ProductCard key={item.id} product={item} role={userRole} />
                   ))}
                 </div>
               </div>
@@ -362,34 +319,9 @@ export default function Home() {
                 </div>
                 <Link href="/search?sort=newest" className="text-xs font-bold text-[#C5A059] uppercase tracking-widest hover:underline whitespace-nowrap">View All</Link>
               </div>
-              
-              <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                {[...products].slice(-8).reverse().map(item => (
-                  <div key={item.id} className="min-w-[240px] md:min-w-[280px] snap-start shrink-0 bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
-                    <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] overflow-hidden bg-[#0B2B26] rounded-t-xl">
-                      <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                      <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#C5A059] text-[#0A1021] text-[9px] font-bold uppercase tracking-widest rounded shadow">New</span>
-                      {item.isSpecialOffer && (
-                        <div className="absolute top-0 right-0 m-2 px-2 py-1 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg flex items-center gap-1 z-10 animate-pulse">
-                          <span>🔥</span> {item.specialOfferTag || "Limited Time Offer"}
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
-                      <div>
-                        <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-[#C5A059] transition-colors mb-0.5 leading-tight line-clamp-1">{item.title}</h4>
-                        <p className="text-base font-serif font-bold text-[#C5A059]">₹{item.price}</p>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 mt-2">
-                        <button onClick={() => addToCart(item)} className="bhulia-gold-button w-full py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] font-bold text-[10px] uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md cursor-pointer">
-                          Add to Cart
-                        </button>
-                        <Link href={`/product/${item.slug}`} className="w-full py-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] font-bold text-[10px] uppercase tracking-wider rounded-xl hover:bg-[#0D4B45] transition-all shadow-md flex items-center justify-center">
-                          View
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6 pt-2">
+                {[...products].slice(-12).reverse().map(item => (
+                  <ProductCard key={item.id} product={item} role={userRole} />
                 ))}
               </div>
             </div>

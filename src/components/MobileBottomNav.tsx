@@ -25,13 +25,13 @@ export default function MobileBottomNav() {
           <span className={`text-[10px] font-bold tracking-wider ${pathname === "/" ? "text-[#C5A059]" : "text-gray-400"}`}>Home</span>
         </Link>
 
-        {/* Shop */}
-        <button onClick={() => router.push('/#cotton-sambalpuri')} className="flex flex-col items-center justify-center w-16 h-full text-center relative group">
-          <svg className="w-6 h-6 mb-1 text-gray-400 group-hover:text-gray-200 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        {/* Search / Categories */}
+        <Link href="/search" className="flex flex-col items-center justify-center w-16 h-full text-center relative group">
+          <svg className={`w-6 h-6 mb-1 transition-all ${pathname === "/search" ? "text-[#C5A059]" : "text-gray-400 group-hover:text-gray-200"}`} fill={pathname === "/search" ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" strokeWidth={pathname === "/search" ? "0" : "2"}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          <span className="text-[10px] font-bold tracking-wider text-gray-400">Shop</span>
-        </button>
+          <span className={`text-[10px] font-bold tracking-wider ${pathname === "/search" ? "text-[#C5A059]" : "text-gray-400"}`}>Search</span>
+        </Link>
 
         {/* Cart */}
         <Link href="/checkout" className="flex flex-col items-center justify-center w-16 h-full text-center relative group">

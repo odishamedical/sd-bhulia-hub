@@ -101,34 +101,88 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Mobile Navigation Drawer */}
+      {/* Mobile Navigation Drawer Overlay */}
       {mobileNavOpen && (
-        <div className="lg:hidden sticky top-[57px] z-40 bg-[#0B2B26]/98 backdrop-blur-md border-b border-[#C5A059]/40 px-6 py-6 space-y-4 shadow-2xl animate-fadeIn">
-          <div className="flex flex-col space-y-3 text-xs font-bold uppercase tracking-widest text-gray-200">
-            <Link href="/" onClick={() => setMobileNavOpen(false)} className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 block">Home</Link>
-            <div className="space-y-2 border-b border-[#C5A059]/20 pb-2">
-              <span className="text-gray-400 block text-[10px]">Products:</span>
-              <div className="grid grid-cols-2 gap-2 pl-2 text-[11px] font-medium text-gray-300 capitalize">
-                <Link href="/#cotton-sambalpuri" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Cotton Sambalpuri</Link>
-                <Link href="/#pata-sambalpuri" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Pata Sambalpuri (Silk)</Link>
-                <Link href="/#cotton-bomkai" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-1">Cotton Bomkai</Link>
+        <div className="lg:hidden fixed inset-0 z-50 flex">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            onClick={() => setMobileNavOpen(false)}
+          ></div>
+          
+          {/* Drawer (Slide in from Left) */}
+          <div className="relative w-4/5 max-w-sm bg-[#051815] h-full flex flex-col shadow-2xl border-r border-[#C5A059]/30 animate-[slideInLeft_0.3s_ease-out]">
+            {/* Top Section: User Profile or Sign In */}
+            <div className="p-6 border-b border-[#C5A059]/20 bg-gradient-to-b from-[#0B2B26] to-[#051815]">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-[#C5A059] font-serif font-bold text-xl tracking-wider">BHULIA.COM</h2>
+                <button onClick={() => setMobileNavOpen(false)} className="text-gray-400 hover:text-white p-1">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
               </div>
-            </div>
-            <Link href="/#weaver-boutiques" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-2 border-b border-[#C5A059]/20">Weaver Boutiques</Link>
-            <Link href="/search" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-2 border-b border-[#C5A059]/20 flex items-center gap-2"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg> Search Collections</Link>
-            <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-2 border-b border-[#C5A059]/20">About Us</Link>
-            <Link href="/" onClick={() => setMobileNavOpen(false)} className="hover:text-[#C5A059] block py-2 border-b border-[#C5A059]/20">Contact Us</Link>
-            
-            <div className="pt-2 flex flex-col gap-3">
-              {!user && (
-                <button onClick={() => { setMobileNavOpen(false); loginWithGoogle(); }} className="w-full bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-center">
-                  Sign In
+              
+              {user ? (
+                <div className="flex items-center gap-3">
+                  {user.photoURL ? (
+                    <img src={user.photoURL} alt="Profile" className="w-12 h-12 rounded-full border-2 border-[#C5A059] object-cover shadow-lg" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full border-2 border-[#C5A059] bg-[#0A3A35] flex items-center justify-center text-[#C5A059] font-bold text-lg shadow-lg">
+                      {user.displayName?.charAt(0) || user.email?.charAt(0) || "U"}
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-white font-bold text-sm">{user.displayName || "User"}</p>
+                    <p className="text-gray-400 text-xs truncate max-w-[150px]">{user.email}</p>
+                  </div>
+                </div>
+              ) : (
+                <button onClick={() => { setMobileNavOpen(false); loginWithGoogle(); }} className="w-full bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-center shadow-lg">
+                  Sign In / Register
                 </button>
               )}
-              <button onClick={() => { setMobileNavOpen(false); setIsCartOpen(true); }} className="w-full bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-center">
-                Cart ({cartCount})
-              </button>
             </div>
+
+            {/* Middle Section: Categorized Links */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-[10px] text-gray-500 font-bold uppercase tracking-widest border-b border-[#C5A059]/10 pb-2">Collections</h3>
+                <Link href="/search?category=Cotton Classics" onClick={() => setMobileNavOpen(false)} className="flex items-center gap-3 text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">
+                  <span className="w-2 h-2 rounded-full bg-[#C5A059]/50"></span> Cotton Sambalpuri
+                </Link>
+                <Link href="/search?category=Silk Masterpieces" onClick={() => setMobileNavOpen(false)} className="flex items-center gap-3 text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">
+                  <span className="w-2 h-2 rounded-full bg-[#C5A059]/50"></span> Pata Sambalpuri (Silk)
+                </Link>
+                <Link href="/search?design=Bomkai" onClick={() => setMobileNavOpen(false)} className="flex items-center gap-3 text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">
+                  <span className="w-2 h-2 rounded-full bg-[#C5A059]/50"></span> Cotton Bomkai
+                </Link>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-[10px] text-gray-500 font-bold uppercase tracking-widest border-b border-[#C5A059]/10 pb-2">Discover</h3>
+                <Link href="/search" onClick={() => setMobileNavOpen(false)} className="block text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">Search All Products</Link>
+                <Link href="/#weaver-boutiques" onClick={() => setMobileNavOpen(false)} className="block text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">Weaver Boutiques</Link>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-[10px] text-gray-500 font-bold uppercase tracking-widest border-b border-[#C5A059]/10 pb-2">Support</h3>
+                <Link href="/" onClick={() => setMobileNavOpen(false)} className="block text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">About Us</Link>
+                <Link href="/" onClick={() => setMobileNavOpen(false)} className="block text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">Contact Us</Link>
+              </div>
+            </div>
+
+            {/* Bottom Section: Account Management */}
+            {user && (
+              <div className="p-6 border-t border-[#C5A059]/20 bg-[#0A1021]/50 space-y-4">
+                <Link href="/dashboard" onClick={() => setMobileNavOpen(false)} className="flex items-center gap-3 text-sm font-bold text-[#C5A059]">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                  My Dashboard
+                </Link>
+                <button onClick={() => { setMobileNavOpen(false); /* sign out logic usually in UserMenu */ }} className="flex items-center gap-3 text-sm font-bold text-gray-400 hover:text-red-400 transition-colors w-full text-left">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                  Sign Out
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
