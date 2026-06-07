@@ -25,8 +25,8 @@ export default function Header() {
   return (
     <>
       {/* Top Sticky Header */}
-      <header className="sticky top-0 w-full z-50 bg-[#0074E4] border-b border-[#0052A3] px-4 sm:px-6 py-4 sm:py-6 shadow-[0_10px_30px_-10px_rgba(0,116,228,0.4)] flex flex-col gap-3 transition-all duration-300">
-        <div className="flex justify-between items-center gap-2 w-full">
+      <header className="sticky top-0 w-full z-50 bg-[#0074E4] border-b border-[#0052A3] shadow-[0_10px_30px_-10px_rgba(0,116,228,0.4)] flex flex-col transition-all duration-300">
+        <div className="flex justify-between items-center gap-2 w-full px-4 sm:px-6 py-4 sm:py-6">
           {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0">
             <div className="relative w-10 sm:w-16 h-10 sm:h-16 rounded-full overflow-hidden border border-[#C5A059] sm:border-2 shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
