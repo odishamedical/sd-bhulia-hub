@@ -131,6 +131,18 @@ export default function Header() {
             </button>
           </div>
         </div>
+
+        {/* Scrolling SEO Ticker */}
+        <div className="w-full bg-[#051815] py-1.5 overflow-hidden flex border-t border-[#C5A059]/20">
+          <div className="whitespace-nowrap animate-marquee flex gap-16 text-[10px] sm:text-xs text-white/90 font-medium tracking-[0.2em] uppercase shrink-0 min-w-full">
+            <span>BHULIA.COM - AUTHENTIC SAMBALPURI SAREES DIRECT FROM WEAVERS</span>
+            <span>PURE SILK PATA • COTTON IKAT • BOMKAI • PASAPALLI</span>
+            <span>SAMBALPURI PRODUCTS APPROVED FOR GI TAG</span>
+            <span>BHULIA.COM - AUTHENTIC SAMBALPURI SAREES DIRECT FROM WEAVERS</span>
+            <span>PURE SILK PATA • COTTON IKAT • BOMKAI • PASAPALLI</span>
+            <span>SAMBALPURI PRODUCTS APPROVED FOR GI TAG</span>
+          </div>
+        </div>
       </header>
 
       {/* Mobile Navigation Drawer Overlay */}
