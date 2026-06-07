@@ -958,7 +958,20 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
    ========================================== */
 function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
   const { products, loading: productsLoading } = useProducts();
+  const { orders } = useOrders();
   const resellerProducts = products.filter(p => p.allowResellerMargin === true);
+
+  // Calculate Total Commission
+  const myReferralOrders = orders.filter(o => o.referralId === auth.currentUser?.uid || o.proxyBuyerId === auth.currentUser?.uid || (o as any).resellerId === auth.currentUser?.uid);
+  const totalCommission = myReferralOrders.reduce((sum, order) => {
+    const product = products.find(p => p.title === order.productName);
+    if (product && product.resellerMarginPercentage && order.productPrice && (order.paymentStatus === "Settled" || order.paymentStatus === "Payout Pending (Weaver)" || order.paymentStatus === "Escrow Locked" || order.paymentStatus === "placed")) {
+      const orderTotal = parseFloat(String(order.productPrice).replace(/[^0-9.]/g, '')) * (order.quantity || 1);
+      const comm = orderTotal * (product.resellerMarginPercentage / 100);
+      return sum + comm;
+    }
+    return sum;
+  }, 0);
 
   // Proxy Order State
   const [customerName, setCustomerName] = useState("");
@@ -1084,7 +1097,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Commission Earned</h3>
-              <div className="text-3xl font-black text-green-600">₹0</div>
+              <div className="text-3xl font-black text-green-600">₹{Math.floor(totalCommission).toLocaleString('en-IN')}</div>
             </div>
           </div>
         </div>
@@ -1105,7 +1118,9 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                 const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/product/${product.slug}?ref=${auth.currentUser?.uid}` : "";
                 return (
                   <div key={product.id} className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
-                    <img src={product.img} alt={product.title} className="w-full h-48 object-cover" />
+                    <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] bg-gray-100">
+                      <img src={product.img} alt={product.title} className="w-full h-full object-cover" />
+                    </div>
                     <div className="p-4 flex flex-col flex-1">
                       <h3 className="font-bold text-gray-900 truncate mb-1">{product.title}</h3>
                       <div className="flex justify-between items-center mb-4">
@@ -1495,6 +1510,9 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
                     <td className="py-4">
                       <div className="font-bold text-[#0070F3]">{order.productPrice || "TBD"}</div>
                       <div className="text-xs font-bold text-gray-500 uppercase">{order.paymentMode || "Online"}</div>
+                      {(order.referralId || order.proxyBuyerId || (order as any).resellerId) && (
+                        <div className="mt-1 text-[10px] font-bold text-[#C5A059] bg-[#C5A059]/10 px-1.5 py-0.5 rounded inline-block">Has Reseller Margin</div>
+                      )}
                     </td>
                     <td className="py-4">
                       <select value={order.paymentStatus || (order as any).status || "Escrow Locked"} onChange={(e) => updateOrderStatus(order.id, "paymentStatus", e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#0070F3]">
