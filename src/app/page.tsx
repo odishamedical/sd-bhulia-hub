@@ -12,6 +12,7 @@ import { useCart } from "../context/CartContext";
 import { db } from "../lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import ProductCard from "../components/ProductCard";
+import DynamicRenderer from "../components/cms/DynamicRenderer";
 
 interface CMSRow {
   id: string;
@@ -190,8 +191,12 @@ export default function Home() {
       {/* Main Content Container */}
       <div className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6 relative z-10 space-y-6 md:space-y-12 overflow-hidden">
         
-        {/* 1. Hero Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch">
+        {cmsLayout?.dynamicEnabled ? (
+          <DynamicRenderer rows={cmsLayout.rows} />
+        ) : (
+          <>
+            {/* 1. Hero Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch">
           
           {/* Main Hero Banner E.g. Span 7 (Dynamic Slider) */}
           <div className="lg:col-span-7 bg-[#051815] border border-[#C5A059] rounded-3xl overflow-hidden relative shadow-[0_0_35px_rgba(197,160,89,0.2)] group h-[280px] md:h-[315px]">

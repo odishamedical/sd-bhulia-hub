@@ -6,10 +6,11 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 
 interface CMSRow {
   id: string;
-  type: "hero" | "gateways" | "products" | "banner";
+  type: "hero" | "gateways" | "products" | "banner" | "adsense";
   title?: string;
   category?: string;
   bannerText?: string;
+  htmlCode?: string;
   themeStyle?: string; // e.g. "free", "paid-1", "paid-2" (tied to themes)
 }
 
@@ -122,6 +123,7 @@ export default function CMSAdminPage() {
           <div className="flex gap-2">
             <button onClick={() => addRow("products")} className="px-3 py-1.5 bg-[#051815] border border-[#C5A059]/40 text-[#C5A059] text-[10px] font-bold uppercase rounded hover:bg-[#C5A059]/10 transition-colors">+ Product Grid</button>
             <button onClick={() => addRow("banner")} className="px-3 py-1.5 bg-[#051815] border border-[#C5A059]/40 text-[#C5A059] text-[10px] font-bold uppercase rounded hover:bg-[#C5A059]/10 transition-colors">+ Banner</button>
+            <button onClick={() => addRow("adsense")} className="px-3 py-1.5 bg-[#051815] border border-[#C5A059]/40 text-[#C5A059] text-[10px] font-bold uppercase rounded hover:bg-[#C5A059]/10 transition-colors">+ AdSense / HTML</button>
           </div>
         </div>
 
@@ -164,6 +166,13 @@ export default function CMSAdminPage() {
                   <div className="sm:col-span-2">
                     <span className="text-[10px] uppercase font-bold text-[#C5A059] tracking-widest block mb-1">Banner Text</span>
                     <input type="text" value={row.bannerText || ""} onChange={(e) => updateRow(row.id, "bannerText", e.target.value)} className="w-full px-3 py-2 bg-[#051815] rounded border border-[#C5A059]/20 text-sm text-white focus:border-[#C5A059] outline-none" />
+                  </div>
+                )}
+
+                {row.type === "adsense" && (
+                  <div className="sm:col-span-2">
+                    <span className="text-[10px] uppercase font-bold text-[#C5A059] tracking-widest block mb-1">Custom HTML / Google AdSense Code</span>
+                    <textarea value={row.htmlCode || ""} onChange={(e) => updateRow(row.id, "htmlCode", e.target.value)} rows={4} className="w-full px-3 py-2 bg-[#051815] rounded border border-[#C5A059]/20 text-sm text-white focus:border-[#C5A059] outline-none font-mono placeholder:text-gray-600" placeholder="<script async src='https://pagead2.googlesyndication.com/...'>..." />
                   </div>
                 )}
               </div>
