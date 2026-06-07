@@ -7,6 +7,7 @@ import Image from "next/image";
 import { auth, db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp, doc, updateDoc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import Script from "next/script";
 
 export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useCart();
@@ -52,86 +53,98 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      // 1. Simulate Payment Gateway Delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // 2. Generate Order in Firestore (Cart Splitting by Seller)
-      const referralId = localStorage.getItem("sd_reseller_ref") || null;
-      
-      // Group items by sellerId
-      const groupedBySeller: Record<string, typeof cart> = {};
-      cart.forEach(item => {
-        const sellerId = item.sellerId || "bhulia-hub";
-        if (!groupedBySeller[sellerId]) groupedBySeller[sellerId] = [];
-        groupedBySeller[sellerId].push(item);
+      // 1. Call Backend to generate Razorpay Order
+      const res = await fetch("/api/checkout/razorpay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: finalTotal,
+        })
       });
-
-      const parentOrderId = `P-ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+      const data = await res.json();
       
-      for (const sellerId of Object.keys(groupedBySeller)) {
-        const sellerItems = groupedBySeller[sellerId];
-        
-        let subTotal = 0;
-        let shippingTotal = 0;
-        let totalCommission = 0;
+      if (!data.success) throw new Error(data.error);
 
-        sellerItems.forEach(item => {
-          const priceNum = parseInt(item.price.replace(/[^0-9]/g, ""));
-          subTotal += priceNum * item.cartQuantity;
-          shippingTotal += (item.shippingCharge || 0);
-          
-          if (referralId && item.allowResellerMargin && item.resellerMarginPercentage) {
-             totalCommission += (priceNum * item.cartQuantity) * (item.resellerMarginPercentage / 100);
-          }
-        });
-
-        const platformShare = subTotal * 0.05; // 5% platform fee
-        const vendorPayout = subTotal - totalCommission - platformShare;
-
-        const subOrder = {
-          parentOrderId,
-          sellerId,
-          userId: userUid || "guest",
-          customerInfo: formData,
-          items: sellerItems,
-          totalAmount: subTotal + shippingTotal,
-          subTotal: subTotal,
-          shippingTotal: shippingTotal,
-          resellerCommission: totalCommission,
-          platformShare: platformShare,
-          vendorPayout: vendorPayout,
-          status: "processing", // pending_dispatch
-          paymentStatus: "paid_mock",
-          referralId: referralId,
-          createdAt: serverTimestamp(),
-          assignedLogisticsPartner: "pending"
-        };
-
-        // Create sub-order
-        await addDoc(collection(db, "orders"), subOrder);
-
-        // Deduct inventory
-        for (const item of sellerItems) {
-          try {
-            const productRef = doc(db, "products", item.id);
-            const productSnap = await getDoc(productRef);
-            
-            if (productSnap.exists()) {
-              const pData = productSnap.data();
-              const currentStock = pData.stockQuantity || 0;
-              const newStock = Math.max(0, currentStock - item.cartQuantity);
-              
-              await updateDoc(productRef, {
-                stockQuantity: newStock,
-                inStock: newStock > 0
-              });
-            }
-          } catch (e) {
-            console.error("Failed to deduct inventory for product", item.id, e);
-          }
-        }
+      // If missing keys, backend falls back to Mock Mode automatically
+      if (data.isMockMode) {
+         console.log("Running in Mock Mode");
+         await verifyPaymentOnBackend(data.orderId, "mock_payment", "mock_signature", true);
+         return;
       }
 
+      // 2. Open Razorpay Modal
+      const options = {
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Bhulia Hub",
+        description: "Payment Protected Escrow Transaction",
+        image: "/bhulia-hero.png",
+        order_id: data.orderId,
+        handler: async function (response: any) {
+          try {
+            await verifyPaymentOnBackend(
+              response.razorpay_order_id, 
+              response.razorpay_payment_id, 
+              response.razorpay_signature,
+              false
+            );
+          } catch (err) {
+            console.error(err);
+            alert("Payment Verification Failed!");
+            setLoading(false);
+          }
+        },
+        prefill: {
+          name: formData.fullName,
+          email: formData.email,
+          contact: formData.phone,
+        },
+        theme: {
+          color: "#051815",
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on("payment.failed", function (response: any) {
+        alert("Payment Failed: " + response.error.description);
+        setLoading(false);
+      });
+      rzp.open();
+
+    } catch (error) {
+      console.error("Error creating order", error);
+      alert("Checkout initialization failed.");
+      setLoading(false);
+    }
+  };
+
+  const verifyPaymentOnBackend = async (
+    razorpay_order_id: string, 
+    razorpay_payment_id: string, 
+    razorpay_signature: string, 
+    isMockMode: boolean
+  ) => {
+    const referralId = localStorage.getItem("sd_reseller_ref") || null;
+    
+    // Call secure verify endpoint
+    const verifyRes = await fetch("/api/checkout/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+        isMockMode,
+        cart,
+        formData,
+        userUid,
+        referralId
+      })
+    });
+
+    const verifyData = await verifyRes.json();
+    if (verifyData.success) {
       // 3. Clear Cart & Show Success
       clearCart();
       setSuccess(true);
@@ -140,11 +153,8 @@ export default function CheckoutPage() {
       setTimeout(() => {
         router.push("/profile");
       }, 3000);
-
-    } catch (error) {
-      console.error("Error creating order", error);
-      alert("Payment failed simulation.");
-    } finally {
+    } else {
+      alert("Payment verification failed! " + verifyData.error);
       setLoading(false);
     }
   };
@@ -166,6 +176,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-[#051815] py-12 px-4 sm:px-6 relative z-10">
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Checkout Form */}
@@ -268,7 +279,7 @@ export default function CheckoutPage() {
                   Processing Payment...
                 </>
               ) : (
-                "Pay Securely via Razorpay (Mock)"
+                "Pay Securely (Razorpay)"
               )}
             </button>
             <p className="text-center text-[9px] text-gray-500 mt-4 uppercase tracking-widest">
