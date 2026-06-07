@@ -34,7 +34,7 @@ export default function Header() {
             </div>
             <div className="min-w-0">
               <h1 className="text-2xl sm:text-3xl font-sans font-black tracking-tight text-white leading-none">Bhulia.com</h1>
-              <p className="hidden sm:block text-[11px] text-white/80 font-medium tracking-wide mt-1 truncate">Sambalpuri saree, Direct from Weavers</p>
+              <p className="hidden sm:block text-[9px] text-[#C5A059] font-black tracking-[0.3em] uppercase mt-1.5 truncate drop-shadow-sm">AUTHENTIC HANDLOOMS • DIRECT FROM WEAVERS</p>
             </div>
           </div>
 
