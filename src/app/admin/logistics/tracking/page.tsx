@@ -14,9 +14,10 @@ export default function TrackingPage() {
       const statuses = ["Picked Up", "In Transit", "Out for Delivery", "Delivered"];
       const activeTracking = orders.filter(o => o.status === "shipped" || o.status === "delivered").map((order, idx) => ({
         ...order,
-        awbNumber: `AWB-${Math.floor(Math.random() * 900000) + 100000}`,
-        carrier: ["Shiprocket", "Delhivery", "BlueDart"][idx % 3],
-        trackingStatus: (order as any).status === "delivered" ? "Delivered" : statuses[idx % 3],
+        awbNumber: order.awbNumber || `Pending`,
+        carrier: order.carrier || "Pending",
+        trackingUrl: order.trackingUrl || "#",
+        trackingStatus: (order as any).status === "delivered" ? "Delivered" : statuses[idx % 3], // In a real app, this status would come from Shiprocket Webhook
         lastUpdate: "Today, " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
       }));
       setTrackingData(activeTracking);
@@ -75,7 +76,7 @@ export default function TrackingPage() {
                       <div className="text-xs font-mono text-gray-500">Order: {item.id}</div>
                     </td>
                     <td className="py-4 px-4 font-bold text-gray-700">{item.carrier}</td>
-                    <td className="py-4 px-4 text-gray-600 font-medium">Bhubaneswar, OD</td>
+                    <td className="py-4 px-4 text-gray-600 font-medium">{item.customerInfo?.city || "Bhubaneswar"}, OD</td>
                     <td className="py-4 px-4">
                       <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                         item.trackingStatus === 'Delivered' ? 'bg-green-50 text-green-700 border-green-200' :
@@ -88,7 +89,11 @@ export default function TrackingPage() {
                     </td>
                     <td className="py-4 px-4 text-xs font-mono text-gray-500">{item.lastUpdate}</td>
                     <td className="py-4 px-4 text-right">
-                      <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-xs font-bold hover:bg-gray-200 transition-all">Track URL</button>
+                      {item.trackingUrl !== "#" ? (
+                        <a href={item.trackingUrl} target="_blank" rel="noreferrer" className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-xs font-bold hover:bg-gray-200 transition-all inline-block">Track URL</a>
+                      ) : (
+                        <button disabled className="px-4 py-2 bg-gray-100 text-gray-400 rounded-xl text-xs font-bold inline-block cursor-not-allowed">No URL</button>
+                      )}
                     </td>
                   </tr>
                 ))}

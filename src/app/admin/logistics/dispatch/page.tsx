@@ -3,6 +3,8 @@
 import PremiumMetricCard from "@/components/PremiumMetricCard";
 import React, { useState, useEffect } from "react";
 import { useOrders } from "@/lib/db-hooks";
+import { db } from "@/lib/firebase";
+import { doc, updateDoc } from "firebase/firestore";
 
 export default function DispatchPage() {
   const { orders, loading } = useOrders();
@@ -10,12 +12,13 @@ export default function DispatchPage() {
 
   useEffect(() => {
     if (orders.length > 0) {
-      // Filter for orders that are "placed" or "approved" and need dispatch
-      const pendingDispatch = orders.filter(o => o.status === "placed" || o.status === "approved").map((order, idx) => ({
+      // Filter for orders that are "processing" or "paid_escrow" or "paid_mock" and need dispatch
+      const pendingDispatch = orders.filter(o => o.status === "processing" || o.status === "placed" || o.status === "approved").map((order, idx) => ({
         ...order,
-        awbNumber: `AWB-${Math.floor(Math.random() * 900000) + 100000}`,
-        carrier: ["Shiprocket", "Delhivery", "BlueDart"][idx % 3],
-        sla: ["24h", "48h", "Urgent"][idx % 3]
+        // If it already has an AWB, show it, otherwise show pending
+        awbNumber: order.awbNumber || `Pending Generation`,
+        carrier: order.carrier || ["Shiprocket", "Delhivery", "BlueDart"][idx % 3],
+        sla: order.sla || ["24h", "48h", "Urgent"][idx % 3]
       }));
       setDispatchQueue(pendingDispatch);
     }
@@ -25,8 +28,46 @@ export default function DispatchPage() {
     alert("Simulating Bulk Manifest Generation and printing labels for " + dispatchQueue.length + " orders.");
   };
 
-  const handleSchedulePickup = (id: string) => {
-    alert("Scheduling Courier Pickup for Order " + id);
+  const handleSchedulePickup = async (order: any) => {
+    try {
+      // Optimistic UI update or loading state could go here
+      const res = await fetch("/api/shipping/awb", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: order.id,
+          customerInfo: order.customerInfo || {
+             fullName: "Valued Customer",
+             address: "123 Main St",
+             city: "Mumbai",
+             pincode: "400001",
+             state: "Maharashtra",
+             email: "customer@example.com",
+             phone: "9999999999"
+          },
+          items: order.items || [],
+          subTotal: order.totalAmount || 0
+        })
+      });
+
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
+
+      // Update Firestore
+      const orderRef = doc(db, "orders", order.id);
+      await updateDoc(orderRef, {
+        status: "shipped",
+        awbNumber: data.awb_code,
+        carrier: data.courier_name,
+        trackingUrl: `https://shiprocket.co/tracking/${data.awb_code}`
+      });
+
+      alert(`Success! AWB ${data.awb_code} generated via ${data.courier_name}.`);
+
+    } catch (err: any) {
+      console.error(err);
+      alert("Failed to generate AWB: " + err.message);
+    }
   };
 
   return (
@@ -73,7 +114,7 @@ export default function DispatchPage() {
                 {dispatchQueue.map((item, idx) => (
                   <tr key={idx} className="group hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-4 font-mono text-xs text-gray-500">{item.id || item.orderId}</td>
-                    <td className="py-4 px-4 font-bold text-gray-900">{item.customerName}</td>
+                    <td className="py-4 px-4 font-bold text-gray-900">{item.customerInfo?.fullName || item.customerName || "Valued Customer"}</td>
                     <td className="py-4 px-4 font-medium text-gray-700">{item.carrier}</td>
                     <td className="py-4 px-4">
                       <span className="px-3 py-1 bg-gray-100 border border-gray-200 text-gray-700 rounded-lg text-xs font-bold tracking-wider">{item.awbNumber}</span>
@@ -86,7 +127,7 @@ export default function DispatchPage() {
                       </span>
                     </td>
                     <td className="py-4 px-4 text-right">
-                      <button onClick={() => handleSchedulePickup(item.id)} className="px-4 py-2 border-2 border-blue-100 text-blue-600 rounded-xl text-xs font-bold hover:bg-blue-50 transition-all">Schedule Pickup</button>
+                      <button onClick={() => handleSchedulePickup(item)} className="px-4 py-2 border-2 border-blue-100 text-blue-600 rounded-xl text-xs font-bold hover:bg-blue-50 transition-all">Schedule Pickup</button>
                     </td>
                   </tr>
                 ))}
