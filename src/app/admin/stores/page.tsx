@@ -4,12 +4,30 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useVendors, addVendor, deleteVendor, updateDocumentStatus } from "@/lib/db-hooks";
 import ImageUploader from "@/components/ImageUploader";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export default function AdminStoresPage() {
   const { vendors: stores, loading } = useVendors();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingStore, setEditingStore] = useState<any | null>(null);
+  const [templates, setTemplates] = useState<any[]>([]);
+
+  // Fetch templates once on mount
+  React.useEffect(() => {
+    async function fetchTemplates() {
+      try {
+        const q = query(collection(db, "platform_pages"), where("type", "==", "store"), where("status", "in", ["published", "premium_template"]));
+        const snap = await getDocs(q);
+        const fetched = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setTemplates(fetched);
+      } catch (err) {
+        console.error("Error fetching templates", err);
+      }
+    }
+    fetchTemplates();
+  }, []);
 
   // Form State
   const [title, setTitle] = useState("");
@@ -21,6 +39,7 @@ export default function AdminStoresPage() {
   const [whatsapp, setWhatsapp] = useState("");
   const [address, setAddress] = useState("");
   const [tier, setTier] = useState<"Silver" | "Gold" | "Diamond">("Silver");
+  const [customLayoutId, setCustomLayoutId] = useState("");
 
   const handleEdit = (store: any) => {
     setEditingStore(store);
@@ -33,6 +52,7 @@ export default function AdminStoresPage() {
     setWhatsapp(store.whatsapp || "");
     setAddress(store.address || "");
     setTier(store.tier || "Silver");
+    setCustomLayoutId(store.customLayoutId || "");
     setIsModalOpen(true);
   };
 
@@ -48,6 +68,7 @@ export default function AdminStoresPage() {
     setWhatsapp("");
     setAddress("");
     setTier("Silver");
+    setCustomLayoutId("");
   };
 
   const handleAddStore = async (e: React.FormEvent) => {
@@ -67,6 +88,7 @@ export default function AdminStoresPage() {
       tier,
       productLimit,
       badge: tier !== "Silver" ? "Bhulia Verified Store" : "Bhulia Store",
+      customLayoutId: customLayoutId || null,
       status: editingStore ? editingStore.status : "approved"
     };
 
@@ -229,6 +251,16 @@ export default function AdminStoresPage() {
                 <div>
                   <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">WhatsApp Chat Link ID</label>
                   <input value={whatsapp} onChange={e => setWhatsapp(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="91xxxxxx" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Custom Storefront Layout (Premium)</label>
+                  <select value={customLayoutId} onChange={e => setCustomLayoutId(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
+                    <option value="">-- Use Global Default Store Template --</option>
+                    {templates.map(t => (
+                      <option key={t.id} value={t.id}>{t.title} {t.status === 'premium_template' ? '(Premium)' : ''}</option>
+                    ))}
+                  </select>
+                  <p className="text-[10px] text-gray-400 mt-1">Select a highly-customized layout template to override the default storefront for this specific vendor/store.</p>
                 </div>
               </div>
               

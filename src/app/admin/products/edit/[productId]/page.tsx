@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useProductById, updateDocumentStatus, useWeavers, useVendors } from "@/lib/db-hooks";
 import ImageUploader from "@/components/ImageUploader";
 import { useRouter, useParams } from "next/navigation";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import Link from "next/link";
 
 export default function EditProductPage() {
@@ -16,6 +18,23 @@ export default function EditProductPage() {
 
   const { weavers } = useWeavers();
   const { vendors } = useVendors();
+
+  const [templates, setTemplates] = useState<any[]>([]);
+
+  // Fetch product templates once on mount
+  React.useEffect(() => {
+    async function fetchTemplates() {
+      try {
+        const q = query(collection(db, "platform_pages"), where("type", "==", "product"), where("status", "in", ["published", "premium_template"]));
+        const snap = await getDocs(q);
+        const fetched = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setTemplates(fetched);
+      } catch (err) {
+        console.error("Error fetching templates", err);
+      }
+    }
+    fetchTemplates();
+  }, []);
 
   // Form State (Shortened Schema)
   const [title, setTitle] = useState("");
@@ -50,6 +69,7 @@ export default function EditProductPage() {
   const [resellerMarginPercentage, setResellerMarginPercentage] = useState(5);
   const [isSpecialOffer, setIsSpecialOffer] = useState(false);
   const [specialOfferTag, setSpecialOfferTag] = useState("");
+  const [customLayoutId, setCustomLayoutId] = useState("");
 
   const allSellers = [...(weavers || []).map(w => ({...w, type: 'weaver'})), ...(vendors || []).map(v => ({...v, type: 'vendor'}))];
 
@@ -90,6 +110,7 @@ export default function EditProductPage() {
       setResellerMarginPercentage(product.resellerMarginPercentage || 5);
       setIsSpecialOffer(product.isSpecialOffer || false);
       setSpecialOfferTag(product.specialOfferTag || "");
+      setCustomLayoutId(product.customLayoutId || "");
     }
   }, [product]);
 
@@ -131,6 +152,7 @@ export default function EditProductPage() {
       escrowStatus: "Payment Protected",
       stockQuantity: Number(stockQuantity),
       inStock: Number(stockQuantity) > 0,
+      customLayoutId: customLayoutId || null,
       ...(statusOverride ? { status: statusOverride } : {})
     };
 
@@ -305,9 +327,26 @@ export default function EditProductPage() {
           </div>
         </section>
 
+        {/* Premium Landing Page Assignment */}
+        <section className="space-y-4">
+          <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">5. Advanced Landing Page</h2>
+          <div className="bg-[#051815] p-4 rounded-xl border border-[#C5A059]/20">
+            <div>
+              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Custom Product Layout (Premium)</label>
+              <select value={customLayoutId} onChange={e => setCustomLayoutId(e.target.value)} className="w-full md:w-1/2 bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
+                <option value="">-- Use Global Default Product Template --</option>
+                {templates.map(t => (
+                  <option key={t.id} value={t.id}>{t.title} {t.status === 'premium_template' ? '(Premium)' : ''}</option>
+                ))}
+              </select>
+              <p className="text-[10px] text-gray-400 mt-1">Select a highly-customized layout template to override the default product page for this specific ultra-luxury item.</p>
+            </div>
+          </div>
+        </section>
+
         {/* Media Section */}
         <section className="space-y-4">
-          <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">5. Product Gallery</h2>
+          <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">6. Product Gallery</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <ImageUploader value={img} onChange={setImg} label="Main Product Photo (Image 1)" aspectRatio="portrait" captionValue={imgCaption} onCaptionChange={setImgCaption} />
             <ImageUploader value={img2} onChange={setImg2} label="Product Photo 2" aspectRatio="portrait" captionValue={img2Caption} onCaptionChange={setImg2Caption} />

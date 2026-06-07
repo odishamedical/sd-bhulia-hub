@@ -4,12 +4,30 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useWeavers, addWeaver, deleteWeaver, updateDocumentStatus } from "@/lib/db-hooks";
 import ImageUploader from "@/components/ImageUploader";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export default function AdminWeaversPage() {
   const { weavers, loading } = useWeavers();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingWeaver, setEditingWeaver] = useState<any | null>(null);
+  const [templates, setTemplates] = useState<any[]>([]);
+
+  // Fetch templates once on mount
+  React.useEffect(() => {
+    async function fetchTemplates() {
+      try {
+        const q = query(collection(db, "platform_pages"), where("type", "==", "weaver"), where("status", "in", ["published", "premium_template"]));
+        const snap = await getDocs(q);
+        const fetched = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setTemplates(fetched);
+      } catch (err) {
+        console.error("Error fetching templates", err);
+      }
+    }
+    fetchTemplates();
+  }, []);
 
   // Form State
   const [title, setTitle] = useState("");
@@ -18,6 +36,7 @@ export default function AdminWeaversPage() {
   const [img, setImg] = useState("");
   const [heroImg, setHeroImg] = useState("");
   const [badge, setBadge] = useState("Bhulia.com Verified Artisan");
+  const [customLayoutId, setCustomLayoutId] = useState("");
 
   const handleEdit = (weaver: any) => {
     setEditingWeaver(weaver);
@@ -27,6 +46,7 @@ export default function AdminWeaversPage() {
     setImg(weaver.img);
     setHeroImg(weaver.heroImg || "");
     setBadge(weaver.badge);
+    setCustomLayoutId(weaver.customLayoutId || "");
     setIsModalOpen(true);
   };
 
@@ -39,6 +59,7 @@ export default function AdminWeaversPage() {
     setImg("");
     setHeroImg("");
     setBadge("Bhulia.com Verified Artisan");
+    setCustomLayoutId("");
   };
 
   const handleAddWeaver = async (e: React.FormEvent) => {
@@ -52,6 +73,7 @@ export default function AdminWeaversPage() {
       img: img || "https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=800&q=80",
       heroImg,
       badge,
+      customLayoutId: customLayoutId || null,
       // Keep status as pending_approval or approved
       status: editingWeaver ? editingWeaver.status : "pending_approval"
     };
@@ -185,6 +207,16 @@ export default function AdminWeaversPage() {
                 <div className="md:col-span-2">
                   <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Verification Badge</label>
                   <input required value={badge} onChange={e => setBadge(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="e.g. Bhulia.com Verified Artisan" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Custom Storefront Layout (Premium)</label>
+                  <select value={customLayoutId} onChange={e => setCustomLayoutId(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
+                    <option value="">-- Use Global Default Weaver Template --</option>
+                    {templates.map(t => (
+                      <option key={t.id} value={t.id}>{t.title} {t.status === 'premium_template' ? '(Premium)' : ''}</option>
+                    ))}
+                  </select>
+                  <p className="text-[10px] text-gray-400 mt-1">Select a highly-customized layout template to override the default storefront for this specific weaver.</p>
                 </div>
               </div>
               
