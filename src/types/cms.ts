@@ -22,6 +22,7 @@ export interface CMSRow {
   
   // Hero Fields
   heroLayout?: "full" | "split_75_25";
+  heroRightContentType?: "ad" | "products"; // Determines what shows in the 25%
   heroImages?: string[]; // Multiple images for slider
   heroRightImage?: string; // 25% ad image
   heroRightLink?: string; // 25% ad link

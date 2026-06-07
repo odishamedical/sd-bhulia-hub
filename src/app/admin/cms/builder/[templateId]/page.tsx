@@ -282,14 +282,45 @@ export default function CMSBuilderPage() {
 
                   {row.heroLayout === "split_75_25" && (
                     <div className="bg-[#051815] p-4 rounded-xl border border-[#C5A059]/10 mt-4">
-                      <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-4">Right Side Ad Banner (25%)</label>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <ImageUploader value={row.heroRightImage || ""} onChange={val => updateRow(row.id, "heroRightImage", val)} label="Ad Image" aspectRatio="portrait" />
+                      <div className="flex justify-between items-end mb-4 border-b border-[#C5A059]/20 pb-4">
                         <div>
-                          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Ad Link Destination</label>
-                          <input type="text" value={row.heroRightLink || ""} onChange={e => updateRow(row.id, "heroRightLink", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="/sale" />
+                          <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest">Right Side Content (25%)</label>
+                          <p className="text-[10px] text-gray-400 mt-1">Choose whether to show an Advertisement Image or a vertical list of Products.</p>
                         </div>
+                        <select value={row.heroRightContentType || "ad"} onChange={e => updateRow(row.id, "heroRightContentType", e.target.value)} className="w-64 bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
+                          <option value="ad">Single Ad Banner</option>
+                          <option value="products">Product List</option>
+                        </select>
                       </div>
+
+                      {(!row.heroRightContentType || row.heroRightContentType === "ad") ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <ImageUploader value={row.heroRightImage || ""} onChange={val => updateRow(row.id, "heroRightImage", val)} label="Ad Image" aspectRatio="portrait" />
+                          <div>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Ad Link Destination</label>
+                            <input type="text" value={row.heroRightLink || ""} onChange={e => updateRow(row.id, "heroRightLink", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="/sale" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Category</label>
+                            <input type="text" value={row.category || ""} onChange={e => updateRow(row.id, "category", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="e.g. Saree" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Product Limit (1 or 2 recommended)</label>
+                            <input type="number" value={row.productLimit || 2} onChange={e => updateRow(row.id, "productLimit", parseInt(e.target.value))} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <input type="checkbox" checked={row.featuredOnly || false} onChange={e => updateRow(row.id, "featuredOnly", e.target.checked)} className="w-4 h-4 bg-[#0A1021] border-[#C5A059] text-[#C5A059] rounded" />
+                            <label className="text-xs font-bold text-gray-300">Show Only Featured Products</label>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <input type="checkbox" checked={row.discountOnly || false} onChange={e => updateRow(row.id, "discountOnly", e.target.checked)} className="w-4 h-4 bg-[#0A1021] border-[#C5A059] text-[#C5A059] rounded" />
+                            <label className="text-xs font-bold text-gray-300">Show Only Heavy Discount</label>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
