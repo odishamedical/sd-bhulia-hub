@@ -24,8 +24,8 @@ export default function Header() {
 
   return (
     <>
-      {/* Top Sticky Header / Perfect Left-Center-Right Balance with Royal Silk Background */}
-      <header className="sticky top-0 w-full z-50 bg-[#0B2C8A] bg-[url('/blue_silk_texture.png')] bg-cover bg-center border-b border-[#C5A059]/50 px-4 sm:px-6 py-4 sm:py-6 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8)] flex flex-col gap-3 transition-all duration-300">
+      {/* Top Sticky Header */}
+      <header className="sticky top-0 w-full z-50 bg-[#0074E4] border-b border-[#0052A3] px-4 sm:px-6 py-4 sm:py-6 shadow-[0_10px_30px_-10px_rgba(0,116,228,0.4)] flex flex-col gap-3 transition-all duration-300">
         <div className="flex justify-between items-center gap-2 w-full">
           {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0">
