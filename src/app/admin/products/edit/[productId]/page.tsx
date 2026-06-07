@@ -194,11 +194,11 @@ export default function EditProductPage() {
     }
   };
 
-  if (loading) {
+  if (productLoading) {
     return <div className="p-8 text-[#C5A059] animate-pulse">Loading Product Details...</div>;
   }
 
-  if (!product && !loading) {
+  if (!product && !productLoading) {
     return <div className="p-8 text-red-500">Product Not Found.</div>;
   }
 
