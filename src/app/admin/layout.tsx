@@ -57,6 +57,7 @@ const SIDEBAR_CATEGORIES = [
       { name: "Homepage CMS", path: "/admin/cms" },
       { name: "Vendor CMS Builder", path: "/admin/vendor-cms" },
       { name: "Coupons & Offers", path: "/admin/marketing/coupons" },
+      { name: "WhatsApp & Email", path: "/admin/marketing/push" },
       { name: "SEO & Campaigns", path: "/admin/marketing/seo" }
     ]
   },
