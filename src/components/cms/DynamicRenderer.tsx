@@ -22,9 +22,23 @@ const ProductsBlock = ({ title, category, themeStyle }: any) => (
   </div>
 );
 
-const BannerBlock = ({ bannerText }: any) => (
-  <div className="bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] rounded-3xl p-6 text-center shadow-lg">
-    <h2 className="text-[#0A1021] text-2xl font-black uppercase tracking-widest">{bannerText || "PROMOTIONAL BANNER"}</h2>
+const BannerBlock = ({ bannerText, bannerImage }: any) => (
+  <div className="relative rounded-3xl overflow-hidden shadow-lg group">
+    {bannerImage ? (
+      <div className="w-full aspect-[5/2] relative">
+        <Image src={bannerImage} alt={bannerText || "Promotional Banner"} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+        <div className="absolute inset-0 bg-black/40"></div>
+        {bannerText && (
+          <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
+            <h2 className="text-white text-xl sm:text-3xl font-black uppercase tracking-widest drop-shadow-lg">{bannerText}</h2>
+          </div>
+        )}
+      </div>
+    ) : (
+      <div className="bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] p-6 text-center">
+        <h2 className="text-[#0A1021] text-2xl font-black uppercase tracking-widest">{bannerText || "PROMOTIONAL BANNER"}</h2>
+      </div>
+    )}
   </div>
 );
 
@@ -52,7 +66,7 @@ export default function DynamicRenderer({ rows }: { rows: any[] }) {
           case "products":
             return <ProductsBlock key={row.id} title={row.title} category={row.category} themeStyle={row.themeStyle} />;
           case "banner":
-            return <BannerBlock key={row.id} bannerText={row.bannerText} />;
+            return <BannerBlock key={row.id} bannerText={row.bannerText} bannerImage={row.bannerImage} />;
           case "adsense":
             return <AdSenseBlock key={row.id} htmlCode={row.htmlCode} />;
           default:

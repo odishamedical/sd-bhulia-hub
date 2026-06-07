@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import ImageUploader from "@/components/ImageUploader";
 
 interface CMSRow {
   id: string;
@@ -10,6 +11,7 @@ interface CMSRow {
   title?: string;
   category?: string;
   bannerText?: string;
+  bannerImage?: string;
   htmlCode?: string;
   themeStyle?: string; // e.g. "free", "paid-1", "paid-2" (tied to themes)
 }
@@ -163,9 +165,20 @@ export default function CMSAdminPage() {
                 )}
 
                 {row.type === "banner" && (
-                  <div className="sm:col-span-2">
-                    <span className="text-[10px] uppercase font-bold text-[#C5A059] tracking-widest block mb-1">Banner Text</span>
-                    <input type="text" value={row.bannerText || ""} onChange={(e) => updateRow(row.id, "bannerText", e.target.value)} className="w-full px-3 py-2 bg-[#051815] rounded border border-[#C5A059]/20 text-sm text-white focus:border-[#C5A059] outline-none" />
+                  <div className="sm:col-span-2 space-y-4">
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-[#C5A059] tracking-widest block mb-1">Banner Image</span>
+                      <ImageUploader 
+                        value={row.bannerImage || ""} 
+                        onChange={(val) => updateRow(row.id, "bannerImage", val)} 
+                        aspectRatio="landscape"
+                        label="Upload Banner Graphic"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-[#C5A059] tracking-widest block mb-1">Banner Text Overlay (Optional)</span>
+                      <input type="text" value={row.bannerText || ""} onChange={(e) => updateRow(row.id, "bannerText", e.target.value)} className="w-full px-3 py-2 bg-[#051815] rounded border border-[#C5A059]/20 text-sm text-white focus:border-[#C5A059] outline-none" />
+                    </div>
                   </div>
                 )}
 
