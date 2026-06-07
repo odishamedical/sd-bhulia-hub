@@ -335,7 +335,18 @@ export default function EditProductPage() {
           <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">5. Advanced Landing Page</h2>
           <div className="bg-[#051815] p-4 rounded-xl border border-[#C5A059]/20">
             <div>
-              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Custom Product Layout (Premium)</label>
+              <div className="flex justify-between items-end mb-1">
+                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest">Custom Product Layout (Premium)</label>
+                {customLayoutId && (
+                  <Link 
+                    href={`/admin/cms/builder/${customLayoutId}`}
+                    target="_blank"
+                    className="text-[10px] text-blue-400 hover:underline font-bold uppercase tracking-wider"
+                  >
+                    ✎ Quick Edit Layout
+                  </Link>
+                )}
+              </div>
               <select value={customLayoutId} onChange={e => setCustomLayoutId(e.target.value)} className="w-full md:w-1/2 bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
                 <option value="">-- Use Global Default Product Template --</option>
                 {templates.map(t => (

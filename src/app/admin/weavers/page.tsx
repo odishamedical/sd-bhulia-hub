@@ -6,6 +6,7 @@ import { useWeavers, addWeaver, deleteWeaver, updateDocumentStatus } from "@/lib
 import ImageUploader from "@/components/ImageUploader";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import Link from "next/link";
 
 export default function AdminWeaversPage() {
   const { weavers, loading } = useWeavers();
@@ -209,7 +210,18 @@ export default function AdminWeaversPage() {
                   <input required value={badge} onChange={e => setBadge(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="e.g. Bhulia.com Verified Artisan" />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Custom Storefront Layout (Premium)</label>
+                  <div className="flex justify-between items-end mb-1">
+                    <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest">Custom Weaver Layout (Premium)</label>
+                    {customLayoutId && (
+                      <Link 
+                        href={`/admin/cms/builder/${customLayoutId}`}
+                        target="_blank"
+                        className="text-[10px] text-blue-400 hover:underline font-bold uppercase tracking-wider"
+                      >
+                        ✎ Quick Edit Layout
+                      </Link>
+                    )}
+                  </div>
                   <select value={customLayoutId} onChange={e => setCustomLayoutId(e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]">
                     <option value="">-- Use Global Default Weaver Template --</option>
                     {templates.map(t => (
