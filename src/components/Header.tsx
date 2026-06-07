@@ -24,8 +24,8 @@ export default function Header() {
 
   return (
     <>
-      {/* Top Sticky Header / Perfect Left-Center-Right Balance */}
-      <header className="sticky top-0 w-full z-50 bg-[#030504]/90 backdrop-blur-2xl border-b border-[#C5A059]/30 px-4 sm:px-6 py-4 sm:py-6 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8)] flex flex-col gap-3 transition-all duration-300">
+      {/* Top Sticky Header / Perfect Left-Center-Right Balance with Royal Silk Background */}
+      <header className="sticky top-0 w-full z-50 bg-[#0B1930] bg-[url('/blue_silk_texture.png')] bg-cover bg-center bg-blend-multiply border-b border-[#C5A059]/50 px-4 sm:px-6 py-4 sm:py-6 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8)] flex flex-col gap-3 transition-all duration-300">
         <div className="flex justify-between items-center gap-2 w-full">
           {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0">
@@ -41,19 +41,39 @@ export default function Header() {
           {/* Center: Dedicated Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-gray-200">
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Home</Link>
+            
             <div className="relative group py-1">
               <button className="flex items-center gap-1 hover:text-[#C5A059] transition-colors cursor-pointer">
-                <span>Products</span>
+                <span>Collections</span>
                 <span className="text-[10px]">▼</span>
               </button>
-              <div className="absolute top-full left-0 mt-2 w-56 bg-[#0D3630] border border-[#C5A059]/40 rounded-xl shadow-2xl py-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50">
-                <Link href="/#cotton-sambalpuri" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Cotton Sambalpuri</Link>
-                <Link href="/#pata-sambalpuri" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Pata Sambalpuri (Silk)</Link>
-                <Link href="/#cotton-bomkai" className="block px-4 py-2 text-xs hover:bg-[#0B2B26] hover:text-[#C5A059]">Cotton Bomkai</Link>
+              
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[400px] bg-[#0A1128]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-5 px-6 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50 flex gap-6">
+                
+                {/* By Material */}
+                <div className="flex-1 space-y-3">
+                  <h3 className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 text-[10px]">By Material</h3>
+                  <div className="flex flex-col gap-3">
+                    <Link href="/search?category=Pure Silk Pata" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Pure Silk (Pata)</Link>
+                    <Link href="/search?category=Pure Cotton" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Pure Cotton</Link>
+                    <Link href="/search?category=Mix Blends" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Mix Blends</Link>
+                  </div>
+                </div>
+
+                {/* By Design */}
+                <div className="flex-1 space-y-3 border-l border-[#C5A059]/10 pl-6">
+                  <h3 className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 text-[10px]">By Design</h3>
+                  <div className="flex flex-col gap-3">
+                    <Link href="/search?category=Sambalpuri Ikat" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Sambalpuri Ikat</Link>
+                    <Link href="/search?category=Pasapalli" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Pasapalli Double Ikat</Link>
+                    <Link href="/search?category=Bomkai" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Bomkai</Link>
+                  </div>
+                </div>
+
               </div>
             </div>
+
             <Link href="/#weaver-boutiques" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Boutiques</Link>
-            <Link href="/search" className="hover:text-[#C5A059] transition-colors pb-1 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg> Search</Link>
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
             <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
           </nav>
@@ -72,23 +92,23 @@ export default function Header() {
 
             {/* Wallet & Cart Button */}
             {user && (
-              <div className="hidden sm:flex items-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-4 py-2 rounded-xl font-bold text-xs shadow-inner">
-                <span className="text-[10px] uppercase text-gray-400">Wallet</span>
+              <div className="hidden sm:flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-inner">
+                <span className="text-[10px] uppercase text-gray-300">Wallet</span>
                 <span className="text-white">₹{walletBalance.toLocaleString()}</span>
               </div>
             )}
             
-            <Link href="/search" className="hidden sm:flex items-center justify-center w-10 h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0 shadow">
+            <Link href="/search" className="hidden sm:flex items-center justify-center w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl hover:bg-white/20 transition-all cursor-pointer shrink-0 shadow">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </Link>
 
-            <button onClick={() => setIsCartOpen(true)} className="hidden sm:flex items-center gap-2 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0">
+            <button onClick={() => setIsCartOpen(true)} className="hidden sm:flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-white/20 transition-all cursor-pointer shrink-0 shadow">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
               <span>Cart ({cartCount})</span>
             </button>
 
             {/* Mobile Hamburger Button */}
-            <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] rounded-xl hover:bg-[#0D4B45] transition-all cursor-pointer shrink-0 shadow">
+            <button onClick={() => setMobileNavOpen(!mobileNavOpen)} className="lg:hidden flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl hover:bg-white/20 transition-all cursor-pointer shrink-0 shadow">
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileNavOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
