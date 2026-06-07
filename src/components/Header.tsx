@@ -34,25 +34,25 @@ export default function Header() {
             </div>
             <div className="min-w-0">
               <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wider text-[#C5A059] leading-none">BHULIA.COM</h1>
-              <p className="hidden sm:block text-[11px] text-gray-300 font-medium tracking-wide mt-1 truncate">Sambalpuri saree, Direct from Weavers</p>
+              <p className="hidden sm:block text-[11px] text-white/80 font-medium tracking-wide mt-1 truncate">Sambalpuri saree, Direct from Weavers</p>
             </div>
           </div>
 
           {/* Center: Dedicated Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-gray-200">
-            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Home</Link>
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[10px] font-extrabold uppercase tracking-[0.2em] text-white whitespace-nowrap">
+            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">HOME</Link>
             
             <div className="relative group py-1">
               <button className="flex items-center gap-1 hover:text-[#C5A059] transition-colors cursor-pointer">
-                <span>Collections</span>
+                <span>COLLECTIONS</span>
                 <span className="text-[10px]">▼</span>
               </button>
               
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[400px] bg-[#0A1128]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-5 px-6 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50 flex gap-6">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[400px] bg-[#0A1128]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-5 px-6 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50 flex gap-6 text-left normal-case tracking-normal">
                 
                 {/* By Material */}
                 <div className="flex-1 space-y-3">
-                  <h3 className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 text-[10px]">By Material</h3>
+                  <h3 className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 text-[10px] uppercase tracking-widest font-bold">By Material</h3>
                   <div className="flex flex-col gap-3">
                     <Link href="/search?category=Pure Silk Pata" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Pure Silk (Pata)</Link>
                     <Link href="/search?category=Pure Cotton" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Pure Cotton</Link>
@@ -62,7 +62,7 @@ export default function Header() {
 
                 {/* By Design */}
                 <div className="flex-1 space-y-3 border-l border-[#C5A059]/10 pl-6">
-                  <h3 className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 text-[10px]">By Design</h3>
+                  <h3 className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 text-[10px] uppercase tracking-widest font-bold">By Design</h3>
                   <div className="flex flex-col gap-3">
                     <Link href="/search?category=Sambalpuri Ikat" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Sambalpuri Ikat</Link>
                     <Link href="/search?category=Pasapalli" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Pasapalli Double Ikat</Link>
@@ -73,9 +73,9 @@ export default function Header() {
               </div>
             </div>
 
-            <Link href="/#weaver-boutiques" className="hover:text-[#C5A059] transition-colors pb-1">Weaver Boutiques</Link>
-            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">About Us</Link>
-            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">Contact Us</Link>
+            <Link href="/#weaver-boutiques" className="hover:text-[#C5A059] transition-colors pb-1">WEAVER BOUTIQUES</Link>
+            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">ABOUT US</Link>
+            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">CONTACT US</Link>
           </nav>
 
           {/* Right Side: User Menu / Sign In / Register (Desktop) & Mobile Hamburger */}
