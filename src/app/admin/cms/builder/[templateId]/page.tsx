@@ -9,8 +9,28 @@ import Link from "next/link";
 import ImageUploader from "@/components/ImageUploader";
 import { useVendors, useWeavers } from "@/lib/db-hooks";
 
-const CATEGORIES = ["Saree", "Dupatta", "Dress Material", "Accessories"];
-const MATERIALS = ["Pure Silk", "Cotton", "Cotton Silk", "Linen"];
+const CATEGORIES = [
+  "Saree",
+  "Dress material",
+  "Bedsheet",
+  "RedyMade shirts",
+  "Redy made Kurti",
+  "Kurti dress material"
+];
+const MATERIALS = [
+  "Pure Cotton",
+  "Pure Silk (Pata)",
+  "Mix Silk(Pata) (Silk+Polyster)",
+  "Mix Cotton (Cotton+Polyster)"
+];
+const DESIGNS = [
+  "Sambalpuri Ikat (Bandha)",
+  "Sambalpuri Traditional Ikat Design",
+  "Sambalpuri Modern Ikat Design",
+  "Sambalpuri Double Ikat (Pashapali/Saptapar)",
+  "Bomkei",
+  "Bomkei+Ikat"
+];
 
 export default function CMSBuilderPage() {
   const params = useParams();
@@ -358,6 +378,13 @@ export default function CMSBuilderPage() {
                     </select>
                   </div>
                   <div>
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Design</label>
+                    <select value={row.productDesign || ""} onChange={e => updateRow(row.id, "productDesign", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
+                      <option value="">-- All Designs --</option>
+                      {DESIGNS.map(d => <option key={d} value={d}>{d}</option>)}
+                    </select>
+                  </div>
+                  <div>
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Vendor / Weaver</label>
                     <select value={row.vendorId || ""} onChange={e => updateRow(row.id, "vendorId", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
                       <option value="">-- All Vendors & Weavers --</option>
@@ -548,6 +575,21 @@ export default function CMSBuilderPage() {
                                 >
                                   <option value="">-- All --</option>
                                   {MATERIALS.map(m => <option key={m} value={m}>{m}</option>)}
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Design</label>
+                                <select 
+                                  value={col.productDesign || ""} 
+                                  onChange={e => {
+                                    const newCols = [...row.splitColumns!];
+                                    newCols[colIdx].productDesign = e.target.value;
+                                    updateRow(row.id, "splitColumns", newCols);
+                                  }} 
+                                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none"
+                                >
+                                  <option value="">-- All --</option>
+                                  {DESIGNS.map(d => <option key={d} value={d}>{d}</option>)}
                                 </select>
                               </div>
                               <div>

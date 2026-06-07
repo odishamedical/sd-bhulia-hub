@@ -21,6 +21,7 @@ export interface CMSColumn {
   // Product Specific
   category?: string;
   productMaterial?: string;
+  productDesign?: string;
   vendorId?: string;
   productLimit?: number;
   minPrice?: number;
@@ -73,6 +74,7 @@ export interface CMSRow {
   // Product Grid Fields (Advanced Filters)
   category?: string;
   productMaterial?: string;
+  productDesign?: string;
   vendorId?: string;
   minPrice?: number;
   maxPrice?: number;
