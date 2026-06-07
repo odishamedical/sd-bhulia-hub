@@ -23,7 +23,10 @@ const SIDEBAR_CATEGORIES = [
     title: "Ecosystem Hub",
     icon: "🌍",
     path: "/admin/users",
-    subLinks: []
+    subLinks: [
+      { name: "All Users", path: "/admin/users" },
+      { name: "Vendor CMS Manager", path: "/admin/vendor-cms" }
+    ]
   },
   {
     title: "Trust, Safety & Risk",
@@ -91,6 +94,7 @@ const SIDEBAR_CATEGORIES = [
     title: "Marketing & Growth",
     icon: "🎨",
     subLinks: [
+      { name: "Homepage CMS Builder", path: "/admin/cms" },
       { name: "Theme Editor", path: "/admin/marketing/theme" },
       { name: "Ad Banners", path: "/admin/marketing/ads" },
       { name: "Coupon Codes", path: "/admin/marketing/coupons" },
