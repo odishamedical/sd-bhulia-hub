@@ -47,6 +47,8 @@ export interface CMSRow {
   vendorId?: string;
   minPrice?: number;
   maxPrice?: number;
+  featuredOnly?: boolean;
+  discountOnly?: boolean;
 
   // AdSense
   htmlCode?: string;

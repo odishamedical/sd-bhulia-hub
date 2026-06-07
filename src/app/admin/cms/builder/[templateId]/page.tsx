@@ -220,7 +220,7 @@ export default function CMSBuilderPage() {
                     <input type="text" value={row.heroSubheadline || ""} onChange={e => updateRow(row.id, "heroSubheadline", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" />
                   </div>
                   <div className="md:col-span-2">
-                    <ImageUploader value={row.heroImage || ""} onChange={val => updateRow(row.id, "heroImage", val)} label="Hero Background Image" aspectRatio="widescreen" />
+                    <ImageUploader value={row.heroImage || ""} onChange={val => updateRow(row.id, "heroImage", val)} label="Hero Background Image" aspectRatio="landscape" />
                   </div>
                 </>
               )}
@@ -243,6 +243,14 @@ export default function CMSBuilderPage() {
                   <div>
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Product Limit</label>
                     <input type="number" value={row.productLimit || 10} onChange={e => updateRow(row.id, "productLimit", parseInt(e.target.value))} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" />
+                  </div>
+                  <div className="flex items-center gap-2 pt-6">
+                    <input type="checkbox" checked={row.featuredOnly || false} onChange={e => updateRow(row.id, "featuredOnly", e.target.checked)} className="w-4 h-4 bg-[#051815] border-[#C5A059] text-[#C5A059] rounded" />
+                    <label className="text-xs font-bold text-gray-300">Show Only Featured Products</label>
+                  </div>
+                  <div className="flex items-center gap-2 pt-6">
+                    <input type="checkbox" checked={row.discountOnly || false} onChange={e => updateRow(row.id, "discountOnly", e.target.checked)} className="w-4 h-4 bg-[#051815] border-[#C5A059] text-[#C5A059] rounded" />
+                    <label className="text-xs font-bold text-gray-300">Show Only Heavy Discount Products</label>
                   </div>
                 </>
               )}
@@ -280,6 +288,51 @@ export default function CMSBuilderPage() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Split Banner & Products Specific */}
+              {row.type === "split_banner_products" && (
+                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-[#C5A059]/20 pt-4 mt-2">
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-bold text-[#C5A059]">Banner Configuration (Half Side)</h3>
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Banner Position</label>
+                      <select value={row.bannerPosition || "left"} onChange={e => updateRow(row.id, "bannerPosition", e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
+                        <option value="left">Left Side Banner | Right Side Products</option>
+                        <option value="right">Right Side Banner | Left Side Products</option>
+                      </select>
+                    </div>
+                    <ImageUploader value={row.bannerImage || ""} onChange={val => updateRow(row.id, "bannerImage", val)} label="Split Section Image" aspectRatio="portrait" />
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Banner Overlay Text</label>
+                      <input type="text" value={row.bannerText || ""} onChange={e => updateRow(row.id, "bannerText", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="e.g. Wedding Collection" />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Banner Click Destination</label>
+                      <input type="text" value={row.bannerLink || ""} onChange={e => updateRow(row.id, "bannerLink", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="/category/wedding" />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-bold text-[#C5A059]">Products Configuration (Half Side)</h3>
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Category</label>
+                      <input type="text" value={row.category || ""} onChange={e => updateRow(row.id, "category", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="e.g. Saree" />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Product Limit (Shows as Grid)</label>
+                      <input type="number" value={row.productLimit || 4} onChange={e => updateRow(row.id, "productLimit", parseInt(e.target.value))} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" />
+                    </div>
+                    <div className="flex items-center gap-2 pt-2">
+                      <input type="checkbox" checked={row.featuredOnly || false} onChange={e => updateRow(row.id, "featuredOnly", e.target.checked)} className="w-4 h-4 bg-[#051815] border-[#C5A059] text-[#C5A059] rounded" />
+                      <label className="text-xs font-bold text-gray-300">Show Only Featured Products</label>
+                    </div>
+                    <div className="flex items-center gap-2 pt-2">
+                      <input type="checkbox" checked={row.discountOnly || false} onChange={e => updateRow(row.id, "discountOnly", e.target.checked)} className="w-4 h-4 bg-[#051815] border-[#C5A059] text-[#C5A059] rounded" />
+                      <label className="text-xs font-bold text-gray-300">Show Only Heavy Discount Products</label>
+                    </div>
                   </div>
                 </div>
               )}
