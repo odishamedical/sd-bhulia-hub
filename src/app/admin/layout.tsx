@@ -156,18 +156,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Sidebar Navigation */}
       <aside className={`
-        fixed md:relative top-0 left-0 h-full w-72 bg-[#051815] border-r border-[#10332c] flex flex-col shrink-0 z-50
-        transition-transform duration-300 ease-in-out shadow-[4px_0_30px_rgba(0,0,0,0.5)]
+        fixed md:relative top-0 left-0 h-full w-72 bg-[#0074E4] border-r border-[#0052A3] flex flex-col shrink-0 z-50
+        transition-transform duration-300 ease-in-out shadow-[4px_0_30px_rgba(0,116,228,0.3)]
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
       `}>
         {/* Sidebar Header */}
-        <div className="p-6 border-b border-[#10332c] flex items-center justify-between">
+        <div className="p-6 border-b border-[#0052A3] flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-black text-[#C5A059] font-serif tracking-tight">Bhulia Hub</h1>
-            <p className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-widest flex items-center gap-1.5">
+            <h1 className="text-xl font-black text-white font-serif tracking-tight">Bhulia Hub</h1>
+            <p className="text-[10px] text-blue-100 font-bold mt-1 uppercase tracking-widest flex items-center gap-1.5">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C5A059] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C5A059]"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
               </span>
               Super Admin
             </p>
@@ -200,11 +200,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   // Accordion Button
                   <button 
                     onClick={() => toggleCategory(category.title)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all border border-transparent ${isPathActive ? 'bg-[#10332c] text-[#C5A059] border-[#C5A059]/30 shadow-lg' : 'hover:bg-[#0A221E]'}`}
+                    className={`w-full flex items-center justify-between px-4 py-2.5 rounded-full transition-all border border-transparent ${isPathActive ? 'bg-white/20 text-white border-white/20 shadow-md font-bold' : 'hover:bg-white/20 text-white/90'}`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-lg opacity-90">{category.icon}</span>
-                      <span className={`text-sm font-semibold ${isPathActive ? 'text-white' : 'text-gray-400'}`}>
+                      <span className="text-lg">{category.icon}</span>
+                      <span className={`text-sm font-semibold ${isPathActive ? 'text-white' : 'text-white/90'}`}>
                         {category.title}
                       </span>
                     </div>
@@ -223,10 +223,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   // Direct Link
                   <Link 
                     href={category.path || "#"}
-                    className={`w-full flex items-center px-3 py-2.5 rounded-xl transition-all border border-transparent ${pathname === category.path ? 'bg-[#10332c] text-[#C5A059] border-[#C5A059]/30 shadow-lg' : 'text-gray-400 hover:bg-[#0A221E]'}`}
+                    className={`w-full flex items-center px-4 py-2.5 rounded-full transition-all border border-transparent ${pathname === category.path ? 'bg-white/20 text-white border-white/20 shadow-md font-bold' : 'text-white/90 hover:bg-white/20'}`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-lg opacity-90">{category.icon}</span>
+                      <span className="text-lg">{category.icon}</span>
                       <span className={`text-sm font-semibold ${pathname === category.path ? 'text-white' : ''}`}>{category.title}</span>
                     </div>
                   </Link>
@@ -234,14 +234,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
                 {/* Expanded Sub-links */}
                 {hasSubLinks && isExpanded && (
-                  <div className="mt-1 mb-2 ml-10 pl-3 border-l-2 border-[#10332c] flex flex-col space-y-1">
+                  <div className="mt-1 mb-2 ml-10 pl-3 border-l-2 border-white/20 flex flex-col space-y-1">
                     {category.subLinks.map((sub) => {
                       const isSubActive = pathname?.startsWith(sub.path);
                       return (
                         <Link 
                           key={sub.name} 
                           href={sub.path}
-                          className={`px-3 py-2 rounded-lg text-[13px] font-medium transition-colors ${isSubActive ? 'text-[#C5A059] font-bold bg-[#0A221E]' : 'text-gray-500 hover:text-gray-300 hover:bg-[#0A221E]'}`}
+                          className={`px-4 py-2 rounded-full text-[13px] transition-colors ${isSubActive ? 'text-white font-bold bg-[#0052A3] shadow-inner' : 'text-blue-100 font-medium hover:text-white hover:bg-white/10'}`}
                         >
                           {sub.name}
                         </Link>
@@ -255,8 +255,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-[#10332c] bg-[#0A221E]/50">
-          <a href="https://sd-auth-center.vercel.app/launcher" className="flex items-center justify-center gap-2 w-full py-2.5 border border-[#C5A059]/30 text-[#C5A059] bg-[#051815] rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#10332c] transition-all shadow-sm">
+        <div className="p-4 border-t border-[#0052A3] bg-[#0052A3]/30">
+          <a href="https://sd-auth-center.vercel.app/launcher" className="flex items-center justify-center gap-2 w-full py-2.5 border border-white/20 text-white bg-[#0074E4] rounded-full text-xs font-bold uppercase tracking-wider hover:bg-white/20 transition-all shadow-sm">
             Exit to Launcher
           </a>
         </div>
