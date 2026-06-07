@@ -24,6 +24,9 @@ const SIDEBAR_CATEGORIES = [
     icon: "🌍",
     path: "/admin/users",
     subLinks: [
+      { name: "Master Weavers", path: "/admin/weavers" },
+      { name: "Retail Stores", path: "/admin/stores" },
+      { name: "Franchises", path: "/admin/franchises" },
       { name: "All Users", path: "/admin/users" }
     ]
   },
