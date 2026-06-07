@@ -18,9 +18,13 @@ export interface CMSRow {
 
   // Generic Fields
   title?: string;
+  hideTitle?: boolean;
   
   // Hero Fields
-  heroImage?: string;
+  heroLayout?: "full" | "split_75_25";
+  heroImages?: string[]; // Multiple images for slider
+  heroRightImage?: string; // 25% ad image
+  heroRightLink?: string; // 25% ad link
   heroHeadline?: string;
   heroSubheadline?: string;
   heroButtonText?: string;

@@ -206,23 +206,93 @@ export default function CMSBuilderPage() {
               <div>
                 <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Section Title</label>
                 <input type="text" value={row.title || ""} onChange={e => updateRow(row.id, "title", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="e.g. Featured Collection" />
+                <div className="flex items-center gap-2 mt-2">
+                  <input type="checkbox" checked={row.hideTitle || false} onChange={e => updateRow(row.id, "hideTitle", e.target.checked)} className="w-3 h-3 bg-[#051815] border-[#C5A059] text-[#C5A059] rounded" />
+                  <label className="text-[10px] text-gray-400">Hide title on public storefront (Internal use only)</label>
+                </div>
               </div>
 
               {/* Hero Specific */}
               {row.type === "hero" && (
-                <>
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Headline</label>
-                    <input type="text" value={row.heroHeadline || ""} onChange={e => updateRow(row.id, "heroHeadline", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" />
+                <div className="md:col-span-2 space-y-6 border-t border-[#C5A059]/20 pt-4 mt-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Hero Layout Style</label>
+                      <select value={row.heroLayout || "full"} onChange={e => updateRow(row.id, "heroLayout", e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
+                        <option value="full">Full Width Slider / Image</option>
+                        <option value="split_75_25">75% Left Slider | 25% Right Ad Image</option>
+                      </select>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Subheadline</label>
-                    <input type="text" value={row.heroSubheadline || ""} onChange={e => updateRow(row.id, "heroSubheadline", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Headline Text (Optional)</label>
+                      <input type="text" value={row.heroHeadline || ""} onChange={e => updateRow(row.id, "heroHeadline", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="e.g. Summer Collection" />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Subheadline (Optional)</label>
+                      <input type="text" value={row.heroSubheadline || ""} onChange={e => updateRow(row.id, "heroSubheadline", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Button Text (Optional)</label>
+                      <input type="text" value={row.heroButtonText || ""} onChange={e => updateRow(row.id, "heroButtonText", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="e.g. Shop Now" />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Button Link (Optional)</label>
+                      <input type="text" value={row.heroButtonLink || ""} onChange={e => updateRow(row.id, "heroButtonLink", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="/category/silk" />
+                    </div>
                   </div>
-                  <div className="md:col-span-2">
-                    <ImageUploader value={row.heroImage || ""} onChange={val => updateRow(row.id, "heroImage", val)} label="Hero Background Image" aspectRatio="landscape" />
+
+                  <div className="bg-[#051815] p-4 rounded-xl border border-[#C5A059]/10">
+                    <div className="flex justify-between items-center mb-4">
+                      <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest">Main Hero Slider Images (Left Side if Split)</label>
+                      <button type="button" onClick={() => {
+                        const newImages = [...(row.heroImages || []), ""];
+                        updateRow(row.id, "heroImages", newImages);
+                      }} className="text-xs text-[#C5A059] hover:underline font-bold">+ Add Slide</button>
+                    </div>
+                    
+                    {(row.heroImages || []).length === 0 && (
+                      <div className="text-xs text-gray-400 italic mb-4">No images added. You can leave this blank if you only want text.</div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {(row.heroImages || []).map((img, idx) => (
+                        <div key={idx} className="relative">
+                          <button type="button" onClick={() => {
+                            const newImages = [...row.heroImages!];
+                            newImages.splice(idx, 1);
+                            updateRow(row.id, "heroImages", newImages);
+                          }} className="absolute top-2 right-2 bg-red-900/80 text-white rounded px-2 py-1 text-xs z-10">Remove</button>
+                          <ImageUploader 
+                            value={img} 
+                            onChange={val => {
+                              const newImages = [...row.heroImages!];
+                              newImages[idx] = val;
+                              updateRow(row.id, "heroImages", newImages);
+                            }} 
+                            label={`Slide ${idx + 1}`} 
+                            aspectRatio="landscape" 
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </>
+
+                  {row.heroLayout === "split_75_25" && (
+                    <div className="bg-[#051815] p-4 rounded-xl border border-[#C5A059]/10 mt-4">
+                      <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-4">Right Side Ad Banner (25%)</label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <ImageUploader value={row.heroRightImage || ""} onChange={val => updateRow(row.id, "heroRightImage", val)} label="Ad Image" aspectRatio="portrait" />
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Ad Link Destination</label>
+                          <input type="text" value={row.heroRightLink || ""} onChange={e => updateRow(row.id, "heroRightLink", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="/sale" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
 
               {/* Products Specific */}
