@@ -24,8 +24,7 @@ const SIDEBAR_CATEGORIES = [
     icon: "🌍",
     path: "/admin/users",
     subLinks: [
-      { name: "All Users", path: "/admin/users" },
-      { name: "Vendor CMS Manager", path: "/admin/vendor-cms" }
+      { name: "All Users", path: "/admin/users" }
     ]
   },
   {
@@ -91,11 +90,18 @@ const SIDEBAR_CATEGORIES = [
     ]
   },
   {
+    title: "Page Builder & Design",
+    icon: "✨",
+    subLinks: [
+      { name: "Homepage CMS Builder", path: "/admin/cms" },
+      { name: "Vendor CMS Manager", path: "/admin/vendor-cms" },
+      { name: "Theme Editor", path: "/admin/marketing/theme" },
+    ]
+  },
+  {
     title: "Marketing & Growth",
     icon: "🎨",
     subLinks: [
-      { name: "Homepage CMS Builder", path: "/admin/cms" },
-      { name: "Theme Editor", path: "/admin/marketing/theme" },
       { name: "Ad Banners", path: "/admin/marketing/ads" },
       { name: "Coupon Codes", path: "/admin/marketing/coupons" },
       { name: "Push Notifications", path: "/admin/marketing/push" },
