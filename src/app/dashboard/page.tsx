@@ -364,6 +364,8 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [stockQuantity, setStockQuantity] = useState(1);
   const [allowResellerMargin, setAllowResellerMargin] = useState(false);
   const [resellerMarginPercentage, setResellerMarginPercentage] = useState(5);
+  const [isSpecialOffer, setIsSpecialOffer] = useState(false);
+  const [specialOfferTag, setSpecialOfferTag] = useState("");
   const [productImage, setProductImage] = useState("");
   const [img2, setImg2] = useState("");
   const [img3, setImg3] = useState("");
@@ -425,6 +427,8 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         allowResellerMargin,
         resellerMarginPercentage: allowResellerMargin ? Number(resellerMarginPercentage) : 0,
         resellerPrice: allowResellerMargin ? String(Math.floor(parsedPrice * (1 - Number(resellerMarginPercentage) / 100))) : undefined,
+        isSpecialOffer,
+        specialOfferTag: isSpecialOffer ? specialOfferTag : undefined,
       };
 
       if (editingProductId) {
@@ -721,6 +725,22 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                         <div className="text-xs text-green-600 font-bold mt-2">
                           Resellers will sell this at a ₹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount.
                         </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200 md:col-span-2">
+                    <label className="flex items-start space-x-3 cursor-pointer mb-3">
+                      <input type="checkbox" checked={isSpecialOffer} onChange={e => setIsSpecialOffer(e.target.checked)} className="form-checkbox text-yellow-600 rounded w-5 h-5 mt-0.5 focus:ring-yellow-600" />
+                      <div>
+                        <span className="text-sm text-yellow-900 font-bold block">Mark as Special Limited-Time Offer?</span>
+                        <span className="text-xs text-yellow-700">This will display a flashy badge and feature the product on the homepage.</span>
+                      </div>
+                    </label>
+                    {isSpecialOffer && (
+                      <div className="animate-in fade-in slide-in-from-top-2 mt-4">
+                        <label className="block text-xs font-bold text-yellow-800 uppercase tracking-wider mb-2">Offer Tag Text</label>
+                        <input type="text" value={specialOfferTag} onChange={e => setSpecialOfferTag(e.target.value)} placeholder="e.g. 50% OFF! or Mega Discount" className="w-full bg-white border border-yellow-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-yellow-500 outline-none transition-all" required />
                       </div>
                     )}
                   </div>

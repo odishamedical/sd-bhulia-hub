@@ -4,6 +4,9 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { auth, db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 import { useProducts } from "@/lib/db-hooks";
 import { useCart } from "@/context/CartContext";
 import { Suspense } from "react";
@@ -15,6 +18,23 @@ function SearchContent() {
   const { addToCart } = useCart();
 
   const [filteredProducts, setFilteredProducts] = useState(products);
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists()) {
+            setRole(userDoc.data().role);
+          }
+        } catch (error) {
+          console.error("Error fetching user role", error);
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Filters state from URL
   const [selectedCategory, setSelectedCategory] = useState(searchParams?.get("category") || "");
@@ -27,6 +47,8 @@ function SearchContent() {
   const [selectedPrice, setSelectedPrice] = useState(priceRange);
   
   const [selectedSort, setSelectedSort] = useState(searchParams?.get("sort") || "newest");
+  const specialOfferOnly = searchParams?.get("specialOffer") === "true";
+  const [showResellerOnly, setShowResellerOnly] = useState(false);
 
   useEffect(() => {
     let result = [...products];
@@ -61,10 +83,22 @@ function SearchContent() {
         const pb = typeof b.price === 'number' ? b.price : Number(String(b.price).replace(/[^0-9.]/g, '')) || 0;
         return pb - pa;
       });
+    } else if (selectedSort === "margin-high-low" && role === "reseller") {
+      result.sort((a, b) => {
+        return (Number(b.resellerMarginPercentage) || 0) - (Number(a.resellerMarginPercentage) || 0);
+      });
+    }
+
+    if (specialOfferOnly) {
+      result = result.filter(p => p.isSpecialOffer);
+    }
+
+    if (showResellerOnly && role === "reseller") {
+      result = result.filter(p => p.allowResellerMargin);
     }
 
     setFilteredProducts(result);
-  }, [products, selectedCategory, selectedMaterial, selectedDesign, selectedPrice, selectedSort]);
+  }, [products, selectedCategory, selectedMaterial, selectedDesign, selectedPrice, selectedSort, specialOfferOnly, showResellerOnly, role]);
 
   const updateFilters = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams?.toString() || "");
@@ -208,6 +242,23 @@ function SearchContent() {
               </select>
             </div>
 
+            {role === "reseller" && (
+              <div className="bg-[#051815] border border-[#C5A059]/30 rounded-xl p-4">
+                <label className="flex items-start space-x-3 cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={showResellerOnly} 
+                    onChange={e => setShowResellerOnly(e.target.checked)} 
+                    className="form-checkbox text-[#C5A059] rounded w-4 h-4 mt-0.5 focus:ring-[#C5A059] bg-[#0B2B26] border-[#C5A059]/40" 
+                  />
+                  <div>
+                    <span className="text-xs font-bold text-[#C5A059] uppercase tracking-widest block">Reseller Promotable Only</span>
+                    <span className="text-[10px] text-gray-400 leading-tight">Only show products that offer you a commission</span>
+                  </div>
+                </label>
+              </div>
+            )}
+
           </div>
 
           {/* Results Grid */}
@@ -227,6 +278,7 @@ function SearchContent() {
                   <option value="newest">Newest Arrivals</option>
                   <option value="price-low-high">Price: Low to High</option>
                   <option value="price-high-low">Price: High to Low</option>
+                  {role === "reseller" && <option value="margin-high-low">Highest Reseller Margin</option>}
                 </select>
               </div>
             </div>
@@ -257,6 +309,11 @@ function SearchContent() {
                       <div className="absolute top-2.5 right-2.5 bg-[#0B2B26]/80 backdrop-blur-md px-2 py-0.5 rounded border border-[#C5A059]/40 text-[9px] font-mono text-[#C5A059] font-bold">
                         {item.id}
                       </div>
+                      {item.isSpecialOffer && (
+                        <div className="absolute top-0 right-0 m-2 px-2 py-1 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg flex items-center gap-1 z-10 animate-pulse">
+                          <span>🔥</span> {item.specialOfferTag || "Offer"}
+                        </div>
+                      )}
                     </div>
 
                     <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">

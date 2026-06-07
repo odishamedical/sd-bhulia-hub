@@ -284,6 +284,11 @@ export default function Home() {
                   <div key={item.id} className="min-w-[240px] md:min-w-[280px] snap-start shrink-0 bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all duration-300 shadow-xl p-0.5">
                     <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] overflow-hidden bg-[#0B2B26] rounded-t-xl">
                       <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                      {item.isSpecialOffer && (
+                        <div className="absolute top-0 right-0 m-2 px-2 py-1 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg flex items-center gap-1 z-10 animate-pulse">
+                          <span>🔥</span> {item.specialOfferTag || "Limited Time Offer"}
+                        </div>
+                      )}
                     </div>
                     <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
                       <div>
@@ -304,6 +309,48 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Special Offers Row */}
+            {products.some(p => p.isSpecialOffer) && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-4">
+                    <h3 className="text-xl md:text-3xl font-serif font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400 flex items-center gap-2">
+                      <span className="text-2xl animate-bounce">🔥</span> Special Discount Sales
+                    </h3>
+                    <div className="hidden sm:block flex-1 w-32 h-[1px] bg-gradient-to-r from-red-500/60 to-transparent"></div>
+                  </div>
+                  <Link href="/search?specialOffer=true" className="text-xs font-bold text-red-400 uppercase tracking-widest hover:underline whitespace-nowrap">View All Deals</Link>
+                </div>
+                
+                <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                  {[...products].filter(p => p.isSpecialOffer).slice(0, 8).map(item => (
+                    <div key={item.id} className="min-w-[240px] md:min-w-[280px] snap-start shrink-0 bg-gradient-to-b from-[#1c0f08] to-[#0B2B26] border border-red-500/30 hover:border-red-500 rounded-2xl overflow-hidden flex flex-col justify-between group transition-all duration-300 shadow-[0_0_15px_rgba(255,50,0,0.1)] p-0.5">
+                      <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] overflow-hidden bg-[#0B2B26] rounded-t-xl">
+                        <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                        <div className="absolute top-0 right-0 m-2 px-2 py-1 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg flex items-center gap-1 z-10 animate-pulse">
+                          <span>🔥</span> {item.specialOfferTag || "Limited Time Offer"}
+                        </div>
+                      </div>
+                      <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
+                        <div>
+                          <h4 className="font-bold text-white text-xs sm:text-sm group-hover:text-red-400 transition-colors mb-0.5 leading-tight line-clamp-1">{item.title}</h4>
+                          <p className="text-base font-serif font-black text-red-400">₹{item.price}</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 mt-2">
+                          <button onClick={() => addToCart(item)} className="w-full py-2 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold text-[10px] uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md cursor-pointer">
+                            Add to Cart
+                          </button>
+                          <Link href={`/product/${item.slug}`} className="w-full py-2 bg-black/40 border border-red-500/40 text-red-400 font-bold text-[10px] uppercase tracking-wider rounded-xl hover:bg-black/60 transition-all shadow-md flex items-center justify-center">
+                            View Deal
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* New Arrivals Row */}
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-1">
@@ -322,6 +369,11 @@ export default function Home() {
                     <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] overflow-hidden bg-[#0B2B26] rounded-t-xl">
                       <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                       <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#C5A059] text-[#0A1021] text-[9px] font-bold uppercase tracking-widest rounded shadow">New</span>
+                      {item.isSpecialOffer && (
+                        <div className="absolute top-0 right-0 m-2 px-2 py-1 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg flex items-center gap-1 z-10 animate-pulse">
+                          <span>🔥</span> {item.specialOfferTag || "Limited Time Offer"}
+                        </div>
+                      )}
                     </div>
                     <div className="p-3 flex-1 flex flex-col justify-between space-y-2.5">
                       <div>
@@ -372,6 +424,11 @@ export default function Home() {
                         <Link href={`/product/${p.title.toLowerCase().replace(/\s+/g, "-")}`} key={p.id} className={`${cardStyle} p-4 flex flex-col justify-between group hover:border-[#C5A059] transition-all`}>
                           <div className="relative w-full aspect-square rounded-xl overflow-hidden mb-3">
                             <Image src={(p as any).images?.[0] || (p as any).image || "/bhulia-hero.png"} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform" />
+                            {p.isSpecialOffer && (
+                              <div className="absolute top-0 right-0 m-1.5 px-1.5 py-0.5 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[8px] font-black uppercase tracking-widest rounded shadow flex items-center gap-1 z-10">
+                                <span>🔥</span> {p.specialOfferTag || "Offer"}
+                              </div>
+                            )}
                           </div>
                           <h4 className="text-sm font-bold text-white line-clamp-2">{p.title}</h4>
                           <p className="text-[#C5A059] font-bold mt-2">{p.price}</p>

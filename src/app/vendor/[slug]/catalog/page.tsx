@@ -125,6 +125,11 @@ export default function StoreCatalogPage() {
               <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] overflow-hidden bg-[#0B2B26] rounded-t-xl">
                 <Image src={saree.img} alt={saree.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                 <span className="absolute top-2.5 right-2.5 px-2 py-0.5 bg-[#C5A059] text-[#0A1021] text-[9px] font-bold uppercase tracking-widest rounded shadow">{saree.weave}</span>
+                {(saree as any).isSpecialOffer && (
+                  <div className="absolute top-0 right-0 m-2 px-2 py-1 bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg flex items-center gap-1 z-10 animate-pulse">
+                    <span>🔥</span> {(saree as any).specialOfferTag || "Offer"}
+                  </div>
+                )}
               </div>
 
               <div className="p-4 flex-1 flex flex-col justify-between space-y-3">

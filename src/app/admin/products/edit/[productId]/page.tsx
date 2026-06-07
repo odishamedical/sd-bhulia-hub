@@ -48,6 +48,8 @@ export default function EditProductPage() {
   const [selectedSellerId, setSelectedSellerId] = useState("");
   const [allowResellerMargin, setAllowResellerMargin] = useState(false);
   const [resellerMarginPercentage, setResellerMarginPercentage] = useState(5);
+  const [isSpecialOffer, setIsSpecialOffer] = useState(false);
+  const [specialOfferTag, setSpecialOfferTag] = useState("");
 
   const allSellers = [...(weavers || []).map(w => ({...w, type: 'weaver'})), ...(vendors || []).map(v => ({...v, type: 'vendor'}))];
 
@@ -86,6 +88,8 @@ export default function EditProductPage() {
       setSelectedSellerId(product.sellerId || "");
       setAllowResellerMargin(product.allowResellerMargin || false);
       setResellerMarginPercentage(product.resellerMarginPercentage || 5);
+      setIsSpecialOffer(product.isSpecialOffer || false);
+      setSpecialOfferTag(product.specialOfferTag || "");
     }
   }, [product]);
 
@@ -120,6 +124,8 @@ export default function EditProductPage() {
       allowResellerMargin,
       resellerMarginPercentage: allowResellerMargin ? Number(resellerMarginPercentage) : 0,
       resellerPrice: allowResellerMargin ? String(Math.floor(parsedPrice * (1 - Number(resellerMarginPercentage) / 100))) : undefined,
+      isSpecialOffer,
+      specialOfferTag: isSpecialOffer ? specialOfferTag : undefined,
       isGI: false, // Override to remove GI mention completely
       isBhuliaVerified: true, // Always true as requested
       escrowStatus: "Payment Protected",
@@ -279,9 +285,29 @@ export default function EditProductPage() {
           </div>
         </section>
 
+        {/* Special Offer Settings */}
+        <section className="space-y-4">
+          <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">4. Special Discount Sale</h2>
+          <div className="bg-[#051815] p-4 rounded-xl border border-[#C5A059]/20">
+            <div className="flex items-start gap-3">
+              <input type="checkbox" checked={isSpecialOffer} onChange={e => setIsSpecialOffer(e.target.checked)} className="mt-1 w-4 h-4 rounded border-gray-300 text-[#C5A059] focus:ring-[#C5A059]" />
+              <div>
+                <label className="text-sm font-bold text-white block">Mark as Special Limited-Time Offer?</label>
+                <p className="text-xs text-gray-400">This will display a flashy badge and feature the product on the homepage.</p>
+              </div>
+            </div>
+            {isSpecialOffer && (
+              <div className="mt-4 pl-7">
+                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Offer Tag Text</label>
+                <input type="text" value={specialOfferTag} onChange={e => setSpecialOfferTag(e.target.value)} placeholder="e.g. 50% OFF! or Mega Discount" className="w-full md:w-1/2 bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" />
+              </div>
+            )}
+          </div>
+        </section>
+
         {/* Media Section */}
         <section className="space-y-4">
-          <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">4. Product Gallery</h2>
+          <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">5. Product Gallery</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <ImageUploader value={img} onChange={setImg} label="Main Product Photo (Image 1)" aspectRatio="portrait" captionValue={imgCaption} onCaptionChange={setImgCaption} />
             <ImageUploader value={img2} onChange={setImg2} label="Product Photo 2" aspectRatio="portrait" captionValue={img2Caption} onCaptionChange={setImg2Caption} />
