@@ -207,22 +207,24 @@ export default function Home() {
             ))}
             
             {/* Overlay Content (Bottom Aligned with Reverse Text Highlight) */}
-            <div className="relative z-20 h-full p-5 md:p-8 flex flex-col sm:flex-row justify-end sm:justify-between items-start sm:items-end gap-4 w-full">
-              
-              <div className="flex-1 max-w-xl">
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-white leading-[1.6] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                  <span className="bg-[#051815]/70 backdrop-blur-md px-3 py-1 box-decoration-clone rounded-sm">
-                    {heroSlides[currentSlide].title} <span className="text-[#C5A059]">{heroSlides[currentSlide].subtitle}</span>
-                  </span>
-                </h2>
-              </div>
+            <div className="relative z-20 h-full p-5 md:p-8 flex flex-col justify-end">
+              <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-end gap-4 w-full">
+                
+                <div className="flex-1 max-w-xl">
+                  <h2 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-white leading-[1.6] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    <span className="bg-[#051815]/70 backdrop-blur-md px-3 py-1 box-decoration-clone rounded-sm">
+                      {heroSlides[currentSlide].title} <span className="text-[#C5A059]">{heroSlides[currentSlide].subtitle}</span>
+                    </span>
+                  </h2>
+                </div>
 
-              <div className="shrink-0 mt-2 sm:mt-0 sm:pb-1">
-                <button className="px-8 py-3 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-black text-xs uppercase tracking-widest rounded-lg hover:brightness-110 hover:scale-105 transition-all shadow-[0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer whitespace-nowrap">
-                  {heroSlides[currentSlide].btn}
-                </button>
-              </div>
+                <div className="shrink-0 mt-2 sm:mt-0 sm:pb-1">
+                  <button className="px-8 py-3 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-black text-xs uppercase tracking-widest rounded-lg hover:brightness-110 hover:scale-105 transition-all shadow-[0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer whitespace-nowrap">
+                    {heroSlides[currentSlide].btn}
+                  </button>
+                </div>
 
+              </div>
             </div>
           </div>
 
