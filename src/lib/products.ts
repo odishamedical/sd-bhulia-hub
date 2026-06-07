@@ -63,7 +63,7 @@ export const MASTER_PRODUCTS: Product[] = [
     village: "Dasrajpur, Sonepur",
     yarnType: "3-Ply Mulberry Silk (Silk Mark Gold)",
     isBhuliaVerified: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
+    escrowStatus: "100% Payout Protected Payouts Enabled",
     rating: "5.0 (18 Reviews)",
     img: "/bhulia-hero.png",
     inStock: true
@@ -83,7 +83,7 @@ export const MASTER_PRODUCTS: Product[] = [
     village: "Dasrajpur, Sonepur",
     yarnType: "3-Ply Mulberry Silk (Silk Mark Gold)",
     isBhuliaVerified: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
+    escrowStatus: "100% Payout Protected Payouts Enabled",
     rating: "5.0 (12 Reviews)",
     img: "/bhulia-hero.png",
     inStock: true
@@ -103,7 +103,7 @@ export const MASTER_PRODUCTS: Product[] = [
     village: "Dasrajpur, Sonepur",
     yarnType: "2-Ply Mulberry Silk",
     isBhuliaVerified: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
+    escrowStatus: "100% Payout Protected Payouts Enabled",
     rating: "4.9 (24 Reviews)",
     img: "/bhulia-hero.png",
     inStock: true
@@ -123,7 +123,7 @@ export const MASTER_PRODUCTS: Product[] = [
     village: "Barpali, Bargarh",
     yarnType: "100/2s Mercerized Cotton",
     isBhuliaVerified: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
+    escrowStatus: "100% Payout Protected Payouts Enabled",
     rating: "4.9 (32 Reviews)",
     img: "/bhulia-hero.png",
     inStock: true
@@ -143,7 +143,7 @@ export const MASTER_PRODUCTS: Product[] = [
     village: "Sonepur Town",
     yarnType: "3-Ply Mulberry Silk (Silk Mark Gold)",
     isBhuliaVerified: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
+    escrowStatus: "100% Payout Protected Payouts Enabled",
     rating: "5.0 (9 Reviews)",
     img: "/bhulia-hero.png",
     inStock: true
@@ -163,7 +163,7 @@ export const MASTER_PRODUCTS: Product[] = [
     village: "Barpali, Bargarh",
     yarnType: "80s Handspun Cotton",
     isBhuliaVerified: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
+    escrowStatus: "100% Payout Protected Payouts Enabled",
     rating: "4.8 (15 Reviews)",
     img: "/bhulia-hero.png",
     inStock: true
@@ -183,7 +183,7 @@ export const MASTER_PRODUCTS: Product[] = [
     village: "Barpali, Bargarh",
     yarnType: "3-Ply Silk",
     isBhuliaVerified: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
+    escrowStatus: "100% Payout Protected Payouts Enabled",
     rating: "4.9 (8 Reviews)",
     img: "/bhulia-hero.png",
     inStock: true
@@ -203,7 +203,7 @@ export const MASTER_PRODUCTS: Product[] = [
     village: "Sonepur Town",
     yarnType: "100% Handspun Cotton",
     isBhuliaVerified: true,
-    escrowStatus: "100% Escrow Protected Payouts Enabled",
+    escrowStatus: "100% Payout Protected Payouts Enabled",
     rating: "4.8 (11 Reviews)",
     img: "/bhulia-hero.png",
     inStock: true

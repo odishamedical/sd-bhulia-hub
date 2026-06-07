@@ -37,7 +37,7 @@ export default function DisputesPage() {
   ]);
 
   const handleRule = (verdict: string) => {
-    alert(`Dispute ${selectedDispute.id} closed. Verdict: ${verdict}. Escrow funds will be processed accordingly.`);
+    alert(`Dispute ${selectedDispute.id} closed. Verdict: ${verdict}. Payout funds will be processed accordingly.`);
     setDisputes(prev => prev.filter(d => d.id !== selectedDispute.id));
     setSelectedDispute(null);
   };
@@ -47,7 +47,7 @@ export default function DisputesPage() {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Dispute Resolution Center</h1>
-          <p className="text-gray-800 mt-2 font-semibold">Arbitrate conflicts between buyers and weavers. Manage Escrow releases and refunds.</p>
+          <p className="text-gray-800 mt-2 font-semibold">Arbitrate conflicts between buyers and weavers. Manage Payout releases and refunds.</p>
         </div>
       </header>
 
@@ -82,7 +82,7 @@ export default function DisputesPage() {
                     </div>
                     <div className="text-right">
                       <div className="font-black text-xl text-gray-900">₹{dispute.amount.toLocaleString()}</div>
-                      <div className="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded mt-1 inline-block border border-orange-100">Escrow: {dispute.escrowStatus}</div>
+                      <div className="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded mt-1 inline-block border border-orange-100">Payout: {dispute.escrowStatus}</div>
                     </div>
                   </div>
                   <div className="space-y-3 mb-6">
@@ -112,7 +112,7 @@ export default function DisputesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl p-8 w-full max-w-xl shadow-2xl border border-gray-100">
             <h3 className="text-2xl font-black text-gray-900 mb-2">Rule on {selectedDispute.id}</h3>
-            <p className="text-sm font-medium text-gray-500 mb-6">You are acting as the final arbitrator for this conflict. Your decision is final and will automatically route the Escrow funds.</p>
+            <p className="text-sm font-medium text-gray-500 mb-6">You are acting as the final arbitrator for this conflict. Your decision is final and will automatically route the Payout funds.</p>
             
             <div className="space-y-4 mb-8">
               <button onClick={() => handleRule("Refund Buyer")} className="w-full py-4 px-6 text-left border-2 border-red-100 hover:border-red-500 rounded-2xl transition-all group flex items-center justify-between">
@@ -126,7 +126,7 @@ export default function DisputesPage() {
               <button onClick={() => handleRule("Release Payout")} className="w-full py-4 px-6 text-left border-2 border-green-100 hover:border-green-500 rounded-2xl transition-all group flex items-center justify-between">
                 <div>
                   <div className="font-black text-green-600 text-lg">Rule in Favor of Weaver</div>
-                  <div className="text-sm text-gray-500 font-medium">Release Escrow payout of ₹{(selectedDispute.amount * 0.9).toLocaleString()} to {selectedDispute.weaver}</div>
+                  <div className="text-sm text-gray-500 font-medium">Release Payout payout of ₹{(selectedDispute.amount * 0.9).toLocaleString()} to {selectedDispute.weaver}</div>
                 </div>
                 <svg className="w-6 h-6 text-green-300 group-hover:text-green-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
               </button>

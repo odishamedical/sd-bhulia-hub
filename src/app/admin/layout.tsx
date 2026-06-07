@@ -62,7 +62,7 @@ const SIDEBAR_CATEGORIES = [
     icon: "💰",
     badgeId: "finance",
     subLinks: [
-      { name: "Escrow & Payouts", path: "/admin/finance/payouts" },
+      { name: "Vendor Payouts", path: "/admin/finance/payouts" },
       { name: "SaaS Subscriptions", path: "/admin/finance/subscriptions" },
       { name: "Tax & GST Reports", path: "/admin/finance/tax" },
     ]
@@ -74,6 +74,7 @@ const SIDEBAR_CATEGORIES = [
     subLinks: [
       { name: "Active Dispatch", path: "/admin/logistics/dispatch" },
       { name: "Shiprocket Sync", path: "/admin/logistics/tracking" },
+      { name: "API Integrations", path: "/admin/logistics/integrations" },
       { name: "RTOs", path: "/admin/logistics/rtos" },
     ]
   },

@@ -5,7 +5,7 @@ import React, { useState } from "react";
 export default function WebhooksPage() {
   const [webhooks, setWebhooks] = useState([
     { id: 1, name: "Shiprocket Auto-Fulfill", url: "https://api.shiprocket.in/v1/external/orders/create/adhoc", events: ["order.placed", "order.approved"], status: "Active", lastDelivery: "Success" },
-    { id: 2, name: "Razorpay Escrow Trigger", url: "https://api.razorpay.com/v1/transfers", events: ["order.delivered"], status: "Active", lastDelivery: "Success" },
+    { id: 2, name: "Razorpay Payout Trigger", url: "https://api.razorpay.com/v1/transfers", events: ["order.delivered"], status: "Active", lastDelivery: "Success" },
     { id: 3, name: "Franchise Sync (SAP)", url: "https://sap.bhulia.local/inventory/sync", events: ["inventory.updated"], status: "Failing", lastDelivery: "Timeout (504)" }
   ]);
 

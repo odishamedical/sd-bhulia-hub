@@ -42,7 +42,7 @@ export default function FraudAnalysisPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <PremiumMetricCard title="Critical Alerts" value={<>{flaggedOrders.filter(o => o.riskScore > 85).length}</>} index={0} />
         <PremiumMetricCard title="Elevated Risk" value={<>{flaggedOrders.filter(o => o.riskScore > 60 && o.riskScore <= 85).length}</>} index={1} />
-        <PremiumMetricCard title="Funds Held in Escrow" value={<>₹1,24,000</>} index={2} />
+        <PremiumMetricCard title="Funds Held in Payout" value={<>₹1,24,000</>} index={2} />
       </div>
 
       <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">

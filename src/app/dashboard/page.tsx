@@ -794,24 +794,40 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                       {(!order.logisticsStatus || order.logisticsStatus === "Pending Sourcing") && (
                         <button 
                           onClick={async () => {
-                            if (!confirm("Confirm dispatch to Bhulia QC Hub? This will generate a Shiprocket AWB.")) return;
+                            if (!confirm("Confirm dispatch? This will check Admin Routing rules and generate an AWB with the assigned partner.")) return;
                             try {
+                              // 1. Fetch Logistics Settings
+                              const logSettingsSnap = await getDoc(doc(db, "admin_settings", "logistics"));
+                              let assignedPartner = "shiprocket"; // Default
+                              if (logSettingsSnap.exists()) {
+                                const rules = logSettingsSnap.data().routingRules || [];
+                                const match = rules.find((r: any) => r.vendorId === (order.sellerId || "default"));
+                                if (match) assignedPartner = match.provider;
+                              }
+
+                              const mockAwb = `TRACK-${assignedPartner.toUpperCase()}-${Math.floor(Math.random() * 1000000)}`;
+
                               await updateDoc(doc(db, "orders", order.id), {
                                 logisticsStatus: "Dispatched via Hub",
+                                assignedLogisticsPartner: assignedPartner,
+                                trackingNumber: mockAwb,
                                 awbGenerated: true
                               });
-                              alert(`Shiprocket AWB Generated Successfully for ${order.id}. Order is now tracked to QC Hub!`);
+                              alert(`AWB Generated Successfully! Partner: ${assignedPartner.toUpperCase()}. Tracking ID: ${mockAwb}`);
                             } catch (e) {
                               alert("Failed to generate AWB.");
                             }
                           }}
                           className="px-4 py-2 bg-green-50 text-green-700 hover:bg-green-100 transition-colors rounded-lg text-xs font-bold border border-green-200"
                         >
-                          Dispatch to Hub
+                          Generate AWB
                         </button>
                       )}
                       {(order.logisticsStatus === "Dispatched via Hub") && (
-                        <span className="text-xs text-gray-500 font-medium">AWB Generated</span>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{order.assignedLogisticsPartner || 'Shiprocket'}</span>
+                          <span className="text-xs font-mono text-gray-900 font-bold">{order.trackingNumber || 'AWB-PENDING'}</span>
+                        </div>
                       )}
                     </td>
                   </tr>
@@ -830,7 +846,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
         <div className="space-y-6 animate-in fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pending Commissions</div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pending Payouts</div>
               <div className="text-3xl font-black text-gray-900">₹0</div>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
@@ -985,7 +1001,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
   const myReferralOrders = orders.filter(o => o.referralId === auth.currentUser?.uid || o.proxyBuyerId === auth.currentUser?.uid || (o as any).resellerId === auth.currentUser?.uid);
   const totalCommission = myReferralOrders.reduce((sum, order) => {
     const product = products.find(p => p.title === order.productName);
-    if (product && product.resellerMarginPercentage && order.productPrice && (order.paymentStatus === "Settled" || order.paymentStatus === "Payout Pending (Weaver)" || order.paymentStatus === "Escrow Locked" || order.paymentStatus === "placed")) {
+    if (product && product.resellerMarginPercentage && order.productPrice && (order.paymentStatus === "Settled" || order.paymentStatus === "Payout Pending (Weaver)" || order.paymentStatus === "Payout Locked" || order.paymentStatus === "placed")) {
       const orderTotal = parseFloat(String(order.productPrice).replace(/[^0-9.]/g, '')) * (order.quantity || 1);
       const comm = orderTotal * (product.resellerMarginPercentage / 100);
       return sum + comm;
@@ -1355,7 +1371,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Super Admin Hub</h1>
-          <p className="text-gray-500 mt-2 font-medium">Manage KYC, Products, Logistics, and Escrow Finances.</p>
+          <p className="text-gray-500 mt-2 font-medium">Manage KYC, Products, Logistics, and Payout Finances.</p>
         </div>
       </header>
 
@@ -1512,7 +1528,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
 
       {activeTab === "finance" && (
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 animate-in fade-in">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Escrow & Reseller Finance</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Payout & Reseller Finance</h2>
           <div className="overflow-x-auto max-h-[600px] overflow-y-auto rounded-xl border border-gray-100">
             <table className="w-full text-left">
               <thead>
@@ -1535,15 +1551,15 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
                       )}
                     </td>
                     <td className="py-4">
-                      <select value={order.paymentStatus || (order as any).status || "Escrow Locked"} onChange={(e) => updateOrderStatus(order.id, "paymentStatus", e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#0070F3]">
-                        <option value="Escrow Locked">Escrow Locked</option>
+                      <select value={order.paymentStatus || (order as any).status || "Payout Locked"} onChange={(e) => updateOrderStatus(order.id, "paymentStatus", e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#0070F3]">
+                        <option value="Payout Locked">Payout Locked</option>
                         <option value="placed">Placed (Cash)</option>
                         <option value="Payout Pending (Weaver)">Payout Pending (Weaver)</option>
                         <option value="Settled">Fully Settled</option>
                       </select>
                     </td>
                     <td className="py-4 text-right flex justify-end gap-2">
-                      <button onClick={() => alert("Initiating Weaver Razorpay Route...")} className="px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-xl text-xs font-bold">Release Escrow</button>
+                      <button onClick={() => alert("Initiating Weaver Razorpay Route...")} className="px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-xl text-xs font-bold">Release Payout</button>
                       {(order.referralId || order.proxyBuyerId || (order as any).resellerId) && (
                         <button onClick={() => alert("Initiating Reseller Commission Payout...")} className="px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold">Pay Comm.</button>
                       )}

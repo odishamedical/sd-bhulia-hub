@@ -277,7 +277,7 @@ export default function StaffDelegationPage() {
                               onChange={(val) => handlePermissionChange(admin.id, "orders", val)} 
                             />
                             <PermissionToggle 
-                              label="Finance (Escrow)" 
+                              label="Finance (Payout)" 
                               checked={perms.finance} 
                               onChange={(val) => handlePermissionChange(admin.id, "finance", val)} 
                               isDangerous

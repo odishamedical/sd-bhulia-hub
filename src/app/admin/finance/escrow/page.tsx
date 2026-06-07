@@ -6,16 +6,16 @@ import React, { useState, useEffect } from "react";
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
-export default function EscrowVaultPage() {
-  const [escrowHolds, setEscrowHolds] = useState<Order[]>([]);
+export default function PayoutVaultPage() {
+  const [escrowHolds, setPayoutHolds] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
-  async function fetchEscrow() {
+  async function fetchPayout() {
     setIsLoading(true);
     try {
-      // Mock data for escrow locked funds
+      // Mock data for payout locked funds
       let fetched: any[] = [];
       try {
         const q = query(collection(db, "orders"), where("paymentStatus", "==", "escrow_held"));
@@ -24,7 +24,7 @@ export default function EscrowVaultPage() {
           fetched.push({ id: docSnap.id, ...docSnap.data() });
         });
       } catch (e) {
-        console.warn("Could not fetch escrow data, using mock.");
+        console.warn("Could not fetch payout data, using mock.");
       }
 
       if (fetched.length === 0 && process.env.NODE_ENV === "development") {
@@ -50,9 +50,9 @@ export default function EscrowVaultPage() {
         ];
       }
 
-      setEscrowHolds(fetched as any);
+      setPayoutHolds(fetched as any);
     } catch (error) {
-      console.error("Failed to fetch escrow:", error);
+      console.error("Failed to fetch payout:", error);
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +66,7 @@ export default function EscrowVaultPage() {
 
       if (role === "super_admin") {
         setHasPermission(true);
-        fetchEscrow();
+        fetchPayout();
         return;
       }
 
@@ -79,7 +79,7 @@ export default function EscrowVaultPage() {
             // Checking the granular "finance" permission
             if (adminData.permissions?.finance === true) {
               setHasPermission(true);
-              fetchEscrow();
+              fetchPayout();
               return;
             }
           }
@@ -102,7 +102,7 @@ export default function EscrowVaultPage() {
     
     setProcessingId(orderId);
     try {
-      setEscrowHolds(prev => prev.filter(o => o.id !== orderId));
+      setPayoutHolds(prev => prev.filter(o => o.id !== orderId));
 
       if (!orderId.startsWith("ORD-")) {
         const orderRef = doc(db, "orders", orderId);
@@ -113,9 +113,9 @@ export default function EscrowVaultPage() {
         await updateDoc(orderRef, updates);
       }
     } catch (error) {
-      console.error(`Failed to ${action} escrow:`, error);
+      console.error(`Failed to ${action} payout:`, error);
       alert(`Ledger update failed.`);
-      fetchEscrow(); 
+      fetchPayout(); 
     } finally {
       setProcessingId(null);
     }
@@ -129,7 +129,7 @@ export default function EscrowVaultPage() {
     return (
       <div className="bg-red-900 text-red-50 p-6 rounded-xl shadow-2xl border border-red-700">
         <h3 className="font-bold text-xl mb-2 flex items-center gap-2"><span className="text-3xl">🛑</span> Level 5 Authorization Required</h3>
-        <p>You do not have `Finance & Ledger` permissions. Access to the Escrow Vault is strictly prohibited.</p>
+        <p>You do not have `Finance & Ledger` permissions. Access to the Payout Vault is strictly prohibited.</p>
       </div>
     );
   }
@@ -139,10 +139,10 @@ export default function EscrowVaultPage() {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
-            Escrow Vault
+            Payout Vault
             <span className="bg-red-100 text-red-800 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border border-red-200">Treasury</span>
           </h1>
-          <p className="text-sm text-gray-500 mt-1">Manage funds locked in escrow between customers and weavers.</p>
+          <p className="text-sm text-gray-500 mt-1">Manage funds locked in payout between customers and weavers.</p>
         </div>
         <div className="bg-gray-900 border border-gray-700 shadow-sm px-5 py-3 rounded-xl text-sm font-bold text-white flex flex-col items-end">
           <span className="text-[10px] text-gray-400 uppercase tracking-widest">Total Locked Volume</span>
@@ -157,7 +157,7 @@ export default function EscrowVaultPage() {
           <div className="p-16 text-center">
             <div className="text-5xl mb-4">🏦</div>
             <h3 className="text-xl font-bold text-gray-900">Vault is Empty</h3>
-            <p className="text-gray-500 text-sm mt-1">All escrow funds have been successfully disbursed.</p>
+            <p className="text-gray-500 text-sm mt-1">All payout funds have been successfully disbursed.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -184,7 +184,7 @@ export default function EscrowVaultPage() {
                     </td>
                     <td className="px-6 py-5 align-top">
                       <p className="text-lg font-bold text-emerald-600">₹ {Number(hold.amount).toLocaleString()}</p>
-                      <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Holding in Escrow</p>
+                      <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Holding in Payout</p>
                     </td>
                     <td className="px-6 py-5 align-top text-xs">
                       <div className="flex flex-col gap-2">

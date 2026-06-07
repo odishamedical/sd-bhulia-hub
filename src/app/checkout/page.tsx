@@ -1,23 +1,29 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useCart } from "../../context/CartContext";
-import { useAuth } from "../../context/AuthContext";
+import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { addOrder } from "../../lib/db-hooks";
-import { db } from "../../lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "@/lib/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function CheckoutPage() {
-  const { cart, cartTotal, removeFromCart, clearCart } = useCart();
-  const { user } = useAuth();
+  const { cart, cartTotal, clearCart } = useCart();
   const router = useRouter();
-  const [loadingProfile, setLoadingProfile] = useState(true);
+  
+  // Calculate total shipping
+  const shippingTotal = cart.reduce((total, item) => total + (item.shippingCharge || 0), 0);
+  const finalTotal = cartTotal + shippingTotal;
+  
+  const [userUid, setUserUid] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const [shippingDetails, setShippingDetails] = useState({
-    fullName: user?.displayName || "",
-    email: user?.email || "",
+  // Form State
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
     phone: "",
     address: "",
     city: "",
@@ -26,258 +32,211 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    const checkProfileComplete = async () => {
-      const uid = user?.uid || localStorage.getItem("sd_current_user_uid");
-      if (!uid) {
-        setLoadingProfile(false);
-        return;
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserUid(user.uid);
+        setFormData(prev => ({ ...prev, email: user.email || "" }));
       }
-      try {
-        const userDoc = await getDoc(doc(db, "users", uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          if (!data.phone || !data.addresses || data.addresses.length === 0) {
-            router.push("/profile?intent=checkout");
-            return;
-          } else {
-            // Pre-fill shipping details with default address
-            const defaultAddr = data.addresses.find((a: any) => a.isDefault) || data.addresses[0];
-            setShippingDetails({
-              fullName: data.name || user?.displayName || "",
-              email: user?.email || "",
-              phone: data.phone || "",
-              address: defaultAddr.localAddress || "",
-              city: defaultAddr.district || "",
-              state: defaultAddr.state || "",
-              pincode: defaultAddr.pinCode || "",
-            });
-          }
-        } else {
-          router.push("/profile?intent=checkout");
-          return;
-        }
-      } catch (e) {
-        console.error(e);
-      }
-      setLoadingProfile(false);
-    };
-    checkProfileComplete();
-  }, [user, router]);
+    });
+    return () => unsubscribe();
+  }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setShippingDetails(prev => ({ ...prev, [name]: value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const loadRazorpay = async () => {
-    if (!(window as any).Razorpay) {
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.async = true;
-      document.body.appendChild(script);
-      await new Promise((resolve) => {
-        script.onload = resolve;
-      });
-    }
-  };
-
-  const handlePayment = async () => {
-    if (!shippingDetails.address || !shippingDetails.phone) {
-      alert("Please fill in all required shipping details.");
-      return;
-    }
+  const handleSimulatePayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (cart.length === 0) return alert("Your cart is empty!");
+    
+    setLoading(true);
 
     try {
-      await loadRazorpay();
+      // 1. Simulate Payment Gateway Delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // In production, you would call an API route here to create a Razorpay order
-      // const res = await fetch('/api/create-order', { method: 'POST', body: JSON.stringify({ amount: cartTotal }) });
-      // const order = await res.json();
-
-      const options = {
-        key: "rzp_test_YourTestKey", // Replace with your test/live key
-        amount: cartTotal * 100, // Razorpay works in paise
-        currency: "INR",
-        name: "Bhulia Hub",
-        description: "Heritage Sambalpuri Marketplace",
-        image: "/bhulia-hero.png",
-        // order_id: order.id, // Uncomment when API is ready
-        handler: async function (response: any) {
-          try {
-            // Create Order in Firestore for each cart item
-            const parentOrderId = "GRP-" + Date.now();
-            for (const item of cart) {
-              await addOrder({
-                orderId: response.razorpay_payment_id,
-                parentOrderId: parentOrderId,
-                productName: item.title,
-                productPrice: item.price,
-                quantity: item.cartQuantity,
-                sellerId: item.sellerId || null,
-                sellerType: item.sellerType || null,
-                customerName: shippingDetails.fullName,
-                customerPhone: shippingDetails.phone,
-                customerWhatsapp: shippingDetails.phone,
-                customerAddress: `${shippingDetails.address}, ${shippingDetails.city}, ${shippingDetails.state} - ${shippingDetails.pincode}`,
-                referralId: localStorage.getItem("sd_referral_id") || null,
-                proxyBuyerId: user?.uid || null,
-                paymentMode: "Razorpay",
-                paymentStatus: "Paid",
-                logisticsStatus: "Pending Sourcing",
-                qcStatus: "Pending Sourcing",
-                timestamp: new Date().toISOString(),
-              });
-            }
-            clearCart();
-            alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
-            router.push("/dashboard"); // Redirect to user dashboard after success
-          } catch (error) {
-            console.error("Order save failed", error);
-            alert("Payment successful but failed to save order. Contact support.");
+      // 2. Generate Order in Firestore
+      // For Phase 2 Mock Payout, we check if there's a reseller ref in localstorage
+      const referralId = localStorage.getItem("sd_reseller_ref") || null;
+      
+      let totalCommission = 0;
+      if (referralId) {
+        cart.forEach(item => {
+          if (item.allowResellerMargin && item.resellerMarginPercentage) {
+             const priceNum = parseInt(item.price.replace(/[^0-9]/g, ""));
+             totalCommission += (priceNum * item.cartQuantity) * (item.resellerMarginPercentage / 100);
           }
-        },
-        prefill: {
-          name: shippingDetails.fullName,
-          email: shippingDetails.email,
-          contact: shippingDetails.phone,
-        },
-        theme: {
-          color: "#0A3A35",
-        },
+        });
+      }
+      
+      const platformShare = cartTotal * 0.05; // 5% platform fee
+      const vendorPayout = cartTotal - totalCommission - platformShare;
+      
+      const newOrder = {
+        userId: userUid || "guest",
+        customerInfo: formData,
+        items: cart,
+        totalAmount: finalTotal,
+        subTotal: cartTotal,
+        shippingTotal: shippingTotal,
+        resellerCommission: totalCommission,
+        platformShare: platformShare,
+        vendorPayout: vendorPayout,
+        status: "processing", // pending_dispatch
+        paymentStatus: "paid_mock",
+        referralId: referralId,
+        createdAt: serverTimestamp(),
+        // Mock routing defaults
+        assignedLogisticsPartner: "pending"
       };
 
-      const paymentObject = new (window as any).Razorpay(options);
-      paymentObject.open();
+      await addDoc(collection(db, "orders"), newOrder);
+
+      // 3. Clear Cart & Show Success
+      clearCart();
+      setSuccess(true);
+      
+      // Auto redirect after 3s
+      setTimeout(() => {
+        router.push("/profile");
+      }, 3000);
+
     } catch (error) {
-      console.error("Payment failed", error);
-      alert("Payment failed to initialize.");
+      console.error("Error creating order", error);
+      alert("Payment failed simulation.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loadingProfile) {
+  if (success) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 mt-12 text-center min-h-[60vh]">
-        <div className="animate-pulse text-[#C5A059] font-mono text-sm">Verifying Checkout Eligibility...</div>
-      </div>
-    );
-  }
-
-  if (cart.length === 0) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 mt-12 text-center min-h-[60vh]">
-        <div className="w-24 h-24 mb-6 rounded-full bg-[#0A3A35] flex items-center justify-center border border-[#C5A059]/30">
-          <svg className="w-10 h-10 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+      <div className="min-h-screen bg-[#051815] flex flex-col items-center justify-center p-6 text-center z-50 relative">
+        <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mb-6 animate-bounce shadow-[0_0_30px_rgba(34,197,94,0.4)]">
+          <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
         </div>
-        <h2 className="text-3xl font-serif text-[#C5A059] mb-4">Your Cart is Empty</h2>
-        <p className="text-gray-400 mb-8 max-w-md">Discover authentic Sambalpuri masterpieces and support our master weavers directly.</p>
-        <button onClick={() => router.push('/')} className="px-8 py-3 bg-[#0070F3] hover:bg-[#005BB5] text-[#0A1021] font-bold uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)]">
-          Continue Shopping
-        </button>
+        <h1 className="text-3xl md:text-5xl font-black text-[#C5A059] mb-4 font-serif">Payment Successful!</h1>
+        <p className="text-gray-300 max-w-md text-sm leading-relaxed mb-8">
+          Your order has been securely placed. The vendor has been notified and the payment has been securely split.
+        </p>
+        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest animate-pulse">Redirecting to dashboard...</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 flex flex-col lg:flex-row gap-10">
-      
-      {/* Checkout Form */}
-      <div className="flex-1 space-y-8">
-        <div>
-          <h2 className="text-3xl font-serif font-bold text-[#C5A059] mb-2">Secure Checkout</h2>
-          <p className="text-xs text-gray-400 uppercase tracking-widest">Provide shipping details for D2C Escrow Delivery</p>
+    <div className="min-h-screen bg-[#051815] py-12 px-4 sm:px-6 relative z-10">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Checkout Form */}
+        <div className="lg:col-span-7 bg-[#0B2B26] border border-[#C5A059]/30 rounded-3xl p-6 sm:p-10 shadow-2xl">
+          <h2 className="text-2xl font-serif font-black text-[#C5A059] mb-6">Shipping Details</h2>
+          <form id="checkout-form" onSubmit={handleSimulatePayment} className="space-y-6">
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Full Name</label>
+                <input required name="fullName" value={formData.fullName} onChange={handleChange} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Phone Number</label>
+                <input required name="phone" value={formData.phone} onChange={handleChange} type="tel" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Email Address</label>
+              <input required name="email" value={formData.email} onChange={handleChange} type="email" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Delivery Address</label>
+              <textarea required name="address" value={formData.address} onChange={handleChange} rows={3} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none resize-none"></textarea>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">City</label>
+                <input required name="city" value={formData.city} onChange={handleChange} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">State</label>
+                <input required name="state" value={formData.state} onChange={handleChange} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Pincode</label>
+                <input required name="pincode" value={formData.pincode} onChange={handleChange} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" />
+              </div>
+            </div>
+
+          </form>
         </div>
 
-        <div className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-3xl p-6 md:p-8 space-y-6 shadow-xl">
-          <h3 className="text-xl font-serif text-white border-b border-[#C5A059]/20 pb-4">Shipping Information</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-xs text-[#C5A059] font-bold uppercase tracking-wider">Full Name *</label>
-              <input type="text" name="fullName" value={shippingDetails.fullName} onChange={handleInputChange} className="w-full bg-[#051815] border border-[#2A4A45] rounded-xl p-3 text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="Shyam Dash" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs text-[#C5A059] font-bold uppercase tracking-wider">Email Address *</label>
-              <input type="email" name="email" value={shippingDetails.email} onChange={handleInputChange} className="w-full bg-[#051815] border border-[#2A4A45] rounded-xl p-3 text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="shyam@example.com" />
-            </div>
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-xs text-[#C5A059] font-bold uppercase tracking-wider">Phone Number *</label>
-              <input type="tel" name="phone" value={shippingDetails.phone} onChange={handleInputChange} className="w-full bg-[#051815] border border-[#2A4A45] rounded-xl p-3 text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="+91 99370 XXXXX" />
-            </div>
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-xs text-[#C5A059] font-bold uppercase tracking-wider">Delivery Address *</label>
-              <textarea name="address" value={shippingDetails.address} onChange={handleInputChange} className="w-full bg-[#051815] border border-[#2A4A45] rounded-xl p-3 text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors h-24 resize-none" placeholder="House No, Street, Landmark"></textarea>
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs text-[#C5A059] font-bold uppercase tracking-wider">City *</label>
-              <input type="text" name="city" value={shippingDetails.city} onChange={handleInputChange} className="w-full bg-[#051815] border border-[#2A4A45] rounded-xl p-3 text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="Bhubaneswar" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs text-[#C5A059] font-bold uppercase tracking-wider">State *</label>
-              <input type="text" name="state" value={shippingDetails.state} onChange={handleInputChange} className="w-full bg-[#051815] border border-[#2A4A45] rounded-xl p-3 text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="Odisha" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs text-[#C5A059] font-bold uppercase tracking-wider">PIN Code *</label>
-              <input type="text" name="pincode" value={shippingDetails.pincode} onChange={handleInputChange} className="w-full bg-[#051815] border border-[#2A4A45] rounded-xl p-3 text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="751001" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Order Summary */}
-      <div className="w-full lg:w-[420px] space-y-6">
-        <div className="bg-[#051815] border-2 border-[#C5A059]/40 rounded-3xl p-6 shadow-2xl sticky top-24">
-          <h3 className="text-xl font-serif text-white border-b border-[#C5A059]/20 pb-4 mb-4">Order Summary</h3>
-          
-          <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-            {cart.map((item) => (
-              <div key={item.id} className="flex gap-4 p-3 bg-[#0B2B26] rounded-xl border border-[#C5A059]/20">
-                <div className="relative w-16 h-20 rounded-lg overflow-hidden shrink-0">
-                  <Image src={item.img} alt={item.title} fill className="object-cover" />
-                </div>
-                <div className="flex-1 flex flex-col justify-between">
-                  <div>
-                    <h4 className="text-xs font-bold text-white line-clamp-2">{item.title}</h4>
+        {/* Order Summary */}
+        <div className="lg:col-span-5">
+          <div className="bg-gradient-to-b from-[#1c0f08] to-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-2xl sticky top-24">
+            <h3 className="text-xl font-serif font-bold text-white mb-6 flex items-center gap-2">
+              <span>🛍️</span> Order Summary
+            </h3>
+            
+            <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+              {cart.map((item) => (
+                <div key={item.id} className="flex gap-4 items-center bg-[#051815] p-3 rounded-xl border border-[#C5A059]/20">
+                  <div className="w-16 h-16 relative rounded-lg overflow-hidden shrink-0">
+                    <Image src={item.img || "/bhulia-hero.png"} alt={item.title} fill className="object-cover" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-bold text-white line-clamp-1">{item.title}</h4>
                     <p className="text-[10px] text-gray-400 mt-1">Qty: {item.cartQuantity}</p>
                   </div>
-                  <div className="flex justify-between items-center mt-2">
-                    <span className="text-sm font-bold text-[#C5A059]">{item.price}</span>
-                    <button onClick={() => removeFromCart(item.id)} className="text-[10px] text-red-400 hover:text-red-300 underline">Remove</button>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-[#C5A059]">₹{parseInt(item.price.replace(/[^0-9]/g, "")) * item.cartQuantity}</p>
                   </div>
                 </div>
+              ))}
+              {cart.length === 0 && (
+                <p className="text-gray-500 text-sm italic text-center py-4">Your cart is empty.</p>
+              )}
+            </div>
+
+            <div className="border-t border-[#C5A059]/20 pt-4 space-y-3 mb-8">
+              <div className="flex justify-between text-sm text-gray-300">
+                <span>Subtotal</span>
+                <span>₹{cartTotal.toLocaleString()}</span>
               </div>
-            ))}
-          </div>
+              <div className="flex justify-between text-sm text-gray-300">
+                <span>Shipping</span>
+                <span className={shippingTotal === 0 ? "text-green-400 font-bold" : "text-white"}>
+                  {shippingTotal === 0 ? "FREE" : `₹${shippingTotal.toLocaleString()}`}
+                </span>
+              </div>
+              <div className="flex justify-between text-xl font-black text-white pt-2 border-t border-[#C5A059]/20">
+                <span>Total</span>
+                <span className="text-[#C5A059]">₹{finalTotal.toLocaleString()}</span>
+              </div>
+            </div>
 
-          <div className="mt-6 space-y-3 border-t border-[#C5A059]/20 pt-4">
-            <div className="flex justify-between text-sm text-gray-300">
-              <span>Subtotal</span>
-              <span>₹ {cartTotal.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between text-sm text-gray-300">
-              <span>Escrow Protection Fee (1.5%)</span>
-              <span>₹ {Math.round(cartTotal * 0.015).toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between text-sm text-gray-300">
-              <span>Shipping</span>
-              <span className="text-[#C5A059]">Free</span>
-            </div>
-            
-            <div className="pt-3 mt-3 border-t border-[#C5A059]/20 flex justify-between items-center">
-              <span className="text-lg font-bold text-white">Total</span>
-              <span className="text-xl font-bold text-[#C5A059]">₹ {Math.round(cartTotal * 1.015).toLocaleString()}</span>
-            </div>
-          </div>
-
-          <button onClick={handlePayment} className="w-full mt-8 py-4 bg-[#0070F3] hover:bg-[#005BB5] text-[#0A1021] font-bold text-sm uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] flex justify-center items-center gap-2">
-            <span>Pay securely with Razorpay</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-          </button>
-          
-          <div className="mt-4 flex items-center justify-center gap-2 text-[10px] text-gray-400 uppercase tracking-widest text-center">
-            <svg className="w-3 h-3 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-            <span>100% Escrow Protected D2C Payment</span>
+            <button 
+              form="checkout-form"
+              type="submit"
+              disabled={loading || cart.length === 0}
+              className="w-full py-4 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] font-black text-sm uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-[#0A1021]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  Processing Payment...
+                </>
+              ) : (
+                "Pay Securely via Razorpay (Mock)"
+              )}
+            </button>
+            <p className="text-center text-[9px] text-gray-500 mt-4 uppercase tracking-widest">
+              🔒 256-bit Encrypted Transaction
+            </p>
           </div>
         </div>
+
       </div>
     </div>
   );

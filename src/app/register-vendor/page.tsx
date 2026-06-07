@@ -1521,7 +1521,7 @@ export default function VendorRegistrationPage() {
                         className="rounded border-[#C5A059]/40 bg-[#051815] text-[#C5A059] focus:ring-[#C5A059] mt-0.5 accent-[#C5A059]"
                       />
                       <span className="text-xs text-gray-300 leading-snug">
-                        I agree to Bhulia.com marketplace terms, escrow payout cycles, and physical quality routing inspect protocols.
+                        I agree to Bhulia.com marketplace terms, payout payout cycles, and physical quality routing inspect protocols.
                       </span>
                     </div>
 

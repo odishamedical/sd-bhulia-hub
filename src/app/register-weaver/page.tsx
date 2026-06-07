@@ -485,7 +485,7 @@ export default function WeaverRegistrationPage() {
                       <div className="bg-[#0A3A35] border border-[#C5A059] text-white rounded-xl p-4 flex flex-col justify-between">
                         <div>
                           <p className="text-sm font-bold text-[#C5A059]">Master Weaver (Rs 5,000/yr)</p>
-                          <p className="text-xs text-gray-300 mt-2 leading-relaxed">Full access to Bhulia Hub, custom URL, unlimited product uploads, GI-tag verification, escrow protection, and direct D2C logistics support.</p>
+                          <p className="text-xs text-gray-300 mt-2 leading-relaxed">Full access to Bhulia Hub, custom URL, unlimited product uploads, GI-tag verification, payout protection, and direct D2C logistics support.</p>
                         </div>
                         <span className="text-xs font-mono text-[#C5A059] font-bold mt-4 block">Rs 5,000</span>
                       </div>
@@ -902,7 +902,7 @@ export default function WeaverRegistrationPage() {
                   </div>
 
                   <div className="border-t border-[#C5A059]/20 pt-4 space-y-3">
-                    <h4 className="text-[11px] uppercase tracking-widest text-[#C5A059] font-bold">Escrow Settlement Bank Account</h4>
+                    <h4 className="text-[11px] uppercase tracking-widest text-[#C5A059] font-bold">Payout Settlement Bank Account</h4>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1">
@@ -983,7 +983,7 @@ export default function WeaverRegistrationPage() {
                         className="mt-1 accent-[#C5A059]"
                       />
                       <span>
-                        I agree to the marketplace terms and conditions and bank escrow holding guidelines.
+                        I agree to the marketplace terms and conditions and bank payout holding guidelines.
                       </span>
                     </label>
                   </div>

@@ -69,7 +69,7 @@ export default function Home() {
       badge: "GI-Tag Verified Heritage",
       title: "Silk Masterpieces:",
       subtitle: "Authentic Double Ikat Pata.",
-      desc: "Invest in 800 years of living heritage. Every silk thread is tie-dyed with mathematical precision and secured with D2C Jan Dhan escrow.",
+      desc: "Invest in 800 years of living heritage. Every silk thread is tie-dyed with mathematical precision and secured with D2C Jan Dhan payout.",
       img: "/hero_silk.jpg",
       btn: "Explore Silk Pata"
     },
@@ -519,7 +519,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[
-              { title: "Weavers Onboarding", desc: "List your traditional pit looms, mint GI-Tagged sarees, and receive direct D2C escrow payouts.", icon: "🧵", btn: "Apply as Weaver", href: "/register-weaver" },
+              { title: "Weavers Onboarding", desc: "List your traditional pit looms, mint GI-Tagged sarees, and receive direct D2C payout payouts.", icon: "🧵", btn: "Apply as Weaver", href: "/register-weaver" },
               { title: "Store Owners Gateway", desc: "Register your Primary Weaving Cooperative Society (PWCS) or master boutique for global Spree sync.", icon: "🏛️", btn: "Apply as Store Owner", href: "/register-store" },
               { title: "Wholesalers Portal", desc: "Access bulk B2B handloom requisitions, custom Ikat commissioning lots, and tax-exempt export billing.", icon: "📦", btn: "Apply as Wholesaler", href: "#" },
               { title: "Franchises Network", desc: "Curate regional Phygital dropshipping hubs and expand the Shyam Dash global artisan footprint.", icon: "⭐", btn: "Apply as Franchise", href: "/register-franchise" }
@@ -623,7 +623,7 @@ export default function Home() {
             </h3>
 
             <p className="text-sm text-gray-200 font-sans leading-relaxed">
-              Every purchase on Bhulia Hub directly funds the master weavers of Bargarh, Sonepur, and Boudh, eliminating predatory middlemen and ensuring 100% transparent wage escrow.
+              Every purchase on Bhulia Hub directly funds the master weavers of Bargarh, Sonepur, and Boudh, eliminating predatory middlemen and ensuring 100% transparent wage payout.
             </p>
           </div>
 
@@ -708,7 +708,7 @@ export default function Home() {
           <div className="space-y-4 max-w-2xl relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-xs font-bold uppercase tracking-widest">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse"></span>
-              <span>100% Silk Mark & GI-Tag Escrow Protection</span>
+              <span>100% Silk Mark & GI-Tag Payout Protection</span>
             </div>
             
             <h3 className="text-3xl md:text-4xl font-serif font-bold text-white leading-tight">

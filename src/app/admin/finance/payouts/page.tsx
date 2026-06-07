@@ -5,49 +5,49 @@ import { useOrders } from "@/lib/db-hooks";
 
 export default function PayoutsPage() {
   const { orders, loading } = useOrders();
-  const [escrowList, setEscrowList] = useState<any[]>([]);
+  const [escrowList, setPayoutList] = useState<any[]>([]);
 
   useEffect(() => {
-    // Mocking Escrow Data from Orders
+    // Mocking Payout Data from Orders
     if (orders.length > 0) {
-      const pendingEscrow = orders.filter(o => o.status !== "delivered").map(order => ({
+      const pendingPayout = orders.filter(o => o.status !== "delivered").map(order => ({
         id: order.id,
         beneficiary: order.sellerId || "Bhulia Weaver Network",
         amount: parseInt(order.productPrice?.toString().replace(/[^0-9]/g, '') || "5000"),
         platformFee: 0,
-        status: "Held in Escrow",
+        status: "Held in Payout",
         clearsOn: "Upon Delivery + 7 Days"
       }));
       
       // Calculate 10% platform fee
-      const withFees = pendingEscrow.map(e => ({
+      const withFees = pendingPayout.map(e => ({
         ...e,
         platformFee: Math.floor(e.amount * 0.10),
         payoutAmount: e.amount - Math.floor(e.amount * 0.10)
       }));
       
-      setEscrowList(withFees);
+      setPayoutList(withFees);
     }
   }, [orders]);
 
   const handleApprovePayout = (id: string) => {
-    alert(`Simulating Razorpay/Stripe Route for Escrow Release: Order #${id}`);
-    setEscrowList(prev => prev.filter(e => e.id !== id));
+    alert(`Simulating Razorpay/Stripe Route for Payout Release: Order #${id}`);
+    setPayoutList(prev => prev.filter(e => e.id !== id));
   };
 
   const handleReleaseAll = () => {
     alert("Simulating Bulk Route to RazorpayX API for 12 payouts.");
-    setEscrowList([]);
+    setPayoutList([]);
   };
 
-  const totalEscrow = escrowList.reduce((acc, curr) => acc + curr.amount, 0);
+  const totalPayout = escrowList.reduce((acc, curr) => acc + curr.amount, 0);
   const totalPlatformFees = escrowList.reduce((acc, curr) => acc + curr.platformFee, 0);
 
   return (
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Escrow & Payouts</h1>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Payout & Payouts</h1>
           <p className="text-gray-800 mt-2 font-semibold">Manage funds held in trust and release payouts to Weavers via Razorpay API.</p>
         </div>
         <button 
@@ -63,8 +63,8 @@ export default function PayoutsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-gradient-to-br from-blue-900 to-blue-800 p-8 rounded-3xl shadow-xl text-white relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-20 -mr-20 -mt-20"></div>
-          <h3 className="text-xs font-bold text-blue-200 uppercase tracking-wider mb-2 relative z-10">Total Funds in Escrow</h3>
-          <p className="text-4xl font-black relative z-10 mb-4">₹{totalEscrow.toLocaleString()}</p>
+          <h3 className="text-xs font-bold text-blue-200 uppercase tracking-wider mb-2 relative z-10">Total Funds in Payout</h3>
+          <p className="text-4xl font-black relative z-10 mb-4">₹{totalPayout.toLocaleString()}</p>
           <div className="flex items-center gap-2 text-xs font-medium text-blue-200 bg-blue-950/50 w-fit px-3 py-1.5 rounded-lg border border-blue-800/50 relative z-10">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
             Regulated by Nodal Account
@@ -80,7 +80,7 @@ export default function PayoutsPage() {
       </div>
 
       <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Escrow Ledger</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Payout Ledger</h2>
         
         {loading ? (
           <div className="py-20 text-center text-gray-400 font-medium">Loading ledger data...</div>
@@ -116,7 +116,7 @@ export default function PayoutsPage() {
                 ))}
                 {escrowList.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-16 text-center text-gray-500 font-medium">All escrow accounts settled.</td>
+                    <td colSpan={7} className="py-16 text-center text-gray-500 font-medium">All payout accounts settled.</td>
                   </tr>
                 )}
               </tbody>

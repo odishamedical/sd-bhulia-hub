@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       artisanName: artisanName || "Master Weaver",
       giTagNumber,
       phone: phone || "Unspecified",
-      janDhanEscrowAccount: bankAccount || "Escrow Linked",
+      janDhanPayoutAccount: bankAccount || "Payout Linked",
       verificationStatus: "VERIFIED",
       verifiedBy: "Government of India BIS Gateway",
       updatedAt: serverTimestamp(),

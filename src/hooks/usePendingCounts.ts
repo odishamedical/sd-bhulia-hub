@@ -42,8 +42,8 @@ export function usePendingCounts() {
       setCounts(prev => ({ ...prev, orders: snapshot.size }));
     });
 
-    // 4. Finance (Pending Payouts in Escrow)
-    const qFinance = query(collection(db, "escrow"), where("status", "==", "payout_pending"));
+    // 4. Finance (Pending Payouts in Payout)
+    const qFinance = query(collection(db, "payout"), where("status", "==", "payout_pending"));
     const unsubFinance = onSnapshot(qFinance, (snapshot) => {
       setCounts(prev => ({ ...prev, finance: snapshot.size }));
     });

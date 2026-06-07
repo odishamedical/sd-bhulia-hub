@@ -33,7 +33,7 @@ export default function ProductDetailPage() {
     mobile: "",
     address: "",
     pincode: "",
-    paymentMode: "escrow"
+    paymentMode: "payout"
   });
   const [isOrdering, setIsOrdering] = useState<boolean>(false);
   const [showProfileBlocker, setShowProfileBlocker] = useState(false);
@@ -130,7 +130,7 @@ export default function ProductDetailPage() {
     if (!product) return;
     const finalRef = customRefId || userUid;
     const shareUrl = `${window.location.origin}/product/${product.slug}?ref=${finalRef}`;
-    const message = `Check out this gorgeous authentic ${product.title} from Bhulia Hub! Direct weaver-to-consumer escrow purchase. ${shareUrl}`;
+    const message = `Check out this gorgeous authentic ${product.title} from Bhulia Hub! Direct weaver-to-consumer payout purchase. ${shareUrl}`;
 
     if (platform === "whatsapp") {
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, "_blank");
@@ -165,7 +165,7 @@ export default function ProductDetailPage() {
       referralId: referralId || null,
       proxyBuyerId: null,
       paymentMode: orderForm.paymentMode,
-      paymentStatus: "Escrow Locked",
+      paymentStatus: "Payout Locked",
       logisticsStatus: "Pending Weaver Handover",
       qcStatus: "Pending Sourcing" as const,
       timestamp: new Date().toISOString()
@@ -196,7 +196,7 @@ export default function ProductDetailPage() {
         localStorage.setItem("sd_franchise_notifications", JSON.stringify(notifications));
       }
     } else {
-      alert("Error placing escrow order. Please try again.");
+      alert("Error placing payout order. Please try again.");
     }
   };
 
@@ -226,7 +226,7 @@ export default function ProductDetailPage() {
       {referrerName && (
         <div className="bg-[#C5A059] text-[#051815] py-2.5 px-4 text-center text-xs font-bold uppercase tracking-wider shadow-inner flex justify-center items-center gap-2 z-30">
           <span>✨</span>
-          <span>Shopping curated collection referred by <strong>{referrerName}</strong> — Authenticity Escrow Protected</span>
+          <span>Shopping curated collection referred by <strong>{referrerName}</strong> — Authenticity Payout Protected</span>
           <span>✨</span>
         </div>
       )}
@@ -362,7 +362,7 @@ export default function ProductDetailPage() {
                 </button>
               </div>
               <p className="text-[10px] text-gray-300 leading-normal mt-3 text-center">
-                Sharing this page creates a tracking cookie containing your referral ID. Registered Resellers receive a commission on successfully completed escrow checkouts.
+                Sharing this page creates a tracking cookie containing your referral ID. Registered Resellers receive a commission on successfully completed payout checkouts.
               </p>
             </div>
 
@@ -452,7 +452,7 @@ export default function ProductDetailPage() {
                   <span className="text-xs font-semibold text-white">{product.weaverName || "Master Weaver"}</span>
                 </div>
                 <div>
-                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Escrow Protocol</span>
+                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Payout Protocol</span>
                   <span className="text-xs font-semibold text-green-400">Payment Protected</span>
                 </div>
               </div>
@@ -493,11 +493,11 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Escrow Checkout block */}
+            {/* Payout Checkout block */}
             <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-xl text-white">
               {orderStep === 1 ? (
                 <form onSubmit={handlePlaceOrder} className="space-y-4">
-                  <h3 className="text-base font-serif font-bold text-[#C5A059] tracking-wider border-b border-[#C5A059]/20 pb-2">Direct Pit Loom Escrow Checkout</h3>
+                  <h3 className="text-base font-serif font-bold text-[#C5A059] tracking-wider border-b border-[#C5A059]/20 pb-2">Direct Pit Loom Payout Checkout</h3>
                   
                   <div className="grid grid-cols-2 gap-3">
                     <div>
@@ -530,16 +530,16 @@ export default function ProductDetailPage() {
 
                   <div className="pt-2">
                     <button type="submit" disabled={isOrdering} className="bhulia-gold-button w-full py-3 text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl transition-all hover:brightness-110 cursor-pointer disabled:opacity-50">
-                      {isOrdering ? "Securing Escrow Channel..." : "Order with D2C Escrow Protection"}
+                      {isOrdering ? "Securing Payout Channel..." : "Order with D2C Payout Protection"}
                     </button>
                   </div>
                 </form>
               ) : (
                 <div className="text-center py-6 space-y-4">
                   <span className="text-4xl">🎉</span>
-                  <h3 className="text-xl font-serif font-bold text-green-400">Order Locked & Escrow Secured!</h3>
+                  <h3 className="text-xl font-serif font-bold text-green-400">Order Locked & Payout Secured!</h3>
                   <p className="text-xs text-gray-200 leading-relaxed max-w-sm mx-auto">
-                    Thank you {orderForm.fullName}. Your purchase of {selectedQuantity} {product.title} has been locked into the Shyam Dash escrow registry. Weaver payout starts upon courier confirmation.
+                    Thank you {orderForm.fullName}. Your purchase of {selectedQuantity} {product.title} has been locked into the Shyam Dash payout registry. Weaver payout starts upon courier confirmation.
                   </p>
                   <button onClick={() => setOrderStep(1)} className="px-6 py-2.5 bg-[#0A3A35] border border-[#C5A059] text-white rounded-xl text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-colors cursor-pointer">
                     Place Another Order

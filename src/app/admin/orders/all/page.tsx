@@ -31,33 +31,30 @@ export default function MasterOrdersPage() {
         fetchedOrders = [
           {
             id: "ORD-99120",
-            customerName: "Ramesh Kumar",
-            productTitle: "Royal Pasapalli Cotton",
-            amount: "12,500",
+            customerInfo: { fullName: "Ramesh Kumar" },
+            items: [{ title: "Royal Pasapalli Cotton" }],
+            totalAmount: 12500,
+            vendorPayout: 11500,
+            platformShare: 0,
+            resellerCommission: 1000,
             status: "processing",
-            date: "2026-06-03T10:00:00Z",
-            paymentStatus: "paid",
-            source: "B2C Web"
+            createdAt: { toDate: () => new Date("2026-06-03T10:00:00Z") },
+            paymentStatus: "paid_mock",
+            assignedLogisticsPartner: "shiprocket",
+            trackingNumber: "TRACK-SHIPROCKET-123456"
           },
           {
             id: "ORD-99121",
-            customerName: "Odia Weaves Emporium",
-            productTitle: "Bulk Order: 5x Single Ikat",
-            amount: "85,000",
+            customerInfo: { fullName: "Odia Weaves Emporium" },
+            items: [{ title: "Bulk Order: 5x Single Ikat" }],
+            totalAmount: 85000,
+            vendorPayout: 85000,
+            platformShare: 0,
+            resellerCommission: 0,
             status: "placed",
-            date: "2026-06-04T08:30:00Z",
-            paymentStatus: "escrow_held",
-            source: "B2B Franchise"
-          },
-          {
-            id: "ORD-99122",
-            customerName: "Anita Sharma",
-            productTitle: "Bomkai Silk Saree",
-            amount: "24,800",
-            status: "shipped",
-            date: "2026-06-02T15:45:00Z",
-            paymentStatus: "paid",
-            source: "B2C App"
+            createdAt: { toDate: () => new Date("2026-06-04T08:30:00Z") },
+            paymentStatus: "paid_mock",
+            assignedLogisticsPartner: "clickpost"
           }
         ];
       }
@@ -183,23 +180,23 @@ export default function MasterOrdersPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredOrders.map((order) => (
+                {filteredOrders.map((order: any) => (
                   <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4 align-top">
                       <p className="font-bold text-gray-900 font-mono text-xs">{order.id}</p>
-                      <p className="text-[10px] text-gray-500 mt-1">{new Date(order.date).toLocaleString()}</p>
+                      <p className="text-[10px] text-gray-500 mt-1">{order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString() : new Date(order.createdAt).toLocaleString()}</p>
                     </td>
                     <td className="px-6 py-4 align-top">
-                      <p className="font-bold text-gray-800">{order.customerName}</p>
-                      <span className="inline-block mt-1 px-2 py-0.5 bg-purple-50 text-purple-700 text-[9px] font-bold uppercase rounded border border-purple-100">
-                        {(order as any).source}
-                      </span>
+                      <p className="font-bold text-gray-800">{order.customerInfo?.fullName || "Guest User"}</p>
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-1">{order.items?.[0]?.title || "Unknown Product"}</p>
                     </td>
                     <td className="px-6 py-4 align-top">
-                      <p className="font-bold text-gray-900">₹ {order.amount}</p>
-                      <p className={`text-[10px] font-bold uppercase mt-1 ${(order as any).paymentStatus === 'paid' ? 'text-green-600' : 'text-amber-600'}`}>
-                        {(order as any).paymentStatus.replace("_", " ")}
-                      </p>
+                      <p className="font-bold text-gray-900">Total: ₹{order.totalAmount}</p>
+                      <div className="mt-1 space-y-0.5">
+                        <p className="text-[10px] text-gray-500 font-medium">Platform: ₹{order.platformShare || 0}</p>
+                        <p className="text-[10px] text-gray-500 font-medium">Vendor: ₹{order.vendorPayout || 0}</p>
+                        <p className="text-[10px] text-gray-500 font-medium">Reseller: ₹{order.resellerCommission || 0}</p>
+                      </div>
                     </td>
                     <td className="px-6 py-4 align-top">
                       <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
@@ -211,6 +208,12 @@ export default function MasterOrdersPage() {
                       }`}>
                         {order.status}
                       </span>
+                      {order.assignedLogisticsPartner && (
+                        <div className="mt-2">
+                           <p className="text-[9px] font-bold uppercase tracking-widest text-gray-500">Partner: {order.assignedLogisticsPartner}</p>
+                           {order.trackingNumber && <p className="text-[10px] font-mono font-bold text-blue-600">{order.trackingNumber}</p>}
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4 align-middle text-right">
                       {processingId === order.id ? (

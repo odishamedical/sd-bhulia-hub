@@ -204,7 +204,7 @@ export default function DynamicSlugPage() {
 
   const handleSocialShare = (platform: "whatsapp" | "facebook") => {
     const shareUrl = `${window.location.origin}/${franchise.slug}?ref=${franchise.id}`;
-    const message = `Explore the curated handloom collection of ${franchise.name}. Escrow logs and direct logistics tracking enabled. ${shareUrl}`;
+    const message = `Explore the curated handloom collection of ${franchise.name}. Payout logs and direct logistics tracking enabled. ${shareUrl}`;
 
     if (platform === "whatsapp") {
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, "_blank");

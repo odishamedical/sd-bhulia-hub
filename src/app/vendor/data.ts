@@ -91,7 +91,7 @@ export const DEFAULT_STORE: StoreListing = {
   activeWeaversCount: 350,
   giTagNumber: "GI-Cert: #OD-0001-CO",
   warehouseCapacity: "10,000 units/month",
-  specialtyTags: ["Traditional Ikat", "Escrow Logistics"],
+  specialtyTags: ["Traditional Ikat", "Payout Logistics"],
   description: "Centralized warehouse coordinating logistics and payouts for grassroots primary weaving cooperative societies.",
   img: "/bhulia-hero.png",
   memberRoster: ["Master Weaver Syndicate Group"],
