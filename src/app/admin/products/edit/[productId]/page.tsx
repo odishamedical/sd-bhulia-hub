@@ -140,13 +140,13 @@ export default function EditProductPage() {
       length,
       hasBlouse,
       weaverName,
-      sellerId: selectedSellerId || undefined,
-      sellerType: selectedSellerId ? allSellers.find(s => s.id === selectedSellerId)?.type : undefined,
+      sellerId: selectedSellerId || null,
+      sellerType: selectedSellerId ? allSellers.find(s => s.id === selectedSellerId)?.type || null : null,
       allowResellerMargin,
       resellerMarginPercentage: allowResellerMargin ? Number(resellerMarginPercentage) : 0,
-      resellerPrice: allowResellerMargin ? String(Math.floor(parsedPrice * (1 - Number(resellerMarginPercentage) / 100))) : undefined,
+      resellerPrice: allowResellerMargin ? String(Math.floor(parsedPrice * (1 - Number(resellerMarginPercentage) / 100))) : null,
       isSpecialOffer,
-      specialOfferTag: isSpecialOffer ? specialOfferTag : undefined,
+      specialOfferTag: isSpecialOffer ? specialOfferTag : null,
       isGI: false, // Override to remove GI mention completely
       isBhuliaVerified: true, // Always true as requested
       escrowStatus: "Payment Protected",
@@ -156,7 +156,10 @@ export default function EditProductPage() {
       ...(statusOverride ? { status: statusOverride } : {})
     };
 
-    const res = await updateDocumentStatus("products", productId, data);
+    // Remove any accidental undefined values
+    const cleanData = Object.fromEntries(Object.entries(data).filter(([_, v]) => v !== undefined));
+
+    const res = await updateDocumentStatus("products", productId, cleanData);
     setIsSubmitting(false);
     
     if (res.success) {
