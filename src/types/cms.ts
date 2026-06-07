@@ -23,6 +23,8 @@ export interface CMSColumn {
   productMaterial?: string;
   vendorId?: string;
   productLimit?: number;
+  minPrice?: number;
+  maxPrice?: number;
   featuredOnly?: boolean;
   discountOnly?: boolean;
 }

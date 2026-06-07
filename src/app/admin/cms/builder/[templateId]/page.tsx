@@ -536,6 +536,21 @@ export default function CMSBuilderPage() {
                                 </select>
                               </div>
                               <div>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Material</label>
+                                <select 
+                                  value={col.productMaterial || ""} 
+                                  onChange={e => {
+                                    const newCols = [...row.splitColumns!];
+                                    newCols[colIdx].productMaterial = e.target.value;
+                                    updateRow(row.id, "splitColumns", newCols);
+                                  }} 
+                                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none"
+                                >
+                                  <option value="">-- All --</option>
+                                  {MATERIALS.map(m => <option key={m} value={m}>{m}</option>)}
+                                </select>
+                              </div>
+                              <div>
                                 <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Vendor / Weaver</label>
                                 <select 
                                   value={col.vendorId || ""} 
@@ -549,6 +564,36 @@ export default function CMSBuilderPage() {
                                   <option value="">-- All --</option>
                                   {allSellers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                                 </select>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Min Price</label>
+                                  <input 
+                                    type="number" 
+                                    value={col.minPrice || ""} 
+                                    onChange={e => {
+                                      const newCols = [...row.splitColumns!];
+                                      newCols[colIdx].minPrice = e.target.value ? parseInt(e.target.value) : undefined;
+                                      updateRow(row.id, "splitColumns", newCols);
+                                    }} 
+                                    placeholder="₹0"
+                                    className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none" 
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Max Price</label>
+                                  <input 
+                                    type="number" 
+                                    value={col.maxPrice || ""} 
+                                    onChange={e => {
+                                      const newCols = [...row.splitColumns!];
+                                      newCols[colIdx].maxPrice = e.target.value ? parseInt(e.target.value) : undefined;
+                                      updateRow(row.id, "splitColumns", newCols);
+                                    }} 
+                                    placeholder="₹Any"
+                                    className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none" 
+                                  />
+                                </div>
                               </div>
                               <div>
                                 <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Product Limit</label>
