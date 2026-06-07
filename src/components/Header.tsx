@@ -33,18 +33,18 @@ export default function Header() {
               <Image src="/bhulia_logo_final.jpg" alt="Bhulia Gold Logo" fill className="object-cover" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wider text-[#C5A059] leading-none">BHULIA.COM</h1>
+              <h1 className="text-2xl sm:text-3xl font-sans font-black tracking-tight text-white leading-none">Bhulia.com</h1>
               <p className="hidden sm:block text-[11px] text-white/80 font-medium tracking-wide mt-1 truncate">Sambalpuri saree, Direct from Weavers</p>
             </div>
           </div>
 
           {/* Center: Dedicated Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[10px] font-extrabold uppercase tracking-[0.2em] text-white whitespace-nowrap">
-            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">HOME</Link>
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-4 text-[10px] font-extrabold uppercase tracking-[0.15em] text-white whitespace-nowrap">
+            <Link href="/" className="hover:bg-white/20 px-4 py-2 rounded-full transition-all">HOME</Link>
             
-            <div className="relative group py-1">
-              <button className="flex items-center gap-1 hover:text-[#C5A059] transition-colors cursor-pointer">
-                <span>COLLECTIONS</span>
+            <div className="relative group">
+              <button className="flex items-center gap-1 hover:bg-white/20 px-4 py-2 rounded-full transition-all cursor-pointer">
+                <span>PRODUCTS</span>
                 <span className="text-[10px]">▼</span>
               </button>
               
@@ -73,9 +73,21 @@ export default function Header() {
               </div>
             </div>
 
-            <Link href="/#weaver-boutiques" className="hover:text-[#C5A059] transition-colors pb-1">WEAVER BOUTIQUES</Link>
-            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">ABOUT US</Link>
-            <Link href="/" className="hover:text-[#C5A059] transition-colors pb-1">CONTACT US</Link>
+            <Link href="/#weaver-boutiques" className="hover:bg-white/20 px-4 py-2 rounded-full transition-all">PARTNERS</Link>
+            
+            <div className="relative group">
+              <button className="flex items-center gap-1 hover:bg-white/20 px-4 py-2 rounded-full transition-all cursor-pointer">
+                <span>ABOUT US</span>
+                <span className="text-[10px]">▼</span>
+              </button>
+              
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[220px] bg-[#0A1128]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-3 px-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50 flex flex-col gap-3 text-left normal-case tracking-normal">
+                <Link href="/" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">About Us</Link>
+                <Link href="/" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Contact Us</Link>
+                <Link href="/" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">About Our Products</Link>
+                <Link href="/" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Our Privacy Policy</Link>
+              </div>
+            </div>
           </nav>
 
           {/* Right Side: User Menu / Sign In / Register (Desktop) & Mobile Hamburger */}
