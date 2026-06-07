@@ -206,23 +206,23 @@ export default function Home() {
               </div>
             ))}
             
-            {/* Overlay Content (Bottom Aligned) */}
-            <div className="relative z-20 h-full p-5 md:p-6 flex flex-col justify-end pb-4">
-              <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center gap-4 w-full bg-[#051815]/30 backdrop-blur-lg border border-white/10 p-5 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-                
-                <div className="flex-1 max-w-xl">
-                  <h2 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-white leading-tight drop-shadow-md line-clamp-1 sm:line-clamp-2">
+            {/* Overlay Content (Bottom Aligned with Reverse Text Highlight) */}
+            <div className="relative z-20 h-full p-5 md:p-8 flex flex-col justify-end items-start gap-4">
+              
+              <div className="max-w-xl">
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-white leading-[1.6] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  <span className="bg-[#051815]/70 backdrop-blur-md px-3 py-1 box-decoration-clone rounded-sm">
                     {heroSlides[currentSlide].title} <span className="text-[#C5A059]">{heroSlides[currentSlide].subtitle}</span>
-                  </h2>
-                </div>
-
-                <div className="shrink-0 w-full sm:w-auto">
-                  <button className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-black text-xs uppercase tracking-widest rounded-xl hover:brightness-110 hover:scale-105 transition-all shadow-[0_0_25px_rgba(197,160,89,0.5)] cursor-pointer">
-                    {heroSlides[currentSlide].btn}
-                  </button>
-                </div>
-
+                  </span>
+                </h2>
               </div>
+
+              <div className="shrink-0 mt-2">
+                <button className="px-8 py-3 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-black text-xs uppercase tracking-widest rounded-lg hover:brightness-110 hover:scale-105 transition-all shadow-[0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer">
+                  {heroSlides[currentSlide].btn}
+                </button>
+              </div>
+
             </div>
           </div>
 
