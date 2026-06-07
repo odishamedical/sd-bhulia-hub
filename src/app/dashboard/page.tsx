@@ -999,9 +999,20 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
 
   // Calculate Total Commission
   const myReferralOrders = orders.filter(o => o.referralId === auth.currentUser?.uid || o.proxyBuyerId === auth.currentUser?.uid || (o as any).resellerId === auth.currentUser?.uid);
-  const totalCommission = myReferralOrders.reduce((sum, order) => {
+  
+  const unsettledCommission = myReferralOrders.reduce((sum, order) => {
     const product = products.find(p => p.title === order.productName);
-    if (product && product.resellerMarginPercentage && order.productPrice && (order.paymentStatus === "Settled" || order.paymentStatus === "Payout Pending (Weaver)" || order.paymentStatus === "Payout Locked" || order.paymentStatus === "placed")) {
+    if (product && product.resellerMarginPercentage && order.productPrice && order.paymentStatus !== "Settled") {
+      const orderTotal = parseFloat(String(order.productPrice).replace(/[^0-9.]/g, '')) * (order.quantity || 1);
+      const comm = orderTotal * (product.resellerMarginPercentage / 100);
+      return sum + comm;
+    }
+    return sum;
+  }, 0);
+
+  const settledCommission = myReferralOrders.reduce((sum, order) => {
+    const product = products.find(p => p.title === order.productName);
+    if (product && product.resellerMarginPercentage && order.productPrice && order.paymentStatus === "Settled") {
       const orderTotal = parseFloat(String(order.productPrice).replace(/[^0-9.]/g, '')) * (order.quantity || 1);
       const comm = orderTotal * (product.resellerMarginPercentage / 100);
       return sum + comm;
@@ -1240,17 +1251,59 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Unsettled Commissions</div>
-              <div className="text-3xl font-black text-gray-900">₹0</div>
+              <div className="text-3xl font-black text-gray-900">₹{Math.floor(unsettledCommission).toLocaleString()}</div>
+              <div className="text-xs text-gray-400 mt-2">Funds lock upon successful delivery.</div>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Settled Payouts</div>
-              <div className="text-3xl font-black text-green-600">₹0</div>
+              <div className="text-3xl font-black text-green-600">₹{Math.floor(settledCommission).toLocaleString()}</div>
+              <div className="text-xs text-green-600 mt-2">Successfully paid to your bank.</div>
             </div>
           </div>
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-            <h3 className="font-bold text-gray-900 mb-4">Bank Details</h3>
-            <p className="text-sm text-gray-500 font-medium">No bank account linked. Please add your bank details for automated payouts.</p>
-            <button className="mt-6 px-6 py-2.5 border border-gray-200 text-gray-900 font-bold rounded-xl hover:bg-gray-50 transition-colors">Add Bank Account</button>
+          
+          <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Proxy Orders Ledger</h2>
+            <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="text-[10px] uppercase tracking-widest text-gray-500 border-b border-gray-100 bg-gray-50">
+                    <th className="py-4 px-4 font-bold rounded-tl-xl">Order Ref</th>
+                    <th className="py-4 px-4 font-bold">Product</th>
+                    <th className="py-4 px-4 font-bold text-right">Order Value</th>
+                    <th className="py-4 px-4 font-bold text-right text-blue-600">Your Commission</th>
+                    <th className="py-4 px-4 font-bold text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm divide-y divide-gray-50">
+                  {myReferralOrders.map(order => {
+                    const product = products.find(p => p.title === order.productName);
+                    const comm = product && product.resellerMarginPercentage && order.productPrice 
+                      ? Math.floor(parseFloat(String(order.productPrice).replace(/[^0-9.]/g, '')) * (order.quantity || 1) * (product.resellerMarginPercentage / 100))
+                      : 0;
+                    return (
+                      <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="py-4 px-4 font-mono text-xs text-gray-500">{order.id}</td>
+                        <td className="py-4 px-4 font-bold text-gray-900">{order.productName || "Proxy Order"}</td>
+                        <td className="py-4 px-4 text-right font-medium text-gray-900">₹{order.productPrice}</td>
+                        <td className="py-4 px-4 text-right font-black text-blue-600">₹{comm.toLocaleString()}</td>
+                        <td className="py-4 px-4 text-center">
+                          <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
+                            order.paymentStatus === 'Settled' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                          }`}>
+                            {order.paymentStatus === 'Settled' ? 'Settled' : 'Unsettled'}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {myReferralOrders.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-16 text-center text-gray-500 font-medium">You haven't referred any orders yet.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
@@ -1559,9 +1612,21 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
                       </select>
                     </td>
                     <td className="py-4 text-right flex justify-end gap-2">
-                      <button onClick={() => alert("Initiating Weaver Razorpay Route...")} className="px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-xl text-xs font-bold">Release Payout</button>
+                      <button 
+                        onClick={() => updateOrderStatus(order.id, "paymentStatus", "Settled")} 
+                        disabled={order.paymentStatus === "Settled" || (order as any).status !== "delivered"}
+                        className="px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-xl text-xs font-bold disabled:opacity-50 transition-all hover:bg-green-100"
+                      >
+                        {order.paymentStatus === "Settled" ? "Paid" : "Release Payout"}
+                      </button>
                       {(order.referralId || order.proxyBuyerId || (order as any).resellerId) && (
-                        <button onClick={() => alert("Initiating Reseller Commission Payout...")} className="px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold">Pay Comm.</button>
+                        <button 
+                          onClick={() => updateOrderStatus(order.id, "paymentStatus", "Settled")} 
+                          disabled={order.paymentStatus === "Settled" || (order as any).status !== "delivered"}
+                          className="px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold disabled:opacity-50 transition-all hover:bg-blue-100"
+                        >
+                          Pay Comm.
+                        </button>
                       )}
                     </td>
                   </tr>

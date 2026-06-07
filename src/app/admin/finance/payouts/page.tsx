@@ -2,22 +2,31 @@
 
 import React, { useState, useEffect } from "react";
 import { useOrders } from "@/lib/db-hooks";
+import { db } from "@/lib/firebase";
+import { doc, updateDoc } from "firebase/firestore";
 
 export default function PayoutsPage() {
   const { orders, loading } = useOrders();
   const [escrowList, setPayoutList] = useState<any[]>([]);
 
   useEffect(() => {
-    // Mocking Payout Data from Orders
+    // Generate Payout Data from real Orders
     if (orders.length > 0) {
-      const pendingPayout = orders.filter(o => o.status !== "delivered").map(order => ({
-        id: order.id,
-        beneficiary: order.sellerId || "Bhulia Weaver Network",
-        amount: parseInt(order.productPrice?.toString().replace(/[^0-9]/g, '') || "5000"),
-        platformFee: 0,
-        status: "Held in Payout",
-        clearsOn: "Upon Delivery + 7 Days"
-      }));
+      // Payouts are eligible ONLY when order is delivered, and payment status is not yet Settled.
+      const pendingPayout = orders.filter(o => 
+        (o.logisticsStatus === "Delivered" || o.status === "delivered") && 
+        o.paymentStatus !== "Settled"
+      ).map(order => {
+        const amount = parseInt(order.productPrice?.toString().replace(/[^0-9]/g, '') || "0") * (order.quantity || 1);
+        return {
+          id: order.id,
+          beneficiary: order.weaverName || order.sellerId || "Bhulia Weaver Network",
+          amount: amount,
+          platformFee: 0,
+          status: "Eligible for Payout",
+          clearsOn: "Immediate Clearance"
+        };
+      });
       
       // Calculate 10% platform fee
       const withFees = pendingPayout.map(e => ({
@@ -30,9 +39,19 @@ export default function PayoutsPage() {
     }
   }, [orders]);
 
-  const handleApprovePayout = (id: string) => {
-    alert(`Simulating Razorpay/Stripe Route for Payout Release: Order #${id}`);
-    setPayoutList(prev => prev.filter(e => e.id !== id));
+  const handleApprovePayout = async (id: string) => {
+    try {
+      alert(`Simulating RazorpayX Route API for NEFT/IMPS transfer to Weaver...`);
+      const orderRef = doc(db, "orders", id);
+      await updateDoc(orderRef, {
+        paymentStatus: "Settled",
+        payoutDate: new Date().toISOString()
+      });
+      alert(`Success! Payout Settled for Order #${id}`);
+      setPayoutList(prev => prev.filter(e => e.id !== id));
+    } catch (e) {
+      alert("Failed to release payout.");
+    }
   };
 
   const handleReleaseAll = () => {
