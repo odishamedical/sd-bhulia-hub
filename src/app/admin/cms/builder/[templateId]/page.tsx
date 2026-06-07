@@ -8,29 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import ImageUploader from "@/components/ImageUploader";
 import { useVendors, useWeavers } from "@/lib/db-hooks";
-
-const CATEGORIES = [
-  "Saree",
-  "Dress material",
-  "Bedsheet",
-  "RedyMade shirts",
-  "Redy made Kurti",
-  "Kurti dress material"
-];
-const MATERIALS = [
-  "Pure Cotton",
-  "Pure Silk (Pata)",
-  "Mix Silk(Pata) (Silk+Polyster)",
-  "Mix Cotton (Cotton+Polyster)"
-];
-const DESIGNS = [
-  "Sambalpuri Ikat (Bandha)",
-  "Sambalpuri Traditional Ikat Design",
-  "Sambalpuri Modern Ikat Design",
-  "Sambalpuri Double Ikat (Pashapali/Saptapar)",
-  "Bomkei",
-  "Bomkei+Ikat"
-];
+import { useTaxonomy } from "@/lib/taxonomy-hooks";
 
 export default function CMSBuilderPage() {
   const params = useParams();
@@ -41,6 +19,7 @@ export default function CMSBuilderPage() {
   const [saving, setSaving] = useState(false);
   const [pageData, setPageData] = useState<PlatformPage | null>(null);
 
+  const { taxonomy } = useTaxonomy();
   const { vendors: storeList } = useVendors();
   const { weavers: weaverList } = useWeavers();
   const allSellers = [
@@ -338,7 +317,7 @@ export default function CMSBuilderPage() {
                             <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Category</label>
                             <select value={row.category || ""} onChange={e => updateRow(row.id, "category", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
                               <option value="">-- All Categories --</option>
-                              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                              {taxonomy.categories.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
                           </div>
                           <div>
@@ -367,21 +346,21 @@ export default function CMSBuilderPage() {
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Category</label>
                     <select value={row.category || ""} onChange={e => updateRow(row.id, "category", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
                       <option value="">-- All Categories --</option>
-                      {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                      {taxonomy.categories.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
                   <div>
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Material</label>
                     <select value={row.productMaterial || ""} onChange={e => updateRow(row.id, "productMaterial", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
                       <option value="">-- All Materials --</option>
-                      {MATERIALS.map(m => <option key={m} value={m}>{m}</option>)}
+                      {taxonomy.materials.map(m => <option key={m} value={m}>{m}</option>)}
                     </select>
                   </div>
                   <div>
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Design</label>
                     <select value={row.productDesign || ""} onChange={e => updateRow(row.id, "productDesign", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
                       <option value="">-- All Designs --</option>
-                      {DESIGNS.map(d => <option key={d} value={d}>{d}</option>)}
+                      {taxonomy.designs.map(d => <option key={d} value={d}>{d}</option>)}
                     </select>
                   </div>
                   <div>
@@ -559,7 +538,7 @@ export default function CMSBuilderPage() {
                                   className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none"
                                 >
                                   <option value="">-- All --</option>
-                                  {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                  {taxonomy.categories.map(c => <option key={c} value={c}>{c}</option>)}
                                 </select>
                               </div>
                               <div>
@@ -574,7 +553,7 @@ export default function CMSBuilderPage() {
                                   className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none"
                                 >
                                   <option value="">-- All --</option>
-                                  {MATERIALS.map(m => <option key={m} value={m}>{m}</option>)}
+                                  {taxonomy.materials.map(m => <option key={m} value={m}>{m}</option>)}
                                 </select>
                               </div>
                               <div>
@@ -589,7 +568,7 @@ export default function CMSBuilderPage() {
                                   className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none"
                                 >
                                   <option value="">-- All --</option>
-                                  {DESIGNS.map(d => <option key={d} value={d}>{d}</option>)}
+                                  {taxonomy.designs.map(d => <option key={d} value={d}>{d}</option>)}
                                 </select>
                               </div>
                               <div>
