@@ -30,7 +30,7 @@ export default function UserMenu() {
     <div className="relative inline-block text-left z-50 font-sans" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 md:gap-3 px-2 py-1.5 md:px-3 md:py-2 rounded-full bg-[#0A3A35] border border-[#C5A059]/40 hover:border-[#C5A059] transition-all shadow-[0_0_15px_rgba(197,160,89,0.15)] hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] cursor-pointer shrink-0"
+        className="flex items-center gap-2 md:gap-3 px-2 py-1.5 md:px-3 md:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all shadow-[0_0_15px_rgba(197,160,89,0.15)] hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] cursor-pointer shrink-0"
       >
         {userAvatar ? (
           <img src={userAvatar} alt="Profile" className="w-6 h-6 md:w-7 md:h-7 rounded-full object-cover border border-[#C5A059]" />
