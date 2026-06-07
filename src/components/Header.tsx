@@ -32,9 +32,13 @@ export default function Header() {
             <div className="relative w-10 sm:w-16 h-10 sm:h-16 rounded-full overflow-hidden border border-[#C5A059] sm:border-2 shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
               <Image src="/bhulia_logo_final.jpg" alt="Bhulia Gold Logo" fill className="object-cover" />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex flex-col items-stretch">
               <h1 className="text-2xl sm:text-3xl font-sans font-black tracking-tight text-white leading-none">Bhulia.com</h1>
-              <p className="hidden sm:block text-[9px] text-blue-100 font-bold tracking-[0.2em] uppercase mt-1.5 truncate">ORIGINAL SAMBALPURI SAREE</p>
+              <div className="hidden sm:flex justify-between w-full text-[8px] sm:text-[9px] text-blue-100 font-bold uppercase mt-1.5 tracking-wider">
+                <span>ORIGINAL</span>
+                <span>SAMBALPURI</span>
+                <span>SAREE</span>
+              </div>
             </div>
           </div>
 
