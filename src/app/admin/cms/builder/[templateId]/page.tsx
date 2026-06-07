@@ -416,51 +416,198 @@ export default function CMSBuilderPage() {
                 </div>
               )}
 
-              {/* Split Banner & Products Specific */}
+              {/* Split Banner & Products Specific (Modular Grid) */}
               {row.type === "split_banner_products" && (
-                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-[#C5A059]/20 pt-4 mt-2">
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-bold text-[#C5A059]">Banner Configuration (Half Side)</h3>
+                <div className="md:col-span-2 border-t border-[#C5A059]/20 pt-4 mt-2">
+                  <div className="flex justify-between items-end mb-6 bg-[#051815] p-4 rounded-xl border border-[#C5A059]/20">
                     <div>
-                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Banner Position</label>
-                      <select value={row.bannerPosition || "left"} onChange={e => updateRow(row.id, "bannerPosition", e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
-                        <option value="left">Left Side Banner | Right Side Products</option>
-                        <option value="right">Right Side Banner | Left Side Products</option>
+                      <h3 className="text-sm font-bold text-[#C5A059] uppercase tracking-widest">Modular Grid Configuration</h3>
+                      <p className="text-[10px] text-gray-400 mt-1">Select 2, 3, or 4 columns. You can configure each column independently.</p>
+                    </div>
+                    <div>
+                      <select 
+                        value={row.splitColumnsCount || 2} 
+                        onChange={e => {
+                          const newCount = parseInt(e.target.value) as 2 | 3 | 4;
+                          // Initialize columns if missing
+                          let newCols = [...(row.splitColumns || [])];
+                          if (newCols.length === 0) {
+                            newCols = [
+                              { id: "1", type: "ad" },
+                              { id: "2", type: "products" }
+                            ];
+                          }
+                          // Add or remove columns to match count
+                          while (newCols.length < newCount) {
+                            newCols.push({ id: Date.now().toString() + Math.random(), type: "ad" });
+                          }
+                          while (newCols.length > newCount) {
+                            newCols.pop();
+                          }
+                          updateRow(row.id, "splitColumnsCount", newCount);
+                          updateRow(row.id, "splitColumns", newCols);
+                        }} 
+                        className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none font-bold"
+                      >
+                        <option value={2}>2 Columns (50% / 50%)</option>
+                        <option value={3}>3 Columns (33% / 33% / 33%)</option>
+                        <option value={4}>4 Columns (25% / 25% / 25% / 25%)</option>
                       </select>
                     </div>
-                    <ImageUploader value={row.bannerImage || ""} onChange={val => updateRow(row.id, "bannerImage", val)} label="Split Section Image" aspectRatio="portrait" />
-                    <div>
-                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Banner Overlay Text</label>
-                      <input type="text" value={row.bannerText || ""} onChange={e => updateRow(row.id, "bannerText", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="e.g. Wedding Collection" />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Banner Click Destination</label>
-                      <input type="text" value={row.bannerLink || ""} onChange={e => updateRow(row.id, "bannerLink", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" placeholder="/category/wedding" />
-                    </div>
                   </div>
-                  
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-bold text-[#C5A059]">Products Configuration (Half Side)</h3>
-                    <div>
-                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Category</label>
-                      <select value={row.category || ""} onChange={e => updateRow(row.id, "category", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
-                        <option value="">-- All Categories --</option>
-                        {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                      </select>
+
+                  {/* Render Columns */}
+                  {(row.splitColumnsCount && row.splitColumns) ? (
+                    <div className={`grid grid-cols-1 md:grid-cols-${row.splitColumnsCount} gap-4`}>
+                      {row.splitColumns.map((col, colIdx) => (
+                        <div key={col.id} className="bg-[#0A1021] border border-[#C5A059]/20 p-4 rounded-xl relative group shadow-inner">
+                          <div className="absolute -top-3 left-4 bg-[#C5A059] text-[#0A1021] text-[10px] font-bold px-2 py-0.5 rounded shadow">Column {colIdx + 1}</div>
+                          
+                          <div className="mt-2 mb-4 pb-4 border-b border-[#C5A059]/10">
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Content Type</label>
+                            <select 
+                              value={col.type} 
+                              onChange={e => {
+                                const newCols = [...row.splitColumns!];
+                                newCols[colIdx].type = e.target.value as "ad" | "products";
+                                updateRow(row.id, "splitColumns", newCols);
+                              }} 
+                              className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-3 py-1.5 text-[#C5A059] font-bold text-xs outline-none"
+                            >
+                              <option value="ad">Ad Banner</option>
+                              <option value="products">Product List</option>
+                            </select>
+                          </div>
+
+                          {col.type === "ad" ? (
+                            <div className="space-y-4">
+                              <ImageUploader 
+                                value={col.bannerImage || ""} 
+                                onChange={val => {
+                                  const newCols = [...row.splitColumns!];
+                                  newCols[colIdx].bannerImage = val;
+                                  updateRow(row.id, "splitColumns", newCols);
+                                }} 
+                                label="Ad Image" 
+                                aspectRatio="portrait" 
+                              />
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Overlay Text (Optional)</label>
+                                <input 
+                                  type="text" 
+                                  value={col.bannerText || ""} 
+                                  onChange={e => {
+                                    const newCols = [...row.splitColumns!];
+                                    newCols[colIdx].bannerText = e.target.value;
+                                    updateRow(row.id, "splitColumns", newCols);
+                                  }} 
+                                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none" 
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Click Link (Optional)</label>
+                                <input 
+                                  type="text" 
+                                  value={col.bannerLink || ""} 
+                                  onChange={e => {
+                                    const newCols = [...row.splitColumns!];
+                                    newCols[colIdx].bannerLink = e.target.value;
+                                    updateRow(row.id, "splitColumns", newCols);
+                                  }} 
+                                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none" 
+                                />
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="space-y-3">
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Category</label>
+                                <select 
+                                  value={col.category || ""} 
+                                  onChange={e => {
+                                    const newCols = [...row.splitColumns!];
+                                    newCols[colIdx].category = e.target.value;
+                                    updateRow(row.id, "splitColumns", newCols);
+                                  }} 
+                                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none"
+                                >
+                                  <option value="">-- All --</option>
+                                  {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Vendor / Weaver</label>
+                                <select 
+                                  value={col.vendorId || ""} 
+                                  onChange={e => {
+                                    const newCols = [...row.splitColumns!];
+                                    newCols[colIdx].vendorId = e.target.value;
+                                    updateRow(row.id, "splitColumns", newCols);
+                                  }} 
+                                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none"
+                                >
+                                  <option value="">-- All --</option>
+                                  {allSellers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Product Limit</label>
+                                <input 
+                                  type="number" 
+                                  value={col.productLimit || 2} 
+                                  onChange={e => {
+                                    const newCols = [...row.splitColumns!];
+                                    newCols[colIdx].productLimit = parseInt(e.target.value);
+                                    updateRow(row.id, "splitColumns", newCols);
+                                  }} 
+                                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none" 
+                                />
+                              </div>
+                              <div className="flex flex-col gap-2 pt-2">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input 
+                                    type="checkbox" 
+                                    checked={col.featuredOnly || false} 
+                                    onChange={e => {
+                                      const newCols = [...row.splitColumns!];
+                                      newCols[colIdx].featuredOnly = e.target.checked;
+                                      updateRow(row.id, "splitColumns", newCols);
+                                    }} 
+                                    className="w-3 h-3 bg-[#0A1021] border-[#C5A059] text-[#C5A059] rounded" 
+                                  />
+                                  <span className="text-[10px] font-bold text-gray-300">Featured Only</span>
+                                </label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input 
+                                    type="checkbox" 
+                                    checked={col.discountOnly || false} 
+                                    onChange={e => {
+                                      const newCols = [...row.splitColumns!];
+                                      newCols[colIdx].discountOnly = e.target.checked;
+                                      updateRow(row.id, "splitColumns", newCols);
+                                    }} 
+                                    className="w-3 h-3 bg-[#0A1021] border-[#C5A059] text-[#C5A059] rounded" 
+                                  />
+                                  <span className="text-[10px] font-bold text-gray-300">Heavy Discount</span>
+                                </label>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                    <div>
-                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Product Limit (Shows as Grid)</label>
-                      <input type="number" value={row.productLimit || 4} onChange={e => updateRow(row.id, "productLimit", parseInt(e.target.value))} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none" />
+                  ) : (
+                    <div className="text-center py-8 bg-[#051815] rounded-xl border border-dashed border-[#C5A059]/30">
+                      <p className="text-gray-400 text-sm mb-4">You have an older version of the Split Section.</p>
+                      <button type="button" onClick={() => {
+                        updateRow(row.id, "splitColumnsCount", 2);
+                        updateRow(row.id, "splitColumns", [
+                          { id: "1", type: "ad", bannerImage: row.bannerImage, bannerLink: row.bannerLink, bannerText: row.bannerText },
+                          { id: "2", type: "products", category: row.category, productLimit: row.productLimit, featuredOnly: row.featuredOnly, discountOnly: row.discountOnly }
+                        ]);
+                      }} className="bg-[#C5A059] text-[#0A1021] px-4 py-2 rounded font-bold text-xs uppercase">Upgrade to Modular Grid</button>
                     </div>
-                    <div className="flex items-center gap-2 pt-2">
-                      <input type="checkbox" checked={row.featuredOnly || false} onChange={e => updateRow(row.id, "featuredOnly", e.target.checked)} className="w-4 h-4 bg-[#051815] border-[#C5A059] text-[#C5A059] rounded" />
-                      <label className="text-xs font-bold text-gray-300">Show Only Featured Products</label>
-                    </div>
-                    <div className="flex items-center gap-2 pt-2">
-                      <input type="checkbox" checked={row.discountOnly || false} onChange={e => updateRow(row.id, "discountOnly", e.target.checked)} className="w-4 h-4 bg-[#051815] border-[#C5A059] text-[#C5A059] rounded" />
-                      <label className="text-xs font-bold text-gray-300">Show Only Heavy Discount Products</label>
-                    </div>
-                  </div>
+                  )}
                 </div>
               )}
             </div>

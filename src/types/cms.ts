@@ -9,6 +9,24 @@ export interface GlobalTheme {
   ticketColor?: string;
 }
 
+export interface CMSColumn {
+  id: string;
+  type: "ad" | "products";
+  
+  // Ad Specific
+  bannerImage?: string;
+  bannerText?: string;
+  bannerLink?: string;
+  
+  // Product Specific
+  category?: string;
+  productMaterial?: string;
+  vendorId?: string;
+  productLimit?: number;
+  featuredOnly?: boolean;
+  discountOnly?: boolean;
+}
+
 export interface CMSRow {
   id: string;
   type: "hero" | "multi_banner" | "split_banner_products" | "image_grid" | "products" | "adsense" | "banner";
@@ -36,11 +54,15 @@ export interface CMSRow {
   bannerColumns?: 1 | 2 | 3;
   banners?: Array<{ image: string; link: string; text?: string }>;
   
-  // Split Layout Fields
+  // Split Banner & Products Fields (Legacy)
   bannerPosition?: "left" | "right";
   bannerImage?: string;
-  bannerLink?: string;
   bannerText?: string;
+  bannerLink?: string;
+
+  // Split Banner & Products Fields (Modular Grid)
+  splitColumnsCount?: 2 | 3 | 4;
+  splitColumns?: CMSColumn[];
   productLimit?: number;
 
   // Image Grid Fields
