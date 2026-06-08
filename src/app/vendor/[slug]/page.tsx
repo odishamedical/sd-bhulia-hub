@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useVendorBySlug, useProducts } from "@/lib/db-hooks";
 import PublicProfileTemplate from "@/components/PublicProfileTemplate";
+import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 
 export default function VendorDetailPage() {
   const params = useParams();
@@ -62,6 +63,9 @@ export default function VendorDetailPage() {
 
   return (
     <main className="relative flex-1 w-full bg-[#051815] text-white font-sans flex flex-col min-h-screen">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <GlobalBannerSlot placementId="content_top" context={{ audience: "shops", specificId: vendor.slug }} />
+      </div>
       <PublicProfileTemplate 
         type="vendor" 
         profile={mappedProfile} 

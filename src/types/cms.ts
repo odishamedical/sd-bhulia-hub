@@ -106,3 +106,22 @@ export interface ActiveRoutes {
   defaultWeaverTemplateId?: string;
   defaultProductTemplateId?: string;
 }
+
+export interface AdCampaign {
+  id?: string;
+  title: string;
+  type: "image" | "adsense";
+  content: string; // Image URL or HTML Code
+  linkUrl?: string; // Where the image clicks to
+  placement: "homepage_top" | "homepage_middle" | "sidebar" | "content_top" | "content_bottom";
+  
+  // Advanced Targeting
+  targetAudience: "global" | "weavers" | "shops" | "products";
+  targetSpecificIds: string[]; // Array of IDs. e.g., ["all"], ["silk-masterpieces"], ["bargarh-weavers"], ["prod-123", "prod-456"]
+  
+  status: "active" | "paused";
+  impressions: number;
+  clicks: number;
+  createdAt?: any;
+  updatedAt?: any;
+}

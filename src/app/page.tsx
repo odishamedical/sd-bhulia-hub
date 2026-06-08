@@ -14,6 +14,7 @@ import { doc, getDoc } from "firebase/firestore";
 import ProductCard from "../components/ProductCard";
 import DynamicRenderer from "../components/cms/DynamicRenderer";
 import { PlatformPage, ActiveRoutes } from "@/types/cms";
+import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 
 interface CMSRow {
   id: string;
@@ -498,32 +499,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Interspersed Advertisement Banner 1 */}
-        <div className="bg-gradient-to-r from-[#0A3A35] via-[#0D3630] to-[#0A3A35] border-2 border-[#C5A059] rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.3)] flex flex-col md:flex-row items-center justify-between gap-8 group">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#C5A059]/15 via-transparent to-transparent pointer-events-none group-hover:scale-110 transition-transform duration-1000"></div>
-          
-          <div className="space-y-4 max-w-2xl relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-xs font-bold uppercase tracking-widest">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse"></span>
-              <span>800 Years of Living Heritage</span>
-            </div>
-            
-            <h3 className="text-3xl md:text-4xl font-serif font-bold text-white leading-tight">
-              Empowering Grassroots Artisans <br />
-              <span className="text-[#C5A059]">Through Sovereign D2C & B2B Channels.</span>
-            </h3>
-
-            <p className="text-sm text-gray-200 font-sans leading-relaxed">
-              Every purchase on Bhulia Hub directly funds the master weavers of Bargarh, Sonepur, and Boudh, eliminating predatory middlemen and ensuring 100% transparent wage payout.
-            </p>
-          </div>
-
-          <div className="relative z-10 flex flex-col sm:flex-row gap-4 shrink-0 w-full md:w-auto">
-            <button className="px-8 py-4 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl hover:brightness-110 transition-all shadow-[0_0_25px_rgba(197,160,89,0.4)] cursor-pointer">
-              Commission B2B Lot
-            </button>
-          </div>
-        </div>
+        <GlobalBannerSlot placementId="homepage_middle" context={{ audience: "global", specificId: "all" }} />
 
         {/* 5. Product Category Grid 2 E.g. Pata Sambalpuri Silk */}
         <div id="pata-sambalpuri" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
@@ -592,32 +568,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Interspersed Advertisement Banner 2 */}
-        <div className="bg-[#0B2B26] border-2 border-[#C5A059] rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_40px_rgba(197,160,89,0.3)] flex flex-col md:flex-row items-center justify-between gap-8 group">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#C5A059]/15 via-transparent to-transparent pointer-events-none group-hover:scale-110 transition-transform duration-1000"></div>
-          
-          <div className="space-y-4 max-w-2xl relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-xs font-bold uppercase tracking-widest">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse"></span>
-              <span>100% Silk Mark & Bhulia.com Payout Protection</span>
-            </div>
-            
-            <h3 className="text-3xl md:text-4xl font-serif font-bold text-white leading-tight">
-              Sovereign Handloom Verification <br />
-              <span className="text-[#C5A059]">Backed by Jan Dhan Artisan Welfare.</span>
-            </h3>
-
-            <p className="text-sm text-gray-200 font-sans leading-relaxed">
-              Every masterpiece includes an immutable physical Bhulia.com Certificate and Silk Mark hologram, guaranteeing absolute authenticity and protecting Odisha's ancient weaving heritage.
-            </p>
-          </div>
-
-          <div className="relative z-10 flex flex-col sm:flex-row gap-4 shrink-0 w-full md:w-auto">
-            <button className="px-8 py-4 bg-[#0A3A35] border border-[#C5A059] hover:bg-[#0D4B45] text-[#C5A059] hover:text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all cursor-pointer">
-              Inspect Bhulia.com Registry
-            </button>
-          </div>
-        </div>
+        <GlobalBannerSlot placementId="content_bottom" context={{ audience: "global", specificId: "all" }} />
 
         {/* 6. Product Category Grid 3 E.g. Cotton Bomkai */}
         <div id="cotton-bomkai" className="space-y-4 md:space-y-6 pt-4 md:pt-6">
