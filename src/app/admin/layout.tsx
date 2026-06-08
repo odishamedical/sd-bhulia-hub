@@ -72,7 +72,11 @@ const SIDEBAR_CATEGORIES = [
     icon: "💰",
     subLinks: [
       { name: "Seller & Weaver Payouts", path: "/admin/finance/payouts" },
-      { name: "Reseller Commissions", path: "/admin/finance/commissions" }
+      { name: "Reseller Commissions", path: "/admin/finance/commissions" },
+      { name: "Platform Revenue Report", path: "/admin/finance/revenue" },
+      { name: "SaaS Subscriptions", path: "/admin/finance/subscriptions" },
+      { name: "Ad Invoices & Billing", path: "/admin/finance/billing" },
+      { name: "Tax & GST Compliance", path: "/admin/finance/tax" }
     ]
   },
   {
