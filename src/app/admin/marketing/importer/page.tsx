@@ -1,0 +1,195 @@
+"use client";
+
+import React, { useState } from "react";
+
+export default function GooglePlacesImporterPage() {
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<any[]>([]);
+  const [pageToken, setPageToken] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [importing, setImporting] = useState(false);
+
+  const handleSearch = async (token?: string) => {
+    if (!query) return;
+    setLoading(true);
+    try {
+      const res = await fetch("/api/places", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query, pageToken: token || undefined }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      
+      if (token) {
+        setResults(prev => [...prev, ...(data.places || [])]);
+      } else {
+        setResults(data.places || []);
+        setSelectedIds(new Set());
+      }
+      setPageToken(data.nextPageToken || "");
+    } catch (e: any) {
+      alert("Failed to search: " + e.message);
+    }
+    setLoading(false);
+  };
+
+  const toggleSelect = (id: string) => {
+    const newSet = new Set(selectedIds);
+    if (newSet.has(id)) newSet.delete(id);
+    else newSet.add(id);
+    setSelectedIds(newSet);
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === results.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(results.map(r => r.id)));
+    }
+  };
+
+  const handleImport = async () => {
+    if (selectedIds.size === 0) return;
+    if (!confirm(`Import ${selectedIds.size} listings to Vendors directory?`)) return;
+    
+    setImporting(true);
+    try {
+      const { collection, setDoc, doc } = await import("firebase/firestore");
+      const { db } = await import("@/lib/firebase");
+      
+      const itemsToImport = results.filter(r => selectedIds.has(r.id));
+      
+      for (const item of itemsToImport) {
+        const title = item.displayName?.text || "Unknown Store";
+        // Generate a URL-friendly slug based on the name and last 5 chars of the Google ID
+        const generatedSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") + "-" + item.id.slice(-5).toLowerCase();
+
+        await setDoc(doc(db, "vendors", item.id), {
+          title: title,
+          slug: generatedSlug,
+          address: item.formattedAddress || "",
+          phone: item.nationalPhoneNumber || "",
+          website: item.websiteUri || "",
+          googleRating: item.rating || 0,
+          googleReviewsCount: item.userRatingCount || 0,
+          googlePlaceId: item.id,
+          coordinates: item.location ? { lat: item.location.latitude, lng: item.location.longitude } : null,
+          status: "unclaimed",
+          country: "India",
+          state: "Odisha",
+          district: "Bargarh", // Default fallback
+          desc: "This profile was automatically generated from Google Maps. If you are the owner, please verify it.",
+          isBhuliaVerified: false,
+          createdAt: Date.now()
+        }, { merge: true });
+      }
+      alert(`Successfully imported ${selectedIds.size} stores!`);
+      setSelectedIds(new Set());
+    } catch (e: any) {
+      alert("Failed to import: " + e.message);
+    }
+    setImporting(false);
+  };
+
+  return (
+    <div className="p-6">
+      <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-6xl animate-in fade-in">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Google Maps Data Ingestion</h2>
+        <p className="text-gray-500 mb-8">Search Google Places and bulk-import them as Unverified vendors to capture leads.</p>
+        
+        <div className="flex gap-4 mb-8">
+          <input 
+            type="text" 
+            value={query} 
+            onChange={e => setQuery(e.target.value)} 
+            onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            placeholder="e.g. Sambalpuri Saree Shops in Bhubaneswar" 
+            className="flex-1 bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-900 focus:border-[#0070F3] outline-none"
+          />
+          <button 
+            onClick={() => handleSearch()} 
+            disabled={loading}
+            className="bg-[#0070F3] text-white px-8 py-4 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors whitespace-nowrap"
+          >
+            {loading ? "Searching..." : "Search Places"}
+          </button>
+        </div>
+
+        {results.length > 0 && (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
+              <div className="flex items-center gap-3">
+                <input 
+                  type="checkbox" 
+                  checked={selectedIds.size === results.length && results.length > 0} 
+                  onChange={toggleAll}
+                  className="w-5 h-5 rounded border-gray-300 text-[#0070F3] focus:ring-[#0070F3]"
+                />
+                <span className="font-bold text-gray-900">{selectedIds.size} Selected</span>
+              </div>
+              <button 
+                onClick={handleImport}
+                disabled={importing || selectedIds.size === 0}
+                className="bg-green-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-green-700 disabled:opacity-50 transition-colors"
+              >
+                {importing ? "Importing..." : "Import Selected to Database"}
+              </button>
+            </div>
+
+            <div className="overflow-x-auto border border-gray-100 rounded-xl max-h-[500px]">
+              <table className="w-full text-left relative">
+                <thead className="bg-gray-50 text-xs uppercase text-gray-500 border-b border-gray-100 sticky top-0 z-10">
+                  <tr>
+                    <th className="p-4 w-12 bg-gray-50"></th>
+                    <th className="p-4 font-bold bg-gray-50">Store Name</th>
+                    <th className="p-4 font-bold bg-gray-50">Location</th>
+                    <th className="p-4 font-bold bg-gray-50">Rating</th>
+                    <th className="p-4 font-bold bg-gray-50">Phone</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {results.map(r => (
+                    <tr key={r.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="p-4">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedIds.has(r.id)} 
+                          onChange={() => toggleSelect(r.id)}
+                          className="w-5 h-5 rounded border-gray-300 text-[#0070F3] focus:ring-[#0070F3]"
+                        />
+                      </td>
+                      <td className="p-4 font-bold text-gray-900">{r.displayName?.text}</td>
+                      <td className="p-4 text-sm text-gray-500 max-w-xs truncate" title={r.formattedAddress}>{r.formattedAddress}</td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-1">
+                          <span className="text-yellow-400">★</span>
+                          <span className="font-bold text-gray-900">{r.rating || "N/A"}</span>
+                          <span className="text-xs text-gray-400">({r.userRatingCount || 0})</span>
+                        </div>
+                      </td>
+                      <td className="p-4 text-sm text-gray-900 font-mono">{r.nationalPhoneNumber || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {pageToken && (
+              <div className="flex justify-center pt-4">
+                <button 
+                  onClick={() => handleSearch(pageToken)}
+                  disabled={loading}
+                  className="bg-gray-100 text-gray-700 px-6 py-2 rounded-xl font-bold hover:bg-gray-200 transition-colors"
+                >
+                  {loading ? "Loading..." : "Load Next 20 Results"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
