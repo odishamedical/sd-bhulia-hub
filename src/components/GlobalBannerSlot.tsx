@@ -10,6 +10,9 @@ interface Props {
   context: {
     audience: "global" | "weavers" | "shops" | "products";
     specificId?: string;
+    category?: string;
+    material?: string;
+    design?: string;
   };
 }
 

@@ -236,7 +236,7 @@ export default function ProductDetailPage() {
       {/* Main product showcase page layout */}
       <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 py-8 flex flex-col gap-8 relative z-10">
         
-        {product && <GlobalBannerSlot placementId="content_top" context={{ audience: "products", specificId: product.id }} />}
+        {product && <GlobalBannerSlot placementId="content_top" context={{ audience: "products", specificId: product.id, category: product.category, material: product.material, design: product.design }} />}
         
         {productLoading ? (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-pulse">

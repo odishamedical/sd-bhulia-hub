@@ -29,7 +29,13 @@ export function useBanners() {
 
   const getBannersForPlacement = (
     placement: AdCampaign["placement"],
-    context: { audience: "weavers" | "shops" | "products" | "global"; specificId?: string }
+    context: { 
+      audience: "weavers" | "shops" | "products" | "global"; 
+      specificId?: string;
+      category?: string;
+      material?: string;
+      design?: string;
+    }
   ) => {
     return banners.filter(b => {
       if (b.placement !== placement) return false;
@@ -38,10 +44,18 @@ export function useBanners() {
       if (b.targetAudience !== context.audience) return false;
 
       // It's the correct audience. Check specific ID targeting.
-      if (b.targetSpecificIds.includes("all")) return true;
-      if (context.specificId && b.targetSpecificIds.includes(context.specificId)) return true;
+      if (!b.targetSpecificIds.includes("all")) {
+        if (!context.specificId || !b.targetSpecificIds.includes(context.specificId)) return false;
+      }
 
-      return false;
+      // If audience is products, check granular filters
+      if (b.targetAudience === "products") {
+        if (b.targetCategory && b.targetCategory !== "all" && b.targetCategory !== context.category) return false;
+        if (b.targetMaterial && b.targetMaterial !== "all" && b.targetMaterial !== context.material) return false;
+        if (b.targetDesign && b.targetDesign !== "all" && b.targetDesign !== context.design) return false;
+      }
+
+      return true;
     });
   };
 

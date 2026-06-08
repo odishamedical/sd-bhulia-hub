@@ -5,6 +5,7 @@ import { db } from "@/lib/firebase";
 import { collection, getDocs, doc, setDoc, deleteDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { AdCampaign } from "@/types/cms";
+import ImageUploader from "@/components/ImageUploader";
 
 export default function AdsPage() {
   const [campaigns, setCampaigns] = useState<AdCampaign[]>([]);
@@ -18,9 +19,12 @@ export default function AdsPage() {
   const [placement, setPlacement] = useState<AdCampaign["placement"]>("homepage_middle");
   const [targetAudience, setTargetAudience] = useState<AdCampaign["targetAudience"]>("global");
   const [targetSpecificIdsStr, setTargetSpecificIdsStr] = useState("all");
+  const [targetCategory, setTargetCategory] = useState("all");
+  const [targetMaterial, setTargetMaterial] = useState("all");
+  const [targetDesign, setTargetDesign] = useState("all");
   const [linkUrl, setLinkUrl] = useState("");
   const [htmlCode, setHtmlCode] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
     fetchCampaigns();
@@ -70,15 +74,12 @@ export default function AdsPage() {
       let contentValue = "";
 
       if (type === "image") {
-        if (!selectedFile) {
-          alert("Please select an image file.");
+        if (!imageUrl) {
+          alert("Please upload an image.");
           setIsUploading(false);
           return;
         }
-        const storage = getStorage();
-        const fileRef = ref(storage, `ads/${Date.now()}_${selectedFile.name}`);
-        await uploadBytesResumable(fileRef, selectedFile);
-        contentValue = await getDownloadURL(fileRef);
+        contentValue = imageUrl;
       } else {
         contentValue = htmlCode;
         if (!contentValue) {
@@ -100,6 +101,9 @@ export default function AdsPage() {
         placement,
         targetAudience,
         targetSpecificIds: idsArray.length > 0 ? idsArray : ["all"],
+        targetCategory: targetAudience === "products" ? targetCategory : "all",
+        targetMaterial: targetAudience === "products" ? targetMaterial : "all",
+        targetDesign: targetAudience === "products" ? targetDesign : "all",
         status: "active",
         impressions: 0,
         clicks: 0,
@@ -125,9 +129,12 @@ export default function AdsPage() {
     setPlacement("homepage_middle");
     setTargetAudience("global");
     setTargetSpecificIdsStr("all");
+    setTargetCategory("all");
+    setTargetMaterial("all");
+    setTargetDesign("all");
     setLinkUrl("");
     setHtmlCode("");
-    setSelectedFile(null);
+    setImageUrl("");
   };
 
   return (
@@ -269,6 +276,42 @@ export default function AdsPage() {
                     <p className="text-[10px] text-gray-500 mt-1">Use "all" to target everything in the audience category, or provide slugs/IDs.</p>
                   </div>
                 </div>
+
+                {targetAudience === "products" && (
+                  <div className="grid grid-cols-3 gap-4 pt-2">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Category</label>
+                      <select value={targetCategory} onChange={e => setTargetCategory(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        <option value="all">All Categories</option>
+                        <option value="Sambalpuri Silk">Sambalpuri Silk</option>
+                        <option value="Sambalpuri Cotton">Sambalpuri Cotton</option>
+                        <option value="Khandua Silk">Khandua Silk</option>
+                        <option value="Bomkai">Bomkai</option>
+                        <option value="Pasapali">Pasapali</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Material</label>
+                      <select value={targetMaterial} onChange={e => setTargetMaterial(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        <option value="all">All Materials</option>
+                        <option value="Pure Silk">Pure Silk</option>
+                        <option value="Pure Cotton">Pure Cotton</option>
+                        <option value="Silk Cotton Blend">Silk Cotton Blend</option>
+                        <option value="Tussar Silk">Tussar Silk</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Design</label>
+                      <select value={targetDesign} onChange={e => setTargetDesign(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        <option value="all">All Designs</option>
+                        <option value="Ikat">Ikat</option>
+                        <option value="Bandha">Bandha</option>
+                        <option value="Phuta">Phuta</option>
+                        <option value="Temple">Temple Border</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-4">
@@ -276,9 +319,13 @@ export default function AdsPage() {
                 
                 {type === "image" ? (
                   <>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-700 mb-1">Banner Image</label>
-                      <input type="file" accept="image/*" onChange={e => setSelectedFile(e.target.files?.[0] || null)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" />
+                    <div className="bg-gray-50 p-4 border border-gray-200 rounded-xl">
+                      <ImageUploader 
+                        value={imageUrl} 
+                        onChange={(url) => setImageUrl(url)} 
+                        label="Upload Promotional Banner" 
+                        aspectRatio={placement === "sidebar" ? "portrait" : placement === "homepage_top" ? "landscape" : "landscape"} 
+                      />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-700 mb-1">Click Destination URL</label>
