@@ -111,6 +111,7 @@ export default function DashboardPage() {
       { id: "orders", label: "My Orders", icon: "📦" },
       { id: "wallet", label: "Wallet & Earnings", icon: "💰" },
       { id: "verification", label: "Verification", icon: "🛡️" },
+      { id: "settings", label: "Store Settings", icon: "⚙️" },
     ];
   } else if (actualRole === "vendor") {
     navItems = [
@@ -380,6 +381,10 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [storeLogo, setStoreLogo] = useState("");
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [address, setAddress] = useState("");
+  const [district, setDistrict] = useState("");
+  const [state, setState] = useState("");
+  const [pin, setPin] = useState("");
   const [kycType, setKycType] = useState("");
   const [kycId, setKycId] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -394,6 +399,10 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           setStoreLogo(data.storeLogo || "");
           setPhone(data.phone || "");
           setWhatsapp(data.whatsapp || "");
+          setAddress(data.address || "");
+          setDistrict(data.district || "");
+          setState(data.state || "");
+          setPin(data.pin || "");
           setKycType(data.kycType || "");
           setKycId(data.kycId || "");
         }
@@ -406,16 +415,42 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     if (!auth.currentUser) return;
     setIsSaving(true);
     try {
+      // 1. Update general user profile
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         storeName,
         publicDesc,
         storeLogo,
         phone,
         whatsapp,
+        address,
+        district,
+        state,
+        pin,
         kycType,
         kycId,
       });
-      alert("Settings saved successfully!");
+
+      // 2. Generate clean slug from store name
+      const slug = storeName?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || auth.currentUser.uid;
+      
+      // 3. Update public storefront data in the correct collection
+      const targetCollection = roleTitle === "Weaver Hub" ? "weavers" : "vendors";
+      const { setDoc } = await import("firebase/firestore");
+      
+      await setDoc(doc(db, targetCollection, auth.currentUser.uid), {
+        id: auth.currentUser.uid,
+        slug,
+        title: storeName,
+        desc: publicDesc,
+        img: storeLogo,
+        phone,
+        whatsapp,
+        address: `${address}, ${district}, ${state} - ${pin}`,
+        tier: "Silver", // Default
+        status: "approved" // Auto-approve for MVP
+      }, { merge: true });
+
+      alert("Settings and Public Storefront updated successfully!");
     } catch (error) {
       console.error(error);
       alert("Failed to save settings.");
@@ -1024,7 +1059,29 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">3. KYC & Verification Documents</h3>
+              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">3. Location Details (For Local Search)</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="col-span-3 md:col-span-1">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
+                  <input type="text" value={district} onChange={e => setDistrict(e.target.value)} placeholder="e.g. Bargarh" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                </div>
+                <div className="col-span-3 md:col-span-1">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
+                  <input type="text" value={state} onChange={e => setState(e.target.value)} placeholder="e.g. Odisha" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                </div>
+                <div className="col-span-3 md:col-span-1">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
+                  <input type="text" value={pin} onChange={e => setPin(e.target.value)} placeholder="e.g. 768028" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                </div>
+                <div className="col-span-3">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Address</label>
+                  <input type="text" value={address} onChange={e => setAddress(e.target.value)} placeholder="Full street address..." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">4. KYC & Verification Documents</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">KYC Document Type</label>
