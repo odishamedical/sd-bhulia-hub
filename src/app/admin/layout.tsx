@@ -83,6 +83,7 @@ const SIDEBAR_CATEGORIES = [
     title: "Platform & System",
     icon: "⚙️",
     subLinks: [
+      { name: "Global Audit Log", path: "/admin/audit" },
       { name: "Visual Page Builder", path: "/admin/cms" },
       { name: "Global Settings", path: "/admin/settings" },
       { name: "Staff & Delegation", path: "/admin/staff" },
