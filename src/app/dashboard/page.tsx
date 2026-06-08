@@ -134,6 +134,11 @@ export default function DashboardPage() {
       { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store Settings" },
       { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store Settings" },
     ];
+  } else if (actualRole === "weaver_staff" || actualRole === "store_staff") {
+    navItems = [
+      { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
+      { id: "upload", label: "My Catalog", icon: "📤", category: "Catalog & Operations" },
+    ];
   } else if (actualRole === "reseller") {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
@@ -180,6 +185,8 @@ export default function DashboardPage() {
       {isCustomer && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "vendor" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+      {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" />}
+      {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Vendor Hub (Staff)" />}
       {actualRole === "reseller" && <ResellerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "super_admin" && <SuperAdminDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
     </DashboardLayout>
@@ -401,6 +408,21 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  
+  // Staff Accounts State
+  const [staffMembers, setStaffMembers] = useState<string[]>([]);
+  const [staffEmailInput, setStaffEmailInput] = useState("");
+  const isStaff = roleTitle.includes("Staff");
+  
+  // Security Sandbox: Staff cannot access sensitive tabs even if forced via state
+  if (isStaff && !["home", "upload"].includes(activeTab)) {
+    return (
+      <div className="bg-red-50 p-8 rounded-3xl text-center border border-red-200">
+        <h2 className="text-xl font-bold text-red-900 mb-2">Access Denied (Staff Account)</h2>
+        <p className="text-red-700 font-medium">Your account permissions are restricted to "My Catalog" only.</p>
+      </div>
+    );
+  }
   
   const sellerProducts = sellerProductsRaw.filter(p => {
     const matchesSearch = p.title?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -1159,19 +1181,56 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-900">Staff Accounts</h2>
-            <span className="px-3 py-1 bg-blue-50 text-[#0070F3] rounded-full text-xs font-bold border border-blue-100">0 / 2 Used</span>
+            <span className="px-3 py-1 bg-blue-50 text-[#0070F3] rounded-full text-xs font-bold border border-blue-100">{staffMembers.length} / 2 Used</span>
           </div>
           <p className="text-sm text-gray-500 font-medium">Invite up to 2 assistants. Staff can only access the "My Catalog" and "Upload Product" tabs.</p>
           
-          <div className="text-center py-10 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium mb-6">No staff members invited yet.</div>
-          
-          <div className="border-t border-gray-100 pt-6">
-            <h3 className="text-sm font-bold text-gray-900 mb-4">Invite New Staff</h3>
-            <div className="flex gap-4">
-              <input type="email" placeholder="Assistant's Email Address" className="flex-1 border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none" />
-              <button className="bg-[#1f2937] text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Send Invite</button>
+          {staffMembers.length === 0 ? (
+            <div className="text-center py-10 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium mb-6">No staff members invited yet.</div>
+          ) : (
+            <div className="space-y-4 mb-6">
+              {staffMembers.map((email) => (
+                <div key={email} className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center font-bold text-gray-700 shadow-sm">{email[0].toUpperCase()}</div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900">{email}</p>
+                      <p className="text-xs text-green-600 font-bold uppercase tracking-wider">Active</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setStaffMembers(prev => prev.filter(e => e !== email))} className="text-red-500 hover:text-red-700 font-bold text-xs">Remove</button>
+                </div>
+              ))}
             </div>
-          </div>
+          )}
+          
+          {staffMembers.length < 2 && (
+            <div className="border-t border-gray-100 pt-6">
+              <h3 className="text-sm font-bold text-gray-900 mb-4">Invite New Staff</h3>
+              <div className="flex gap-4">
+                <input 
+                  type="email" 
+                  value={staffEmailInput}
+                  onChange={(e) => setStaffEmailInput(e.target.value)}
+                  placeholder="Assistant's Email Address" 
+                  className="flex-1 border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none" 
+                />
+                <button 
+                  onClick={() => {
+                    if (staffEmailInput && !staffMembers.includes(staffEmailInput)) {
+                      setStaffMembers(prev => [...prev, staffEmailInput]);
+                      setStaffEmailInput("");
+                      alert("Staff invitation sent! When they log in, they will have access to your catalog.");
+                    }
+                  }}
+                  disabled={!staffEmailInput}
+                  className="bg-[#1f2937] text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm disabled:opacity-50"
+                >
+                  Send Invite
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
