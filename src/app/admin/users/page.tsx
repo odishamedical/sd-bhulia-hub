@@ -62,7 +62,9 @@ export default function UserManagementPage() {
       subStatus: w.subscription?.status || "free_trial",
       whatsapp: w.whatsapp || "N/A",
       address: w.address || "N/A",
-      email: "N/A",
+      email: authUsers.find(u => u.id === w.id)?.email || "N/A",
+      country: "India",
+      referralId: `SDW-${w.id.substring(0,6).toUpperCase()}`,
       slug: w.slug,
     }));
 
@@ -79,7 +81,9 @@ export default function UserManagementPage() {
       subStatus: s.subscription?.status || "free_trial",
       whatsapp: s.whatsapp || "N/A",
       address: s.address || "N/A",
-      email: "N/A",
+      email: authUsers.find(u => u.id === s.id)?.email || "N/A",
+      country: "India",
+      referralId: `SDS-${s.id.substring(0,6).toUpperCase()}`,
       slug: s.slug,
     }));
 
@@ -97,6 +101,7 @@ export default function UserManagementPage() {
       whatsapp: orders.find(o => o.customerName === name)?.customerWhatsapp || "N/A",
       address: orders.find(o => o.customerName === name)?.customerAddress || "N/A",
       email: "N/A",
+      referralId: `SDC-${String(`order_cust_${idx}`).substring(0,6).toUpperCase()}`,
     }));
 
     // Explicitly Registered Customers (May not have purchased yet)
@@ -112,7 +117,8 @@ export default function UserManagementPage() {
       purchasedProductIds: [] as any[],
       whatsapp: c.whatsapp || "N/A",
       address: c.address || "N/A",
-      email: c.email || "N/A",
+      email: c.email || authUsers.find(u => u.id === c.id || u.id === c.userId)?.email || "N/A",
+      referralId: `SDC-${c.id.substring(0,6).toUpperCase()}`,
     }));
 
     // General Identity Provider Users (e.g. Gmail login)
@@ -129,6 +135,7 @@ export default function UserManagementPage() {
       whatsapp: "N/A",
       address: "N/A",
       email: u.email || "N/A",
+      referralId: `SDU-${u.id.substring(0,6).toUpperCase()}`,
     }));
 
     // Resellers (Marketing Agents)
@@ -809,7 +816,7 @@ export default function UserManagementPage() {
               <div className="space-y-4">
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Geography</div>
-                  <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.district}, {selectedUserForDetails.state}, {selectedUserForDetails.country}</div>
+                  <div className="text-sm font-bold text-gray-900">{[selectedUserForDetails.district, selectedUserForDetails.state, selectedUserForDetails.country].filter(Boolean).filter(s => s !== "N/A").join(", ") || "N/A"}</div>
                 </div>
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Full Address</div>
