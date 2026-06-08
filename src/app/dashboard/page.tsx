@@ -133,6 +133,7 @@ export default function DashboardPage() {
       { id: "proxy", label: "Proxy Orders", icon: "🛒" },
       { id: "wallet", label: "Commissions", icon: "💰" },
       { id: "verification", label: "Verification", icon: "🛡️" },
+      { id: "profile", label: "Profile Settings", icon: "⚙️" },
     ];
   }
 
@@ -1759,6 +1760,27 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                 <div className="text-sm text-gray-500 font-medium">Standard Reseller (10% Margin)</div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "profile" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Profile Settings</h2>
+          <div className="space-y-5">
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name</label>
+              <input type="text" className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" defaultValue="Reseller User" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
+              <input type="email" className="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50 text-gray-500 cursor-not-allowed" disabled />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Shipping/Billing Address</label>
+              <textarea className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={3}></textarea>
+            </div>
+            <button className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm mt-4">Save Changes</button>
           </div>
         </div>
       )}
