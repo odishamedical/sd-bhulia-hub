@@ -411,6 +411,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [pin, setPin] = useState("");
   const [kycType, setKycType] = useState("");
   const [kycId, setKycId] = useState("");
+  const [kycDocumentUrl, setKycDocumentUrl] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -436,6 +437,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           setBankUpi(data.bankUpi || "");
           setKycType(data.kycType || "");
           setKycId(data.kycId || "");
+          setKycDocumentUrl(data.kycDocumentUrl || "");
 
           // Professional
           setStoreName(data.storeName || data.name || "");
@@ -478,6 +480,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         bankUpi,
         kycType,
         kycId,
+        kycDocumentUrl
       });
       alert("Personal Profile saved successfully!");
     } catch (error) {
@@ -1225,6 +1228,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document ID / Number</label>
                   <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload KYC Document (Photo/PDF)</label>
+                  <div className="bg-gray-50 border border-gray-200 border-dashed rounded-xl p-6">
+                    <ImageUploader folder="kyc_docs" onUpload={url => setKycDocumentUrl(url)} currentImage={kycDocumentUrl} />
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1254,7 +1263,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                 <button type="button" onClick={() => {
                   setStoreName(personalName);
                   setPhone(bankAccount ? "9999999999" : ""); // Demo purpose copy
-                }} className="text-[#0070F3] text-xs font-bold hover:underline">
+                }} className="bg-[#0070F3] text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-[#005BB5] transition-colors shadow-sm whitespace-nowrap">
                   Copy from Personal Profile
                 </button>
               </div>
