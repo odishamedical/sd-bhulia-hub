@@ -62,10 +62,10 @@ export default function GlobalDirectoryPage() {
         {/* Header */}
         <div className="mb-8 text-center md:text-left">
           <h1 className="text-3xl md:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-4">
-            The Global Handloom Directory
+            The Global Sambalpuri Handloom Directory
           </h1>
           <p className="text-gray-300 max-w-3xl md:text-lg">
-            Discover authentic Master Weavers and Verified Retail Shops straight from Odisha. Support the heritage directly.
+            Discover authentic Master Weavers and Verified Retail Shops for original Sambalpuri Handloom Sarees straight from Odisha. Support the heritage directly.
           </p>
         </div>
 
