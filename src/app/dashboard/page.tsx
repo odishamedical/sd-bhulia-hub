@@ -552,9 +552,14 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">{roleTitle}</h1>
           <p className="text-gray-500 font-medium mt-1">Manage your inventory and dispatch operations.</p>
         </div>
-        <a href={"/" + (roleTitle === "Vendor Hub" ? "vendor/" : "weaver/") + (storeName?.toLowerCase().replace(/\s+/g, '-') || 'demo')} target="_blank" className="px-6 py-3 bg-[#0070F3] text-white font-bold rounded-xl shadow-lg hover:bg-[#005BB5] hover:shadow-xl transition-all flex items-center gap-2 whitespace-nowrap">
-          <span>🏪</span> View Public Storefront ↗
-        </a>
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <a href={"/" + (roleTitle === "Vendor Hub" ? "vendor/" : "weaver/") + (storeName?.toLowerCase().replace(/\s+/g, '-') || 'demo')} target="_blank" className="px-5 py-2.5 bg-[#0070F3] text-white font-bold rounded-xl shadow-md hover:bg-[#005BB5] transition-all flex items-center justify-center gap-2 whitespace-nowrap">
+            <span>🏪</span> View My Storefront
+          </a>
+          <a href={"/"} target="_blank" className="px-5 py-2.5 bg-white text-gray-700 border border-gray-200 font-bold rounded-xl shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center gap-2 whitespace-nowrap">
+            <span>🌐</span> View Main Marketplace
+          </a>
+        </div>
       </header>
 
       {activeTab === "home" && (
