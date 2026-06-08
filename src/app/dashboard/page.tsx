@@ -88,52 +88,63 @@ export default function DashboardPage() {
   let navItems: NavItem[] = [];
   if (isCustomer) {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "📊" },
-      { id: "orders", label: "My Orders", icon: "📦" },
-      { id: "wishlist", label: "Wishlist", icon: "❤️" },
-      { id: "messages", label: "Messages", icon: "💬" },
-      { id: "support", label: "Support", icon: "📞" },
-      { id: "profile", label: "Profile Settings", icon: "⚙️" },
+      { id: "home", label: "Dashboard", icon: "📊", category: "Shopping" },
+      { id: "orders", label: "My Orders", icon: "📦", category: "Shopping" },
+      { id: "wishlist", label: "Wishlist", icon: "❤️", category: "Shopping" },
+      { id: "profile", label: "Profile Settings", icon: "⚙️", category: "Account" },
+      { id: "address", label: "Address Book", icon: "📍", category: "Account" },
+      { id: "wallet", label: "Wallet & Rewards", icon: "💎", category: "Account" },
+      { id: "messages", label: "Messages", icon: "💬", category: "Help" },
+      { id: "support", label: "Support Tickets", icon: "📞", category: "Help" },
     ];
   } else if (actualRole === "super_admin") {
     navItems = [
-      { id: "overview", label: "Overview", icon: "📊" },
-      { id: "kyc", label: "KYC (Users)", icon: "🛡️" },
-      { id: "products", label: "Products", icon: "🛍️" },
-      { id: "logistics", label: "Logistics", icon: "🚚" },
-      { id: "finance", label: "Finance", icon: "💰" },
-      { id: "google_import", label: "Google Importer", icon: "🌍" },
+      { id: "overview", label: "Overview", icon: "📊", category: "Dashboard" },
+      { id: "kyc", label: "KYC (Users)", icon: "🛡️", category: "Management" },
+      { id: "products", label: "Products", icon: "🛍️", category: "Management" },
+      { id: "logistics", label: "Logistics", icon: "🚚", category: "Operations" },
+      { id: "finance", label: "Finance", icon: "💰", category: "Operations" },
+      { id: "google_import", label: "Google Importer", icon: "🌍", category: "Tools" },
     ];
     // Override default tab if needed
     if (activeTab === "home") setActiveTab("overview");
   } else if (actualRole === "weaver") {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "📊" },
-      { id: "upload", label: "Upload Product", icon: "📤" },
-      { id: "orders", label: "My Orders", icon: "📦" },
-      { id: "wallet", label: "Wallet & Earnings", icon: "💰" },
-      { id: "verification", label: "Verification", icon: "🛡️" },
-      { id: "personal", label: "Personal Profile", icon: "👤" },
-      { id: "store_settings", label: "Professional Store", icon: "🏪" },
+      { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
+      { id: "upload", label: "My Catalog", icon: "📤", category: "Catalog & Orders" },
+      { id: "orders", label: "Order Dispatch", icon: "📦", category: "Catalog & Orders" },
+      { id: "wallet", label: "Wallet & Earnings", icon: "💰", category: "Finance" },
+      { id: "messages", label: "Messages", icon: "💬", category: "Communication" },
+      { id: "support", label: "Admin Support", icon: "📞", category: "Communication" },
+      { id: "verification", label: "Verification", icon: "🛡️", category: "Store & Trust" },
+      { id: "personal", label: "Personal Profile", icon: "👤", category: "Store & Trust" },
+      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store & Trust" },
+      { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store & Trust" },
     ];
   } else if (actualRole === "vendor") {
     navItems = [
-      { id: "home", label: "Overview", icon: "📊" },
-      { id: "products", label: "Products Catalog", icon: "🛍️" },
-      { id: "orders", label: "Order Management", icon: "📦" },
-      { id: "finance", label: "Finance & Payouts", icon: "💰" },
-      { id: "marketing", label: "Marketing", icon: "📢" },
-      { id: "personal", label: "Personal Profile", icon: "👤" },
-      { id: "store_settings", label: "Professional Store", icon: "🏪" },
+      { id: "home", label: "Overview", icon: "📊", category: "Overview" },
+      { id: "products", label: "Products Catalog", icon: "🛍️", category: "Commerce" },
+      { id: "orders", label: "Order Management", icon: "📦", category: "Commerce" },
+      { id: "marketing", label: "Marketing", icon: "📢", category: "Growth" },
+      { id: "finance", label: "Finance & Payouts", icon: "💰", category: "Finance" },
+      { id: "messages", label: "Buyer Messages", icon: "💬", category: "Communication" },
+      { id: "support", label: "Admin Support", icon: "📞", category: "Communication" },
+      { id: "personal", label: "Personal Profile", icon: "👤", category: "Store Settings" },
+      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store Settings" },
+      { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store Settings" },
     ];
   } else if (actualRole === "reseller") {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "📊" },
-      { id: "curation", label: "Store Curation", icon: "🛍️" },
-      { id: "proxy", label: "Proxy Orders", icon: "🛒" },
-      { id: "wallet", label: "Commissions", icon: "💰" },
-      { id: "verification", label: "Verification", icon: "🛡️" },
-      { id: "profile", label: "Profile Settings", icon: "⚙️" },
+      { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
+      { id: "analytics", label: "Analytics", icon: "📈", category: "Overview" },
+      { id: "curation", label: "Store Curation", icon: "🛍️", category: "Sales Engine" },
+      { id: "proxy", label: "Proxy Orders", icon: "🛒", category: "Sales Engine" },
+      { id: "links", label: "Marketing Links", icon: "🔗", category: "Sales Engine" },
+      { id: "wallet", label: "Commissions", icon: "💰", category: "Finance" },
+      { id: "verification", label: "Verification", icon: "🛡️", category: "Account & Trust" },
+      { id: "profile", label: "Profile Settings", icon: "⚙️", category: "Account & Trust" },
+      { id: "support", label: "Admin Support", icon: "📞", category: "Account & Trust" },
     ];
   }
 

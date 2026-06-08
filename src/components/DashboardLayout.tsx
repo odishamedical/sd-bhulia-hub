@@ -9,6 +9,7 @@ export type NavItem = {
   id: string;
   label: string;
   icon?: string;
+  category?: string;
 };
 
 interface DashboardLayoutProps {
@@ -81,19 +82,33 @@ export default function DashboardLayout({
             </div>
 
             {/* Navigation */}
-            <nav className="space-y-1 flex-1">
-              {navItems.map((item) => (
-                <button 
-                  key={item.id}
-                  onClick={() => {
-                    onTabChange(item.id);
-                    setMobileMenuOpen(false);
-                  }} 
-                  className={`w-full text-left px-4 py-2.5 rounded-full text-sm font-semibold flex items-center gap-3 transition-all border border-transparent ${activeTab === item.id ? "bg-white/20 text-white border-white/20 shadow-md font-bold" : "text-white/90 hover:text-white hover:bg-white/20"}`}
-                >
-                  <span className={`text-lg transition-transform ${activeTab === item.id ? 'scale-110' : ''}`}>{item.icon || "▪"}</span> 
-                  {item.label}
-                </button>
+            <nav className="flex-1 overflow-y-auto custom-scrollbar pr-2">
+              {Object.entries(
+                navItems.reduce((acc, item) => {
+                  const cat = item.category || "Menu";
+                  if (!acc[cat]) acc[cat] = [];
+                  acc[cat].push(item);
+                  return acc;
+                }, {} as Record<string, NavItem[]>)
+              ).map(([category, items]) => (
+                <div key={category} className="mb-6">
+                  <h4 className="px-4 text-[10px] font-black text-blue-200 uppercase tracking-widest mb-2 opacity-80">{category}</h4>
+                  <div className="space-y-1">
+                    {items.map((item) => (
+                      <button 
+                        key={item.id}
+                        onClick={() => {
+                          onTabChange(item.id);
+                          setMobileMenuOpen(false);
+                        }} 
+                        className={`w-full text-left px-4 py-2.5 rounded-full text-sm font-semibold flex items-center gap-3 transition-all border border-transparent ${activeTab === item.id ? "bg-white/20 text-white border-white/20 shadow-md font-bold" : "text-white/90 hover:text-white hover:bg-white/20"}`}
+                      >
+                        <span className={`text-lg transition-transform ${activeTab === item.id ? 'scale-110' : ''}`}>{item.icon || "▪"}</span> 
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               ))}
             </nav>
 
