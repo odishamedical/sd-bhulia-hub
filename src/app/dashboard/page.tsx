@@ -1020,6 +1020,8 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
     return sum;
   }, 0);
 
+  const totalCommission = unsettledCommission + settledCommission;
+
   // Proxy Order State
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
