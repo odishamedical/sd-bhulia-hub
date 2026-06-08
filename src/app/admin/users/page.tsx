@@ -150,8 +150,23 @@ export default function UserManagementPage() {
       commissionRate: r.commissionRate || 10,
     }));
 
-    // Deduplicate logic (if a registered customer matches an order customer by name/phone, we could merge, but for now we just concat)
-    return [...wList, ...sList, ...cList, ...registeredCustomersList, ...identityUsersList, ...resellersList];
+    // Deduplicate logic: prioritize higher roles over generic 'user' to prevent the exact same person from appearing 3 times
+    const allCombined = [...wList, ...sList, ...resellersList, ...registeredCustomersList, ...cList, ...identityUsersList];
+    const uniqueUsersMap = new Map();
+    
+    for (const u of allCombined) {
+      if (!uniqueUsersMap.has(u.id)) {
+        uniqueUsersMap.set(u.id, u);
+      } else {
+        // If the user is already in the map but the current entry is a generic 'user', skip it
+        const existing = uniqueUsersMap.get(u.id);
+        if (existing.role === 'user' && u.role !== 'user') {
+          uniqueUsersMap.set(u.id, u); // Override with the specific profile
+        }
+      }
+    }
+    
+    return Array.from(uniqueUsersMap.values());
   }, [weavers, stores, orders, customers, authUsers, resellers]);
 
   // Apply Filters
@@ -503,8 +518,8 @@ export default function UserManagementPage() {
                 </tr>
               </thead>
               <tbody className="text-sm divide-y divide-gray-50">
-                {filteredUsers.map(user => (
-                  <tr key={user.id} className="group hover:bg-gray-50 transition-colors">
+                {filteredUsers.map((user, idx) => (
+                  <tr key={`${user.id}-${user.role}-${idx}`} className="group hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-6">
                       <div className="font-bold text-gray-900 text-base">{user.name}</div>
                       <div className="text-xs text-gray-500 font-mono mt-1">ID: {user.id} • {user.phone}</div>
