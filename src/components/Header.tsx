@@ -77,7 +77,7 @@ export default function Header() {
               </div>
             </div>
 
-            <Link href="/directory" className="hover:bg-white/20 px-4 py-2 rounded-full transition-all text-[#C5A059] font-black tracking-widest border border-[#C5A059]/30 shadow-[0_0_15px_rgba(197,160,89,0.3)]">DIRECTORY</Link>
+            <Link href="/directory" className="hover:bg-white/20 px-4 py-2 rounded-full transition-all text-[#C5A059] font-black tracking-widest border border-[#C5A059]/30 shadow-[0_0_15px_rgba(197,160,89,0.3)]">SAMBALPURI HANDLOOM</Link>
             
             <div className="relative group">
               <button className="flex items-center gap-1 hover:bg-white/20 px-4 py-2 rounded-full transition-all cursor-pointer">
@@ -208,7 +208,7 @@ export default function Header() {
               <div className="space-y-4">
                 <h3 className="text-[10px] text-gray-500 font-bold uppercase tracking-widest border-b border-[#C5A059]/10 pb-2">Discover</h3>
                 <Link href="/search" onClick={() => setMobileNavOpen(false)} className="block text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">Search All Products</Link>
-                <Link href="/directory" onClick={() => setMobileNavOpen(false)} className="block text-sm font-bold text-[#C5A059] hover:text-white transition-colors">Global Directory</Link>
+                <Link href="/directory" onClick={() => setMobileNavOpen(false)} className="block text-sm font-bold text-[#C5A059] hover:text-white transition-colors">Sambalpuri Handloom</Link>
               </div>
               
               <div className="space-y-4">
