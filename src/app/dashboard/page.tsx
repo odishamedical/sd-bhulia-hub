@@ -1751,7 +1751,7 @@ function GoogleImporterTab() {
   return (
     <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-6xl animate-in fade-in">
       <h2 className="text-2xl font-bold text-gray-900 mb-2">Google Maps Data Ingestion</h2>
-      <p className="text-gray-500 mb-8">Search Google Places and bulk-import them as Unclaimed vendors to capture leads.</p>
+      <p className="text-gray-500 mb-8">Search Google Places and bulk-import them as Unverified vendors to capture leads.</p>
       
       <div className="flex gap-4 mb-8">
         <input 

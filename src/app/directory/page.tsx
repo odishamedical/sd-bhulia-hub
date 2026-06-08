@@ -121,7 +121,7 @@ export default function GlobalDirectoryPage() {
                 >
                   <option value="all">All Listings</option>
                   <option value="verified">Verified Only</option>
-                  <option value="unclaimed">Unclaimed (Claim Yours)</option>
+                  <option value="unclaimed">Unverified (Verify Yours)</option>
                 </select>
               </div>
 
@@ -189,7 +189,7 @@ export default function GlobalDirectoryPage() {
                       
                       {item.status === "unclaimed" && (
                         <div className="absolute top-4 right-4 bg-red-600/90 text-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-md border border-red-400 shadow-lg animate-pulse">
-                          Claim Now
+                          Verify Now
                         </div>
                       )}
                     </div>
