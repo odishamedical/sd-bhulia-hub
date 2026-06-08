@@ -55,6 +55,7 @@ const SIDEBAR_CATEGORIES = [
     icon: "🚀",
     subLinks: [
       { name: "Visual Page Builder", path: "/admin/cms" },
+      { name: "Global Ads & Banners", path: "/admin/marketing/ads" },
       { name: "Coupons & Offers", path: "/admin/marketing/coupons" },
       { name: "WhatsApp & Email", path: "/admin/marketing/push" },
       { name: "SEO & Campaigns", path: "/admin/marketing/seo" }
