@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const slug = params.slug.toLowerCase();
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug.toLowerCase();
   
   try {
     const q = query(collection(db, "stores"), where("slug", "==", slug));
