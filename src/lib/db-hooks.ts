@@ -365,6 +365,41 @@ export function useOrders() {
   return { orders, loading };
 }
 
+export interface Transaction {
+  id: string;
+  type: string;
+  resellerId?: string;
+  orderId?: string;
+  amount: number;
+  status: "pending_escrow" | "completed" | "paid_out";
+  createdAt: any;
+  completedAt?: any;
+}
+
+export function useTransactions() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const q = query(collection(db, "transactions"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data: Transaction[] = [];
+      snapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() } as Transaction);
+      });
+      setTransactions(data);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching transactions: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return { transactions, loading };
+}
+
 export function useWeaverBySlug(slug: string) {
   const [weaver, setWeaver] = useState<Weaver | null>(null);
   const [loading, setLoading] = useState(true);

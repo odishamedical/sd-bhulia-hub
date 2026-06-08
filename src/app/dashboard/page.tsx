@@ -10,6 +10,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS, WEAVER_DISTRICTS } from "@/lib/locations";
 import { 
   useOrders,
+  useTransactions,
   useProducts,
   useWeavers,
   useVendors,
@@ -1603,32 +1604,20 @@ function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
 function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
   const { products, loading: productsLoading } = useProducts();
   const { orders } = useOrders();
+  const { transactions } = useTransactions();
   const resellerProducts = products.filter(p => p.allowResellerMargin === true);
 
-  // Calculate Total Commission
+  // Filter transactions for this reseller
+  const myTransactions = transactions.filter(t => t.resellerId === auth.currentUser?.uid);
+
+  // Calculate balances from ledger
+  const escrowBalance = myTransactions.filter(t => t.status === "pending_escrow").reduce((sum, t) => sum + t.amount, 0);
+  const availableBalance = myTransactions.filter(t => t.status === "completed").reduce((sum, t) => sum + t.amount, 0);
+  const paidOutBalance = myTransactions.filter(t => t.status === "paid_out").reduce((sum, t) => sum + t.amount, 0);
+  const totalEarned = availableBalance + paidOutBalance;
+
+  // Legacy variables
   const myReferralOrders = orders.filter(o => o.referralId === auth.currentUser?.uid || o.proxyBuyerId === auth.currentUser?.uid || (o as any).resellerId === auth.currentUser?.uid);
-  
-  const unsettledCommission = myReferralOrders.reduce((sum, order) => {
-    const product = products.find(p => p.title === order.productName);
-    if (product && product.resellerMarginPercentage && order.productPrice && order.paymentStatus !== "Settled") {
-      const orderTotal = parseFloat(String(order.productPrice).replace(/[^0-9.]/g, '')) * (order.quantity || 1);
-      const comm = orderTotal * (product.resellerMarginPercentage / 100);
-      return sum + comm;
-    }
-    return sum;
-  }, 0);
-
-  const settledCommission = myReferralOrders.reduce((sum, order) => {
-    const product = products.find(p => p.title === order.productName);
-    if (product && product.resellerMarginPercentage && order.productPrice && order.paymentStatus === "Settled") {
-      const orderTotal = parseFloat(String(order.productPrice).replace(/[^0-9.]/g, '')) * (order.quantity || 1);
-      const comm = orderTotal * (product.resellerMarginPercentage / 100);
-      return sum + comm;
-    }
-    return sum;
-  }, 0);
-
-  const totalCommission = unsettledCommission + settledCommission;
 
   // Proxy Order State
   const [customerName, setCustomerName] = useState("");
@@ -1748,6 +1737,27 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
     setIsOrdering(false);
   };
 
+  const handleRequestPayout = async () => {
+    if (!auth.currentUser) return;
+    if (availableBalance <= 0) {
+      alert("You have no available balance to withdraw.");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "payout_requests"), {
+        resellerId: auth.currentUser.uid,
+        amount: availableBalance,
+        status: "pending",
+        createdAt: serverTimestamp()
+      });
+      alert("Payout request submitted successfully. It will be reviewed by the admin.");
+    } catch (e) {
+      console.error(e);
+      alert("Failed to request payout.");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -1773,7 +1783,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Commission Earned</h3>
-              <div className="text-3xl font-black text-green-600">₹{Math.floor(totalCommission).toLocaleString('en-IN')}</div>
+              <div className="text-3xl font-black text-green-600">₹{Math.floor(totalEarned).toLocaleString('en-IN')}</div>
             </div>
           </div>
         </div>
@@ -1877,67 +1887,79 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
 
       {activeTab === "wallet" && (
         <div className="space-y-6 animate-in fade-in">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Unsettled Commissions</div>
-              <div className="text-3xl font-black text-gray-900">₹{Math.floor(unsettledCommission).toLocaleString()}</div>
-              <div className="text-xs text-gray-400 mt-2">Funds lock upon successful delivery.</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Wallet & Earnings</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-gradient-to-br from-green-500 to-green-700 p-8 rounded-3xl shadow-lg text-white">
+              <h3 className="text-white/80 text-xs font-bold uppercase tracking-wider mb-2">Available Balance</h3>
+              <div className="text-4xl font-black mb-1">₹{availableBalance.toLocaleString('en-IN')}</div>
+              <p className="text-xs text-green-100 mt-4">Funds cleared from delivered orders. Ready to withdraw.</p>
+              <button 
+                onClick={handleRequestPayout}
+                className="mt-6 w-full py-2 bg-white text-green-700 font-bold rounded-xl text-sm shadow-sm hover:bg-gray-50 transition-colors"
+              >
+                Request Withdrawal
+              </button>
             </div>
+            
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Settled Payouts</div>
-              <div className="text-3xl font-black text-green-600">₹{Math.floor(settledCommission).toLocaleString()}</div>
-              <div className="text-xs text-green-600 mt-2">Successfully paid to your bank.</div>
+              <div>
+                <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Escrow</h3>
+                <div className="text-4xl font-black text-orange-500">₹{escrowBalance.toLocaleString('en-IN')}</div>
+                <p className="text-xs text-gray-400 mt-4">Commissions locked in active transit. Auto-funds upon delivery.</p>
+              </div>
+            </div>
+
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+              <div>
+                <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Earned</h3>
+                <div className="text-4xl font-black text-gray-900">₹{totalEarned.toLocaleString('en-IN')}</div>
+                <p className="text-xs text-gray-400 mt-4">Lifetime earnings from Bhulia Hub.</p>
+              </div>
             </div>
           </div>
-          
-          <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Proxy Orders Ledger</h2>
-            <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="text-[10px] uppercase tracking-widest text-gray-500 border-b border-gray-100 bg-gray-50">
-                    <th className="py-4 px-4 font-bold rounded-tl-xl">Order Ref</th>
-                    <th className="py-4 px-4 font-bold">Product</th>
-                    <th className="py-4 px-4 font-bold text-right">Order Value</th>
-                    <th className="py-4 px-4 font-bold text-right text-blue-600">Your Commission</th>
-                    <th className="py-4 px-4 font-bold text-center">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="text-sm divide-y divide-gray-50">
-                  {myReferralOrders.map(order => {
-                    const product = products.find(p => p.title === order.productName);
-                    const comm = product && product.resellerMarginPercentage && order.productPrice 
-                      ? Math.floor(parseFloat(String(order.productPrice).replace(/[^0-9.]/g, '')) * (order.quantity || 1) * (product.resellerMarginPercentage / 100))
-                      : 0;
-                    return (
-                      <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="py-4 px-4 font-mono text-xs text-gray-500">{order.id}</td>
-                        <td className="py-4 px-4 font-bold text-gray-900">{order.productName || "Proxy Order"}</td>
-                        <td className="py-4 px-4 text-right font-medium text-gray-900">₹{order.productPrice}</td>
-                        <td className="py-4 px-4 text-right font-black text-blue-600">₹{comm.toLocaleString()}</td>
-                        <td className="py-4 px-4 text-center">
+
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+            <h3 className="text-lg font-bold text-gray-900 mb-6">Recent Ledger Transactions</h3>
+            {myTransactions.length === 0 ? (
+              <div className="text-center py-10 text-gray-500 font-medium">No transactions found.</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="text-[10px] uppercase tracking-widest text-gray-500 border-b border-gray-100 bg-gray-50">
+                      <th className="py-4 px-4 font-bold rounded-tl-xl">Order Ref</th>
+                      <th className="py-4 px-4 font-bold">Type</th>
+                      <th className="py-4 px-4 font-bold">Status</th>
+                      <th className="py-4 px-4 font-bold text-right rounded-tr-xl">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm divide-y divide-gray-50">
+                    {myTransactions.map(t => (
+                      <tr key={t.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="py-4 px-4 font-mono text-xs text-gray-500">{t.orderId}</td>
+                        <td className="py-4 px-4 font-medium text-gray-700 capitalize">{t.type.replace('_', ' ')}</td>
+                        <td className="py-4 px-4">
                           <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
-                            order.paymentStatus === 'Settled' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                            t.status === 'completed' ? 'bg-green-50 text-green-700 border-green-200' :
+                            t.status === 'pending_escrow' ? 'bg-orange-50 text-orange-700 border-orange-200' :
+                            'bg-gray-50 text-gray-700 border-gray-200'
                           }`}>
-                            {order.paymentStatus === 'Settled' ? 'Settled' : 'Unsettled'}
+                            {t.status.replace('_', ' ')}
                           </span>
                         </td>
+                        <td className="py-4 px-4 text-right font-bold text-gray-900">+₹{t.amount.toLocaleString('en-IN')}</td>
                       </tr>
-                    );
-                  })}
-                  {myReferralOrders.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="py-16 text-center text-gray-500 font-medium">You haven't referred any orders yet.</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {activeTab === "verification" && (
+      {activeTab === "kyc" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-3xl animate-in fade-in">
           <h2 className="text-xl font-bold text-gray-900 mb-8">Identity & Tier</h2>
           <div className="space-y-4">
