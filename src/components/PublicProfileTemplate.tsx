@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Product } from "@/lib/products";
 import { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
+import ShareWidget from "./ShareWidget";
 
 export interface PublicProfileProps {
   type: "weaver" | "store";
@@ -99,6 +100,8 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
         </div>
 
       </div>
+
+      <ShareWidget title={profile.name} />
 
       {/* Product Grid Section */}
       <div className="space-y-6 pt-6 border-t border-[#C5A059]/20">
