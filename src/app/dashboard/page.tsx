@@ -355,7 +355,74 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
 /* ==========================================
    2. WEAVER DASHBOARD
    ========================================== */
-function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
+function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: string, onTabChange: (id: string) => void, roleTitle: string }) {
+  // Common hooks
+  const { products } = useProducts();
+  const { orders } = useOrders();
+  
+  // Products and Orders
+  const sellerProductsRaw = products.filter(p => p.sellerId === auth.currentUser?.uid);
+  
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  
+  const sellerProducts = sellerProductsRaw.filter(p => {
+    const matchesSearch = p.title?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "all" || (p as any).status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+  
+  const sellerOrders = orders.filter(o => o.sellerId === auth.currentUser?.uid && o.logisticsStatus !== "Delivered");
+
+  // Settings State
+  const [storeName, setStoreName] = useState("");
+  const [publicDesc, setPublicDesc] = useState("");
+  const [storeLogo, setStoreLogo] = useState("");
+  const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [kycType, setKycType] = useState("");
+  const [kycId, setKycId] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      getDoc(doc(db, "users", auth.currentUser.uid)).then(snap => {
+        if (snap.exists()) {
+          const data = snap.data();
+          setStoreName(data.storeName || data.name || "");
+          setPublicDesc(data.publicDesc || "");
+          setStoreLogo(data.storeLogo || "");
+          setPhone(data.phone || "");
+          setWhatsapp(data.whatsapp || "");
+          setKycType(data.kycType || "");
+          setKycId(data.kycId || "");
+        }
+      });
+    }
+  }, []);
+
+  const handleSaveSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth.currentUser) return;
+    setIsSaving(true);
+    try {
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        storeName,
+        publicDesc,
+        storeLogo,
+        phone,
+        whatsapp,
+        kycType,
+        kycId,
+      });
+      alert("Settings saved successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save settings.");
+    }
+    setIsSaving(false);
+  };
+
   // Upload Form State
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
@@ -389,9 +456,27 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
   const [isAddInventoryOpen, setIsAddInventoryOpen] = useState(false);
 
   const [isUploading, setIsUploading] = useState(false);
-  const { orders } = useOrders();
 
-  const weaverOrders = orders.filter(o => o.logisticsStatus !== "Delivered");
+  const handleAddNewClick = () => {
+    setEditingProductId(null);
+    setIsAddInventoryOpen(true);
+    setProductName(""); setProductPrice(""); setProductMrp(""); setProductDesc(""); setProductLongDesc("");
+    setProductImage(""); setImg2(""); setImg3(""); setImg4("");
+  };
+
+  const handleEditClick = (p: any) => {
+    setEditingProductId(p.id);
+    setProductName(p.title || "");
+    setProductPrice(p.price?.toString() || "");
+    setProductMrp(p.mrp?.toString() || "");
+    setProductDesc(p.desc || "");
+    setProductLongDesc(p.longDesc || "");
+    setProductImage(p.img || "");
+    setImg2(p.img2 || "");
+    setImg3(p.img3 || "");
+    setImg4(p.img4 || "");
+    setIsAddInventoryOpen(true);
+  };
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -444,7 +529,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
           isBhuliaVerified: true,
           escrowStatus: "Payment Protected",
           sellerId: auth.currentUser?.uid,
-          sellerType: "vendor",
+          sellerType: roleTitle === "Vendor Hub" ? "vendor" : "weaver",
           status: "pending",
           createdAt: serverTimestamp(),
         });
@@ -453,22 +538,6 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       
       setIsAddInventoryOpen(false);
       setEditingProductId(null);
-      setProductName("");
-      setProductPrice("");
-      setProductMrp("");
-      setProductDesc("");
-      setProductLongDesc("");
-      setColorUse("");
-      setLength("");
-      setOriginalWeaver("");
-      setProductImage("");
-      setImg2("");
-      setImg3("");
-      setImg4("");
-      setImgCaption("");
-      setImg2Caption("");
-      setImg3Caption("");
-      setImg4Caption("");
     } catch (error) {
       console.error(error);
       alert("Upload failed.");
@@ -480,22 +549,21 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Vendor Hub</h1>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">{roleTitle}</h1>
           <div className="flex items-center gap-3 mt-2">
-            <p className="text-gray-500 font-medium">Manage your retail inventory and dispatch operations.</p>
-            <a href={"/vendor/" + (storeName?.toLowerCase().replace(/\s+/g, '-') || 'demo')} target="_blank" className="text-xs font-bold text-[#0070F3] hover:underline flex items-center gap-1 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
+            <p className="text-gray-500 font-medium">Manage your inventory and dispatch operations.</p>
+            <a href={"/" + (roleTitle === "Vendor Hub" ? "vendor/" : "weaver/") + (storeName?.toLowerCase().replace(/\s+/g, '-') || 'demo')} target="_blank" className="text-xs font-bold text-[#0070F3] hover:underline flex items-center gap-1 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
               View Storefront ↗
             </a>
           </div>
         </div>
-        
       </header>
 
       {activeTab === "home" && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Inventory</h3>
-            <div className="text-3xl font-black text-gray-900">{vendorProducts.length}</div>
+            <div className="text-3xl font-black text-gray-900">{sellerProducts.length}</div>
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Wallet Balance</h3>
@@ -503,7 +571,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Orders</h3>
-            <div className="text-3xl font-black text-gray-900">{vendorOrders.length}</div>
+            <div className="text-3xl font-black text-gray-900">{sellerOrders.length}</div>
           </div>
         </div>
       )}
@@ -522,7 +590,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                 </button>
               </div>
 
-              {vendorProductsRaw.length > 0 && (
+              {sellerProductsRaw.length > 0 && (
                 <div className="flex flex-col md:flex-row gap-4 mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-100">
                   <div className="flex-1 relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
@@ -547,7 +615,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                 </div>
               )}
 
-              {vendorProductsRaw.length === 0 ? (
+              {sellerProductsRaw.length === 0 ? (
                 <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50">
                   <div className="text-4xl mb-4">🛍️</div>
                   <h3 className="text-lg font-bold text-gray-900 mb-2">No Products Yet</h3>
@@ -569,7 +637,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
-                      {vendorProducts.map(product => (
+                      {sellerProducts.map(product => (
                         <tr key={product.id} className="hover:bg-gray-50/50 transition-colors">
                           <td className="py-4">
                             <div className="flex items-center gap-3">
@@ -599,7 +667,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                               (product as any).status === "rejected" ? "bg-red-50 text-red-700 border-red-200" :
                               "bg-yellow-50 text-yellow-700 border-yellow-200"
                             }`}>
-                              {(product as any).status.charAt(0).toUpperCase() + (product as any).status.slice(1)}
+                              {((product as any).status || 'pending').charAt(0).toUpperCase() + ((product as any).status || 'pending').slice(1)}
                             </span>
                           </td>
                           <td className="py-4 text-right whitespace-nowrap">
@@ -781,7 +849,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {vendorOrders.length > 0 ? vendorOrders.map(order => (
+                {sellerOrders.length > 0 ? sellerOrders.map(order => (
                   <tr key={order.id} className="text-sm hover:bg-gray-50 transition-colors group">
                     <td className="py-4 px-4 text-gray-500 font-mono text-xs">{order.orderId || order.id}</td>
                     <td className="py-4 px-4 text-gray-900 font-bold">{order.productName || "Proxy Order"}</td>
@@ -986,6 +1054,14 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
       )}
     </div>
   );
+}
+
+function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
+  return <SellerDashboard activeTab={activeTab} onTabChange={onTabChange} roleTitle="Weaver Hub" />;
+}
+
+function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
+  return <SellerDashboard activeTab={activeTab} onTabChange={onTabChange} roleTitle="Vendor Hub" />;
 }
 
 

@@ -172,7 +172,7 @@ export default function UserManagementPage() {
   // Apply Filters
   const filteredUsers = useMemo(() => {
     return users.filter(u => {
-      const matchSearch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) || u.id.toLowerCase().includes(searchTerm.toLowerCase()) || u.phone.includes(searchTerm);
+      const matchSearch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) || u.id.toLowerCase().includes(searchTerm.toLowerCase()) || u.phone.includes(searchTerm) || (u.email && u.email.toLowerCase().includes(searchTerm.toLowerCase()));
       const matchRole = roleFilter === "all" || u.role === roleFilter;
       const matchState = stateFilter === "all" || u.state === stateFilter;
       const matchDistrict = districtFilter === "all" || u.district === districtFilter;
