@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
+import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS, WEAVER_DISTRICTS } from "@/lib/locations";
 import { 
   useOrders,
   useProducts,
@@ -1121,17 +1121,21 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                       setPersonalCountry(e.target.value);
                       if (e.target.value !== "India") { setPersonalState(""); setPersonalDistrict(""); }
                       else { setPersonalState("Odisha"); }
-                    }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                    }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
                       <option value="India">India</option>
-                      <option value="International">International</option>
+                      {roleTitle !== "Weaver Hub" && <option value="International">International</option>}
                     </select>
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
                     {personalCountry === "India" ? (
-                      <select value={personalState} onChange={e => { setPersonalState(e.target.value); setPersonalDistrict(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                      <select value={personalState} onChange={e => { setPersonalState(e.target.value); setPersonalDistrict(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
                         <option value="">Select State...</option>
-                        {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                        {roleTitle === "Weaver Hub" ? (
+                          <option value="Odisha">Odisha</option>
+                        ) : (
+                          INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)
+                        )}
                       </select>
                     ) : (
                       <input type="text" value={personalState} onChange={e => setPersonalState(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
@@ -1142,7 +1146,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                     {personalCountry === "India" && personalState === "Odisha" ? (
                       <select value={personalDistrict} onChange={e => { setPersonalDistrict(e.target.value); setPersonalBlock(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                         <option value="">Select District...</option>
-                        {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                        {(roleTitle === "Weaver Hub" ? WEAVER_DISTRICTS : ODISHA_DISTRICTS).map(d => <option key={d} value={d}>{d}</option>)}
                       </select>
                     ) : (
                       <input type="text" value={personalDistrict} onChange={e => setPersonalDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
@@ -1318,18 +1322,22 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                         } else {
                           setState("Odisha");
                         }
-                      }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                      }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
                         <option value="India">India</option>
-                        <option value="International">International</option>
+                        {roleTitle !== "Weaver Hub" && <option value="International">International</option>}
                       </select>
                     </div>
 
                     {country === "India" ? (
                       <div>
                         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
-                        <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                        <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
                           <option value="">Select State...</option>
-                          {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                          {roleTitle === "Weaver Hub" ? (
+                            <option value="Odisha">Odisha</option>
+                          ) : (
+                            INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)
+                          )}
                         </select>
                       </div>
                     ) : (
@@ -1344,7 +1352,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
                         <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                           <option value="">Select District...</option>
-                          {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                          {(roleTitle === "Weaver Hub" ? WEAVER_DISTRICTS : ODISHA_DISTRICTS).map(d => <option key={d} value={d}>{d}</option>)}
                         </select>
                       </div>
                     ) : (

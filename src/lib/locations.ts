@@ -71,3 +71,4 @@ export const ODISHA_DISTRICT_BLOCKS: Record<string, string[]> = {
 };
 
 export const ODISHA_DISTRICTS = Object.keys(ODISHA_DISTRICT_BLOCKS).sort();
+export const WEAVER_DISTRICTS = ["Bargarh", "Subarnapur", "Sambalpur", "Boudh", "Nuapada", "Balangir", "Kalahandi"];
