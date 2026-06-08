@@ -3,8 +3,9 @@
 import PremiumMetricCard from "@/components/PremiumMetricCard";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth, db } from "@/lib/firebase";
+import { auth, db, storage } from "@/lib/firebase";
 import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { onAuthStateChanged } from "firebase/auth";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS, WEAVER_DISTRICTS } from "@/lib/locations";
 import { 
@@ -18,6 +19,22 @@ import {
 
 import DashboardLayout, { NavItem } from "@/components/DashboardLayout";
 import ImageUploader from "@/components/ImageUploader";
+
+export const uploadBase64ToStorage = async (base64Str: string | null, folder: string) => {
+  if (!base64Str) return "";
+  if (base64Str.startsWith("http")) return base64Str; // Already uploaded
+  if (!base64Str.startsWith("data:image")) return base64Str;
+
+  try {
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.jpg`;
+    const storageRef = ref(storage, `${folder}/${fileName}`);
+    await uploadString(storageRef, base64Str, 'data_url');
+    return await getDownloadURL(storageRef);
+  } catch (e) {
+    console.error("Storage upload failed", e);
+    return "";
+  }
+};
 
 export default function DashboardPage() {
   const [role, setRole] = useState<string | null>(null);
@@ -515,6 +532,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     if (!auth.currentUser) return;
     setIsSaving(true);
     try {
+      let finalKycUrl = kycDocumentUrl;
+      if (kycDocumentUrl && kycDocumentUrl.startsWith("data:image")) {
+        finalKycUrl = await uploadBase64ToStorage(kycDocumentUrl, `kyc/${auth.currentUser.uid}`);
+        setKycDocumentUrl(finalKycUrl);
+      }
+
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         personalName,
         personalCountry,
@@ -533,7 +556,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         bankUpi,
         kycType,
         kycId,
-        kycDocumentUrl
+        kycDocumentUrl: finalKycUrl,
+        kycPrivacy: "confidential"
       });
       alert("Personal Profile saved successfully!");
     } catch (error) {
@@ -660,7 +684,19 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
       const parsedPrice = Number(productPrice.toString().replace(/[^0-9.]/g, '')) || 0;
       const parsedMrp = Number(productMrp.toString().replace(/[^0-9.]/g, '')) || 0;
 
-      const productData = {
+      // Generate GI-Tracking Product ID
+      const generateProductId = () => `BHL-${Math.floor(10000 + Math.random() * 90000)}`;
+      const bhuliaProductId = editingProductId ? undefined : generateProductId();
+
+      // Upload Images
+      const img1Url = await uploadBase64ToStorage(productImage, `products/${auth.currentUser.uid}`);
+      const img2Url = await uploadBase64ToStorage(img2, `products/${auth.currentUser.uid}`);
+      const img3Url = await uploadBase64ToStorage(img3, `products/${auth.currentUser.uid}`);
+      const img4Url = await uploadBase64ToStorage(img4, `products/${auth.currentUser.uid}`);
+
+      const finalImages = [img1Url, img2Url, img3Url, img4Url].filter(Boolean);
+
+      const productData: any = {
         title: productName,
         slug: productName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         price: parsedPrice,
@@ -675,11 +711,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         length: length,
         hasBlouse: hasBlouse,
         weaverName: originalWeaver,
-        img: productImage || "https://images.unsplash.com/photo-1605814526362-790100f91eb8?w=800&q=80",
-        img2: img2,
-        img3: img3,
-        img4: img4,
-        images: [productImage, img2, img3, img4].filter(Boolean),
+        img: img1Url || "https://images.unsplash.com/photo-1605814526362-790100f91eb8?w=800&q=80",
+        img2: img2Url,
+        img3: img3Url,
+        img4: img4Url,
+        images: finalImages,
         imageCaptions: [imgCaption, img2Caption, img3Caption, img4Caption],
         stockQuantity: Number(stockQuantity),
         inStock: Number(stockQuantity) > 0,
@@ -700,6 +736,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
       } else {
         await addDoc(collection(db, "products"), {
           ...productData,
+          bhuliaProductId,
           isBhuliaVerified: true,
           escrowStatus: "Payment Protected",
           sellerId: auth.currentUser?.uid,
@@ -1645,12 +1682,19 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
     }
     setIsSubmittingKyc(true);
     try {
+      let finalKycUrl = kycDocUrl;
+      if (kycDocUrl.startsWith("data:image")) {
+        finalKycUrl = await uploadBase64ToStorage(kycDocUrl, `kyc/${auth.currentUser.uid}`);
+        setKycDocUrl(finalKycUrl);
+      }
+
       await addDoc(collection(db, "kyc_verifications"), {
         userId: auth.currentUser.uid,
         userEmail: auth.currentUser.email,
         type: "identity",
         documentType: kycType,
-        documentUrl: kycDocUrl,
+        documentUrl: finalKycUrl,
+        privacy: "confidential",
         status: "pending",
         createdAt: serverTimestamp(),
       });
@@ -1667,7 +1711,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
     if (!auth.currentUser) return;
     setIsOrdering(true);
     try {
-      await addDoc(collection(db, "proxy_orders"), {
+      const orderRef = await addDoc(collection(db, "proxy_orders"), {
         customerName,
         customerPhone,
         pinCode,
@@ -1678,7 +1722,19 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
         hubStatus: "pending",
         createdAt: serverTimestamp(),
       });
-      alert("Proxy order secured in Firestore! Payment link dispatched.");
+
+      // Phase 3: Financial Ledger Auto-Logging
+      // Record a pending commission transaction to be resolved when escrow clears
+      await addDoc(collection(db, "transactions"), {
+        type: "reseller_commission",
+        resellerId: auth.currentUser?.uid,
+        orderId: orderRef.id,
+        amount: 0, // To be calculated on checkout
+        status: "pending_escrow",
+        createdAt: serverTimestamp(),
+      });
+
+      alert("Proxy order secured in Firestore! Ledger transaction queued.");
       setCustomerName("");
       setCustomerPhone("");
       setPinCode("");
