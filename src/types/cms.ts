@@ -115,6 +115,9 @@ export interface AdCampaign {
   linkUrl?: string; // Where the image clicks to
   placement: "homepage_top" | "homepage_middle" | "sidebar" | "content_top" | "content_bottom";
   
+  // Explicit Sizing
+  layoutSize: "full" | "half" | "third" | "quarter";
+  
   // Advanced Targeting
   targetAudience: "global" | "weavers" | "shops" | "products";
   targetSpecificIds: string[]; // Array of IDs. e.g., ["all"], ["silk-masterpieces"], ["bargarh-weavers"], ["prod-123", "prod-456"]
@@ -124,6 +127,7 @@ export interface AdCampaign {
   
   status: "active" | "paused";
   impressions: number;
+  impressionLimit?: number;
   clicks: number;
   createdAt?: any;
   updatedAt?: any;

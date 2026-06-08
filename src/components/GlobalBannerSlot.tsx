@@ -40,13 +40,6 @@ export default function GlobalBannerSlot({ placementId, context }: Props) {
 
   if (loading || activeBanners.length === 0) return null;
 
-  const getGridClass = (count: number) => {
-    if (count === 1) return "grid-cols-1";
-    if (count === 2) return "grid-cols-1 md:grid-cols-2";
-    if (count === 3) return "grid-cols-1 md:grid-cols-3";
-    return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"; // 4 or more
-  };
-
   const handleAdClick = (banner: AdCampaign) => {
     if (banner.id) trackClick(banner.id);
     if (banner.linkUrl) {
@@ -54,10 +47,18 @@ export default function GlobalBannerSlot({ placementId, context }: Props) {
     }
   };
 
+  // Always use a 12-column grid to allow precise layout mapping
   return (
-    <div className={`grid gap-4 w-full ${getGridClass(activeBanners.length)} my-6`}>
-      {activeBanners.map(banner => (
-        <div key={banner.id} className="w-full relative rounded-2xl overflow-hidden shadow-lg group border border-[#C5A059]/30 hover:border-[#C5A059] transition-all bg-[#0B2B26]">
+    <div className={`grid grid-cols-12 gap-4 w-full my-6`}>
+      {activeBanners.map(banner => {
+        
+        let colClass = "col-span-12"; // full width
+        if (banner.layoutSize === "half") colClass = "col-span-12 md:col-span-6";
+        else if (banner.layoutSize === "third") colClass = "col-span-12 md:col-span-4";
+        else if (banner.layoutSize === "quarter") colClass = "col-span-12 md:col-span-6 lg:col-span-3";
+
+        return (
+        <div key={banner.id} className={`${colClass} relative rounded-2xl overflow-hidden shadow-lg group border border-[#C5A059]/30 hover:border-[#C5A059] transition-all bg-[#0B2B26]`}>
           {banner.type === "image" ? (
             <div 
               className="relative w-full aspect-[4/1] md:aspect-[5/2] cursor-pointer"
@@ -78,7 +79,8 @@ export default function GlobalBannerSlot({ placementId, context }: Props) {
             </div>
           )}
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

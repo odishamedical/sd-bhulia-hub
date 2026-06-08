@@ -25,10 +25,31 @@ export default function AdsPage() {
   const [linkUrl, setLinkUrl] = useState("");
   const [htmlCode, setHtmlCode] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [layoutSize, setLayoutSize] = useState<AdCampaign["layoutSize"]>("full");
+  const [impressionLimitStr, setImpressionLimitStr] = useState("");
+  const [weaversList, setWeaversList] = useState<{id:string, name:string, slug:string}[]>([]);
+  const [shopsList, setShopsList] = useState<{id:string, name:string, slug:string}[]>([]);
 
   useEffect(() => {
     fetchCampaigns();
+    fetchTargets();
   }, []);
+
+  const fetchTargets = async () => {
+    try {
+      const wSnap = await getDocs(collection(db, "weavers"));
+      const wData: any[] = [];
+      wSnap.forEach(d => wData.push({ id: d.id, name: d.data().title || d.data().name, slug: d.data().slug || d.id }));
+      setWeaversList(wData);
+
+      const sSnap = await getDocs(collection(db, "stores"));
+      const sData: any[] = [];
+      sSnap.forEach(d => sData.push({ id: d.id, name: d.data().title || d.data().name, slug: d.data().slug || d.id }));
+      setShopsList(sData);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const fetchCampaigns = async () => {
     try {
@@ -99,6 +120,7 @@ export default function AdsPage() {
         content: contentValue,
         linkUrl: type === "image" ? linkUrl : "",
         placement,
+        layoutSize,
         targetAudience,
         targetSpecificIds: idsArray.length > 0 ? idsArray : ["all"],
         targetCategory: targetAudience === "products" ? targetCategory : "all",
@@ -106,6 +128,7 @@ export default function AdsPage() {
         targetDesign: targetAudience === "products" ? targetDesign : "all",
         status: "active",
         impressions: 0,
+        impressionLimit: impressionLimitStr ? parseInt(impressionLimitStr) : undefined,
         clicks: 0,
         createdAt: serverTimestamp(),
       };
@@ -135,6 +158,8 @@ export default function AdsPage() {
     setLinkUrl("");
     setHtmlCode("");
     setImageUrl("");
+    setLayoutSize("full");
+    setImpressionLimitStr("");
   };
 
   return (
@@ -255,6 +280,23 @@ export default function AdsPage() {
                     </select>
                   </div>
                 </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">Banner Layout Size</label>
+                    <select value={layoutSize} onChange={e => setLayoutSize(e.target.value as any)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                      <option value="full">Full Width (100%)</option>
+                      <option value="half">Half Width (50%)</option>
+                      <option value="third">One Third (33%)</option>
+                      <option value="quarter">Quarter Width (25%)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">Impression Limit (Optional)</label>
+                    <input type="number" value={impressionLimitStr} onChange={e => setImpressionLimitStr(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" placeholder="e.g. 10000" />
+                    <p className="text-[10px] text-gray-500 mt-1">Campaign auto-pauses when views hit this limit. Leave empty for unlimited.</p>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -272,7 +314,16 @@ export default function AdsPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-1">Specific Target IDs (Comma separated)</label>
-                    <input type="text" value={targetSpecificIdsStr} onChange={e => setTargetSpecificIdsStr(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-mono" placeholder="e.g. all, silk-sarees, prod-123" />
+                    {targetAudience === "weavers" || targetAudience === "shops" ? (
+                      <select value={targetSpecificIdsStr} onChange={e => setTargetSpecificIdsStr(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        <option value="all">All {targetAudience === "weavers" ? "Weavers" : "Shops"}</option>
+                        {(targetAudience === "weavers" ? weaversList : shopsList).map(t => (
+                          <option key={t.slug} value={t.slug}>{t.name} ({t.slug})</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input type="text" value={targetSpecificIdsStr} onChange={e => setTargetSpecificIdsStr(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-mono" placeholder="e.g. all, prod-123" />
+                    )}
                     <p className="text-[10px] text-gray-500 mt-1">Use "all" to target everything in the audience category, or provide slugs/IDs.</p>
                   </div>
                 </div>
@@ -323,8 +374,8 @@ export default function AdsPage() {
                       <ImageUploader 
                         value={imageUrl} 
                         onChange={(url) => setImageUrl(url)} 
-                        label="Upload Promotional Banner" 
-                        aspectRatio={placement === "sidebar" ? "portrait" : placement === "homepage_top" ? "landscape" : "landscape"} 
+                        label={`Upload ${layoutSize.charAt(0).toUpperCase() + layoutSize.slice(1)} Width Banner`} 
+                        aspectRatio={layoutSize === "quarter" ? "square" : layoutSize === "half" ? "landscape" : "landscape"} 
                       />
                     </div>
                     <div>

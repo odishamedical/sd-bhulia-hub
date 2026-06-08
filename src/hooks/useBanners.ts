@@ -71,9 +71,20 @@ export function useBanners() {
 
   const trackImpression = async (bannerId: string) => {
     try {
-      await updateDoc(doc(db, "ad_campaigns", bannerId), {
-        impressions: increment(1)
-      });
+      const b = banners.find(x => x.id === bannerId);
+      if (!b) return;
+      
+      const newImpressions = b.impressions + 1;
+      const updates: any = { impressions: increment(1) };
+      
+      // Auto-pause if hit limit
+      if (b.impressionLimit && newImpressions >= b.impressionLimit) {
+        updates.status = "paused";
+        // Also update local state so it hides immediately
+        setBanners(prev => prev.filter(x => x.id !== bannerId));
+      }
+      
+      await updateDoc(doc(db, "ad_campaigns", bannerId), updates);
     } catch (e) {
       console.error("Error tracking impression", e);
     }
