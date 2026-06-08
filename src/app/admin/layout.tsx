@@ -54,8 +54,7 @@ const SIDEBAR_CATEGORIES = [
     title: "Growth Engine",
     icon: "🚀",
     subLinks: [
-      { name: "Homepage CMS", path: "/admin/cms" },
-      { name: "Vendor CMS Builder", path: "/admin/vendor-cms" },
+      { name: "Visual Page Builder", path: "/admin/cms" },
       { name: "Coupons & Offers", path: "/admin/marketing/coupons" },
       { name: "WhatsApp & Email", path: "/admin/marketing/push" },
       { name: "SEO & Campaigns", path: "/admin/marketing/seo" }
