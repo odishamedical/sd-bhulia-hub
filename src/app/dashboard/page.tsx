@@ -341,6 +341,25 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
         </div>
       )}
 
+      {activeTab === "address" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Address Book</h2>
+          <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium">No saved addresses found.</div>
+          <button className="w-full bg-[#1f2937] text-white py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">+ Add New Address</button>
+        </div>
+      )}
+
+      {activeTab === "wallet" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Wallet & Rewards</h2>
+          <div className="bg-gradient-to-r from-blue-600 to-[#0070F3] rounded-2xl p-6 text-white shadow-lg">
+            <p className="text-blue-100 text-sm font-bold uppercase tracking-wider mb-1">Available Balance</p>
+            <h3 className="text-4xl font-black">₹0.00</h3>
+          </div>
+          <div className="text-center py-10 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium">No transaction history.</div>
+        </div>
+      )}
+
       {activeTab === "profile" && (
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Profile Settings</h2>
@@ -1107,6 +1126,55 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         </div>
       )}
 
+      {activeTab === "messages" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Buyer Messages</h2>
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="w-full md:w-1/3 md:border-r border-gray-100 md:pr-6">
+              <div className="p-5 bg-gray-50 rounded-2xl text-sm text-gray-500 font-medium text-center border border-gray-100">No active conversations</div>
+            </div>
+            <div className="w-full md:w-2/3 flex items-center justify-center text-gray-400 font-medium bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 min-h-[300px]">
+              Select a chat to start messaging
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "support" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-3xl">
+          <h2 className="text-xl font-bold text-gray-900">Contact Admin Support</h2>
+          <p className="text-sm text-gray-500 mb-6 font-medium">Raise a dispute or ask for help regarding GI-tags or payouts.</p>
+          <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+            <h3 className="font-bold text-gray-900 mb-5">Raise a Ticket</h3>
+            <form className="space-y-4">
+              <input type="text" placeholder="Subject" className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+              <textarea rows={4} placeholder="Describe your issue..." className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all"></textarea>
+              <button type="button" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Submit Ticket</button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "staff" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-900">Staff Accounts</h2>
+            <span className="px-3 py-1 bg-blue-50 text-[#0070F3] rounded-full text-xs font-bold border border-blue-100">0 / 2 Used</span>
+          </div>
+          <p className="text-sm text-gray-500 font-medium">Invite up to 2 assistants. Staff can only access the "My Catalog" and "Upload Product" tabs.</p>
+          
+          <div className="text-center py-10 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium mb-6">No staff members invited yet.</div>
+          
+          <div className="border-t border-gray-100 pt-6">
+            <h3 className="text-sm font-bold text-gray-900 mb-4">Invite New Staff</h3>
+            <div className="flex gap-4">
+              <input type="email" placeholder="Assistant's Email Address" className="flex-1 border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none" />
+              <button className="bg-[#1f2937] text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Send Invite</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {activeTab === "personal" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
           <h2 className="text-2xl font-bold text-gray-900 mb-8">Personal Profile & KYC Settings</h2>
@@ -1771,6 +1839,56 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                 <div className="text-sm text-gray-500 font-medium">Standard Reseller (10% Margin)</div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "analytics" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Store Analytics</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+            <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 text-center">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Views</p>
+              <p className="text-3xl font-black text-gray-900">0</p>
+            </div>
+            <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 text-center">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Conversion Rate</p>
+              <p className="text-3xl font-black text-gray-900">0.0%</p>
+            </div>
+            <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-center">
+              <p className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Est. Earnings</p>
+              <p className="text-3xl font-black text-blue-900">₹0</p>
+            </div>
+          </div>
+          <div className="h-64 flex items-center justify-center bg-gray-50 rounded-2xl border border-gray-100 text-gray-400 font-medium">Chart Data Unavailable</div>
+        </div>
+      )}
+
+      {activeTab === "links" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-3xl">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Marketing Links</h2>
+          <p className="text-sm text-gray-500 font-medium mb-6">Generate unique tracking links for individual products or your entire curated store.</p>
+          
+          <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 mb-6">
+            <h3 className="font-bold text-gray-900 mb-4">Your Custom Storefront Link</h3>
+            <div className="flex gap-4 items-center">
+              <input type="text" readOnly value={`https://bhulia.com/store/${auth.currentUser?.uid}`} className="flex-1 border border-gray-300 rounded-xl p-3 text-sm text-gray-500 bg-white" />
+              <button className="bg-[#0070F3] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm">Copy</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "support" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-3xl">
+          <h2 className="text-xl font-bold text-gray-900">Contact Admin Support</h2>
+          <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+            <h3 className="font-bold text-gray-900 mb-5">Raise a Ticket</h3>
+            <form className="space-y-4">
+              <input type="text" placeholder="Subject" className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+              <textarea rows={4} placeholder="Describe your issue..." className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all"></textarea>
+              <button type="button" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Submit Ticket</button>
+            </form>
           </div>
         </div>
       )}
