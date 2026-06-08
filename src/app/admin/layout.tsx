@@ -8,24 +8,30 @@ import { usePendingCounts } from "@/hooks/usePendingCounts";
 // Consolidate sidebar into 6 Core Hubs for better UX
 const SIDEBAR_CATEGORIES = [
   {
-    title: "Ecosystem Dashboard",
+    title: "Dashboard & Reports",
     icon: "📊",
     path: "/admin/dashboard",
     subLinks: [
-      { name: "Global Overview", path: "/admin/dashboard" },
-      { name: "Staff & Delegation", path: "/admin/staff" }
+      { name: "Global Overview", path: "/admin/dashboard" }
     ]
   },
   {
-    title: "Commerce Hub",
-    icon: "🛒",
+    title: "Catalog & Inventory",
+    icon: "🛍️",
+    subLinks: [
+      { name: "Product Catalog", path: "/admin/products" },
+      { name: "Live Inventory DB", path: "/admin/products/live" },
+      { name: "Bhulia.com Audit", path: "/admin/products/audit" }
+    ]
+  },
+  {
+    title: "Orders & Logistics",
+    icon: "📦",
     badgeId: "orders",
     subLinks: [
       { name: "All Orders", path: "/admin/orders/all" },
-      { name: "Vendor Payouts", path: "/admin/finance/payouts" },
-      { name: "Live Inventory DB", path: "/admin/products/live" },
-      { name: "Product Catalog", path: "/admin/products" },
-      { name: "Bhulia.com Audit", path: "/admin/products/audit" },
+      { name: "Active Dispatch", path: "/admin/logistics/dispatch" },
+      { name: "Carrier Sync & Tracking", path: "/admin/logistics/tracking" },
       { name: "Returns & B2B", path: "/admin/orders/returns" }
     ]
   },
@@ -40,36 +46,41 @@ const SIDEBAR_CATEGORIES = [
     ]
   },
   {
-    title: "Logistics & Support",
-    icon: "🚚",
-    badgeId: "logistics",
+    title: "Support & Verification",
+    icon: "🛡️",
+    badgeId: "kyc",
     subLinks: [
-      { name: "Active Dispatch", path: "/admin/logistics/dispatch" },
-      { name: "Carrier Sync & Tracking", path: "/admin/logistics/tracking" },
+      { name: "KYC Verification", path: "/admin/trust/kyc" },
       { name: "Customer Tickets", path: "/admin/support/tickets" },
-      { name: "Disputes", path: "/admin/support/disputes" }
+      { name: "Disputes", path: "/admin/support/disputes" },
+      { name: "Fraud Analysis", path: "/admin/trust/fraud" }
     ]
   },
   {
-    title: "Growth Engine",
-    icon: "🚀",
+    title: "Marketing & Growth",
+    icon: "📢",
     subLinks: [
-      { name: "Visual Page Builder", path: "/admin/cms" },
       { name: "Global Ads & Banners", path: "/admin/marketing/ads" },
       { name: "Coupons & Offers", path: "/admin/marketing/coupons" },
-      { name: "WhatsApp & Email", path: "/admin/marketing/push" },
+      { name: "WhatsApp & Email Push", path: "/admin/marketing/push" },
       { name: "Google Places Importer", path: "/admin/marketing/importer" },
       { name: "SEO & Campaigns", path: "/admin/marketing/seo" }
     ]
   },
   {
-    title: "Settings & Trust",
-    icon: "⚙️",
-    badgeId: "kyc",
+    title: "Finance & Accounting",
+    icon: "💰",
     subLinks: [
+      { name: "Vendor Payouts", path: "/admin/finance/payouts" }
+    ]
+  },
+  {
+    title: "Platform & System",
+    icon: "⚙️",
+    subLinks: [
+      { name: "Visual Page Builder", path: "/admin/cms" },
       { name: "Global Settings", path: "/admin/settings" },
-      { name: "KYC Verification", path: "/admin/trust/kyc" },
-      { name: "Fraud Analysis", path: "/admin/trust/fraud" },
+      { name: "Staff & Delegation", path: "/admin/staff" },
       { name: "API & Webhooks", path: "/admin/developer/webhooks" }
     ]
   }
