@@ -17,6 +17,12 @@ export interface Weaver {
   badge: string;
   phone: string;
   whatsapp: string;
+  country: string;
+  state: string;
+  district: string;
+  block: string;
+  townVillage: string;
+  pin: string;
   address: string;
   tier: "Silver" | "Gold" | "Diamond" | "Master";
   status: "pending_approval" | "approved";
@@ -44,6 +50,12 @@ export interface Vendor {
   badge: string;
   phone: string;
   whatsapp: string;
+  country: string;
+  state: string;
+  district: string;
+  block: string;
+  townVillage: string;
+  pin: string;
   address: string;
   tier: "Silver" | "Gold" | "Diamond";
   status: "pending_approval" | "approved";

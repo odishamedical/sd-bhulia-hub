@@ -398,6 +398,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [country, setCountry] = useState("India");
   const [address, setAddress] = useState("");
   const [district, setDistrict] = useState("");
+  const [block, setBlock] = useState("");
+  const [townVillage, setTownVillage] = useState("");
   const [state, setState] = useState("");
   const [pin, setPin] = useState("");
   const [kycType, setKycType] = useState("");
@@ -431,6 +433,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           setCountry(data.country || "India");
           setAddress(data.address || "");
           setDistrict(data.district || "");
+          setBlock(data.block || "");
+          setTownVillage(data.townVillage || "");
           setState(data.state || "");
           setPin(data.pin || "");
         }
@@ -479,6 +483,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         country,
         address,
         district,
+        block,
+        townVillage,
         state,
         pin,
       });
@@ -501,7 +507,9 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         country,
         state,
         district,
-        address: `${address}, ${district}, ${state} - ${pin}`,
+        block,
+        townVillage,
+        address: `${address}, ${townVillage}, ${block}, ${district}, ${state} - ${pin}`,
         tier: "Silver", // Default
         status: "approved" // Auto-approve for MVP
       }, { merge: true });
@@ -1279,6 +1287,15 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                     )}
                   </>
                 )}
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
+                  <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town / Village</label>
+                  <input type="text" value={townVillage} onChange={e => setTownVillage(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                </div>
 
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Public Address</label>

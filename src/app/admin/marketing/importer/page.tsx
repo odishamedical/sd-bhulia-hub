@@ -2,8 +2,17 @@
 
 import React, { useState } from "react";
 
+const ODISHA_DISTRICTS = ["Angul", "Balangir", "Baleswar", "Bargarh", "Bhadrak", "Boudh", "Cuttack", "Deogarh", "Dhenkanal", "Gajapati", "Ganjam", "Jagatsinghapur", "Jajpur", "Jharsuguda", "Kalahandi", "Kandhamal", "Kendrapara", "Kendujhar", "Khordha", "Koraput", "Malkangiri", "Mayurbhanj", "Nabarangpur", "Nayagarh", "Nuapada", "Puri", "Rayagada", "Sambalpur", "Subarnapur", "Sundargarh"];
+
 export default function GooglePlacesImporterPage() {
-  const [query, setQuery] = useState("");
+  const [businessType, setBusinessType] = useState("Sambalpuri Handloom Store");
+  const [country, setCountry] = useState("India");
+  const [state, setState] = useState("Odisha");
+  const [district, setDistrict] = useState("");
+  const [block, setBlock] = useState("");
+  const [townVillage, setTownVillage] = useState("");
+  const [pin, setPin] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any[]>([]);
   const [pageToken, setPageToken] = useState("");
@@ -11,6 +20,16 @@ export default function GooglePlacesImporterPage() {
   const [importing, setImporting] = useState(false);
 
   const handleSearch = async (token?: string) => {
+    const parts = [];
+    if (townVillage) parts.push(townVillage);
+    if (block) parts.push(block);
+    if (district) parts.push(district);
+    if (state) parts.push(state);
+    if (country) parts.push(country);
+    if (pin) parts.push(pin);
+    
+    const query = `${businessType} in ${parts.join(", ")}`.trim();
+    
     if (!query) return;
     setLoading(true);
     try {
@@ -77,15 +96,18 @@ export default function GooglePlacesImporterPage() {
           googlePlaceId: item.id,
           coordinates: item.location ? { lat: item.location.latitude, lng: item.location.longitude } : null,
           status: "unclaimed",
-          country: "India",
-          state: "Odisha",
-          district: "Bargarh", // Default fallback
+          country,
+          state,
+          district,
+          block,
+          townVillage,
+          pin,
           desc: "This profile was automatically generated from Google Maps. If you are the owner, please verify it.",
           isBhuliaVerified: false,
           createdAt: Date.now()
         }, { merge: true });
       }
-      alert(`Successfully imported ${selectedIds.size} stores!`);
+      alert(`Successfully imported ${selectedIds.size} stores with structured global data!`);
       setSelectedIds(new Set());
     } catch (e: any) {
       alert("Failed to import: " + e.message);
@@ -96,25 +118,84 @@ export default function GooglePlacesImporterPage() {
   return (
     <div className="p-6">
       <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-6xl animate-in fade-in">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Google Maps Data Ingestion</h2>
-        <p className="text-gray-500 mb-8">Search Google Places and bulk-import them as Unverified vendors to capture leads.</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Global Data Ingestion</h2>
+        <p className="text-gray-500 mb-8">Strictly format the location query to ensure accurate data extraction into our standardized global schema.</p>
         
-        <div className="flex gap-4 mb-8">
-          <input 
-            type="text" 
-            value={query} 
-            onChange={e => setQuery(e.target.value)} 
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            placeholder="e.g. Sambalpuri Saree Shops in Bhubaneswar" 
-            className="flex-1 bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-900 focus:border-[#0070F3] outline-none"
-          />
-          <button 
-            onClick={() => handleSearch()} 
-            disabled={loading}
-            className="bg-[#0070F3] text-white px-8 py-4 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors whitespace-nowrap"
-          >
-            {loading ? "Searching..." : "Search Places"}
-          </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 bg-gray-50 p-6 rounded-2xl border border-gray-100">
+          <div className="lg:col-span-4 mb-2">
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Business Type (Target)</label>
+            <input 
+              type="text" 
+              value={businessType} 
+              onChange={e => setBusinessType(e.target.value)} 
+              className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-bold text-lg"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+            <select value={country} onChange={e => {
+              setCountry(e.target.value);
+              if (e.target.value !== "India") {
+                setState(""); setDistrict("");
+              }
+            }} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
+              <option value="India">India</option>
+              <option value="International">International</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
+            {country === "India" ? (
+              <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
+                <option value="Odisha">Odisha</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Other">Other State</option>
+              </select>
+            ) : (
+              <input type="text" value={state} onChange={e => setState(e.target.value)} placeholder="State/Province" className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+            )}
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
+            {country === "India" && state === "Odisha" ? (
+              <select value={district} onChange={e => setDistrict(e.target.value)} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
+                <option value="">Select District...</option>
+                {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            ) : (
+              <input type="text" value={district} onChange={e => setDistrict(e.target.value)} placeholder="District/City" className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+            )}
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
+            <input type="text" value={block} onChange={e => setBlock(e.target.value)} placeholder="e.g. Attabira" className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town / Village</label>
+            <input type="text" value={townVillage} onChange={e => setTownVillage(e.target.value)} placeholder="e.g. Bheden" className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN / ZIP Code</label>
+            <input type="text" value={pin} onChange={e => setPin(e.target.value)} placeholder="e.g. 768038" className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+          </div>
+          
+          <div className="lg:col-span-2 flex items-end">
+            <button 
+              onClick={() => handleSearch()} 
+              disabled={loading}
+              className="w-full bg-[#0070F3] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors shadow-md"
+            >
+              {loading ? "Searching Google Network..." : "Search Places"}
+            </button>
+          </div>
         </div>
 
         {results.length > 0 && (
