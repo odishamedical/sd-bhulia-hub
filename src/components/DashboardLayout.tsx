@@ -67,21 +67,21 @@ export default function DashboardLayout({
 
         {/* LEFT SIDEBAR - SLIDE IN DRAWER */}
         <aside className={`fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:w-72 shrink-0 space-y-6 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-          <div className="bg-[#0A0A0A] lg:rounded-3xl shadow-lg border border-gray-800 p-6 h-full overflow-y-auto flex flex-col text-white">
+          <div className="bg-[#0074E4] lg:rounded-3xl shadow-[4px_0_30px_rgba(0,116,228,0.3)] border border-[#0052A3] p-6 h-full overflow-y-auto flex flex-col text-white">
             
             {/* Top Identity Block */}
-            <div className="flex items-center gap-4 border-b border-gray-800 pb-6 mb-6">
-              <div className="w-12 h-12 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold text-xl uppercase shadow-sm border border-gray-700">
+            <div className="flex items-center gap-4 border-b border-[#0052A3] pb-6 mb-6">
+              <div className="w-12 h-12 bg-white/20 text-white rounded-full flex items-center justify-center font-bold text-xl uppercase shadow-sm border border-white/20">
                 {userName?.charAt(0) || "U"}
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold text-white truncate">{userName || "User"}</h3>
-                <p className="text-xs text-gray-400 font-mono truncate uppercase">{userRole}</p>
+                <p className="text-xs text-blue-100 font-bold truncate uppercase tracking-wider">{userRole}</p>
               </div>
             </div>
 
             {/* Navigation */}
-            <nav className="space-y-2 flex-1">
+            <nav className="space-y-1 flex-1">
               {navItems.map((item) => (
                 <button 
                   key={item.id}
@@ -89,7 +89,7 @@ export default function DashboardLayout({
                     onTabChange(item.id);
                     setMobileMenuOpen(false);
                   }} 
-                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-3 transition-all ${activeTab === item.id ? "bg-[#1A1A1A] text-white border border-gray-700 shadow-md" : "text-gray-400 hover:text-white hover:bg-gray-800/50"}`}
+                  className={`w-full text-left px-4 py-2.5 rounded-full text-sm font-semibold flex items-center gap-3 transition-all border border-transparent ${activeTab === item.id ? "bg-white/20 text-white border-white/20 shadow-md font-bold" : "text-white/90 hover:text-white hover:bg-white/20"}`}
                 >
                   <span className={`text-lg transition-transform ${activeTab === item.id ? 'scale-110' : ''}`}>{item.icon || "▪"}</span> 
                   {item.label}
@@ -97,8 +97,8 @@ export default function DashboardLayout({
               ))}
             </nav>
 
-            <div className="mt-8 pt-6 border-t border-gray-800">
-              <button onClick={() => auth.signOut()} className="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-3 text-red-400 hover:text-red-300 hover:bg-red-900/20 transition-all">
+            <div className="mt-8 pt-6 border-t border-[#0052A3]">
+              <button onClick={() => auth.signOut()} className="w-full text-left px-4 py-2.5 rounded-full text-sm font-semibold flex items-center gap-3 text-red-200 hover:text-white hover:bg-red-500/80 transition-all border border-transparent">
                 <span className="text-lg">🚪</span> Sign Out
               </button>
             </div>
