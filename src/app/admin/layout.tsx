@@ -71,7 +71,8 @@ const SIDEBAR_CATEGORIES = [
     title: "Finance & Accounting",
     icon: "💰",
     subLinks: [
-      { name: "Vendor Payouts", path: "/admin/finance/payouts" }
+      { name: "Seller & Weaver Payouts", path: "/admin/finance/payouts" },
+      { name: "Reseller Commissions", path: "/admin/finance/commissions" }
     ]
   },
   {

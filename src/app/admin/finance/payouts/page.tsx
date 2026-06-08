@@ -66,8 +66,8 @@ export default function PayoutsPage() {
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Payout & Payouts</h1>
-          <p className="text-gray-800 mt-2 font-semibold">Manage funds held in trust and release payouts to Weavers via Razorpay API.</p>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Seller & Weaver Payouts</h1>
+          <p className="text-gray-800 mt-2 font-semibold">Manage funds held in trust and release payouts to Weavers and Vendors via Razorpay API.</p>
         </div>
         <button 
           onClick={handleReleaseAll}
