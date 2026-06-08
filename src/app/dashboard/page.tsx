@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
 import { 
   useOrders,
   useProducts,
@@ -380,6 +381,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
   // Personal Profile State
   const [personalName, setPersonalName] = useState("");
+  const [personalCountry, setPersonalCountry] = useState("India");
+  const [personalState, setPersonalState] = useState("Odisha");
+  const [personalDistrict, setPersonalDistrict] = useState("");
+  const [personalBlock, setPersonalBlock] = useState("");
+  const [personalTownVillage, setPersonalTownVillage] = useState("");
+  const [personalPin, setPersonalPin] = useState("");
   const [personalAddress, setPersonalAddress] = useState("");
   const [personalDob, setPersonalDob] = useState("");
   const [personalExperience, setPersonalExperience] = useState("");
@@ -413,6 +420,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           const data = snap.data();
           // Personal
           setPersonalName(data.personalName || data.name || "");
+          setPersonalCountry(data.personalCountry || "India");
+          setPersonalState(data.personalState || "Odisha");
+          setPersonalDistrict(data.personalDistrict || "");
+          setPersonalBlock(data.personalBlock || "");
+          setPersonalTownVillage(data.personalTownVillage || "");
+          setPersonalPin(data.personalPin || "");
           setPersonalAddress(data.personalAddress || "");
           setPersonalDob(data.personalDob || "");
           setPersonalExperience(data.personalExperience || "");
@@ -449,6 +462,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     try {
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         personalName,
+        personalCountry,
+        personalState,
+        personalDistrict,
+        personalBlock,
+        personalTownVillage,
+        personalPin,
         personalAddress,
         personalDob,
         personalExperience,
@@ -1095,9 +1114,63 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Date of Birth</label>
                   <input type="date" value={personalDob} onChange={e => setPersonalDob(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
-                <div className="col-span-2">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Home Address</label>
-                  <textarea value={personalAddress} onChange={e => setPersonalAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required rows={3} />
+                <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+                    <select value={personalCountry} onChange={e => {
+                      setPersonalCountry(e.target.value);
+                      if (e.target.value !== "India") { setPersonalState(""); setPersonalDistrict(""); }
+                      else { setPersonalState("Odisha"); }
+                    }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                      <option value="India">India</option>
+                      <option value="International">International</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
+                    {personalCountry === "India" ? (
+                      <select value={personalState} onChange={e => { setPersonalState(e.target.value); setPersonalDistrict(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                        <option value="">Select State...</option>
+                        {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    ) : (
+                      <input type="text" value={personalState} onChange={e => setPersonalState(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
+                    {personalCountry === "India" && personalState === "Odisha" ? (
+                      <select value={personalDistrict} onChange={e => { setPersonalDistrict(e.target.value); setPersonalBlock(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                        <option value="">Select District...</option>
+                        {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                      </select>
+                    ) : (
+                      <input type="text" value={personalDistrict} onChange={e => setPersonalDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
+                    {personalCountry === "India" && personalState === "Odisha" && personalDistrict && ODISHA_DISTRICT_BLOCKS[personalDistrict] ? (
+                      <select value={personalBlock} onChange={e => setPersonalBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                        <option value="">Select Block...</option>
+                        {ODISHA_DISTRICT_BLOCKS[personalDistrict].map(b => <option key={b} value={b}>{b}</option>)}
+                      </select>
+                    ) : (
+                      <input type="text" value={personalBlock} onChange={e => setPersonalBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town / Village</label>
+                    <input type="text" value={personalTownVillage} onChange={e => setPersonalTownVillage(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
+                    <input type="text" value={personalPin} onChange={e => setPersonalPin(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street Address</label>
+                    <textarea value={personalAddress} onChange={e => setPersonalAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required rows={2} />
+                  </div>
                 </div>
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Years of Experience / Established Year</label>
@@ -1255,11 +1328,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                       <div>
                         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
                         <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
-                          <option value="Odisha">Odisha</option>
-                          <option value="Maharashtra">Maharashtra</option>
-                          <option value="Karnataka">Karnataka</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="Other">Other State</option>
+                          <option value="">Select State...</option>
+                          {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                         </select>
                       </div>
                     ) : (
@@ -1272,11 +1342,9 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                     {country === "India" && state === "Odisha" ? (
                       <div>
                         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
-                        <select value={district} onChange={e => setDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                        <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                           <option value="">Select District...</option>
-                          {["Angul", "Balangir", "Baleswar", "Bargarh", "Bhadrak", "Boudh", "Cuttack", "Deogarh", "Dhenkanal", "Gajapati", "Ganjam", "Jagatsinghapur", "Jajpur", "Jharsuguda", "Kalahandi", "Kandhamal", "Kendrapara", "Kendujhar", "Khordha", "Koraput", "Malkangiri", "Mayurbhanj", "Nabarangpur", "Nayagarh", "Nuapada", "Puri", "Rayagada", "Sambalpur", "Subarnapur", "Sundargarh"].map(d => (
-                            <option key={d} value={d}>{d}</option>
-                          ))}
+                          {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
                         </select>
                       </div>
                     ) : (
@@ -1290,7 +1358,14 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
-                  <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  {country === "India" && state === "Odisha" && district && ODISHA_DISTRICT_BLOCKS[district] ? (
+                    <select value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                      <option value="">Select Block...</option>
+                      {ODISHA_DISTRICT_BLOCKS[district].map(b => <option key={b} value={b}>{b}</option>)}
+                    </select>
+                  ) : (
+                    <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town / Village</label>

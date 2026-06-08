@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-
-const ODISHA_DISTRICTS = ["Angul", "Balangir", "Baleswar", "Bargarh", "Bhadrak", "Boudh", "Cuttack", "Deogarh", "Dhenkanal", "Gajapati", "Ganjam", "Jagatsinghapur", "Jajpur", "Jharsuguda", "Kalahandi", "Kandhamal", "Kendrapara", "Kendujhar", "Khordha", "Koraput", "Malkangiri", "Mayurbhanj", "Nabarangpur", "Nayagarh", "Nuapada", "Puri", "Rayagada", "Sambalpur", "Subarnapur", "Sundargarh"];
+import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
 
 export default function GooglePlacesImporterPage() {
   const [businessType, setBusinessType] = useState("Sambalpuri Handloom Store");
@@ -148,12 +147,9 @@ export default function GooglePlacesImporterPage() {
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
             {country === "India" ? (
-              <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
+              <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); setBlock(""); }} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
                 <option value="Odisha">Odisha</option>
-                <option value="Maharashtra">Maharashtra</option>
-                <option value="Karnataka">Karnataka</option>
-                <option value="Delhi">Delhi</option>
-                <option value="Other">Other State</option>
+                {INDIAN_STATES.filter(s => s !== "Odisha").map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             ) : (
               <input type="text" value={state} onChange={e => setState(e.target.value)} placeholder="State/Province" className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
@@ -163,7 +159,7 @@ export default function GooglePlacesImporterPage() {
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
             {country === "India" && state === "Odisha" ? (
-              <select value={district} onChange={e => setDistrict(e.target.value)} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
+              <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
                 <option value="">Select District...</option>
                 {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
               </select>
@@ -174,7 +170,14 @@ export default function GooglePlacesImporterPage() {
 
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
-            <input type="text" value={block} onChange={e => setBlock(e.target.value)} placeholder="e.g. Attabira" className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+            {country === "India" && state === "Odisha" && district && ODISHA_DISTRICT_BLOCKS[district] ? (
+              <select value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
+                <option value="">Select Block...</option>
+                {ODISHA_DISTRICT_BLOCKS[district].map(b => <option key={b} value={b}>{b}</option>)}
+              </select>
+            ) : (
+              <input type="text" value={block} onChange={e => setBlock(e.target.value)} placeholder="e.g. Attabira" className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+            )}
           </div>
 
           <div>
