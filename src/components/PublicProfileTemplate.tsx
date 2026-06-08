@@ -19,6 +19,8 @@ export interface PublicProfileProps {
     address: string;
     phone: string;
     whatsapp: string;
+    status?: string;
+    googlePlaceId?: string;
   };
   products: Product[];
 }
@@ -50,9 +52,19 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
 
         {/* Center: Details */}
         <div className="lg:w-1/2 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-[#C5A059]/20 pb-6 lg:pb-0 lg:pr-8">
-          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold uppercase tracking-widest mb-4 w-max ${badgeColor} ${badgeBg}`}>
-            <span>{badgeText}</span>
-          </div>
+          {(!profile.status || profile.status === "approved") ? (
+            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold uppercase tracking-widest mb-4 w-max ${badgeColor} ${badgeBg}`}>
+              <span>{badgeText}</span>
+            </div>
+          ) : (
+            <div className="bg-red-900/30 border border-red-500/50 p-4 rounded-xl mb-4 w-full max-w-sm">
+              <h3 className="text-red-400 font-bold text-sm mb-1">Not Verified by Bhulia.com</h3>
+              <p className="text-red-200/70 text-xs mb-3">This store is not yet verified. Are you the owner?</p>
+              <Link href="/auth/register" className="inline-block bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase px-4 py-2 rounded-lg transition-colors shadow-sm">
+                Verify Now / Apply
+              </Link>
+            </div>
+          )}
           
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#C5A059] leading-tight mb-2">
             {profile.name}
@@ -82,6 +94,20 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
             <h3 className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2">Full Address</h3>
             <p className="text-sm text-white font-medium">{profile.address || "Address not provided."}</p>
           </div>
+
+          {(profile.address || profile.googlePlaceId) && (
+            <div className="w-full h-40 rounded-xl overflow-hidden border border-[#C5A059]/30 mt-4 shadow-inner">
+              <iframe
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(profile.name + ' ' + (profile.address || ''))}&output=embed`}
+              ></iframe>
+            </div>
+          )}
 
           <div className="space-y-3 pt-4 border-t border-[#C5A059]/20">
             <h3 className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold">Contact Direct</h3>

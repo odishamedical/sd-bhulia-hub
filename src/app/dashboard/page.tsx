@@ -101,6 +101,7 @@ export default function DashboardPage() {
       { id: "products", label: "Products", icon: "🛍️" },
       { id: "logistics", label: "Logistics", icon: "🚚" },
       { id: "finance", label: "Finance", icon: "💰" },
+      { id: "google_import", label: "Google Importer", icon: "🌍" },
     ];
     // Override default tab if needed
     if (activeTab === "home") setActiveTab("overview");
@@ -111,7 +112,8 @@ export default function DashboardPage() {
       { id: "orders", label: "My Orders", icon: "📦" },
       { id: "wallet", label: "Wallet & Earnings", icon: "💰" },
       { id: "verification", label: "Verification", icon: "🛡️" },
-      { id: "settings", label: "Store Settings", icon: "⚙️" },
+      { id: "personal", label: "Personal Profile", icon: "👤" },
+      { id: "store_settings", label: "Professional Store", icon: "🏪" },
     ];
   } else if (actualRole === "vendor") {
     navItems = [
@@ -120,7 +122,8 @@ export default function DashboardPage() {
       { id: "orders", label: "Order Management", icon: "📦" },
       { id: "finance", label: "Finance & Payouts", icon: "💰" },
       { id: "marketing", label: "Marketing", icon: "📢" },
-      { id: "settings", label: "Store Settings", icon: "⚙️" },
+      { id: "personal", label: "Personal Profile", icon: "👤" },
+      { id: "store_settings", label: "Professional Store", icon: "🏪" },
     ];
   } else if (actualRole === "reseller") {
     navItems = [
@@ -375,12 +378,24 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   
   const sellerOrders = orders.filter(o => o.sellerId === auth.currentUser?.uid && o.logisticsStatus !== "Delivered");
 
-  // Settings State
+  // Personal Profile State
+  const [personalName, setPersonalName] = useState("");
+  const [personalAddress, setPersonalAddress] = useState("");
+  const [personalDob, setPersonalDob] = useState("");
+  const [personalExperience, setPersonalExperience] = useState("");
+  const [bankHolder, setBankHolder] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [bankAccount, setBankAccount] = useState("");
+  const [bankIfsc, setBankIfsc] = useState("");
+  const [bankUpi, setBankUpi] = useState("");
+
+  // Professional Store State
   const [storeName, setStoreName] = useState("");
   const [publicDesc, setPublicDesc] = useState("");
   const [storeLogo, setStoreLogo] = useState("");
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [country, setCountry] = useState("India");
   const [address, setAddress] = useState("");
   const [district, setDistrict] = useState("");
   const [state, setState] = useState("");
@@ -394,23 +409,62 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
       getDoc(doc(db, "users", auth.currentUser.uid)).then(snap => {
         if (snap.exists()) {
           const data = snap.data();
+          // Personal
+          setPersonalName(data.personalName || data.name || "");
+          setPersonalAddress(data.personalAddress || "");
+          setPersonalDob(data.personalDob || "");
+          setPersonalExperience(data.personalExperience || "");
+          setBankHolder(data.bankHolder || "");
+          setBankName(data.bankName || "");
+          setBankAccount(data.bankAccount || "");
+          setBankIfsc(data.bankIfsc || "");
+          setBankUpi(data.bankUpi || "");
+          setKycType(data.kycType || "");
+          setKycId(data.kycId || "");
+
+          // Professional
           setStoreName(data.storeName || data.name || "");
           setPublicDesc(data.publicDesc || "");
           setStoreLogo(data.storeLogo || "");
           setPhone(data.phone || "");
           setWhatsapp(data.whatsapp || "");
+          setCountry(data.country || "India");
           setAddress(data.address || "");
           setDistrict(data.district || "");
           setState(data.state || "");
           setPin(data.pin || "");
-          setKycType(data.kycType || "");
-          setKycId(data.kycId || "");
         }
       });
     }
   }, []);
 
-  const handleSaveSettings = async (e: React.FormEvent) => {
+  const handleSavePersonal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth.currentUser) return;
+    setIsSaving(true);
+    try {
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        personalName,
+        personalAddress,
+        personalDob,
+        personalExperience,
+        bankHolder,
+        bankName,
+        bankAccount,
+        bankIfsc,
+        bankUpi,
+        kycType,
+        kycId,
+      });
+      alert("Personal Profile saved successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save personal profile.");
+    }
+    setIsSaving(false);
+  };
+
+  const handleSaveStore = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!auth.currentUser) return;
     setIsSaving(true);
@@ -422,12 +476,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         storeLogo,
         phone,
         whatsapp,
+        country,
         address,
         district,
         state,
         pin,
-        kycType,
-        kycId,
       });
 
       // 2. Generate clean slug from store name
@@ -445,15 +498,18 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         img: storeLogo,
         phone,
         whatsapp,
+        country,
+        state,
+        district,
         address: `${address}, ${district}, ${state} - ${pin}`,
         tier: "Silver", // Default
         status: "approved" // Auto-approve for MVP
       }, { merge: true });
 
-      alert("Settings and Public Storefront updated successfully!");
+      alert("Professional Store updated successfully!");
     } catch (error) {
       console.error(error);
-      alert("Failed to save settings.");
+      alert("Failed to save store details.");
     }
     setIsSaving(false);
   };
@@ -1009,83 +1065,71 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         </div>
       )}
 
-      {activeTab === "settings" && (
+      {activeTab === "personal" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Store Profile & KYC Settings</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Personal Profile & KYC Settings</h2>
           
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-8">
-            <h3 className="text-yellow-800 font-bold text-sm mb-1">Privacy Enforcement Active</h3>
-            <p className="text-yellow-700 text-xs font-medium">Your contact details (Phone & WhatsApp) are securely stored for internal Bhulia Hub operations. They are automatically masked and hidden from your public storefront to protect your privacy.</p>
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-8">
+            <h3 className="text-red-800 font-bold text-sm mb-1">Strictly Confidential</h3>
+            <p className="text-red-700 text-xs font-medium">This information is strictly for official use only (Bank, DOB, KYC) and will NEVER be shown to the public.</p>
           </div>
 
-          <form className="space-y-8" onSubmit={handleSaveSettings}>
+          <form className="space-y-8" onSubmit={handleSavePersonal}>
             
             <div className="space-y-4">
-              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">1. Public Brand Info</h3>
-              <div className="grid grid-cols-1 gap-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Name</label>
-                    <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="e.g. Sonepur Silk Emporium" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Description</label>
-                    <input type="text" value={publicDesc} onChange={e => setPublicDesc(e.target.value)} placeholder="e.g. Authentic handlooms direct from weavers." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
-                  </div>
-                </div>
-                <div>
-                  <ImageUploader
-                    value={storeLogo}
-                    onChange={setStoreLogo}
-                    label="Store Logo"
-                    aspectRatio="square"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">2. Private Contact Details (Masked)</h3>
+              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">1. Personal Identity</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Business Phone Number</label>
-                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 9999999999" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name (As per Bank/Aadhaar)</label>
+                  <input type="text" value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Number</label>
-                  <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} placeholder="+91 9999999999" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Date of Birth</label>
+                  <input type="date" value={personalDob} onChange={e => setPersonalDob(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Home Address</label>
+                  <textarea value={personalAddress} onChange={e => setPersonalAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required rows={3} />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Years of Experience / Established Year</label>
+                  <input type="text" value={personalExperience} onChange={e => setPersonalExperience(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">3. Location Details (For Local Search)</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="col-span-3 md:col-span-1">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
-                  <input type="text" value={district} onChange={e => setDistrict(e.target.value)} placeholder="e.g. Bargarh" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">2. Bank Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Holder Name</label>
+                  <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
-                <div className="col-span-3 md:col-span-1">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
-                  <input type="text" value={state} onChange={e => setState(e.target.value)} placeholder="e.g. Odisha" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Bank Name</label>
+                  <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
-                <div className="col-span-3 md:col-span-1">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
-                  <input type="text" value={pin} onChange={e => setPin(e.target.value)} placeholder="e.g. 768028" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Number</label>
+                  <input type="text" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-mono" required />
                 </div>
-                <div className="col-span-3">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Address</label>
-                  <input type="text" value={address} onChange={e => setAddress(e.target.value)} placeholder="Full street address..." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">IFSC Code</label>
+                  <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-mono uppercase" required />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">UPI ID (Optional)</label>
+                  <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-mono" />
                 </div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">4. KYC & Verification Documents</h3>
+              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">3. KYC Documents</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">KYC Document Type</label>
-                  <select value={kycType} onChange={e => setKycType(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required>
+                  <select value={kycType} onChange={e => setKycType(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                     <option value="">Select Document Type...</option>
                     <option value="gst">GST Registration Number</option>
                     <option value="udyam">Aadhaar Udyam Number</option>
@@ -1094,19 +1138,162 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                 </div>
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document ID / Number</label>
-                  <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} placeholder="Enter the ID number" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                  <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
-                
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-gray-100 flex justify-end">
+              <button type="submit" disabled={isSaving} className="bg-[#0070F3] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors shadow-sm">
+                {isSaving ? "Saving..." : "Save Personal Profile"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {activeTab === "store_settings" && (
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Professional Store Profile</h2>
+          
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-8">
+            <h3 className="text-blue-800 font-bold text-sm mb-1">Public Display Data</h3>
+            <p className="text-blue-700 text-xs font-medium">This information will be displayed exactly as typed on your public storefront.</p>
+          </div>
+
+          <form className="space-y-8" onSubmit={handleSaveStore}>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                <h3 className="text-lg font-bold text-gray-900">1. Store Details</h3>
+                <button type="button" onClick={() => {
+                  setStoreName(personalName);
+                  setPhone(bankAccount ? "9999999999" : ""); // Demo purpose copy
+                }} className="text-[#0070F3] text-xs font-bold hover:underline">
+                  Copy from Personal Profile
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Name / Professional Name</label>
+                  <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Description</label>
+                  <input type="text" value={publicDesc} onChange={e => setPublicDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                </div>
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Document Scan (PDF/JPG)</label>
-                  <input type="file" className="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-[#0070F3] file:text-white hover:file:bg-[#005BB5] border border-gray-200 rounded-xl p-2 cursor-pointer bg-white transition-all shadow-sm" accept=".pdf,.jpg,.jpeg,.png" required />
+                  <ImageUploader value={storeLogo} onChange={setStoreLogo} label="Store Logo / Profile Picture" aspectRatio="square" />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">2. Public Contact Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Phone Number</label>
+                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public WhatsApp Number</label>
+                  <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">3. Location Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                {roleTitle === "Weaver Hub" ? (
+                  <>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+                      <input type="text" value="India" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-gray-500 cursor-not-allowed" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
+                      <input type="text" value="Odisha" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-gray-500 cursor-not-allowed" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
+                      <select value={district} onChange={e => setDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                        <option value="">Select Handloom District...</option>
+                        {["Bargarh", "Subarnapur", "Sambalpur", "Boudh", "Nuapada", "Balangir", "Kalahandi"].map(d => (
+                          <option key={d} value={d}>{d}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+                      <select value={country} onChange={e => {
+                        setCountry(e.target.value);
+                        if (e.target.value === "International") {
+                          setState(""); setDistrict("");
+                        } else {
+                          setState("Odisha");
+                        }
+                      }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                        <option value="India">India</option>
+                        <option value="International">International</option>
+                      </select>
+                    </div>
+
+                    {country === "India" ? (
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
+                        <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                          <option value="Odisha">Odisha</option>
+                          <option value="Maharashtra">Maharashtra</option>
+                          <option value="Karnataka">Karnataka</option>
+                          <option value="Delhi">Delhi</option>
+                          <option value="Other">Other State</option>
+                        </select>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State / Province</label>
+                        <input type="text" value={state} onChange={e => setState(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                      </div>
+                    )}
+
+                    {country === "India" && state === "Odisha" ? (
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
+                        <select value={district} onChange={e => setDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                          <option value="">Select District...</option>
+                          {["Angul", "Balangir", "Baleswar", "Bargarh", "Bhadrak", "Boudh", "Cuttack", "Deogarh", "Dhenkanal", "Gajapati", "Ganjam", "Jagatsinghapur", "Jajpur", "Jharsuguda", "Kalahandi", "Kandhamal", "Kendrapara", "Kendujhar", "Khordha", "Koraput", "Malkangiri", "Mayurbhanj", "Nabarangpur", "Nayagarh", "Nuapada", "Puri", "Rayagada", "Sambalpur", "Subarnapur", "Sundargarh"].map(d => (
+                            <option key={d} value={d}>{d}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">City / District</label>
+                        <input type="text" value={district} onChange={e => setDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                      </div>
+                    )}
+                  </>
+                )}
+
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Public Address</label>
+                  <textarea value={address} onChange={e => setAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required rows={2} />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN / ZIP Code</label>
+                  <input type="text" value={pin} onChange={e => setPin(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
               </div>
             </div>
 
             <div className="pt-6 border-t border-gray-100 flex justify-end">
               <button type="submit" disabled={isSaving} className="bg-[#0070F3] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors shadow-[0_4px_14px_0_rgb(229,113,56,0.39)] hover:shadow-[0_6px_20px_rgba(229,113,56,0.23)]">
-                {isSaving ? "Saving..." : "Save Settings & Submit KYC"}
+                {isSaving ? "Saving..." : "Save Store Settings"}
               </button>
             </div>
           </form>
@@ -1470,6 +1657,196 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
   );
 }
 
+function GoogleImporterTab() {
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<any[]>([]);
+  const [pageToken, setPageToken] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [importing, setImporting] = useState(false);
+
+  const handleSearch = async (token?: string) => {
+    if (!query) return;
+    setLoading(true);
+    try {
+      const res = await fetch("/api/places", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query, pageToken: token || undefined }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      
+      if (token) {
+        setResults(prev => [...prev, ...(data.places || [])]);
+      } else {
+        setResults(data.places || []);
+        setSelectedIds(new Set());
+      }
+      setPageToken(data.nextPageToken || "");
+    } catch (e: any) {
+      alert("Failed to search: " + e.message);
+    }
+    setLoading(false);
+  };
+
+  const toggleSelect = (id: string) => {
+    const newSet = new Set(selectedIds);
+    if (newSet.has(id)) newSet.delete(id);
+    else newSet.add(id);
+    setSelectedIds(newSet);
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === results.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(results.map(r => r.id)));
+    }
+  };
+
+  const handleImport = async () => {
+    if (selectedIds.size === 0) return;
+    if (!confirm(`Import ${selectedIds.size} listings to Vendors directory?`)) return;
+    
+    setImporting(true);
+    try {
+      const { collection, setDoc, doc } = await import("firebase/firestore");
+      const { db } = await import("@/lib/firebase");
+      
+      const itemsToImport = results.filter(r => selectedIds.has(r.id));
+      
+      for (const item of itemsToImport) {
+        const title = item.displayName?.text || "Unknown Store";
+        // Generate a URL-friendly slug based on the name and last 5 chars of the Google ID
+        const generatedSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") + "-" + item.id.slice(-5).toLowerCase();
+
+        await setDoc(doc(db, "vendors", item.id), {
+          title: title,
+          slug: generatedSlug,
+          address: item.formattedAddress || "",
+          phone: item.nationalPhoneNumber || "",
+          website: item.websiteUri || "",
+          googleRating: item.rating || 0,
+          googleReviewsCount: item.userRatingCount || 0,
+          googlePlaceId: item.id,
+          coordinates: item.location ? { lat: item.location.latitude, lng: item.location.longitude } : null,
+          status: "unclaimed",
+          country: "India",
+          state: "Odisha",
+          district: "Bargarh", // Default fallback
+          desc: "This profile was automatically generated from Google Maps. If you are the owner, please verify it.",
+          isBhuliaVerified: false,
+          createdAt: Date.now()
+        }, { merge: true });
+      }
+      alert(`Successfully imported ${selectedIds.size} stores!`);
+      setSelectedIds(new Set());
+    } catch (e: any) {
+      alert("Failed to import: " + e.message);
+    }
+    setImporting(false);
+  };
+
+  return (
+    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-6xl animate-in fade-in">
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">Google Maps Data Ingestion</h2>
+      <p className="text-gray-500 mb-8">Search Google Places and bulk-import them as Unclaimed vendors to capture leads.</p>
+      
+      <div className="flex gap-4 mb-8">
+        <input 
+          type="text" 
+          value={query} 
+          onChange={e => setQuery(e.target.value)} 
+          onKeyDown={e => e.key === 'Enter' && handleSearch()}
+          placeholder="e.g. Sambalpuri Saree Shops in Bhubaneswar" 
+          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-900 focus:border-[#0070F3] outline-none"
+        />
+        <button 
+          onClick={() => handleSearch()} 
+          disabled={loading}
+          className="bg-[#0070F3] text-white px-8 py-4 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors whitespace-nowrap"
+        >
+          {loading ? "Searching..." : "Search Places"}
+        </button>
+      </div>
+
+      {results.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
+            <div className="flex items-center gap-3">
+              <input 
+                type="checkbox" 
+                checked={selectedIds.size === results.length && results.length > 0} 
+                onChange={toggleAll}
+                className="w-5 h-5 rounded border-gray-300 text-[#0070F3] focus:ring-[#0070F3]"
+              />
+              <span className="font-bold text-gray-900">{selectedIds.size} Selected</span>
+            </div>
+            <button 
+              onClick={handleImport}
+              disabled={importing || selectedIds.size === 0}
+              className="bg-green-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-green-700 disabled:opacity-50 transition-colors"
+            >
+              {importing ? "Importing..." : "Import Selected to Database"}
+            </button>
+          </div>
+
+          <div className="overflow-x-auto border border-gray-100 rounded-xl max-h-[500px]">
+            <table className="w-full text-left relative">
+              <thead className="bg-gray-50 text-xs uppercase text-gray-500 border-b border-gray-100 sticky top-0 z-10">
+                <tr>
+                  <th className="p-4 w-12 bg-gray-50"></th>
+                  <th className="p-4 font-bold bg-gray-50">Store Name</th>
+                  <th className="p-4 font-bold bg-gray-50">Location</th>
+                  <th className="p-4 font-bold bg-gray-50">Rating</th>
+                  <th className="p-4 font-bold bg-gray-50">Phone</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {results.map(r => (
+                  <tr key={r.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="p-4">
+                      <input 
+                        type="checkbox" 
+                        checked={selectedIds.has(r.id)} 
+                        onChange={() => toggleSelect(r.id)}
+                        className="w-5 h-5 rounded border-gray-300 text-[#0070F3] focus:ring-[#0070F3]"
+                      />
+                    </td>
+                    <td className="p-4 font-bold text-gray-900">{r.displayName?.text}</td>
+                    <td className="p-4 text-sm text-gray-500 max-w-xs truncate" title={r.formattedAddress}>{r.formattedAddress}</td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-1">
+                        <span className="text-yellow-400">★</span>
+                        <span className="font-bold text-gray-900">{r.rating || "N/A"}</span>
+                        <span className="text-xs text-gray-400">({r.userRatingCount || 0})</span>
+                      </div>
+                    </td>
+                    <td className="p-4 text-sm text-gray-900 font-mono">{r.nationalPhoneNumber || "-"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {pageToken && (
+            <div className="flex justify-center pt-4">
+              <button 
+                onClick={() => handleSearch(pageToken)}
+                disabled={loading}
+                className="bg-gray-100 text-gray-700 px-6 py-2 rounded-xl font-bold hover:bg-gray-200 transition-colors"
+              >
+                {loading ? "Loading..." : "Load Next 20 Results"}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ==========================================
    5. SUPER ADMIN DASHBOARD
    ========================================== */
@@ -1501,20 +1878,33 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
     return acc + (parseInt(priceStr) || 0);
   }, 0);
 
-  const handleInspect = (item: any) => setSelectedItem(item);
+  const [personalDataCache, setPersonalDataCache] = useState<Record<string, any>>({});
+  
+  const handleInspect = async (item: any) => {
+    setSelectedItem(item);
+    if (item.type === "weavers" || item.type === "stores" || item.type === "franchises") {
+      try {
+        const { doc, getDoc } = await import("firebase/firestore");
+        const { db } = await import("@/lib/firebase");
+        const userDoc = await getDoc(doc(db, "users", item.id));
+        if (userDoc.exists()) {
+          setPersonalDataCache((prev: any) => ({ ...prev, [item.id]: userDoc.data() }));
+        }
+      } catch (e) {
+        console.error("Failed to fetch personal data", e);
+      }
+    }
+  };
 
   const handleApprove = async () => {
     if (!selectedItem) return;
     setIsSubmitting(true);
     const { id, type, data } = selectedItem;
-    let updates: any = { status: "approved" };
+    
+    let updates: any = { ...data, status: "approved", pendingChanges: null };
 
-    if (data.pendingChanges) {
-      updates = { ...updates, ...data.pendingChanges, pendingChanges: null };
-    }
     if (type === "products") {
       updates.isBhuliaVerified = true;
-      updates.status = "approved";
     }
 
     const res = await updateDocumentStatus(type, id, updates);
@@ -1529,18 +1919,28 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
 
   const handleReject = async () => {
     if (!selectedItem) return;
-    if (!confirm("Are you sure you want to reject this item?")) return;
+    
+    const reason = window.prompt("Please enter the reason for rejection (this will be visible to the user):");
+    if (reason === null) return; // Cancelled
+    
+    if (!reason.trim()) {
+      alert("A rejection reason is required.");
+      return;
+    }
+
     setIsSubmitting(true);
     const { id, type, data } = selectedItem;
     
-    let updates: any = { status: "rejected" };
+    let updates: any = { status: "rejected", rejectionReason: reason };
+    
     if (data.pendingChanges) {
-      updates = { status: "approved", pendingChanges: null };
+      // If rejecting an edit, we drop the pending changes and keep the existing status (likely approved)
+      updates = { pendingChanges: null, rejectionReason: reason };
     }
     
     const res = await updateDocumentStatus(type, id, updates);
     if (res.success) {
-      alert("Application rejected.");
+      alert("Application rejected successfully with reason.");
       setSelectedItem(null);
     } else {
       alert("Error rejecting application");
@@ -1787,14 +2187,39 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
               <button onClick={() => setSelectedItem(null)} className="p-2 bg-gray-50 text-gray-500 rounded-full hover:bg-gray-100 transition-colors">✕</button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-6 rounded-2xl border border-gray-100 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-blue-50 p-6 rounded-2xl border border-blue-100 mb-4">
+              <div className="col-span-full mb-2 border-b border-blue-200 pb-2">
+                <h4 className="text-sm font-bold text-blue-900 uppercase">Public Store Profile</h4>
+              </div>
               {Object.keys(selectedItem.data).filter(key => key !== "id" && key !== "status" && key !== "pendingChanges" && key !== "layoutConfig").map(key => (
                 <div key={key} className="space-y-1">
-                  <span className="text-xs text-gray-500 font-bold uppercase tracking-wider block">{key}</span>
-                  <span className="text-sm font-medium text-gray-900">{String(selectedItem.data[key])}</span>
+                  <span className="text-xs text-blue-700 font-bold uppercase tracking-wider block">{key}</span>
+                  <input 
+                    type="text" 
+                    value={selectedItem.data[key] || ""} 
+                    onChange={(e) => {
+                      const newData = { ...selectedItem.data, [key]: e.target.value };
+                      setSelectedItem({ ...selectedItem, data: newData });
+                    }}
+                    className="w-full bg-white border border-blue-200 rounded-lg px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
                 </div>
               ))}
             </div>
+
+            {(selectedItem.type === "weavers" || selectedItem.type === "stores" || selectedItem.type === "franchises") && personalDataCache[selectedItem.id] && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-red-50 p-6 rounded-2xl border border-red-100 mb-8">
+                <div className="col-span-full mb-2 border-b border-red-200 pb-2">
+                  <h4 className="text-sm font-bold text-red-900 uppercase">Private Personal Profile (KYC)</h4>
+                </div>
+                {["personalName", "personalDob", "personalAddress", "bankName", "bankAccount", "bankIfsc", "kycType", "kycId", "phone", "whatsapp"].map(key => (
+                  <div key={`personal-${key}`} className="space-y-1">
+                    <span className="text-xs text-red-700 font-bold uppercase tracking-wider block">{key}</span>
+                    <span className="text-sm font-medium text-gray-900">{String(personalDataCache[selectedItem.id]?.[key] || "N/A")}</span>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="flex justify-between gap-4">
               <button onClick={handleReject} disabled={isSubmitting} className="px-6 py-3 border border-red-200 text-red-600 font-bold rounded-xl hover:bg-red-50 transition-colors disabled:opacity-50">Reject</button>
