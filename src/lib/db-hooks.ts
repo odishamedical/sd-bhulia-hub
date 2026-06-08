@@ -610,6 +610,88 @@ export async function suspendUserRecord(role: string, id: string) {
 }
 
 // ============================================================================
+// CONVERT USER ROLE
+// ============================================================================
+
+export async function convertUserRole(userId: string, userEmail: string, userName: string, newRole: "weaver" | "shop" | "reseller" | "customer") {
+  try {
+    // 1. Update the role in the 'users' collection so they get the correct dashboard
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, { role: newRole });
+
+    // 2. Auto-generate a basic profile in the corresponding collection
+    const generatedSlug = userName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + userId.slice(0, 4).toLowerCase();
+
+    if (newRole === "weaver") {
+      await setDoc(doc(db, "weavers", userId), {
+        slug: generatedSlug,
+        title: userName,
+        desc: "Newly registered weaver.",
+        img: "/bhulia-hero.png",
+        badge: "Odishan Master Weaver",
+        phone: "N/A",
+        whatsapp: "N/A",
+        address: "N/A, Odisha",
+        tier: "Silver",
+        status: "approved",
+        subscription: { status: "free_trial", uploadLimit: 10, commissionRate: 15 }
+      });
+    } else if (newRole === "shop") {
+      await setDoc(doc(db, "vendors", userId), {
+        slug: generatedSlug,
+        title: userName,
+        desc: "Newly registered retail store.",
+        img: "/bhulia-hero.png",
+        badge: "Verified Vendor",
+        phone: "N/A",
+        whatsapp: "N/A",
+        address: "N/A",
+        tier: "Silver",
+        status: "approved",
+        productLimit: 10,
+        subscription: { status: "free_trial", uploadLimit: 10, commissionRate: 15 }
+      });
+    } else if (newRole === "reseller") {
+      const referralId = `SDR-${Math.floor(1000 + Math.random() * 9000)}`;
+      await setDoc(doc(db, "resellers", userId), {
+        name: userName,
+        email: userEmail || "N/A",
+        phone: "N/A",
+        whatsapp: "N/A",
+        country: "India",
+        state: "N/A",
+        district: "N/A",
+        address: "N/A",
+        pin: "N/A",
+        referralId,
+        tier: "Bronze",
+        commissionRate: 15,
+        status: "active",
+        createdAt: new Date().toISOString()
+      });
+    } else if (newRole === "customer") {
+      await setDoc(doc(db, "customers", userId), {
+        name: userName,
+        email: userEmail || "N/A",
+        phone: "N/A",
+        whatsapp: "N/A",
+        country: "India",
+        state: "N/A",
+        district: "N/A",
+        address: "N/A",
+        pin: "N/A",
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error converting user role:", error);
+    return { success: false, error };
+  }
+}
+
+// ============================================================================
 // GLOBAL SETTINGS HOOKS
 // ============================================================================
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useVendors, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addVendor, addCustomer, addReseller, deleteUserRecord, suspendUserRecord } from "@/lib/db-hooks";
+import { useWeavers, useVendors, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addVendor, addCustomer, addReseller, deleteUserRecord, suspendUserRecord, convertUserRole } from "@/lib/db-hooks";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers();
@@ -336,6 +336,25 @@ export default function UserManagementPage() {
       setSelectedUserForDetails(null);
     } else {
       alert(`Failed to suspend user.`);
+    }
+  };
+
+  const handleConvertRole = async (newRole: "weaver" | "shop" | "reseller" | "customer") => {
+    if (!selectedUserForDetails) return;
+    
+    if (selectedUserForDetails.role !== 'user') {
+      return alert("This feature is currently intended to convert general SSO users. For existing profiles, please edit their profile instead.");
+    }
+
+    const confirmConvert = window.confirm(`Are you sure you want to promote ${selectedUserForDetails.name} to a ${newRole.toUpperCase()}? This will create a basic profile for them in the system.`);
+    if (!confirmConvert) return;
+
+    const res = await convertUserRole(selectedUserForDetails.id, selectedUserForDetails.email, selectedUserForDetails.name, newRole);
+    if (res.success) {
+      alert(`Success! ${selectedUserForDetails.name} has been upgraded to ${newRole}.`);
+      setSelectedUserForDetails({ ...selectedUserForDetails, role: newRole });
+    } else {
+      alert(`Failed to convert user role.`);
     }
   };
 
@@ -733,7 +752,24 @@ export default function UserManagementPage() {
             <div className="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
               <div>
                 <h3 className="text-2xl font-black text-gray-900 mb-1">{selectedUserForDetails.name}</h3>
-                <div className="text-xs text-gray-500 font-mono uppercase tracking-widest">ID: {selectedUserForDetails.id} • ROLE: {selectedUserForDetails.role}</div>
+                <div className="text-xs text-gray-500 font-mono uppercase tracking-widest flex items-center gap-2">
+                  ID: {selectedUserForDetails.id} • ROLE: {selectedUserForDetails.role}
+                  {selectedUserForDetails.role === 'user' && (
+                    <select 
+                      onChange={(e) => {
+                        if(e.target.value) handleConvertRole(e.target.value as any);
+                        e.target.value = "";
+                      }}
+                      className="ml-2 bg-blue-50 border border-blue-200 text-blue-700 text-[10px] py-1 px-2 rounded-lg font-bold outline-none cursor-pointer"
+                    >
+                      <option value="">+ Promote User</option>
+                      <option value="weaver">To Weaver</option>
+                      <option value="shop">To Retail Store</option>
+                      <option value="reseller">To Reseller</option>
+                      <option value="customer">To Customer</option>
+                    </select>
+                  )}
+                </div>
               </div>
               <button onClick={() => setSelectedUserForDetails(null)} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
