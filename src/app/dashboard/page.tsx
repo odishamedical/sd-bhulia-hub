@@ -547,16 +547,14 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">{roleTitle}</h1>
-          <div className="flex items-center gap-3 mt-2">
-            <p className="text-gray-500 font-medium">Manage your inventory and dispatch operations.</p>
-            <a href={"/" + (roleTitle === "Vendor Hub" ? "vendor/" : "weaver/") + (storeName?.toLowerCase().replace(/\s+/g, '-') || 'demo')} target="_blank" className="text-xs font-bold text-[#0070F3] hover:underline flex items-center gap-1 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-              View Storefront ↗
-            </a>
-          </div>
+          <p className="text-gray-500 font-medium mt-1">Manage your inventory and dispatch operations.</p>
         </div>
+        <a href={"/" + (roleTitle === "Vendor Hub" ? "vendor/" : "weaver/") + (storeName?.toLowerCase().replace(/\s+/g, '-') || 'demo')} target="_blank" className="px-6 py-3 bg-[#0070F3] text-white font-bold rounded-xl shadow-lg hover:bg-[#005BB5] hover:shadow-xl transition-all flex items-center gap-2 whitespace-nowrap">
+          <span>🏪</span> View Public Storefront ↗
+        </a>
       </header>
 
       {activeTab === "home" && (
