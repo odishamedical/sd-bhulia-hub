@@ -279,7 +279,7 @@ export default function CheckoutPage() {
                   Processing Payment...
                 </>
               ) : (
-                "Pay Securely (Razorpay)"
+                "Simulate Payment (Sandbox)"
               )}
             </button>
             <p className="text-center text-[9px] text-gray-500 mt-4 uppercase tracking-widest">

@@ -3,10 +3,13 @@
 import PremiumMetricCard from "@/components/PremiumMetricCard";
 import React, { useState, useEffect } from "react";
 import { useOrders } from "@/lib/db-hooks";
+import { db } from "@/lib/firebase";
+import { doc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
 
 export default function TrackingPage() {
   const { orders, loading } = useOrders();
   const [trackingData, setTrackingData] = useState<any[]>([]);
+  const [isSimulating, setIsSimulating] = useState<string | null>(null);
 
   useEffect(() => {
     if (orders.length > 0) {
@@ -17,7 +20,7 @@ export default function TrackingPage() {
         awbNumber: order.awbNumber || `Pending`,
         carrier: order.carrier || "Pending",
         trackingUrl: order.trackingUrl || "#",
-        trackingStatus: (order as any).status === "delivered" ? "Delivered" : statuses[idx % 3], // In a real app, this status would come from Shiprocket Webhook
+        trackingStatus: (order as any).status === "delivered" ? "Delivered" : statuses[idx % 3],
         lastUpdate: "Today, " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
       }));
       setTrackingData(activeTracking);
@@ -26,6 +29,36 @@ export default function TrackingPage() {
 
   const handleSyncShiprocket = () => {
     alert("Simulating API Sync with Shiprocket servers to refresh AWB statuses...");
+  };
+
+  const handleSimulateDelivery = async (orderId: string) => {
+    setIsSimulating(orderId);
+    try {
+      // 1. Update order status to delivered
+      const orderRef = doc(db, "orders", orderId);
+      await updateDoc(orderRef, { status: "delivered" });
+
+      // 2. Auto-Fund Reseller Wallet! (Phase 3 Ledger update)
+      const q = query(collection(db, "transactions"), where("orderId", "==", orderId), where("status", "==", "pending_escrow"));
+      const snap = await getDocs(q);
+      
+      if (!snap.empty) {
+        for (const transactionDoc of snap.docs) {
+          await updateDoc(doc(db, "transactions", transactionDoc.id), {
+            status: "completed",
+            completedAt: new Date().toISOString()
+          });
+        }
+        alert(`Simulated Delivery Success! \nOrder ${orderId} marked as Delivered. \nEscrow cleared: Reseller Wallet has been auto-funded!`);
+      } else {
+        alert(`Simulated Delivery Success! Order ${orderId} marked as Delivered. (No pending commissions found).`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to simulate delivery");
+    } finally {
+      setIsSimulating(null);
+    }
   };
 
   return (
@@ -89,10 +122,19 @@ export default function TrackingPage() {
                     </td>
                     <td className="py-4 px-4 text-xs font-mono text-gray-500">{item.lastUpdate}</td>
                     <td className="py-4 px-4 text-right">
+                      {item.trackingStatus !== "Delivered" && (
+                        <button 
+                          onClick={() => handleSimulateDelivery(item.id)}
+                          disabled={isSimulating === item.id}
+                          className="mr-2 px-3 py-1.5 bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 rounded-lg text-xs font-bold transition-all"
+                        >
+                          {isSimulating === item.id ? "Processing..." : "Simulate Delivery"}
+                        </button>
+                      )}
                       {item.trackingUrl !== "#" ? (
-                        <a href={item.trackingUrl} target="_blank" rel="noreferrer" className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-xs font-bold hover:bg-gray-200 transition-all inline-block">Track URL</a>
+                        <a href={item.trackingUrl} target="_blank" rel="noreferrer" className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-xs font-bold hover:bg-gray-200 transition-all inline-block">Track URL</a>
                       ) : (
-                        <button disabled className="px-4 py-2 bg-gray-100 text-gray-400 rounded-xl text-xs font-bold inline-block cursor-not-allowed">No URL</button>
+                        <button disabled className="px-3 py-1.5 bg-gray-100 text-gray-400 rounded-lg text-xs font-bold inline-block cursor-not-allowed">No URL</button>
                       )}
                     </td>
                   </tr>

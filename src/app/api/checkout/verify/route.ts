@@ -87,7 +87,19 @@ export async function POST(request: Request) {
       };
 
       // Create sub-order
-      await addDoc(collection(db, "orders"), subOrder);
+      const orderRef = await addDoc(collection(db, "orders"), subOrder);
+
+      // Log to Global Ledger if there's a reseller commission
+      if (referralId && totalCommission > 0) {
+        await addDoc(collection(db, "transactions"), {
+          type: "reseller_commission",
+          resellerId: referralId,
+          orderId: orderRef.id,
+          amount: totalCommission,
+          status: "pending_escrow",
+          createdAt: serverTimestamp(),
+        });
+      }
 
       // Deduct inventory securely on the backend
       for (const item of sellerItems) {

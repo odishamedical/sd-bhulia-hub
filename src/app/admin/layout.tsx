@@ -50,7 +50,7 @@ const SIDEBAR_CATEGORIES = [
     icon: "🛡️",
     badgeId: "kyc",
     subLinks: [
-      { name: "KYC Verification", path: "/admin/trust/kyc" },
+      { name: "Verification Queue", path: "/admin/trust/kyc" },
       { name: "Customer Tickets", path: "/admin/support/tickets" },
       { name: "Disputes", path: "/admin/support/disputes" },
       { name: "Fraud Analysis", path: "/admin/trust/fraud" }

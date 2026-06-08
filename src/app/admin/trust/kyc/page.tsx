@@ -110,7 +110,7 @@ export default function KycResolutionDesk() {
             if (item.documentType === "bank") {
                 await updateDoc(userRef, { bankVerified: true });
             } else {
-                await updateDoc(userRef, { identityVerified: true });
+                await updateDoc(userRef, { identityVerified: true, isVerified: true });
             }
         }
       }
