@@ -670,6 +670,25 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     if (!auth.currentUser) return;
     setIsUploading(true);
     try {
+      let isAutoApprovedUser = false;
+      let targetCollection = roleTitle === "Weaver Hub" ? "weavers" : "vendors";
+      
+      const sellerDoc = await getDoc(doc(db, targetCollection, auth.currentUser.uid));
+      if (sellerDoc.exists()) {
+        const sellerData = sellerDoc.data();
+        isAutoApprovedUser = sellerData.isAutoApproved || false;
+        
+        if (!editingProductId) {
+          const maxAllowed = sellerData.subscription?.uploadLimit || sellerData.productLimit || 10;
+          const currentCount = sellerProductsRaw.length;
+          if (currentCount >= maxAllowed) {
+            alert(`Credit not allowed. You have reached your product upload limit (${maxAllowed}). Please contact admin to increase your limit.`);
+            setIsUploading(false);
+            return;
+          }
+        }
+      }
+
       const parsedPrice = Number(productPrice.toString().replace(/[^0-9.]/g, '')) || 0;
       const parsedMrp = Number(productMrp.toString().replace(/[^0-9.]/g, '')) || 0;
 
@@ -718,10 +737,10 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
       if (editingProductId) {
         await updateDoc(doc(db, "products", editingProductId), {
           ...productData,
-          status: "pending", // Resubmit for QC on edit
+          status: isAutoApprovedUser ? "approved" : "pending_approval", // Resubmit for QC on edit
           updatedAt: serverTimestamp(),
         });
-        alert("Inventory updated successfully and submitted for QC!");
+        alert(isAutoApprovedUser ? "Inventory updated and went live instantly (VIP)!" : "Inventory updated successfully and submitted for QC!");
       } else {
         await addDoc(collection(db, "products"), {
           ...productData,
@@ -730,10 +749,10 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           escrowStatus: "Payment Protected",
           sellerId: auth.currentUser?.uid,
           sellerType: roleTitle === "Vendor Hub" ? "vendor" : "weaver",
-          status: "pending",
+          status: isAutoApprovedUser ? "approved" : "pending_approval",
           createdAt: serverTimestamp(),
         });
-        alert("Inventory batch saved to Firestore and submitted for QC!");
+        alert(isAutoApprovedUser ? "Inventory batch saved and went live instantly (VIP)!" : "Inventory batch saved to Firestore and submitted for QC!");
       }
       
       setIsAddInventoryOpen(false);
@@ -811,8 +830,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                     onChange={(e) => setStatusFilter(e.target.value)}
                   >
                     <option value="all">All Statuses</option>
-                    <option value="approved">Approved</option>
-                    <option value="pending">Pending QC</option>
+                    <option value="approved">Live (Approved)</option>
+                    <option value="pending_approval">Pending QC</option>
                     <option value="rejected">Rejected</option>
                   </select>
                 </div>
@@ -870,8 +889,13 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                               (product as any).status === "rejected" ? "bg-red-50 text-red-700 border-red-200" :
                               "bg-yellow-50 text-yellow-700 border-yellow-200"
                             }`}>
-                              {((product as any).status || 'pending').charAt(0).toUpperCase() + ((product as any).status || 'pending').slice(1)}
+                              {((product as any).status || 'pending').replace('_approval', '').charAt(0).toUpperCase() + ((product as any).status || 'pending').replace('_approval', '').slice(1)}
                             </span>
+                            {(product as any).status === "rejected" && (product as any).rejectionReason && (
+                              <div className="mt-1 text-[10px] text-red-600 font-medium bg-red-50 p-1 rounded">
+                                Reason: {(product as any).rejectionReason}
+                              </div>
+                            )}
                           </td>
                           <td className="py-4 text-right whitespace-nowrap">
                             <a href={"/product/" + product.slug} target="_blank" className="inline-block bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors mr-2">

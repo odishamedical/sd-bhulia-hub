@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useVendors, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addVendor, addCustomer, addReseller, deleteUserRecord, suspendUserRecord, convertUserRole } from "@/lib/db-hooks";
+import { useWeavers, useVendors, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addVendor, addCustomer, addReseller, deleteUserRecord, suspendUserRecord, convertUserRole, updateDocumentStatus } from "@/lib/db-hooks";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers();
@@ -66,6 +66,8 @@ export default function UserManagementPage() {
       country: "India",
       referralId: `SDW-${w.id.substring(0,6).toUpperCase()}`,
       slug: w.slug,
+      isAutoApproved: w.isAutoApproved,
+      maxProductsAllowed: w.subscription?.uploadLimit,
     }));
 
     // Shops/Franchises
@@ -85,6 +87,8 @@ export default function UserManagementPage() {
       country: "India",
       referralId: `SDS-${s.id.substring(0,6).toUpperCase()}`,
       slug: s.slug,
+      isAutoApproved: s.isAutoApproved,
+      maxProductsAllowed: s.productLimit,
     }));
 
     // Extract Customers from Orders (Mocking legacy customers from purchases)
@@ -797,6 +801,58 @@ export default function UserManagementPage() {
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
+
+            {(selectedUserForDetails.role === 'weaver' || selectedUserForDetails.role === 'shop') && (
+              <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-2xl flex flex-col md:flex-row md:items-center gap-6">
+                <div>
+                  <h4 className="text-sm font-black text-orange-900 uppercase tracking-widest flex items-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                    Admin God Mode
+                  </h4>
+                  <p className="text-xs text-orange-800 mt-1">Override system limits for this user.</p>
+                </div>
+                <div className="flex-1 flex gap-4 items-center justify-end">
+                  <div className="flex items-center gap-3">
+                    <label className="text-xs font-bold text-orange-900 uppercase">Max Products Allowed:</label>
+                    <input 
+                      type="number" 
+                      defaultValue={selectedUserForDetails.maxProductsAllowed || 10}
+                      onBlur={async (e) => {
+                        const val = parseInt(e.target.value);
+                        if(confirm(`Update product upload limit to ${val}?`)) {
+                          const collectionName = selectedUserForDetails.role === 'weaver' ? 'weavers' : 'vendors';
+                          if (selectedUserForDetails.role === 'weaver') {
+                            await updateDocumentStatus(collectionName, selectedUserForDetails.id, { "subscription.uploadLimit": val });
+                          } else {
+                            await updateDocumentStatus(collectionName, selectedUserForDetails.id, { "productLimit": val, "subscription.uploadLimit": val });
+                          }
+                          alert("Limit updated successfully!");
+                        }
+                      }}
+                      className="w-20 bg-white border border-orange-300 rounded-lg p-2 text-sm font-bold text-center outline-none" 
+                    />
+                  </div>
+                  <label className="flex items-center gap-2 cursor-pointer bg-white px-3 py-2 border border-orange-300 rounded-lg hover:bg-orange-100 transition-colors">
+                    <input 
+                      type="checkbox" 
+                      defaultChecked={selectedUserForDetails.isAutoApproved}
+                      onChange={async (e) => {
+                        const checked = e.target.checked;
+                        if(confirm(`${checked ? 'Enable' : 'Disable'} VIP Auto-Approval for this seller?`)) {
+                          const collectionName = selectedUserForDetails.role === 'weaver' ? 'weavers' : 'vendors';
+                          await updateDocumentStatus(collectionName, selectedUserForDetails.id, { isAutoApproved: checked });
+                          alert(`Auto-approval ${checked ? 'enabled' : 'disabled'}!`);
+                        } else {
+                          e.target.checked = !checked;
+                        }
+                      }}
+                      className="w-4 h-4 text-orange-600 border-gray-300 rounded" 
+                    />
+                    <span className="text-xs font-bold text-orange-900 uppercase">VIP Auto-Approval</span>
+                  </label>
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-6 mb-6">
               <div className="space-y-4">

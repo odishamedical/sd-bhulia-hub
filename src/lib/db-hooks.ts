@@ -37,6 +37,7 @@ export interface Weaver {
     commissionRate: number;
     expiresAt?: string;
   };
+  isAutoApproved?: boolean;
   pendingChanges?: any;
 }
 
@@ -66,6 +67,7 @@ export interface Vendor {
     commissionRate: number;
     expiresAt?: string;
   };
+  isAutoApproved?: boolean;
   pendingChanges?: any;
 }
 

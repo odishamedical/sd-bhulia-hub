@@ -42,6 +42,7 @@ export interface Product {
   sellerType?: "weaver" | "vendor" | "store";
   vendorName?: string;
   status?: string;
+  rejectionReason?: string;
   images?: string[];
   imageCaptions?: string[];
 }

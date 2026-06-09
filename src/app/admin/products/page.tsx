@@ -4,14 +4,17 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useProducts, deleteProduct } from "@/lib/db-hooks";
+import { useProducts, deleteProduct, updateDocumentStatus } from "@/lib/db-hooks";
 
 export default function AdminProductsPage() {
   const { products, loading } = useProducts();
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("pending_approval");
   const [sellerFilter, setSellerFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
+
+  const [rejectingProduct, setRejectingProduct] = useState<any>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -48,6 +51,22 @@ export default function AdminProductsPage() {
     if (confirm(`Are you sure you want to delete "${title}"?`)) {
       await deleteProduct(id);
     }
+  };
+
+  const handleApprove = async (id: string) => {
+    if (confirm(`Approve this product and push it live?`)) {
+      await updateDocumentStatus("products", id, { status: "approved", rejectionReason: "" });
+    }
+  };
+
+  const handleRejectSubmit = async () => {
+    if (!rejectingProduct) return;
+    await updateDocumentStatus("products", rejectingProduct.id, { 
+      status: "rejected", 
+      rejectionReason: rejectionReason 
+    });
+    setRejectingProduct(null);
+    setRejectionReason("");
   };
 
   return (
@@ -87,8 +106,8 @@ export default function AdminProductsPage() {
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
                 <option value="all">All Status</option>
-                <option value="approved">Approved</option>
-                <option value="pending">Pending QC</option>
+                <option value="approved">Live (Approved)</option>
+                <option value="pending_approval">Pending QC (Moderation Queue)</option>
                 <option value="rejected">Rejected</option>
                 <option value="in_stock">In Stock</option>
                 <option value="out_of_stock">Out of Stock</option>
@@ -148,14 +167,31 @@ export default function AdminProductsPage() {
                         <div className="text-[10px] text-gray-500 uppercase tracking-widest">{product.sellerType || "system"}</div>
                       </a>
                     </td>
-                    <td className="px-6 py-4 text-right space-x-4">
+                    <td className="px-6 py-4 text-right space-x-3">
+                      {product.status === "pending_approval" && (
+                        <>
+                          <button 
+                            onClick={() => handleApprove(product.id)}
+                            className="text-green-600 hover:text-green-500 font-bold text-xs uppercase tracking-wider bg-green-50 px-3 py-1 rounded"
+                          >
+                            Approve
+                          </button>
+                          <button 
+                            onClick={() => setRejectingProduct(product)}
+                            className="text-orange-600 hover:text-orange-500 font-bold text-xs uppercase tracking-wider bg-orange-50 px-3 py-1 rounded"
+                          >
+                            Reject
+                          </button>
+                        </>
+                      )}
+                      
                       <a 
                         href={`/product/${product.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-gray-900 hover:underline font-bold text-xs uppercase tracking-wider"
                       >
-                        View Product
+                        View
                       </a>
                       <Link 
                         href={`/admin/products/edit/${product.id}`}
@@ -182,6 +218,39 @@ export default function AdminProductsPage() {
           </div>
         </div>
         </>
+      )}
+
+      {/* REJECTION MODAL */}
+      {rejectingProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-lg shadow-2xl border border-gray-100">
+            <h3 className="text-2xl font-black text-gray-900 mb-2">Reject Product</h3>
+            <p className="text-sm font-medium text-gray-500 mb-6">
+              You are rejecting <b>{rejectingProduct.title}</b>. Would you like to provide a reason to the seller so they can fix it? (Optional)
+            </p>
+            <textarea 
+              rows={3}
+              value={rejectionReason}
+              onChange={e => setRejectionReason(e.target.value)}
+              placeholder="e.g., Image is too blurry, please upload a clear picture."
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm font-medium focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none resize-none mb-6"
+            ></textarea>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => { setRejectingProduct(null); setRejectionReason(""); }} 
+                className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleRejectSubmit} 
+                className="px-5 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-bold hover:bg-orange-700 transition-all shadow-sm"
+              >
+                Submit Rejection
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
