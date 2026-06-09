@@ -18,6 +18,7 @@ interface DashboardLayoutProps {
   navItems: NavItem[];
   activeTab: string;
   onTabChange: (id: string) => void;
+  storeSlug?: string;
   children: React.ReactNode;
 }
 
@@ -27,6 +28,7 @@ export default function DashboardLayout({
   navItems,
   activeTab,
   onTabChange,
+  storeSlug = "demo",
   children
 }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -34,25 +36,54 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-gray-900 font-sans flex flex-col items-center">
       {/* STICKY TOP BRANDING HEADER */}
-      <header className="sticky top-0 w-full bg-white border-b border-gray-200 shadow-sm z-50 px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-        <div className="flex items-center gap-3">
+      <header className="sticky top-0 w-full bg-[#0074E4] border-b border-[#0052A3] shadow-md z-50 px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center text-white">
+        
+        {/* Left Side: Logo & Brand */}
+        <div className="flex items-center gap-3 flex-shrink-0">
           <button 
-            className="lg:hidden text-gray-500 mr-2"
+            className="lg:hidden text-white/80 hover:text-white mr-2"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
           <Link href="/">
-            <div className="relative w-10 h-10 rounded-full overflow-hidden shadow-sm cursor-pointer border border-gray-100">
+            <div className="relative w-10 h-10 rounded-full overflow-hidden shadow-sm cursor-pointer border border-white/20">
               <Image src="/bhulia_logo_final.jpg" alt="Bhulia Logo" fill className="object-cover" />
             </div>
           </Link>
           <div>
-            <span className="font-black text-xl tracking-tight text-gray-900 leading-none">BHULIA <span className="font-normal text-gray-600 capitalize hidden sm:inline">{userRole === "customer" ? "" : userRole + " "}Hub</span></span>
+            <span className="font-black text-xl tracking-tight text-white leading-none">BHULIA <span className="font-normal text-blue-100 capitalize hidden sm:inline">{userRole === "customer" ? "" : userRole.replace("_staff", "") + " "}Hub</span></span>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <Link href="/" className="text-sm font-semibold text-gray-600 hover:text-[#E57138] hidden md:block transition-colors">Marketplace</Link>
+
+        {/* Center: Buttons */}
+        <div className="hidden md:flex flex-1 items-center justify-center gap-3">
+          {(userRole === "vendor" || userRole === "weaver" || userRole === "store_staff" || userRole === "weaver_staff") ? (
+            <>
+              <a href={`/${userRole.includes("weaver") ? "weaver" : "vendor"}/${storeSlug}`} target="_blank" className="px-5 py-2 text-sm font-bold flex items-center gap-2 rounded-full bg-white/20 text-white border border-white/20 shadow-sm hover:bg-white/30 transition-all">
+                <span>🏪</span> View My Storefront
+              </a>
+              <a href="/" target="_blank" className="px-5 py-2 text-sm font-bold flex items-center gap-2 rounded-full bg-[#0052A3] text-blue-50 border border-[#003d7a] shadow-sm hover:bg-[#003d7a] transition-all">
+                <span>🌐</span> View Main Marketplace
+              </a>
+            </>
+          ) : userRole === "reseller" ? (
+            <a href={`/reseller/${storeSlug}`} target="_blank" className="px-5 py-2 text-sm font-bold flex items-center gap-2 rounded-full bg-white/20 text-white border border-white/20 shadow-sm hover:bg-white/30 transition-all">
+              <span>🔗</span> View Public Page
+            </a>
+          ) : (
+            <a href="/" target="_blank" className="px-5 py-2 text-sm font-bold flex items-center gap-2 rounded-full bg-white/20 text-white border border-white/20 shadow-sm hover:bg-white/30 transition-all">
+              <span>🌐</span> Marketplace
+            </a>
+          )}
+        </div>
+
+        {/* Right Side */}
+        <div className="flex items-center gap-4 flex-shrink-0">
+          <Link href="/" className="text-sm font-bold text-blue-100 hover:text-white md:hidden transition-colors">Marketplace</Link>
+          <div className="w-9 h-9 rounded-full bg-white/20 border border-white/20 flex items-center justify-center text-white font-bold uppercase hidden sm:flex shadow-sm">
+             {userName?.charAt(0) || "U"}
+          </div>
         </div>
       </header>
 

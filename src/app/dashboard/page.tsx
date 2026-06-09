@@ -45,6 +45,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("home");
   const [isViewAsMode, setIsViewAsMode] = useState(false);
   const [isSellerMode, setIsSellerMode] = useState(false);
+  const [storeSlug, setStoreSlug] = useState<string>("demo");
   const router = useRouter();
 
   useEffect(() => {
@@ -74,10 +75,17 @@ export default function DashboardPage() {
               setUserName(userDoc.data().name || user.email?.split("@")[0] || "User");
               setIsViewAsMode(false);
             }
+            
+            // Calculate slug for public pages
+            const data = userDoc.data();
+            const slug = (data.storeName || data.name || "demo").toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            setStoreSlug(slug);
+
           } else {
             // New logic: Default to customer, no blocking onboarding
             setRole("customer");
             setUserName(user.email?.split("@")[0] || "User");
+            setStoreSlug("demo");
           }
         } catch (error) {
           console.error("Error fetching user role", error);
@@ -189,6 +197,7 @@ export default function DashboardPage() {
       navItems={navItems}
       activeTab={activeTab}
       onTabChange={setActiveTab}
+      storeSlug={storeSlug}
     >
       {isViewAsMode && (
         <div className="bg-blue-600 text-white p-3 rounded-xl mb-6 flex justify-between items-center shadow-lg animate-in fade-in slide-in-from-top-4">
@@ -770,14 +779,6 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">{roleTitle}</h1>
           <p className="text-gray-500 font-medium mt-1">Manage your inventory and dispatch operations.</p>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-          <a href={"/" + (roleTitle === "Vendor Hub" ? "vendor/" : "weaver/") + (storeName?.toLowerCase().replace(/\s+/g, '-') || 'demo')} target="_blank" className="px-5 py-2.5 bg-[#0070F3] text-white font-bold rounded-xl shadow-md hover:bg-[#005BB5] transition-all flex items-center justify-center gap-2 whitespace-nowrap">
-            <span>🏪</span> View My Storefront
-          </a>
-          <a href={"/"} target="_blank" className="px-5 py-2.5 bg-white text-gray-700 border border-gray-200 font-bold rounded-xl shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center gap-2 whitespace-nowrap">
-            <span>🌐</span> View Main Marketplace
-          </a>
         </div>
       </header>
 
