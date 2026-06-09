@@ -1,16 +1,68 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { CMSRow } from "@/types/cms";
 import ShareWidget from "@/components/ShareWidget";
 import DirectoryGridRow from "@/components/cms/DirectoryGridRow";
 import DistrictLinksRow from "@/components/cms/DistrictLinksRow";
 
-// Placeholder components for the blocks - we will build these out fully later
-const HeroBlock = () => (
-  <div className="bg-[#051815] border border-[#C5A059] rounded-3xl p-8 flex items-center justify-center h-[300px]">
-    <h2 className="text-[#C5A059] text-2xl font-bold">Dynamic Hero Block</h2>
-  </div>
-);
+// Fully implemented HeroBlock
+const HeroBlock = ({ row }: { row: CMSRow }) => {
+  const hasImages = row.heroImages && row.heroImages.length > 0;
+  
+  return (
+    <div className={`relative w-full overflow-hidden rounded-3xl ${row.aspectRatio === 'widescreen' ? 'aspect-[21/9]' : 'min-h-[400px] md:min-h-[500px]'} flex items-center justify-center group`}>
+      {/* Background Image/Color */}
+      <div className="absolute inset-0 z-0">
+        {hasImages ? (
+          <Image 
+            src={row.heroImages![0]} 
+            alt={row.heroHeadline || "Hero Image"} 
+            fill 
+            className="object-cover group-hover:scale-105 transition-transform duration-1000" 
+            priority
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-[#051815] via-[#0B2B26] to-[#051815]"></div>
+        )}
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/60 bg-gradient-to-t from-[#051815]/90 via-black/40 to-transparent"></div>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto space-y-6">
+        {!row.hideTitle && row.title && (
+          <div className="inline-block px-4 py-1.5 rounded-full border border-[#C5A059]/40 bg-[#C5A059]/10 backdrop-blur-sm mb-4">
+            <span className="text-[#C5A059] text-xs font-bold uppercase tracking-[0.2em]">{row.title}</span>
+          </div>
+        )}
+        
+        {row.heroHeadline && (
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-[#C5A059] to-[#D4AF37] drop-shadow-xl leading-tight">
+            {row.heroHeadline}
+          </h2>
+        )}
+        
+        {row.heroSubheadline && (
+          <p className="text-gray-300 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-md">
+            {row.heroSubheadline}
+          </p>
+        )}
+        
+        {row.heroButtonText && row.heroButtonLink && (
+          <div className="pt-6">
+            <Link 
+              href={row.heroButtonLink} 
+              className="inline-block bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-[#051815] px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-sm hover:scale-105 hover:shadow-[0_0_30px_rgba(197,160,89,0.4)] transition-all duration-300"
+            >
+              {row.heroButtonText}
+            </Link>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 // Countdown Timer Component
 const CountdownTimer = ({ endTime }: { endTime: string }) => {
@@ -131,7 +183,7 @@ export default function DynamicRenderer({ rows }: { rows: CMSRow[] }) {
       {rows.map((row) => {
         switch (row.type) {
           case "hero":
-            return <HeroBlock key={row.id} />;
+            return <HeroBlock key={row.id} row={row} />;
           case "products":
             return <ProductsBlock key={row.id} title={!row.hideTitle ? row.title : undefined} category={row.category} flashSaleEndTime={row.flashSaleEndTime} themeStyle={row.themeStyle} />;
           case "banner":
