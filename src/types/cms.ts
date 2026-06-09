@@ -11,7 +11,7 @@ export interface GlobalTheme {
 
 export interface CMSColumn {
   id: string;
-  type: "ad" | "products";
+  type: "ad" | "products" | "share_widget";
   
   // Ad Specific
   bannerImage?: string;
@@ -28,6 +28,10 @@ export interface CMSColumn {
   maxPrice?: number;
   featuredOnly?: boolean;
   discountOnly?: boolean;
+
+  // Share Widget Specific
+  shareLayout?: "horizontal" | "vertical";
+  shareText?: string;
 }
 
 export interface CMSRow {

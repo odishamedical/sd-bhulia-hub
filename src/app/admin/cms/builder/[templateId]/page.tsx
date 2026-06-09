@@ -482,13 +482,14 @@ export default function CMSBuilderPage() {
                               value={col.type} 
                               onChange={e => {
                                 const newCols = [...row.splitColumns!];
-                                newCols[colIdx].type = e.target.value as "ad" | "products";
+                                newCols[colIdx].type = e.target.value as "ad" | "products" | "share_widget";
                                 updateRow(row.id, "splitColumns", newCols);
                               }} 
                               className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-3 py-1.5 text-[#C5A059] font-bold text-xs outline-none"
                             >
                               <option value="ad">Ad Banner</option>
                               <option value="products">Product List</option>
+                              <option value="share_widget">Share Widget</option>
                             </select>
                           </div>
 
@@ -665,7 +666,39 @@ export default function CMSBuilderPage() {
                                 </label>
                               </div>
                             </div>
-                          )}
+                          ) : col.type === "share_widget" ? (
+                            <div className="space-y-4">
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Layout Style</label>
+                                <select 
+                                  value={col.shareLayout || "vertical"} 
+                                  onChange={e => {
+                                    const newCols = [...row.splitColumns!];
+                                    newCols[colIdx].shareLayout = e.target.value as "horizontal" | "vertical";
+                                    updateRow(row.id, "splitColumns", newCols);
+                                  }} 
+                                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-3 py-1.5 text-white text-xs outline-none"
+                                >
+                                  <option value="vertical">Vertical (Stacked Column)</option>
+                                  <option value="horizontal">Horizontal (Inline Row)</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Custom Text</label>
+                                <textarea 
+                                  value={col.shareText || ""} 
+                                  onChange={e => {
+                                    const newCols = [...row.splitColumns!];
+                                    newCols[colIdx].shareText = e.target.value;
+                                    updateRow(row.id, "splitColumns", newCols);
+                                  }} 
+                                  rows={3}
+                                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-3 py-1.5 text-white text-xs outline-none resize-none" 
+                                  placeholder="Leave blank for default" 
+                                />
+                              </div>
+                            </div>
+                          ) : null}
                         </div>
                       ))}
                     </div>
