@@ -284,20 +284,47 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content Area */}
       <main className="flex-1 overflow-x-hidden flex flex-col h-screen overflow-y-auto">
         {/* Desktop Header */}
-        <header className="hidden md:flex sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 px-8 py-4 justify-between items-center shadow-[0_4px_30px_rgb(0,0,0,0.02)]">
-          <div className="flex items-center gap-6">
-            <h2 className="text-sm font-bold text-gray-800 tracking-tight">Trust Blue Enterprise Engine</h2>
-            <div className="h-4 w-[1px] bg-gray-200"></div>
-            <Link href="/" className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1.5">
-              View Public Storefront <span className="text-lg leading-none mb-0.5">↗</span>
-            </Link>
+        <header className="hidden md:flex sticky top-0 z-40 bg-[#0074E4] border-b border-[#0052A3] shadow-md px-8 py-3 justify-between items-center text-white">
+          <div className="flex items-center gap-6 shrink-0">
+            <h2 className="text-sm font-bold text-white tracking-tight">Enterprise Engine</h2>
+            <div className="h-4 w-[1px] bg-white/20"></div>
           </div>
-          <div className="flex items-center gap-4">
+
+          {/* Center: Buttons */}
+          <div className="flex-1 flex justify-center items-center gap-2 px-4 overflow-x-auto custom-scrollbar">
+            <a href="/" target="_blank" className="px-4 py-1.5 text-xs font-bold flex items-center gap-2 rounded-full bg-white/20 text-white border border-white/20 shadow-sm hover:bg-white/30 transition-all shrink-0">
+              <span>🌐</span> Storefront
+            </a>
+            
+            <div className="h-6 w-[1px] bg-white/20 mx-2 self-center shrink-0"></div>
+            <span className="text-[10px] text-blue-200 font-bold uppercase tracking-wider mr-1 shrink-0">Demo Hubs:</span>
+            
+            {["customer", "reseller", "vendor", "weaver"].map(role => (
+              <button 
+                key={role}
+                onClick={() => {
+                  localStorage.setItem("sd_view_as_uid", "demo-" + role);
+                  localStorage.setItem("sd_view_as_role", role);
+                  localStorage.setItem("sd_view_as_name", "Demo " + role.charAt(0).toUpperCase() + role.slice(1));
+                  // Set seller mode true for vendors and weavers so they see the actual seller dashboard
+                  if (role === "vendor" || role === "weaver") {
+                    localStorage.setItem("sd_seller_mode", "true");
+                  }
+                  window.open("/dashboard", "_blank");
+                }}
+                className="px-4 py-1.5 text-xs font-bold rounded-full bg-[#0052A3] text-blue-50 border border-[#003d7a] shadow-sm hover:bg-[#003d7a] hover:text-white transition-all shrink-0 capitalize"
+              >
+                {role}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-4 shrink-0">
             <div className="flex flex-col items-end">
-              <span className="text-xs font-bold text-gray-900">Admin Session</span>
-              <span className="text-[10px] text-gray-500 font-medium">Secured by SD Auth</span>
+              <span className="text-xs font-bold text-white">Admin Session</span>
+              <span className="text-[10px] text-blue-200 font-medium">Secured by SD Auth</span>
             </div>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 border-2 border-white shadow-md flex items-center justify-center text-white font-bold text-xs">
+            <div className="w-9 h-9 rounded-full bg-white/20 border-2 border-white/30 shadow-md flex items-center justify-center text-white font-bold text-xs">
               AD
             </div>
           </div>
