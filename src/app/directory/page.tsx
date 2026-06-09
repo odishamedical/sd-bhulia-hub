@@ -116,20 +116,20 @@ export default function GlobalDirectoryPage() {
   return (
     <div className="min-h-screen bg-[#051815] font-sans pt-12 pb-20 relative overflow-hidden">
       
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="w-full px-4 md:px-8 lg:px-12 relative z-10">
         
         {/* Sleek Header - Left Aligned */}
         <div className="mb-8 text-left w-full">
-          <h1 className="text-2xl md:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-4 leading-tight">
-            The original Sambalpuri : Saree, Dress, Bedsheet,<br className="hidden md:block"/>Cloth Weavers, store and Rawmaterial supplier.
+          <h1 className="text-xl md:text-3xl lg:text-4xl xl:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-3 leading-tight truncate-multiline">
+            The original Sambalpuri : Saree, Dress, Bedsheet, Cloth Weavers, store and Rawmaterial supplier.
           </h1>
-          <p className="text-gray-300 max-w-3xl text-sm md:text-base leading-relaxed">
+          <p className="text-gray-300 w-full text-sm md:text-base leading-relaxed">
             Discover authentic Master Weavers and Verified Retail Shops for original Sambalpuri Handloom Sarees straight from Odisha. Support the heritage directly.
           </p>
         </div>
 
-        {/* SEO District Links - Left Aligned */}
-        <div className="mb-10 flex flex-wrap gap-2 justify-start w-full">
+        {/* SEO District Links - Fluid Width */}
+        <div className="mb-10 flex flex-wrap gap-2 justify-between w-full">
           {ODISHA_DISTRICTS.map((district) => (
             <button 
               key={district} 
@@ -169,7 +169,7 @@ export default function GlobalDirectoryPage() {
               className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] transition-colors placeholder-gray-400"
             />
           </div>
-          <div className="w-full md:w-48">
+          <div className="w-full md:w-56">
             <select 
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
@@ -178,18 +178,10 @@ export default function GlobalDirectoryPage() {
               <option value="all">All Roles</option>
               <option value="weaver">Master Weavers</option>
               <option value="vendor">Retail Stores</option>
+              <option value="raw_material">Raw Material Supplier</option>
             </select>
           </div>
-          <div className="w-full md:w-48">
-            <select 
-              className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
-            >
-              <option value="all">All Materials</option>
-              <option value="silk">Pure Silk</option>
-              <option value="cotton">Pure Cotton</option>
-            </select>
-          </div>
-          <div className="w-full md:w-48">
+          <div className="w-full md:w-56">
             <select 
               className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
             >
