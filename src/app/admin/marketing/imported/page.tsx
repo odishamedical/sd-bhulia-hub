@@ -14,6 +14,7 @@ export default function ImportedListingsDBPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [savingEdit, setSavingEdit] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -147,6 +148,35 @@ export default function ImportedListingsDBPage() {
     setSavingEdit(false);
   };
 
+  const handleExportCSV = () => {
+    if (filteredListings.length === 0) return alert("No listings to export!");
+    setIsExporting(true);
+    
+    setTimeout(() => {
+      // We want to export phone numbers for WhatsApp marketing
+      const headers = ["Business Name", "Listing Type", "Phone/WhatsApp", "State", "District", "Address", "Google Rating"];
+      const rows = filteredListings.map(item => [
+        `"${(item.title || "").replace(/"/g, '""')}"`,
+        item.listingType || item.baseRole,
+        item.phone || item.whatsapp || "Not Provided",
+        item.state || "",
+        item.district || "",
+        `"${(item.address || "").replace(/"/g, '""')}"`,
+        item.googleRating || "N/A"
+      ]);
+      
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `bhulia_imported_leads_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setIsExporting(false);
+    }, 500);
+  };
+
   if (vLoading || wLoading) {
     return <div className="p-8 text-center text-gray-500 font-bold">Loading Imported Data...</div>;
   }
@@ -158,8 +188,17 @@ export default function ImportedListingsDBPage() {
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Imported Listings DB</h1>
           <p className="text-gray-700 mt-2 font-medium">Manage and review all data automatically collected from Google Maps.</p>
         </div>
-        <div className="text-sm font-black text-blue-600 bg-blue-50 px-4 py-2 rounded-lg border border-blue-100 flex items-center gap-2">
-          <span>{filteredListings.length} Records</span>
+        <div className="flex flex-wrap items-center gap-3">
+          <button 
+            onClick={handleExportCSV}
+            disabled={isExporting || filteredListings.length === 0}
+            className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all disabled:opacity-50 shadow-sm flex items-center gap-2"
+          >
+            {isExporting ? "Exporting..." : "📥 Export Contacts (CSV)"}
+          </button>
+          <div className="text-sm font-black text-blue-600 bg-blue-50 px-4 py-2.5 rounded-xl border border-blue-100 flex items-center gap-2">
+            <span>{filteredListings.length} Records</span>
+          </div>
         </div>
       </header>
       
