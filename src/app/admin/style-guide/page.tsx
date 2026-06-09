@@ -94,19 +94,19 @@ export default function StyleGuide() {
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="w-full sm:w-1/3">
-              <p className="text-sm font-medium text-slate-600">Standard Body Text</p>
+              <p className="text-sm font-bold text-slate-800">Standard Body Text</p>
             </div>
-            <div className="flex-1 bg-gray-50 p-3 rounded-lg border border-gray-200 font-mono text-xs text-slate-700">
-              className="text-sm text-slate-600 leading-relaxed"
+            <div className="flex-1 bg-gray-50 p-3 rounded-lg border border-gray-200 font-mono text-xs text-slate-800">
+              className="text-sm font-bold text-slate-800 leading-relaxed"
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="w-full sm:w-1/3">
-              <p className="text-xs text-slate-500">Small Helper / Description Text</p>
+              <p className="text-xs font-semibold text-slate-700">Small Helper / Description Text</p>
             </div>
             <div className="flex-1 bg-gray-50 p-3 rounded-lg border border-gray-200 font-mono text-xs text-slate-700">
-              className="text-xs text-slate-500"
+              className="text-xs font-semibold text-slate-700"
             </div>
           </div>
         </div>
@@ -124,37 +124,37 @@ export default function StyleGuide() {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-4">
-            <button className="w-full bg-[#0074E4] hover:bg-[#0052A3] text-white font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs shadow-md hover:shadow-[0_4px_15px_rgba(0,116,228,0.4)] backdrop-blur-sm transition-all flex justify-center items-center gap-2 cursor-pointer">
+            <button className="w-full bg-[#0074E4] hover:bg-[#0052A3] text-white font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs shadow-md shadow-[#0074E4]/20 hover:shadow-[0_8px_20px_rgba(0,116,228,0.4)] backdrop-blur-sm hover:-translate-y-1 transition-all duration-300 flex justify-center items-center gap-2 cursor-pointer">
               <span>Primary Action</span>
             </button>
             <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-              <p className="text-xs font-bold text-slate-700 mb-2">Usage: Main saving, submitting, creating actions.</p>
-              <code className="text-[10px] text-slate-600 block whitespace-pre-wrap break-all">
-                className="bg-[#0074E4] hover:bg-[#0052A3] text-white font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs shadow-md hover:shadow-[0_4px_15px_rgba(0,116,228,0.4)] backdrop-blur-sm transition-all cursor-pointer"
+              <p className="text-xs font-bold text-slate-800 mb-2">Usage: Main saving, submitting, creating actions.</p>
+              <code className="text-[10px] text-slate-700 block whitespace-pre-wrap break-all">
+                className="bg-[#0074E4] hover:bg-[#0052A3] text-white font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs shadow-md shadow-[#0074E4]/20 hover:shadow-[0_8px_20px_rgba(0,116,228,0.4)] hover:-translate-y-1 transition-all duration-300 cursor-pointer"
               </code>
             </div>
           </div>
 
           <div className="space-y-4">
-            <button className="w-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0074E4] font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs transition-colors cursor-pointer">
+            <button className="w-full bg-white border border-gray-300 text-slate-800 hover:bg-blue-50 hover:border-[#0074E4]/30 hover:text-[#0074E4] font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs shadow-sm hover:shadow-md hover:shadow-[#0074E4]/10 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
               Secondary Action
             </button>
             <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-              <p className="text-xs font-bold text-slate-700 mb-2">Usage: Cancellations, back buttons, safe alternatives.</p>
-              <code className="text-[10px] text-slate-600 block whitespace-pre-wrap break-all">
-                className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-[#0074E4] font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs transition-colors cursor-pointer"
+              <p className="text-xs font-bold text-slate-800 mb-2">Usage: Cancellations, back buttons, safe alternatives.</p>
+              <code className="text-[10px] text-slate-700 block whitespace-pre-wrap break-all">
+                className="bg-white border border-gray-300 text-slate-800 hover:bg-blue-50 hover:text-[#0074E4] font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer"
               </code>
             </div>
           </div>
 
           <div className="space-y-4">
-            <button className="w-full bg-red-50 border border-red-100 text-red-600 hover:bg-red-100 hover:text-red-700 font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs transition-colors cursor-pointer flex justify-center items-center gap-2">
+            <button className="w-full bg-red-50 border border-red-100 text-red-600 hover:bg-red-500 hover:text-white font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs shadow-sm hover:shadow-md hover:shadow-red-500/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex justify-center items-center gap-2">
               <span>🗑️ Destructive Action</span>
             </button>
             <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-              <p className="text-xs font-bold text-slate-700 mb-2">Usage: Deletions, warnings, hard resets.</p>
-              <code className="text-[10px] text-slate-600 block whitespace-pre-wrap break-all">
-                className="bg-red-50 border border-red-100 text-red-600 hover:bg-red-100 hover:text-red-700 font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs transition-colors cursor-pointer"
+              <p className="text-xs font-bold text-slate-800 mb-2">Usage: Deletions, warnings, hard resets.</p>
+              <code className="text-[10px] text-slate-700 block whitespace-pre-wrap break-all">
+                className="bg-red-50 border border-red-100 text-red-600 hover:bg-red-500 hover:text-white font-bold px-6 py-3 rounded-xl uppercase tracking-wider text-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer"
               </code>
             </div>
           </div>
@@ -226,32 +226,32 @@ export default function StyleGuide() {
         </div>
         
         <div className="flex flex-wrap gap-6">
-          <div className="flex flex-col items-center gap-3 bg-gray-50 p-6 rounded-xl border border-gray-200 min-w-[150px]">
-            <span className="px-3 py-1 bg-green-100 text-green-700 rounded text-[10px] uppercase font-bold tracking-widest border border-green-200">
+          <div className="flex flex-col items-center gap-3 bg-gray-50 hover:bg-white p-6 rounded-xl border border-gray-200 shadow-sm shadow-[#0074E4]/5 hover:shadow-lg hover:shadow-[#0074E4]/20 hover:-translate-y-1 transition-all duration-300 min-w-[150px] cursor-pointer">
+            <span className="px-3 py-1 bg-green-100 text-green-800 rounded text-[10px] uppercase font-bold tracking-widest border border-green-300 shadow-sm">
               ● Published
             </span>
-            <code className="text-[9px] text-slate-500 text-center">bg-green-100<br/>text-green-700</code>
+            <code className="text-[9px] text-slate-600 text-center font-bold mt-2">bg-green-100<br/>text-green-800</code>
           </div>
 
-          <div className="flex flex-col items-center gap-3 bg-gray-50 p-6 rounded-xl border border-gray-200 min-w-[150px]">
-            <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded text-[10px] uppercase font-bold tracking-widest border border-amber-200">
+          <div className="flex flex-col items-center gap-3 bg-gray-50 hover:bg-white p-6 rounded-xl border border-gray-200 shadow-sm shadow-[#0074E4]/5 hover:shadow-lg hover:shadow-[#0074E4]/20 hover:-translate-y-1 transition-all duration-300 min-w-[150px] cursor-pointer">
+            <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded text-[10px] uppercase font-bold tracking-widest border border-amber-300 shadow-sm">
               ● Pending Review
             </span>
-            <code className="text-[9px] text-slate-500 text-center">bg-amber-100<br/>text-amber-700</code>
+            <code className="text-[9px] text-slate-600 text-center font-bold mt-2">bg-amber-100<br/>text-amber-800</code>
           </div>
 
-          <div className="flex flex-col items-center gap-3 bg-gray-50 p-6 rounded-xl border border-gray-200 min-w-[150px]">
-            <span className="px-3 py-1 bg-red-100 text-red-700 rounded text-[10px] uppercase font-bold tracking-widest border border-red-200">
+          <div className="flex flex-col items-center gap-3 bg-gray-50 hover:bg-white p-6 rounded-xl border border-gray-200 shadow-sm shadow-[#0074E4]/5 hover:shadow-lg hover:shadow-[#0074E4]/20 hover:-translate-y-1 transition-all duration-300 min-w-[150px] cursor-pointer">
+            <span className="px-3 py-1 bg-red-100 text-red-800 rounded text-[10px] uppercase font-bold tracking-widest border border-red-300 shadow-sm">
               ● Rejected
             </span>
-            <code className="text-[9px] text-slate-500 text-center">bg-red-100<br/>text-red-700</code>
+            <code className="text-[9px] text-slate-600 text-center font-bold mt-2">bg-red-100<br/>text-red-800</code>
           </div>
 
-          <div className="flex flex-col items-center gap-3 bg-gray-50 p-6 rounded-xl border border-gray-200 min-w-[150px]">
-            <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded text-[10px] uppercase font-bold tracking-widest border border-gray-200">
+          <div className="flex flex-col items-center gap-3 bg-gray-50 hover:bg-white p-6 rounded-xl border border-gray-200 shadow-sm shadow-[#0074E4]/5 hover:shadow-lg hover:shadow-[#0074E4]/20 hover:-translate-y-1 transition-all duration-300 min-w-[150px] cursor-pointer">
+            <span className="px-3 py-1 bg-gray-200 text-gray-800 rounded text-[10px] uppercase font-bold tracking-widest border border-gray-300 shadow-sm">
               ● Draft
             </span>
-            <code className="text-[9px] text-slate-500 text-center">bg-gray-100<br/>text-gray-600</code>
+            <code className="text-[9px] text-slate-600 text-center font-bold mt-2">bg-gray-200<br/>text-gray-800</code>
           </div>
         </div>
       </section>
