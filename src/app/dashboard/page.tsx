@@ -114,7 +114,7 @@ export default function DashboardPage() {
   }
 
   let navItems: NavItem[] = [];
-  if (isCustomer) {
+  if (actualRole === "customer") {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊", category: "Shopping" },
       { id: "orders", label: "My Orders", icon: "📦", category: "Shopping" },
@@ -232,7 +232,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {isCustomer && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+      {actualRole === "customer" && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "vendor" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" />}
