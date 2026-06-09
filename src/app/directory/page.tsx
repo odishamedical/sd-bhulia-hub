@@ -4,6 +4,7 @@ import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useVendors, useWeavers } from "@/lib/db-hooks";
+import { ODISHA_DISTRICTS } from "@/lib/locations";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 
 export default function GlobalDirectoryPage() {
@@ -81,7 +82,6 @@ export default function GlobalDirectoryPage() {
             <div className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl p-6 sticky top-24 shadow-xl">
               <h3 className="text-xl font-serif font-bold text-white mb-6 border-b border-[#C5A059]/20 pb-2">Filter Directory</h3>
               
-              {/* Search */}
               <div className="mb-6">
                 <input 
                   type="text" 
@@ -90,6 +90,28 @@ export default function GlobalDirectoryPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]"
                 />
+              </div>
+
+              {/* District Quick Links (Pills) */}
+              <div className="mb-6">
+                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Quick Filter by District</label>
+                <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto custom-scrollbar">
+                  <button 
+                    onClick={() => setSelectedDistrict("all")}
+                    className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-all border ${selectedDistrict === "all" ? 'bg-[#C5A059] text-[#051815] border-[#C5A059]' : 'bg-[#051815] text-[#C5A059] border-[#C5A059]/30 hover:border-[#C5A059]/80'}`}
+                  >
+                    All Districts
+                  </button>
+                  {ODISHA_DISTRICTS.map(d => (
+                    <button 
+                      key={d}
+                      onClick={() => setSelectedDistrict(d)}
+                      className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-all border ${selectedDistrict === d ? 'bg-[#C5A059] text-[#051815] border-[#C5A059]' : 'bg-[#051815] text-[#C5A059] border-[#C5A059]/30 hover:border-[#C5A059]/80'}`}
+                    >
+                      {d}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Role */}
@@ -189,27 +211,39 @@ export default function GlobalDirectoryPage() {
                       
                       {item.status === "unclaimed" && (
                         <div className="absolute top-4 right-4 bg-red-600/90 text-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-md border border-red-400 shadow-lg animate-pulse">
-                          Verify Now
+                          Verify your page
                         </div>
                       )}
                     </div>
 
                     {/* Content */}
-                    <div className="p-5">
+                    <div className="p-5 flex flex-col h-[calc(100%-8rem)]">
                       <h3 className="text-xl font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors mb-1 truncate">
                         {item.title}
                       </h3>
-                      <p className="text-xs text-gray-400 uppercase tracking-widest mb-4 truncate">
+                      <p className="text-xs text-gray-400 uppercase tracking-widest mb-3 truncate">
                         📍 {(item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha"}
                       </p>
 
+                      {/* Google Rating Data */}
+                      {item.googleRating ? (
+                        <div className="flex items-center gap-1 mb-4">
+                          <span className="text-yellow-400 text-xs">★</span>
+                          <span className="font-bold text-gray-300 text-xs">{item.googleRating}</span>
+                          <span className="text-[10px] text-gray-500">({item.googleReviewsCount} Google Reviews)</span>
+                        </div>
+                      ) : (
+                        <div className="mb-4 text-[10px] text-gray-600 uppercase tracking-widest">No rating data</div>
+                      )}
+
                       <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#C5A059]/10">
-                        {item.status === "approved" ? (
-                          <div className="flex items-center gap-1 text-[#C5A059] text-xs font-bold">
-                            <span>★ Verified</span>
+                        {item.status === "approved" || item.isBhuliaVerified ? (
+                          <div className="flex items-center gap-1 bg-[#C5A059]/10 px-2 py-1 rounded border border-[#C5A059]/30 text-[#C5A059] text-[10px] font-bold uppercase tracking-wider">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Bhulia.com Verified</span>
                           </div>
                         ) : (
-                          <div className="text-xs text-gray-500 font-medium">
+                          <div className="text-[10px] text-gray-500 font-medium uppercase tracking-widest">
                             Imported from Google
                           </div>
                         )}

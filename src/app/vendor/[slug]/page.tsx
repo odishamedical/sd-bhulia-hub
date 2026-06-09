@@ -28,6 +28,10 @@ export default function VendorDetailPage() {
         address: vendor.address || "Address not provided.",
         phone: vendor.phone || "N/A",
         whatsapp: vendor.whatsapp || "N/A",
+        status: vendor.status,
+        googlePlaceId: vendor.googlePlaceId,
+        googleRating: vendor.googleRating,
+        googleReviewsCount: vendor.googleReviewsCount,
       });
 
       // Filter products belonging to this vendor

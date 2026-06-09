@@ -21,6 +21,8 @@ export interface PublicProfileProps {
     whatsapp: string;
     status?: string;
     googlePlaceId?: string;
+    googleRating?: number;
+    googleReviewsCount?: number;
   };
   products: Product[];
 }
@@ -61,7 +63,7 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
               <h3 className="text-red-400 font-bold text-sm mb-1">Not Verified by Bhulia.com</h3>
               <p className="text-red-200/70 text-xs mb-3">This store is not yet verified. Are you the owner?</p>
               <Link href="/auth/register" className="inline-block bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase px-4 py-2 rounded-lg transition-colors shadow-sm">
-                Verify Now / Apply
+                Verify your page
               </Link>
             </div>
           )}
@@ -70,14 +72,22 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
             {profile.name}
           </h1>
           
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex text-[#D4AF37] text-sm">
-              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+          {profile.googleRating ? (
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex text-[#D4AF37] text-sm">
+                <span>★</span>
+              </div>
+              <div className="text-xs font-bold text-gray-300">
+                <span className="text-white">{profile.googleRating}/5</span> ({profile.googleReviewsCount} Google Reviews)
+              </div>
             </div>
-            <div className="text-xs font-bold text-gray-300">
-              <span className="text-white">4.9/5</span> (120+ Verified Orders)
+          ) : (
+            <div className="flex items-center gap-3 mb-4">
+              <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                No Google Rating Data
+              </div>
             </div>
-          </div>
+          )}
           
           <div className="text-sm font-semibold text-white uppercase tracking-widest mb-4 opacity-90">
             📍 {profile.district}, {profile.state}

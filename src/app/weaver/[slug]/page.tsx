@@ -28,6 +28,10 @@ export default function WeaverStorePage() {
         address: weaver.address || "Address not provided.",
         phone: weaver.phone || "N/A",
         whatsapp: weaver.whatsapp || "N/A",
+        status: weaver.status,
+        googlePlaceId: weaver.googlePlaceId,
+        googleRating: weaver.googleRating,
+        googleReviewsCount: weaver.googleReviewsCount,
       });
 
       // Filter products belonging to this weaver
