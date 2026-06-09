@@ -118,18 +118,18 @@ export default function GlobalDirectoryPage() {
       
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Sleek Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl md:text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-4 leading-tight">
-            The original Sambalpuri : Saree, Dress, Bedsheet,<br/>Cloth Weavers, store and Rawmaterial supplier.
+        {/* Sleek Header - Left Aligned */}
+        <div className="mb-8 text-left w-full">
+          <h1 className="text-2xl md:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-4 leading-tight">
+            The original Sambalpuri : Saree, Dress, Bedsheet,<br className="hidden md:block"/>Cloth Weavers, store and Rawmaterial supplier.
           </h1>
-          <p className="text-gray-300 max-w-2xl mx-auto md:text-sm">
+          <p className="text-gray-300 max-w-3xl text-sm md:text-base leading-relaxed">
             Discover authentic Master Weavers and Verified Retail Shops for original Sambalpuri Handloom Sarees straight from Odisha. Support the heritage directly.
           </p>
         </div>
 
-        {/* SEO District Links */}
-        <div className="mb-10 flex flex-wrap gap-2 justify-center max-w-5xl mx-auto">
+        {/* SEO District Links - Left Aligned */}
+        <div className="mb-10 flex flex-wrap gap-2 justify-start w-full">
           {ODISHA_DISTRICTS.map((district) => (
             <button 
               key={district} 
@@ -158,30 +158,48 @@ export default function GlobalDirectoryPage() {
           <GlobalBannerSlot placement="directory_top" fallbackColor="from-[#0B2B26] to-[#051815]" />
         </div>
 
-        {/* Search and Filters Bar */}
-        <div className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl p-4 md:p-6 mb-8 shadow-xl flex flex-col md:flex-row gap-4 items-center">
-          <div className="w-full md:w-1/3">
+        {/* Search and Filters Bar - Glass Effect */}
+        <div className="bg-[#C5A059]/10 backdrop-blur-md border border-[#C5A059]/30 rounded-2xl p-4 md:p-6 mb-12 shadow-[0_8px_32px_rgba(0,0,0,0.3)] flex flex-wrap gap-4 items-center">
+          <div className="w-full md:flex-1">
             <input 
               type="text" 
               placeholder="Search name or location..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] transition-colors"
+              className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] transition-colors placeholder-gray-400"
             />
           </div>
-          <div className="w-full md:w-1/4">
+          <div className="w-full md:w-48">
             <select 
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
-              className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
+              className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
             >
               <option value="all">All Roles</option>
               <option value="weaver">Master Weavers</option>
               <option value="vendor">Retail Stores</option>
             </select>
           </div>
-          <div className="w-full md:w-auto flex-1 flex justify-end">
-            <div className="text-right">
+          <div className="w-full md:w-48">
+            <select 
+              className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
+            >
+              <option value="all">All Materials</option>
+              <option value="silk">Pure Silk</option>
+              <option value="cotton">Pure Cotton</option>
+            </select>
+          </div>
+          <div className="w-full md:w-48">
+            <select 
+              className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
+            >
+              <option value="all">All Regions</option>
+              <option value="odisha">Odisha</option>
+              <option value="india">All India</option>
+            </select>
+          </div>
+          <div className="w-full md:w-auto flex justify-center md:justify-end min-w-[100px]">
+            <div className="text-center md:text-right">
               <div className="text-[#C5A059] font-bold text-xl">{filteredDirectory.length}</div>
               <div className="text-gray-400 text-[10px] uppercase tracking-widest">Total Listings</div>
             </div>
@@ -212,29 +230,36 @@ export default function GlobalDirectoryPage() {
               </div>
             )}
 
-            {/* Unverified Listings (Collapsible) */}
+            {/* Unverified Listings Grouped by Role */}
             {unverifiedListings.length > 0 && (
-              <div className="pt-8 border-t border-[#C5A059]/10">
-                <div className="text-center mb-8">
-                  <button 
-                    onClick={() => setShowUnverified(!showUnverified)}
-                    className="bg-transparent border border-gray-500 text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-300 font-bold px-8 py-3 rounded-full text-xs uppercase tracking-widest shadow-lg hover:-translate-y-1"
-                  >
-                    {showUnverified ? "Hide Other Listings" : `Show More List (${unverifiedListings.length} Unverified)`}
-                  </button>
-                </div>
-
-                {showUnverified && (
-                  <div className="animate-fade-in">
-                    <div className="flex items-center gap-3 mb-6 opacity-60">
-                      <h2 className="text-xl font-serif font-bold text-gray-400">Other Listings</h2>
-                      <div className="h-px flex-1 bg-gradient-to-r from-gray-700 to-transparent"></div>
+              <div className="pt-12 space-y-12">
+                {/* Master Weavers Group */}
+                {unverifiedListings.filter(item => item.role === "weaver").length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-3 mb-6 opacity-80">
+                      <h2 className="text-xl font-serif font-bold text-[#C5A059]">Other Master Weavers</h2>
+                      <div className="h-px flex-1 bg-gradient-to-r from-[#C5A059]/50 to-transparent"></div>
                     </div>
-                    <div className="opacity-80 hover:opacity-100 transition-opacity duration-500">
-                      {renderGridWithAds(unverifiedListings)}
-                    </div>
+                    {renderGridWithAds(unverifiedListings.filter(item => item.role === "weaver"))}
                   </div>
                 )}
+
+                {/* Retail Shops Group */}
+                {unverifiedListings.filter(item => item.role === "vendor").length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-3 mb-6 opacity-80">
+                      <h2 className="text-xl font-serif font-bold text-[#C5A059]">Other Retail Shops</h2>
+                      <div className="h-px flex-1 bg-gradient-to-r from-[#C5A059]/50 to-transparent"></div>
+                    </div>
+                    {renderGridWithAds(unverifiedListings.filter(item => item.role === "vendor"))}
+                  </div>
+                )}
+                
+                <div className="text-center pt-8">
+                  <button className="bg-transparent border border-[#C5A059] text-[#C5A059] hover:bg-[#C5A059] hover:text-[#051815] transition-all duration-300 font-bold px-10 py-4 rounded-full text-sm uppercase tracking-widest shadow-lg hover:-translate-y-1">
+                    Load More Listings
+                  </button>
+                </div>
               </div>
             )}
           </div>
