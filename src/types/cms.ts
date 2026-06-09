@@ -32,7 +32,7 @@ export interface CMSColumn {
 
 export interface CMSRow {
   id: string;
-  type: "hero" | "multi_banner" | "split_banner_products" | "image_grid" | "products" | "adsense" | "banner" | "testimonials";
+  type: "hero" | "multi_banner" | "split_banner_products" | "image_grid" | "products" | "adsense" | "banner" | "testimonials" | "share_widget";
   
   // Local Theme Override
   themeOverride?: GlobalTheme;
@@ -87,6 +87,10 @@ export interface CMSRow {
 
   // Testimonials
   testimonials?: Array<{ id: string; text: string; authorName: string; rating: number; avatar?: string }>;
+
+  // Share Widget Fields
+  shareLayout?: "horizontal" | "vertical";
+  shareText?: string;
 }
 
 export interface PlatformPage {

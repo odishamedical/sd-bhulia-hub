@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { CMSRow } from "@/types/cms";
+import ShareWidget from "@/components/ShareWidget";
 
 // Placeholder components for the blocks - we will build these out fully later
 const HeroBlock = () => (
@@ -137,6 +138,16 @@ export default function DynamicRenderer({ rows }: { rows: CMSRow[] }) {
             return <AdSenseBlock key={row.id} htmlCode={row.htmlCode} />;
           case "testimonials":
             return <TestimonialsBlock key={row.id} title={!row.hideTitle ? row.title : undefined} testimonials={row.testimonials} />;
+          case "share_widget":
+            return (
+              <div key={row.id} className="max-w-4xl mx-auto w-full my-8 px-4">
+                <ShareWidget 
+                  layout={row.shareLayout as any} 
+                  shareTextOverride={row.shareText} 
+                  title={row.title}
+                />
+              </div>
+            );
           default:
             return (
               <div key={row.id} className="p-4 border border-red-500/50 bg-red-500/10 rounded-xl text-red-400 text-xs">

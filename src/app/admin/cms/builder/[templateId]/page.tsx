@@ -196,6 +196,7 @@ export default function CMSBuilderPage() {
             <button type="button" onClick={() => addRow("multi_banner")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Multi Banner</button>
             <button type="button" onClick={() => addRow("split_banner_products")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Split Section</button>
             <button type="button" onClick={() => addRow("testimonials")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Testimonials</button>
+            <button type="button" onClick={() => addRow("share_widget")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Share Widget</button>
           </div>
         </div>
 
@@ -733,6 +734,29 @@ export default function CMSBuilderPage() {
                   </div>
                 </div>
               )}
+              {/* Share Widget Specific */}
+              {row.type === "share_widget" && (
+                <div className="md:col-span-2 space-y-4 border-t border-[#C5A059]/20 pt-4 mt-2">
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Layout Style</label>
+                    <select value={row.shareLayout || "horizontal"} onChange={e => updateRow(row.id, "shareLayout", e.target.value)} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
+                      <option value="horizontal">Horizontal (Inline Row)</option>
+                      <option value="vertical">Vertical (Stacked Column)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Custom Call to Action Text (Optional)</label>
+                    <textarea 
+                      value={row.shareText || ""} 
+                      onChange={e => updateRow(row.id, "shareText", e.target.value)} 
+                      rows={2}
+                      className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none resize-none" 
+                      placeholder="Leave blank for default: 'Promote original Sambalpuri Saree...'" 
+                    />
+                  </div>
+                </div>
+              )}
+
             </div>
           </div>
         ))}

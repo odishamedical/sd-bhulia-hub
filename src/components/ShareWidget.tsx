@@ -8,9 +8,11 @@ interface ShareWidgetProps {
   title?: string;
   shareUrl?: string;
   className?: string;
+  shareTextOverride?: string;
+  layout?: "horizontal" | "vertical";
 }
 
-export default function ShareWidget({ title = "Bhulia Hub", shareUrl, className = "" }: ShareWidgetProps) {
+export default function ShareWidget({ title = "Bhulia Hub", shareUrl, className = "", shareTextOverride, layout = "horizontal" }: ShareWidgetProps) {
   const [copied, setCopied] = useState(false);
   const [finalUrl, setFinalUrl] = useState("");
   const { resellers } = useResellers();
@@ -61,7 +63,7 @@ export default function ShareWidget({ title = "Bhulia Hub", shareUrl, className 
     <div className={`bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl text-white ${className}`}>
       <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block mb-4">Share & Track</span>
       
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className={`grid ${layout === "vertical" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-3"} gap-3`}>
         <button 
           onClick={() => handleShare("whatsapp")} 
           className="flex items-center justify-center gap-2 py-3 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
@@ -86,7 +88,7 @@ export default function ShareWidget({ title = "Bhulia Hub", shareUrl, className 
 
       <p className="text-[10px] text-gray-400 leading-normal mt-4 text-center">
         {auth?.currentUser 
-          ? "Your secure tracking ID is automatically bound to these links. Share them to increase your visibility!"
+          ? (shareTextOverride || "Promote original Sambalpuri Saree. OUR SAMBALPURI - OUR PRIDE. Share the link to your network and promote our weavers!")
           : "Sign in to automatically attach your tracking ID to shared links!"}
       </p>
     </div>
