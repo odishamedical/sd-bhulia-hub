@@ -1,61 +1,31 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useVendors, useWeavers } from "@/lib/db-hooks";
 import { ODISHA_DISTRICTS } from "@/lib/locations";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
-import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
-import DynamicRenderer from "@/components/cms/DynamicRenderer";
-import { PlatformPage, ActiveRoutes } from "@/types/cms";
 
 export default function GlobalDirectoryPage() {
   const { vendors, loading: vendorsLoading } = useVendors();
   const { weavers, loading: weaversLoading } = useWeavers();
 
   const [selectedRole, setSelectedRole] = useState<string>("all");
-  const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedDistrict, setSelectedDistrict] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showUnverified, setShowUnverified] = useState(false);
 
   const combinedDirectory = useMemo(() => {
     const vList = vendors.map(v => ({ ...v, role: "vendor", displayType: "Retail Shop" }));
     const wList = weavers.map(w => ({ ...w, role: "weaver", displayType: "Master Weaver" }));
-    return [...vList, ...wList].filter(item => item.status === "approved" || item.status === "unclaimed");
+    const all = [...vList, ...wList].filter(item => item.status === "approved" || item.status === "unclaimed");
+    return all.sort(() => Math.random() - 0.5);
   }, [vendors, weavers]);
-
-  const [activePage, setActivePage] = useState<PlatformPage | null>(null);
-  const [cmsLoading, setCmsLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchActiveDirectory() {
-      try {
-        const routesSnap = await getDoc(doc(db, "platform_settings", "active_routes"));
-        if (routesSnap.exists()) {
-          const activeRoutes = routesSnap.data() as ActiveRoutes;
-          if (activeRoutes.activeDirectoryId) {
-            const pageSnap = await getDoc(doc(db, "platform_pages", activeRoutes.activeDirectoryId));
-            if (pageSnap.exists()) {
-              setActivePage(pageSnap.data() as PlatformPage);
-              setCmsLoading(false);
-              return;
-            }
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching active directory", err);
-      }
-      setCmsLoading(false);
-    }
-    fetchActiveDirectory();
-  }, []);
 
   const districts = useMemo(() => {
     const dSet = new Set<string>();
     combinedDirectory.forEach(item => {
-      // Very basic district extraction if it's stored in 'district' or parsed from 'address'
       const d = (item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha";
       if (d) dSet.add(d);
     });
@@ -64,15 +34,9 @@ export default function GlobalDirectoryPage() {
 
   const filteredDirectory = useMemo(() => {
     return combinedDirectory.filter(item => {
-      // Role Filter
       if (selectedRole !== "all" && item.role !== selectedRole) return false;
-      // Status Filter
-      if (selectedStatus === "verified" && item.status !== "approved") return false;
-      if (selectedStatus === "unclaimed" && item.status !== "unclaimed") return false;
-      // District Filter
       const d = (item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha";
       if (selectedDistrict !== "all" && d !== selectedDistrict) return false;
-      // Search Query
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         if (!item.title?.toLowerCase().includes(q) && !item.address?.toLowerCase().includes(q)) {
@@ -80,242 +44,201 @@ export default function GlobalDirectoryPage() {
         }
       }
       return true;
-    }).sort((a, b) => {
-      // verified (approved) first, then unclaimed
-      if (a.status === "approved" && b.status !== "approved") return -1;
-      if (a.status !== "approved" && b.status === "approved") return 1;
-      return 0;
     });
-  }, [combinedDirectory, selectedRole, selectedStatus, selectedDistrict, searchQuery]);
+  }, [combinedDirectory, selectedRole, selectedDistrict, searchQuery]);
+
+  const verifiedListings = filteredDirectory.filter(item => item.status === "approved");
+  const unverifiedListings = filteredDirectory.filter(item => item.status !== "approved");
 
   const loading = vendorsLoading || weaversLoading;
 
-  if (cmsLoading) {
-    return (
-      <div className="min-h-screen bg-[#051815] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#C5A059] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#C5A059] font-bold text-sm tracking-widest uppercase animate-pulse">Loading Directory...</p>
+  // Render a grid with ads injected every 3 rows (15 items in a 5-col grid)
+  const renderGridWithAds = (items: any[]) => {
+    const result = [];
+    let currentAdIndex = 1;
+    
+    for (let i = 0; i < items.length; i += 15) {
+      const chunk = items.slice(i, i + 15);
+      
+      result.push(
+        <div key={`chunk-${i}`} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          {chunk.map(item => (
+            <Link key={item.id} href={`/${item.role}/${item.id}`} className="group block bg-[#0B2B26] rounded-2xl overflow-hidden border border-[#C5A059]/20 hover:border-[#C5A059]/80 transition-all duration-300 hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:-translate-y-1 relative">
+              <div className="aspect-[4/3] w-full relative bg-[#051815]">
+                {item.logo || item.profileImage ? (
+                  <Image src={item.logo || item.profileImage} alt={item.title || "Listing"} fill className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center text-[#C5A059]/30 text-4xl">
+                    {item.role === 'weaver' ? '🧵' : '🏪'}
+                  </div>
+                )}
+                <div className="absolute top-2 left-2 z-10 flex gap-1">
+                  <span className={`px-2 py-0.5 rounded text-[9px] uppercase font-bold tracking-widest border shadow-sm backdrop-blur-sm ${
+                    item.role === 'weaver' ? 'bg-amber-900/60 text-amber-300 border-amber-500/50' : 'bg-blue-900/60 text-blue-300 border-blue-500/50'
+                  }`}>
+                    {item.displayType}
+                  </span>
+                </div>
+                {item.status === 'approved' && (
+                  <div className="absolute top-2 right-2 z-10">
+                    <span className="px-2 py-0.5 rounded text-[9px] uppercase font-bold tracking-widest bg-red-600/90 text-white border border-red-400 shadow-lg">
+                      Verified
+                    </span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#051815] via-transparent to-transparent opacity-90"></div>
+              </div>
+              <div className="p-4 relative">
+                <h3 className="font-bold text-white text-sm line-clamp-1 group-hover:text-[#C5A059] transition-colors">{item.title}</h3>
+                <p className="text-gray-400 text-[10px] mt-1 line-clamp-1">{item.address || "Odisha, India"}</p>
+                <div className="mt-3 flex items-center justify-between">
+                  <span className="text-[#C5A059] text-[10px] font-bold uppercase tracking-wider group-hover:underline">View Profile</span>
+                  <span className="text-gray-500 text-xs">→</span>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
-      </div>
-    );
-  }
+      );
 
-  // If a CMS template is mapped to the Directory route, render it instead!
-  if (activePage) {
-    return (
-      <div className="min-h-screen" style={{ 
-        backgroundColor: activePage.theme?.backgroundColor || "#051815",
-        color: activePage.theme?.textColor || "#E2E8F0"
-      }}>
-        <DynamicRenderer rows={activePage.rows} />
-      </div>
-    );
-  }
+      if (i + 15 < items.length || chunk.length === 15) {
+        result.push(
+          <div key={`ad-${currentAdIndex}`} className="w-full my-8">
+            <GlobalBannerSlot placement={`directory_grid_ad_${currentAdIndex}`} fallbackColor="from-[#0B2B26] to-[#051815]" />
+          </div>
+        );
+        currentAdIndex++;
+      }
+    }
+    return result;
+  };
 
   return (
-    <div className="min-h-screen bg-[#051815] font-sans pt-6 pb-20 relative overflow-hidden">
+    <div className="min-h-screen bg-[#051815] font-sans pt-12 pb-20 relative overflow-hidden">
       
-      <div className="w-full px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Header */}
-        <div className="mb-8 text-center md:text-left">
-          <h1 className="text-3xl md:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-4">
-            The Global Sambalpuri Handloom Directory
+        {/* Sleek Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl md:text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-4 leading-tight">
+            The original Sambalpuri : Saree, Dress, Bedsheet,<br/>Cloth Weavers, store and Rawmaterial supplier.
           </h1>
-          <p className="text-gray-300 max-w-3xl md:text-lg">
+          <p className="text-gray-300 max-w-2xl mx-auto md:text-sm">
             Discover authentic Master Weavers and Verified Retail Shops for original Sambalpuri Handloom Sarees straight from Odisha. Support the heritage directly.
           </p>
         </div>
 
-        {/* Global Banner / Ads */}
-        <div className="mb-8">
+        {/* SEO District Links */}
+        <div className="mb-10 flex flex-wrap gap-2 justify-center max-w-5xl mx-auto">
+          {ODISHA_DISTRICTS.map((district) => (
+            <button 
+              key={district} 
+              onClick={() => setSelectedDistrict(district)}
+              className={`border px-3 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-widest transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 ${
+                selectedDistrict === district 
+                  ? 'bg-[#C5A059] text-[#051815] border-[#C5A059]' 
+                  : 'bg-[#051815] border-[#C5A059]/20 text-gray-400 hover:text-[#C5A059] hover:border-[#C5A059]/60 hover:bg-[#0B2B26]'
+              }`}
+            >
+              {district}
+            </button>
+          ))}
+          {selectedDistrict !== "all" && (
+            <button 
+              onClick={() => setSelectedDistrict("all")}
+              className="bg-red-900/40 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-widest hover:bg-red-900/60 transition-all"
+            >
+              Clear Filter
+            </button>
+          )}
+        </div>
+
+        {/* Global Top Banner / Ads */}
+        <div className="mb-10">
           <GlobalBannerSlot placement="directory_top" fallbackColor="from-[#0B2B26] to-[#051815]" />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          
-          {/* Left Sidebar (Filters) */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl p-6 sticky top-24 shadow-xl">
-              <h3 className="text-xl font-serif font-bold text-white mb-6 border-b border-[#C5A059]/20 pb-2">Filter Directory</h3>
-              
-              <div className="mb-6">
-                <input 
-                  type="text" 
-                  placeholder="Search name or location..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]"
-                />
-              </div>
-
-              {/* District Quick Links (Pills) */}
-              <div className="mb-6">
-                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Quick Filter by District</label>
-                <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto custom-scrollbar">
-                  <button 
-                    onClick={() => setSelectedDistrict("all")}
-                    className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-all border ${selectedDistrict === "all" ? 'bg-[#C5A059] text-[#051815] border-[#C5A059]' : 'bg-[#051815] text-[#C5A059] border-[#C5A059]/30 hover:border-[#C5A059]/80'}`}
-                  >
-                    All Districts
-                  </button>
-                  {ODISHA_DISTRICTS.map(d => (
-                    <button 
-                      key={d}
-                      onClick={() => setSelectedDistrict(d)}
-                      className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-all border ${selectedDistrict === d ? 'bg-[#C5A059] text-[#051815] border-[#C5A059]' : 'bg-[#051815] text-[#C5A059] border-[#C5A059]/30 hover:border-[#C5A059]/80'}`}
-                    >
-                      {d}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Role */}
-              <div className="mb-6">
-                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Listing Type</label>
-                <div className="flex flex-col gap-2">
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <input type="radio" name="role" checked={selectedRole === "all"} onChange={() => setSelectedRole("all")} className="form-radio text-[#C5A059] focus:ring-[#C5A059] bg-[#051815] border-[#C5A059]/40" />
-                    <span className="text-sm text-gray-300 group-hover:text-white">All Listings</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <input type="radio" name="role" checked={selectedRole === "weaver"} onChange={() => setSelectedRole("weaver")} className="form-radio text-[#C5A059] focus:ring-[#C5A059] bg-[#051815] border-[#C5A059]/40" />
-                    <span className="text-sm text-gray-300 group-hover:text-white">Master Weavers</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <input type="radio" name="role" checked={selectedRole === "vendor"} onChange={() => setSelectedRole("vendor")} className="form-radio text-[#C5A059] focus:ring-[#C5A059] bg-[#051815] border-[#C5A059]/40" />
-                    <span className="text-sm text-gray-300 group-hover:text-white">Retail Shops</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Status */}
-              <div className="mb-6">
-                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Verification</label>
-                <select 
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none focus:border-[#C5A059]"
-                >
-                  <option value="all">All Listings</option>
-                  <option value="verified">Verified Only</option>
-                  <option value="unclaimed">Unverified (Verify Yours)</option>
-                </select>
-              </div>
-
-              {/* District */}
-              <div>
-                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Location</label>
-                <select 
-                  value={selectedDistrict}
-                  onChange={(e) => setSelectedDistrict(e.target.value)}
-                  className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none focus:border-[#C5A059]"
-                >
-                  <option value="all">All Districts</option>
-                  {districts.map(d => (
-                    <option key={d} value={d}>{d}</option>
-                  ))}
-                </select>
-              </div>
-
+        {/* Search and Filters Bar */}
+        <div className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl p-4 md:p-6 mb-8 shadow-xl flex flex-col md:flex-row gap-4 items-center">
+          <div className="w-full md:w-1/3">
+            <input 
+              type="text" 
+              placeholder="Search name or location..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] transition-colors"
+            />
+          </div>
+          <div className="w-full md:w-1/4">
+            <select 
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
+            >
+              <option value="all">All Roles</option>
+              <option value="weaver">Master Weavers</option>
+              <option value="vendor">Retail Stores</option>
+            </select>
+          </div>
+          <div className="w-full md:w-auto flex-1 flex justify-end">
+            <div className="text-right">
+              <div className="text-[#C5A059] font-bold text-xl">{filteredDirectory.length}</div>
+              <div className="text-gray-400 text-[10px] uppercase tracking-widest">Total Listings</div>
             </div>
           </div>
+        </div>
 
-          {/* Right Content (Grid) */}
-          <div className="lg:col-span-3">
-            <div className="mb-6 text-sm text-gray-400 font-semibold uppercase tracking-widest">
-              Showing {filteredDirectory.length} Listings
-            </div>
-
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="bg-[#0B2B26] border border-[#C5A059]/20 rounded-2xl h-64 animate-pulse"></div>
-                ))}
-              </div>
-            ) : filteredDirectory.length === 0 ? (
-              <div className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-3xl p-16 text-center">
-                <span className="text-5xl block mb-4">🔍</span>
-                <h3 className="text-xl font-bold text-white mb-2">No Profiles Found</h3>
-                <p className="text-gray-400 text-sm mb-6">We couldn't find any listings matching your filters.</p>
-                <button 
-                  onClick={() => { setSelectedRole("all"); setSelectedStatus("all"); setSelectedDistrict("all"); setSearchQuery(""); }}
-                  className="px-6 py-2 bg-[#0A3A35] text-[#C5A059] border border-[#C5A059]/40 rounded-xl font-bold text-xs uppercase tracking-wider"
-                >
-                  Clear Filters
-                </button>
+        {/* Grid Area */}
+        {loading ? (
+          <div className="py-20 text-center">
+            <div className="w-12 h-12 border-4 border-[#C5A059] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-[#C5A059] text-sm uppercase tracking-widest animate-pulse">Loading Directory...</p>
+          </div>
+        ) : (
+          <div className="space-y-12">
+            
+            {/* Verified Listings */}
+            {verifiedListings.length > 0 ? (
+              <div>
+                <div className="flex items-center gap-3 mb-6">
+                  <h2 className="text-2xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-[#C5A059]">Verified Partners</h2>
+                  <div className="h-px flex-1 bg-gradient-to-r from-[#C5A059]/30 to-transparent"></div>
+                </div>
+                {renderGridWithAds(verifiedListings)}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredDirectory.map((item, idx) => (
-                  <Link 
-                    key={`${item.role}-${item.id}-${idx}`} 
-                    href={`/${item.role}/${item.slug}`}
-                    className="group block bg-[#0B2B26] border border-[#C5A059]/20 hover:border-[#C5A059]/60 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_rgba(197,160,89,0.15)] hover:-translate-y-1 relative"
+              <div className="bg-[#0B2B26] p-8 rounded-2xl border border-[#C5A059]/20 text-center">
+                <p className="text-[#C5A059] font-medium">No verified listings match your search criteria.</p>
+              </div>
+            )}
+
+            {/* Unverified Listings (Collapsible) */}
+            {unverifiedListings.length > 0 && (
+              <div className="pt-8 border-t border-[#C5A059]/10">
+                <div className="text-center mb-8">
+                  <button 
+                    onClick={() => setShowUnverified(!showUnverified)}
+                    className="bg-transparent border border-gray-500 text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-300 font-bold px-8 py-3 rounded-full text-xs uppercase tracking-widest shadow-lg hover:-translate-y-1"
                   >
-                    {/* Image Header */}
-                    <div className="h-32 w-full relative bg-[#051815]">
-                      {item.img && <Image src={item.img} alt={item.title || "Profile"} fill className="object-cover opacity-60 group-hover:opacity-80 transition-opacity" />}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B26] to-transparent"></div>
-                      
-                      {/* Badges */}
-                      <div className="absolute top-4 left-4 flex flex-col gap-2">
-                        <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-widest rounded-md ${item.role === 'weaver' ? 'bg-[#C5A059]/20 text-[#C5A059] border border-[#C5A059]/50' : 'bg-blue-900/40 text-blue-300 border border-blue-500/50'}`}>
-                          {item.displayType}
-                        </span>
-                      </div>
-                      
-                      {item.status === "unclaimed" && (
-                        <div className="absolute top-4 right-4 bg-red-600/90 text-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-md border border-red-400 shadow-lg animate-pulse">
-                          Verify your page
-                        </div>
-                      )}
+                    {showUnverified ? "Hide Other Listings" : `Show More List (${unverifiedListings.length} Unverified)`}
+                  </button>
+                </div>
+
+                {showUnverified && (
+                  <div className="animate-fade-in">
+                    <div className="flex items-center gap-3 mb-6 opacity-60">
+                      <h2 className="text-xl font-serif font-bold text-gray-400">Other Listings</h2>
+                      <div className="h-px flex-1 bg-gradient-to-r from-gray-700 to-transparent"></div>
                     </div>
-
-                    {/* Content */}
-                    <div className="p-5 flex flex-col h-[calc(100%-8rem)]">
-                      <h3 className="text-xl font-serif font-bold text-white group-hover:text-[#C5A059] transition-colors mb-1 truncate">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs text-gray-400 uppercase tracking-widest mb-3 truncate">
-                        📍 {(item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha"}
-                      </p>
-
-                      {/* Google Rating Data */}
-                      {item.googleRating ? (
-                        <div className="flex items-center gap-1 mb-4">
-                          <span className="text-yellow-400 text-xs">★</span>
-                          <span className="font-bold text-gray-300 text-xs">{item.googleRating}</span>
-                          <span className="text-[10px] text-gray-500">({item.googleReviewsCount} Google Reviews)</span>
-                        </div>
-                      ) : (
-                        <div className="mb-4 text-[10px] text-gray-600 uppercase tracking-widest">No rating data</div>
-                      )}
-
-                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#C5A059]/10">
-                        {item.status === "approved" || item.isBhuliaVerified ? (
-                          <div className="flex items-center gap-1 bg-[#C5A059]/10 px-2 py-1 rounded border border-[#C5A059]/30 text-[#C5A059] text-[10px] font-bold uppercase tracking-wider">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Bhulia.com Verified</span>
-                          </div>
-                        ) : (
-                          <div className="text-[10px] text-gray-500 font-medium uppercase tracking-widest">
-                            Imported from Google
-                          </div>
-                        )}
-                        <span className="text-[#C5A059] opacity-0 group-hover:opacity-100 transition-opacity">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </span>
-                      </div>
+                    <div className="opacity-80 hover:opacity-100 transition-opacity duration-500">
+                      {renderGridWithAds(unverifiedListings)}
                     </div>
-                  </Link>
-                ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
