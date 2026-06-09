@@ -131,7 +131,7 @@ export default function ImportedListingsDBPage() {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Imported Listings DB</h1>
-          <p className="text-gray-500 mt-2 font-medium">Manage and review all data automatically collected from Google Maps.</p>
+          <p className="text-gray-700 mt-2 font-medium">Manage and review all data automatically collected from Google Maps.</p>
         </div>
         <div className="text-sm font-black text-blue-600 bg-blue-50 px-4 py-2 rounded-lg border border-blue-100 flex items-center gap-2">
           <span>{filteredListings.length} Records</span>
@@ -141,22 +141,22 @@ export default function ImportedListingsDBPage() {
       {/* Filters Bar */}
       <div className="bg-white p-4 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 flex flex-wrap gap-4 items-end">
         <div className="flex-1 min-w-[200px]">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Search</label>
+          <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1">Search</label>
           <input 
             type="text" 
             placeholder="Search name or location..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:border-blue-500 outline-none"
+            className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2 text-sm font-semibold text-gray-900 focus:border-blue-500 outline-none"
           />
         </div>
         
         <div className="w-48">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Listing Type</label>
+          <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1">Listing Type</label>
           <select 
             value={typeFilter} 
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:border-blue-500 outline-none"
+            className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2 text-sm font-semibold text-gray-900 focus:border-blue-500 outline-none"
           >
             <option value="all">All Types</option>
             <option value="vendor">Vendor / Retail Shop</option>
@@ -166,11 +166,11 @@ export default function ImportedListingsDBPage() {
         </div>
 
         <div className="w-40">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">State</label>
+          <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1">State</label>
           <select 
             value={stateFilter} 
             onChange={(e) => setStateFilter(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:border-blue-500 outline-none"
+            className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2 text-sm font-semibold text-gray-900 focus:border-blue-500 outline-none"
           >
             <option value="all">All States</option>
             {allStates.map(s => <option key={s as string} value={s as string}>{s}</option>)}
@@ -178,11 +178,11 @@ export default function ImportedListingsDBPage() {
         </div>
 
         <div className="w-40">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">District</label>
+          <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1">District</label>
           <select 
             value={districtFilter} 
             onChange={(e) => setDistrictFilter(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:border-blue-500 outline-none"
+            className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2 text-sm font-semibold text-gray-900 focus:border-blue-500 outline-none"
           >
             <option value="all">All Districts</option>
             {allDistricts.map(d => <option key={d as string} value={d as string}>{d}</option>)}
@@ -277,14 +277,14 @@ export default function ImportedListingsDBPage() {
                       </a>
                       <button 
                         onClick={() => handleEdit(item)}
-                        className="px-3 py-1.5 border border-gray-200 text-gray-700 rounded-lg text-xs font-bold hover:bg-gray-100 transition-all"
+                        className="px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-100 transition-all"
                       >
                         Edit
                       </button>
                       <button 
                         disabled={deleting === item.id}
                         onClick={() => handleHide(item.id, item.baseRole)} 
-                        className="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-lg text-xs font-bold hover:bg-gray-100 transition-all disabled:opacity-50"
+                        className="px-3 py-1.5 bg-orange-50 border border-orange-200 text-orange-700 rounded-lg text-xs font-bold hover:bg-orange-100 transition-all disabled:opacity-50"
                         title="Hide listing from public directory"
                       >
                         Hide
