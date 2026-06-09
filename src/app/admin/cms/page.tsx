@@ -88,12 +88,20 @@ export default function CMSAdminPage() {
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#C5A059]">Visual Template Library</h1>
           <p className="text-gray-300 text-xs mt-1">Design and manage all visual layouts for homepages, vendors, weavers, and products.</p>
         </div>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="bg-[#C5A059] text-[#0A1021] hover:brightness-110 transition-all font-bold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-lg"
-        >
-          + Create New Template
-        </button>
+        <div className="flex gap-3">
+          <Link 
+            href="/admin/cms/routes"
+            className="bg-[#051815] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors font-bold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-lg flex items-center justify-center"
+          >
+            Active Routes Manager
+          </Link>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-[#C5A059] text-[#0A1021] hover:brightness-110 transition-all font-bold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-lg"
+          >
+            + Create New Template
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

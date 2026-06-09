@@ -86,6 +86,7 @@ const SIDEBAR_CATEGORIES = [
     subLinks: [
       { name: "Global Audit Log", path: "/admin/audit" },
       { name: "Visual Page Builder", path: "/admin/cms" },
+      { name: "Active Routes Manager", path: "/admin/cms/routes" },
       { name: "Global Settings", path: "/admin/settings" },
       { name: "Staff & Delegation", path: "/admin/staff" },
       { name: "API & Webhooks", path: "/admin/developer/webhooks" }
