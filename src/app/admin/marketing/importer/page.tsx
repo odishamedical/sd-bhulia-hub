@@ -101,7 +101,8 @@ export default function GooglePlacesImporterPage() {
           block,
           townVillage,
           pin,
-          desc: "This profile was automatically generated from Google Maps. If you are the owner, please verify it.",
+          img: item.photoUrl || "",
+          desc: "This profile was collected from reliable source but Not verified. If you are the owner, please verify it.",
           isBhuliaVerified: false,
           createdAt: Date.now()
         }, { merge: true });

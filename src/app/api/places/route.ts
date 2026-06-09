@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': 'places.id,places.displayName.text,places.formattedAddress,places.nationalPhoneNumber,places.websiteUri,places.rating,places.userRatingCount,places.location,nextPageToken'
+        'X-Goog-FieldMask': 'places.id,places.displayName.text,places.formattedAddress,places.nationalPhoneNumber,places.websiteUri,places.rating,places.userRatingCount,places.location,places.photos,nextPageToken'
       },
       body: JSON.stringify(requestBody)
     });
@@ -66,6 +66,19 @@ export async function POST(request: Request) {
     }
 
     const data = await response.json();
+
+    // Map photoUrls using the API key
+    if (data.places) {
+      data.places = data.places.map((place: any) => {
+        let photoUrl = null;
+        if (place.photos && place.photos.length > 0) {
+          const photoName = place.photos[0].name;
+          photoUrl = `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=800&maxWidthPx=800&key=${apiKey}`;
+        }
+        return { ...place, photoUrl };
+      });
+    }
+
     return NextResponse.json(data);
     
   } catch (error: any) {

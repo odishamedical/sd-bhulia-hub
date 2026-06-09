@@ -94,7 +94,9 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
           </div>
           
           <p className="text-sm text-gray-300 leading-relaxed font-sans border-l-2 border-[#C5A059] pl-3 py-1">
-            {profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms."}
+            {profile.status === "unclaimed" 
+              ? "This profile was collected from reliable source but Not verified. If you are the owner, please verify it."
+              : (profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms.")}
           </p>
         </div>
 

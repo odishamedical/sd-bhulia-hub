@@ -50,6 +50,11 @@ export default function GlobalDirectoryPage() {
         }
       }
       return true;
+    }).sort((a, b) => {
+      // verified (approved) first, then unclaimed
+      if (a.status === "approved" && b.status !== "approved") return -1;
+      if (a.status !== "approved" && b.status === "approved") return 1;
+      return 0;
     });
   }, [combinedDirectory, selectedRole, selectedStatus, selectedDistrict, searchQuery]);
 
@@ -116,11 +121,11 @@ export default function GlobalDirectoryPage() {
 
               {/* Role */}
               <div className="mb-6">
-                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Partner Type</label>
+                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Listing Type</label>
                 <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input type="radio" name="role" checked={selectedRole === "all"} onChange={() => setSelectedRole("all")} className="form-radio text-[#C5A059] focus:ring-[#C5A059] bg-[#051815] border-[#C5A059]/40" />
-                    <span className="text-sm text-gray-300 group-hover:text-white">All Partners</span>
+                    <span className="text-sm text-gray-300 group-hover:text-white">All Listings</span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input type="radio" name="role" checked={selectedRole === "weaver"} onChange={() => setSelectedRole("weaver")} className="form-radio text-[#C5A059] focus:ring-[#C5A059] bg-[#051815] border-[#C5A059]/40" />
@@ -168,7 +173,7 @@ export default function GlobalDirectoryPage() {
           {/* Right Content (Grid) */}
           <div className="lg:col-span-3">
             <div className="mb-6 text-sm text-gray-400 font-semibold uppercase tracking-widest">
-              Showing {filteredDirectory.length} Partners
+              Showing {filteredDirectory.length} Listings
             </div>
 
             {loading ? (
@@ -181,7 +186,7 @@ export default function GlobalDirectoryPage() {
               <div className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-3xl p-16 text-center">
                 <span className="text-5xl block mb-4">🔍</span>
                 <h3 className="text-xl font-bold text-white mb-2">No Profiles Found</h3>
-                <p className="text-gray-400 text-sm mb-6">We couldn't find any partners matching your filters.</p>
+                <p className="text-gray-400 text-sm mb-6">We couldn't find any listings matching your filters.</p>
                 <button 
                   onClick={() => { setSelectedRole("all"); setSelectedStatus("all"); setSelectedDistrict("all"); setSearchQuery(""); }}
                   className="px-6 py-2 bg-[#0A3A35] text-[#C5A059] border border-[#C5A059]/40 rounded-xl font-bold text-xs uppercase tracking-wider"

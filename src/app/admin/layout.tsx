@@ -64,6 +64,7 @@ const SIDEBAR_CATEGORIES = [
       { name: "Coupons & Offers", path: "/admin/marketing/coupons" },
       { name: "WhatsApp & Email Push", path: "/admin/marketing/push" },
       { name: "Google Places Importer", path: "/admin/marketing/importer" },
+      { name: "Imported Listings DB", path: "/admin/marketing/imported" },
       { name: "SEO & Campaigns", path: "/admin/marketing/seo" }
     ]
   },
