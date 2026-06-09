@@ -539,7 +539,7 @@ export default function CMSBuilderPage() {
                                 />
                               </div>
                             </div>
-                          ) : (
+                          ) : col.type === "products" ? (
                             <div className="space-y-3">
                               <div>
                                 <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Category</label>
