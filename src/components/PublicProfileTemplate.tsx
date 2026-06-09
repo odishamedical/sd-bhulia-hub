@@ -62,7 +62,7 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
             <div className="bg-red-900/30 border border-red-500/50 p-4 rounded-xl mb-4 w-full max-w-sm">
               <h3 className="text-red-400 font-bold text-sm mb-1">Not Verified by Bhulia.com</h3>
               <p className="text-red-200/70 text-xs mb-3">This store is not yet verified. Are you the owner?</p>
-              <Link href="/auth/register" className="inline-block bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase px-4 py-2 rounded-lg transition-colors shadow-sm">
+              <Link href={`/verify?id=${profile.googlePlaceId || ''}&type=${type}&name=${encodeURIComponent(profile.name)}`} className="inline-block bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase px-4 py-2 rounded-lg transition-colors shadow-sm">
                 Verify your page
               </Link>
             </div>
