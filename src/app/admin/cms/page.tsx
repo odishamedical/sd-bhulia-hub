@@ -127,8 +127,66 @@ export default function CMSAdminPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {templates.map(t => (
+      {templates.filter(t => t.status === 'premium_template').length > 0 && (
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#C5A059]">Ready-Made Templates</h2>
+            <div className="h-px flex-1 bg-gradient-to-r from-[#C5A059]/50 to-transparent"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {templates.filter(t => t.status === 'premium_template').map(t => (
+              <div key={t.id} className="bg-[#0B2B26]/80 border border-[#C5A059] shadow-[0_0_15px_rgba(197,160,89,0.1)] rounded-3xl p-6 flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-start mb-4">
+                    <span className={`px-2.5 py-1 rounded text-[10px] uppercase font-bold tracking-wider border ${
+                      t.type === 'homepage' ? 'bg-purple-500/10 border-purple-500/30 text-purple-300' :
+                      t.type === 'weaver' ? 'bg-amber-500/10 border-amber-500/30 text-amber-300' :
+                      t.type === 'store' ? 'bg-blue-500/10 border-blue-500/30 text-blue-300' :
+                      'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                    }`}>
+                      {t.type} Template
+                    </span>
+                    <span className="text-[10px] uppercase font-bold tracking-widest font-mono text-[#C5A059] bg-[#C5A059]/10 px-2 py-0.5 rounded border border-[#C5A059]/30">
+                      ● Ready-Made
+                    </span>
+                  </div>
+                  <h2 className="text-xl font-serif font-bold text-white mb-2">{t.title}</h2>
+                  <p className="text-xs text-[#C5A059]/80 mb-6 italic">{t.rows?.length || 0} Design Rows configured. Do not edit directly; duplicate this to start a new page.</p>
+                </div>
+                
+                <div className="flex flex-col gap-2">
+                  <button 
+                    onClick={() => handleDuplicateTemplate(t)}
+                    className="w-full text-center bg-[#C5A059] text-[#0A1021] hover:brightness-110 transition-colors font-bold px-4 py-2.5 rounded-xl text-[10px] uppercase tracking-wider cursor-pointer shadow-lg"
+                  >
+                    📋 Duplicate to Custom Library
+                  </button>
+                  <Link 
+                    href={`/admin/cms/builder/${t.id}`}
+                    className="w-full text-center bg-transparent border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors font-bold px-4 py-2 rounded-xl text-[10px] uppercase tracking-wider"
+                  >
+                    View Layout
+                  </Link>
+                  <button 
+                    onClick={() => confirmDeleteTemplate(t)}
+                    className="w-full text-center text-red-400/50 hover:text-red-400 transition-colors font-bold px-4 py-1.5 rounded-xl text-[10px] uppercase tracking-wider cursor-pointer mt-1"
+                  >
+                    Delete Ready-Made
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div>
+        <div className="flex items-center gap-3 mb-6">
+          <h2 className="text-xl sm:text-2xl font-serif font-bold text-white">Your Custom Templates</h2>
+          <div className="h-px flex-1 bg-gradient-to-r from-gray-700 to-transparent"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {templates.filter(t => t.status !== 'premium_template').map(t => (
           <div key={t.id} className={`bg-[#0B2B26]/80 border ${
             t.status === 'draft' ? 'border-gray-500' : 
             t.status === 'published' ? 'border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.1)]' : 
@@ -156,33 +214,34 @@ export default function CMSAdminPage() {
               <p className="text-xs text-gray-400 mb-6">{t.rows?.length || 0} Design Rows configured.</p>
             </div>
             
-            <div className="flex flex-col gap-2">
-              <Link 
-                href={`/admin/cms/builder/${t.id}`}
-                className="w-full text-center bg-[#051815] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider"
-              >
-                Open Visual Editor
-              </Link>
-              <button 
-                onClick={() => handleDuplicateTemplate(t)}
-                className="w-full text-center bg-gray-800/50 border border-gray-600 text-gray-300 hover:bg-gray-800 transition-colors font-bold px-4 py-2 rounded-xl text-[10px] uppercase tracking-wider cursor-pointer"
-              >
-                📋 Duplicate as New Draft
-              </button>
-              <button 
-                onClick={() => confirmDeleteTemplate(t)}
-                className="w-full text-center bg-red-900/20 border border-red-500/30 text-red-400 hover:bg-red-900/40 transition-colors font-bold px-4 py-2 rounded-xl text-[10px] uppercase tracking-wider cursor-pointer mt-1"
-              >
-                🗑️ Delete Template
-              </button>
-            </div>
-          </div>
-        ))}
-        {templates.length === 0 && (
-          <div className="col-span-full py-12 text-center border-2 border-dashed border-[#C5A059]/20 rounded-3xl">
-            <p className="text-gray-400 font-mono text-sm">No templates found. Create your first design!</p>
-          </div>
-        )}
+                <div className="flex flex-col gap-2">
+                  <Link 
+                    href={`/admin/cms/builder/${t.id}`}
+                    className="w-full text-center bg-[#051815] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider"
+                  >
+                    Open Visual Editor
+                  </Link>
+                  <button 
+                    onClick={() => handleDuplicateTemplate(t)}
+                    className="w-full text-center bg-gray-800/50 border border-gray-600 text-gray-300 hover:bg-gray-800 transition-colors font-bold px-4 py-2 rounded-xl text-[10px] uppercase tracking-wider cursor-pointer"
+                  >
+                    📋 Duplicate as New Draft
+                  </button>
+                  <button 
+                    onClick={() => confirmDeleteTemplate(t)}
+                    className="w-full text-center bg-red-900/20 border border-red-500/30 text-red-400 hover:bg-red-900/40 transition-colors font-bold px-4 py-2 rounded-xl text-[10px] uppercase tracking-wider cursor-pointer mt-1"
+                  >
+                    🗑️ Delete Template
+                  </button>
+                </div>
+              </div>
+            ))}
+            {templates.filter(t => t.status !== 'premium_template').length === 0 && (
+              <div className="col-span-full py-12 text-center border-2 border-dashed border-[#C5A059]/20 rounded-3xl">
+                <p className="text-gray-400 font-mono text-sm">No custom templates found. Create a new one or duplicate a Ready-Made template!</p>
+              </div>
+            )}
+        </div>
       </div>
 
       {isModalOpen && (
