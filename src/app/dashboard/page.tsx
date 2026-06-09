@@ -20,6 +20,7 @@ import {
 
 import DashboardLayout, { NavItem } from "@/components/DashboardLayout";
 import ImageUploader from "@/components/ImageUploader";
+import SellerSetupHub from "@/components/SellerSetupHub";
 
 export const uploadBase64ToStorage = async (base64Str: string | null, folder: string) => {
   if (!base64Str) return "";
@@ -43,7 +44,14 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("home");
   const [isViewAsMode, setIsViewAsMode] = useState(false);
+  const [isSellerMode, setIsSellerMode] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    // Load saved seller mode preference
+    const savedMode = localStorage.getItem("sd_seller_mode");
+    if (savedMode === "true") setIsSellerMode(true);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -52,7 +60,7 @@ export default function DashboardPage() {
         try {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
-            const actualRole = userDoc.data().role;
+            const actualRole = userDoc.data().role || "customer";
             const viewAsUid = localStorage.getItem("sd_view_as_uid");
             const viewAsRole = localStorage.getItem("sd_view_as_role");
             const viewAsName = localStorage.getItem("sd_view_as_name");
@@ -67,10 +75,13 @@ export default function DashboardPage() {
               setIsViewAsMode(false);
             }
           } else {
-            setRole("onboarding");
+            // New logic: Default to customer, no blocking onboarding
+            setRole("customer");
+            setUserName(user.email?.split("@")[0] || "User");
           }
         } catch (error) {
           console.error("Error fetching user role", error);
+          setRole("customer");
         }
       } else {
         document.cookie = "bhulia-auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
@@ -90,18 +101,17 @@ export default function DashboardPage() {
     );
   }
 
-  if (role === "onboarding") {
-    return <OnboardingFlow onComplete={() => window.location.reload()} />;
-  }
-
   const isCustomer = role === "customer" || role === "user" || !role;
   const isSuperAdmin = role === "super_admin";
   const displayRole = role === "franchisee" ? "reseller" : (role === "store" || role === "shop") ? "vendor" : role;
   
-  // Resolve actual role mapping
+  // Resolve actual role mapping (Dual-Role Architecture)
   let actualRole = "customer";
-  if (isSuperAdmin) actualRole = "super_admin";
-  else if (!isCustomer && displayRole) actualRole = displayRole;
+  if (isSuperAdmin) {
+    actualRole = "super_admin";
+  } else if (!isCustomer && displayRole && isSellerMode) {
+    actualRole = displayRole;
+  }
 
   let navItems: NavItem[] = [];
   if (isCustomer) {
@@ -112,6 +122,7 @@ export default function DashboardPage() {
       { id: "profile", label: "Profile Settings", icon: "⚙️", category: "Account" },
       { id: "address", label: "Address Book", icon: "📍", category: "Account" },
       { id: "wallet", label: "Wallet & Rewards", icon: "💎", category: "Account" },
+      { id: "seller_hub", label: "Become a Seller", icon: "🚀", category: "Seller Hub" },
       { id: "messages", label: "Messages", icon: "💬", category: "Help" },
       { id: "support", label: "Support Tickets", icon: "📞", category: "Help" },
     ];
@@ -200,6 +211,27 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Dual-Role Switcher (Visible only to approved sellers/vendors) */}
+      {!isCustomer && !isSuperAdmin && displayRole && (
+        <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white p-4 rounded-xl mb-6 flex justify-between items-center shadow-lg">
+          <div>
+            <h3 className="font-bold text-sm">Dual-Role Ecosystem</h3>
+            <p className="text-xs text-gray-300 mt-0.5">You are currently operating in <span className="font-bold text-[#C5A059]">{isSellerMode ? "Seller Mode" : "Buyer Mode"}</span>.</p>
+          </div>
+          <button 
+            onClick={() => {
+              const newMode = !isSellerMode;
+              setIsSellerMode(newMode);
+              localStorage.setItem("sd_seller_mode", String(newMode));
+              setActiveTab("home"); // Reset tab on switch
+            }}
+            className="px-5 py-2 bg-white text-gray-900 text-xs font-bold rounded-lg shadow-sm hover:bg-gray-100 transition-colors flex items-center gap-2"
+          >
+            <span>🔄</span> Switch to {isSellerMode ? "Buyer Mode" : "Seller Mode"}
+          </button>
+        </div>
+      )}
+
       {isCustomer && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "vendor" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
@@ -211,58 +243,7 @@ export default function DashboardPage() {
   );
 }
 
-function OnboardingFlow({ onComplete }: { onComplete: () => void }) {
-  const [selectedRole, setSelectedRole] = useState("customer");
-  const [loading, setLoading] = useState(false);
-
-  const handleContinue = async () => {
-    setLoading(true);
-    try {
-      const uid = localStorage.getItem("sd_current_user_uid") || auth.currentUser?.uid;
-      if (!uid) return;
-      
-      const { doc, updateDoc } = await import("firebase/firestore");
-      const { db } = await import("@/lib/firebase");
-      
-      await updateDoc(doc(db, "users", uid), {
-        role: selectedRole
-      });
-      localStorage.setItem("sd_current_user_role", selectedRole);
-      onComplete();
-    } catch (e) {
-      console.error("Failed to update role", e);
-      setLoading(false);
-    }
-  };
-  
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] px-4">
-      <div className="bg-white border border-gray-200 shadow-xl rounded-2xl p-8 w-full max-w-lg">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">Complete Your Profile</h2>
-        <p className="text-gray-500 text-center mb-6">Select your account type to proceed</p>
-        
-        <select 
-          className="w-full bg-gray-50 border border-gray-300 rounded-xl p-3 text-gray-900 mb-6 focus:border-[#0070F3] focus:outline-none focus:ring-1 focus:ring-[#0070F3]"
-          value={selectedRole}
-          onChange={(e) => setSelectedRole(e.target.value)}
-        >
-          <option value="customer">Customer (Buy Handlooms)</option>
-          <option value="weaver">Master Weaver (Sell Handlooms)</option>
-          <option value="vendor">Vendor / Shop (Sell for Multiple Weavers)</option>
-          <option value="reseller">Reseller (Dropship & Earn Commission)</option>
-        </select>
-
-        <button 
-          onClick={handleContinue}
-          disabled={loading}
-          className="w-full bg-[#0070F3] text-white font-bold py-3 rounded-xl disabled:opacity-50 hover:bg-[#005BB5] transition-colors"
-        >
-          {loading ? "Saving..." : `Continue as ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}`}
-        </button>
-      </div>
-    </div>
-  );
-}
+// OnboardingFlow removed as per new Dual-Role architecture
 
 /* ==========================================
    1. CUSTOMER DASHBOARD
@@ -403,6 +384,13 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             </div>
             <button className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm mt-4">Save Changes</button>
           </div>
+        </div>
+      )}
+      {activeTab === "seller_hub" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Become a Seller or Reseller</h2>
+          <p className="text-sm text-gray-500 font-medium mb-6">Join the Bhulia ecosystem to start selling or earning commissions.</p>
+          <SellerSetupHub userRole={role || "customer"} />
         </div>
       )}
     </div>
