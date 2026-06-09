@@ -12,6 +12,8 @@ export default function CMSAdminPage() {
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState<PlatformPage[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [templateToDelete, setTemplateToDelete] = useState<PlatformPage | null>(null);
   
   // New Template Form State
   const [newTitle, setNewTitle] = useState("");
@@ -79,6 +81,27 @@ export default function CMSAdminPage() {
     }
   };
 
+  const confirmDeleteTemplate = (template: PlatformPage) => {
+    setTemplateToDelete(template);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteTemplate = async () => {
+    if (!templateToDelete?.id) return;
+    try {
+      // Need deleteDoc here, let's just do an API call or use db directly
+      // Wait, need to import deleteDoc and doc
+      const { deleteDoc, doc } = await import("firebase/firestore");
+      await deleteDoc(doc(db, "platform_pages", templateToDelete.id));
+      setTemplates(templates.filter(t => t.id !== templateToDelete.id));
+      setIsDeleteModalOpen(false);
+      setTemplateToDelete(null);
+    } catch (e) {
+      console.error(e);
+      alert("Error deleting template");
+    }
+  };
+
   if (loading) return <div className="p-8 text-[#C5A059] animate-pulse">Loading Template Library...</div>;
 
   return (
@@ -106,7 +129,11 @@ export default function CMSAdminPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {templates.map(t => (
-          <div key={t.id} className="bg-[#0B2B26]/80 border border-[#C5A059]/30 rounded-3xl p-6 shadow-xl flex flex-col justify-between">
+          <div key={t.id} className={`bg-[#0B2B26]/80 border ${
+            t.status === 'draft' ? 'border-gray-500' : 
+            t.status === 'published' ? 'border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.1)]' : 
+            'border-[#C5A059] shadow-[0_0_15px_rgba(197,160,89,0.1)]'
+          } rounded-3xl p-6 flex flex-col justify-between`}>
             <div>
               <div className="flex justify-between items-start mb-4">
                 <span className={`px-2.5 py-1 rounded text-[10px] uppercase font-bold tracking-wider border ${
@@ -118,9 +145,9 @@ export default function CMSAdminPage() {
                   {t.type} Template
                 </span>
                 <span className={`text-[10px] uppercase font-bold tracking-widest font-mono ${
-                  t.status === 'published' ? 'text-green-400' : 
-                  t.status === 'premium_template' ? 'text-[#C5A059]' : 
-                  'text-gray-400'
+                  t.status === 'published' ? 'text-green-400 bg-green-900/30 px-2 py-0.5 rounded border border-green-500/30' : 
+                  t.status === 'premium_template' ? 'text-[#C5A059] bg-[#C5A059]/10 px-2 py-0.5 rounded border border-[#C5A059]/30' : 
+                  'text-gray-400 bg-gray-800/50 px-2 py-0.5 rounded border border-gray-600'
                 }`}>
                   ● {t.status.replace("_", " ")}
                 </span>
@@ -141,6 +168,12 @@ export default function CMSAdminPage() {
                 className="w-full text-center bg-gray-800/50 border border-gray-600 text-gray-300 hover:bg-gray-800 transition-colors font-bold px-4 py-2 rounded-xl text-[10px] uppercase tracking-wider cursor-pointer"
               >
                 📋 Duplicate as New Draft
+              </button>
+              <button 
+                onClick={() => confirmDeleteTemplate(t)}
+                className="w-full text-center bg-red-900/20 border border-red-500/30 text-red-400 hover:bg-red-900/40 transition-colors font-bold px-4 py-2 rounded-xl text-[10px] uppercase tracking-wider cursor-pointer mt-1"
+              >
+                🗑️ Delete Template
               </button>
             </div>
           </div>
@@ -178,6 +211,36 @@ export default function CMSAdminPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && templateToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#0B2B26] border-2 border-red-500 rounded-3xl p-8 w-full max-w-md shadow-[0_0_50px_rgba(239,68,68,0.3)]">
+            <div className="text-center">
+              <span className="text-4xl mb-4 block">⚠️</span>
+              <h2 className="text-2xl font-black text-red-500 uppercase tracking-wider mb-2">DO YOU REALLY WANT TO DELETE?</h2>
+              <p className="text-gray-300 text-sm mb-6">
+                You are about to permanently delete the template <strong className="text-white">{templateToDelete.title}</strong>. This action cannot be undone.
+              </p>
+              
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => setIsDeleteModalOpen(false)} 
+                  className="flex-1 px-4 py-3 bg-gray-800 text-white font-bold rounded-xl text-xs uppercase tracking-wider hover:bg-gray-700"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleDeleteTemplate} 
+                  className="flex-1 px-4 py-3 bg-red-600 text-white font-bold rounded-xl text-xs uppercase tracking-wider hover:bg-red-700 shadow-[0_0_20px_rgba(239,68,68,0.4)]"
+                >
+                  Yes, Delete It
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

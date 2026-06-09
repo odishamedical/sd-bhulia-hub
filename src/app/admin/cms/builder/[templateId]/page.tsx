@@ -134,16 +134,23 @@ export default function CMSBuilderPage() {
           <button 
             onClick={() => handleSave("draft")}
             disabled={saving}
-            className="px-6 py-2.5 bg-[#051815] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 rounded-xl text-xs uppercase tracking-wider font-bold transition-colors"
+            className="px-4 py-2 bg-[#051815] border border-gray-500 text-gray-300 hover:bg-gray-800 rounded-xl text-[10px] uppercase tracking-wider font-bold transition-colors"
           >
             Save as Draft
           </button>
           <button 
+            onClick={() => handleSave("published")}
+            disabled={saving}
+            className="px-4 py-2 bg-[#051815] border border-green-500/50 text-green-400 hover:bg-green-500/10 rounded-xl text-[10px] uppercase tracking-wider font-bold transition-colors"
+          >
+            Publish Live
+          </button>
+          <button 
             onClick={() => handleSave("premium_template")}
             disabled={saving}
-            className="bg-[#C5A059] text-[#0A1021] hover:brightness-110 transition-all font-bold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-lg"
+            className="bg-[#C5A059] text-[#0A1021] hover:brightness-110 transition-all font-bold px-4 py-2 rounded-xl text-[10px] uppercase tracking-wider shadow-lg"
           >
-            Publish Premium Template
+            Save as Premium
           </button>
         </div>
       </div>
