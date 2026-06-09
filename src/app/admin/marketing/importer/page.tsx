@@ -17,6 +17,7 @@ export default function GooglePlacesImporterPage() {
   const [pageToken, setPageToken] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [importing, setImporting] = useState(false);
+  const [targetRole, setTargetRole] = useState("vendor");
 
   const handleSearch = async (token?: string) => {
     const parts = [];
@@ -84,7 +85,9 @@ export default function GooglePlacesImporterPage() {
         // Generate a URL-friendly slug based on the name and last 5 chars of the Google ID
         const generatedSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") + "-" + item.id.slice(-5).toLowerCase();
 
-        await setDoc(doc(db, "vendors", item.id), {
+        const collectionName = targetRole === "weaver" ? "weavers" : "vendors";
+
+        await setDoc(doc(db, collectionName, item.id), {
           title: title,
           slug: generatedSlug,
           address: item.formattedAddress || "",
@@ -104,6 +107,7 @@ export default function GooglePlacesImporterPage() {
           img: item.photoUrl || "",
           desc: "This profile was collected from reliable source but Not verified. If you are the owner, please verify it.",
           isBhuliaVerified: false,
+          listingType: targetRole,
           createdAt: Date.now()
         }, { merge: true });
       }
@@ -122,14 +126,27 @@ export default function GooglePlacesImporterPage() {
         <p className="text-gray-500 mb-8">Strictly format the location query to ensure accurate data extraction into our standardized global schema.</p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 bg-gray-50 p-6 rounded-2xl border border-gray-100">
-          <div className="lg:col-span-4 mb-2">
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Business Type (Target)</label>
+          <div className="lg:col-span-3 mb-2">
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Business Type / Search Query</label>
             <input 
               type="text" 
               value={businessType} 
               onChange={e => setBusinessType(e.target.value)} 
               className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-bold text-lg"
             />
+          </div>
+
+          <div className="lg:col-span-1 mb-2">
+            <label className="block text-xs font-bold text-[#0070F3] uppercase tracking-wider mb-2">Target Database Role</label>
+            <select 
+              value={targetRole} 
+              onChange={e => setTargetRole(e.target.value)} 
+              className="w-full bg-[#E6F0FF] border border-[#0070F3]/30 rounded-xl p-3 text-[#005BB5] focus:border-[#0070F3] outline-none font-bold text-sm"
+            >
+              <option value="vendor">Retail Shop (Vendor)</option>
+              <option value="weaver">Master Weaver</option>
+              <option value="raw_material">Raw Material Supplier</option>
+            </select>
           </div>
 
           <div>
