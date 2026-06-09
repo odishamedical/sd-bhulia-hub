@@ -9,9 +9,9 @@ import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 export default function WeaverStorePage() {
   const params = useParams();
   const rawSlug = typeof params?.slug === "string" ? params.slug : "";
-  const weaverSlug = rawSlug.toLowerCase();
+  const weaverSlug = rawSlug.toLowerCase(); // keep for legacy if needed
 
-  const { weaver, loading: weaverLoading } = useWeaverBySlug(weaverSlug);
+  const { weaver, loading: weaverLoading } = useWeaverBySlug(rawSlug);
   const { products, loading: productsLoading } = useProducts();
 
   const [mappedProfile, setMappedProfile] = useState<any>(null);

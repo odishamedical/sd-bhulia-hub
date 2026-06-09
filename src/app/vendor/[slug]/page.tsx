@@ -9,9 +9,9 @@ import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 export default function VendorDetailPage() {
   const params = useParams();
   const rawSlug = typeof params?.slug === "string" ? params.slug : "";
-  const vendorSlug = rawSlug.toLowerCase();
+  const vendorSlug = rawSlug.toLowerCase(); // keep for legacy if needed
 
-  const { vendor, loading: vendorLoading } = useVendorBySlug(vendorSlug);
+  const { vendor, loading: vendorLoading } = useVendorBySlug(rawSlug);
   const { products, loading: productsLoading } = useProducts();
 
   const [mappedProfile, setMappedProfile] = useState<any>(null);

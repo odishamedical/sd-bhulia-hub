@@ -410,14 +410,26 @@ export function useWeaverBySlug(slug: string) {
     if (!slug) return;
     
     const q = query(collection(db, "weavers"), where("slug", "==", slug));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       if (!snapshot.empty) {
-        const doc = snapshot.docs[0];
-        setWeaver({ id: doc.id, ...doc.data() } as Weaver);
+        const docSnap = snapshot.docs[0];
+        setWeaver({ id: docSnap.id, ...docSnap.data() } as Weaver);
+        setLoading(false);
       } else {
-        setWeaver(null);
+        // Fallback: Check if the slug is actually the document ID
+        try {
+          const docRef = doc(db, "weavers", slug);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setWeaver({ id: docSnap.id, ...docSnap.data() } as Weaver);
+          } else {
+            setWeaver(null);
+          }
+        } catch (e) {
+          setWeaver(null);
+        }
+        setLoading(false);
       }
-      setLoading(false);
     }, (error) => {
       console.error("Error fetching weaver by slug: ", error);
       setLoading(false);
@@ -437,14 +449,28 @@ export function useVendorBySlug(slug: string) {
     if (!slug) return;
 
     const q = query(collection(db, "vendors"), where("slug", "==", slug));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       if (!snapshot.empty) {
-        const doc = snapshot.docs[0];
-        setStore({ id: doc.id, ...doc.data() } as Vendor);
+        const docSnap = snapshot.docs[0];
+        setStore({ id: docSnap.id, ...docSnap.data() } as Vendor);
+        setLoading(false);
       } else {
-        setStore(null);
+        // Fallback: Check if the slug is actually the document ID
+        try {
+          const docRef = doc(db, "vendors", slug);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setStore({ id: docSnap.id, ...docSnap.data() } as Vendor);
+          } else {
+            // Also try to check the original casing, as the URL lowercase might have messed up the ID
+            // Since onSnapshot is synchronous but getDoc is async, we can do this inside.
+            setStore(null);
+          }
+        } catch (e) {
+          setStore(null);
+        }
+        setLoading(false);
       }
-      setLoading(false);
     }, (error) => {
       console.error("Error fetching store by slug: ", error);
       setLoading(false);
