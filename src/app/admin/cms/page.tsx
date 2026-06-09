@@ -60,6 +60,25 @@ export default function CMSAdminPage() {
     }
   };
 
+  const handleDuplicateTemplate = async (templateToCopy: PlatformPage) => {
+    try {
+      const duplicatedPage = {
+        ...templateToCopy,
+        title: `Copy of ${templateToCopy.title}`,
+        status: "draft",
+        createdAt: new Date().toISOString()
+      };
+      // remove the id
+      delete duplicatedPage.id;
+      
+      const docRef = await addDoc(collection(db, "platform_pages"), duplicatedPage);
+      router.push(`/admin/cms/builder/${docRef.id}`);
+    } catch (e) {
+      console.error(e);
+      alert("Error duplicating template");
+    }
+  };
+
   if (loading) return <div className="p-8 text-[#C5A059] animate-pulse">Loading Template Library...</div>;
 
   return (
@@ -102,12 +121,20 @@ export default function CMSAdminPage() {
               <p className="text-xs text-gray-400 mb-6">{t.rows?.length || 0} Design Rows configured.</p>
             </div>
             
-            <Link 
-              href={`/admin/cms/builder/${t.id}`}
-              className="w-full text-center bg-[#051815] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider"
-            >
-              Open Visual Editor
-            </Link>
+            <div className="flex flex-col gap-2">
+              <Link 
+                href={`/admin/cms/builder/${t.id}`}
+                className="w-full text-center bg-[#051815] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider"
+              >
+                Open Visual Editor
+              </Link>
+              <button 
+                onClick={() => handleDuplicateTemplate(t)}
+                className="w-full text-center bg-gray-800/50 border border-gray-600 text-gray-300 hover:bg-gray-800 transition-colors font-bold px-4 py-2 rounded-xl text-[10px] uppercase tracking-wider cursor-pointer"
+              >
+                📋 Duplicate as New Draft
+              </button>
+            </div>
           </div>
         ))}
         {templates.length === 0 && (
