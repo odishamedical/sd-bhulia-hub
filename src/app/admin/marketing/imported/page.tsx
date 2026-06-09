@@ -12,6 +12,8 @@ export default function ImportedListingsDBPage() {
   
   const [deleting, setDeleting] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [editingItem, setEditingItem] = useState<any | null>(null);
+  const [savingEdit, setSavingEdit] = useState(false);
   
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -118,8 +120,31 @@ export default function ImportedListingsDBPage() {
   };
 
   const handleEdit = (item: any) => {
-    alert("CRM Edit interface opening for: " + item.title + " (Integration with main edit modal coming soon)");
-    // In a real app, this would open a modal pre-filled with the item's data to edit address/phone/etc.
+    setEditingItem({ ...item });
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingItem) return;
+    setSavingEdit(true);
+    try {
+      const collectionName = editingItem.baseRole === "weaver" ? "weavers" : "vendors";
+      
+      // We explicitly pull out the editable fields
+      const updates = {
+        title: editingItem.title,
+        address: editingItem.address,
+        state: editingItem.state,
+        district: editingItem.district,
+        listingType: editingItem.listingType || editingItem.baseRole,
+      };
+
+      await updateDoc(doc(db, collectionName, editingItem.id), updates);
+      alert("Successfully updated listing!");
+      setEditingItem(null);
+    } catch (e: any) {
+      alert("Error saving updates: " + e.message);
+    }
+    setSavingEdit(false);
   };
 
   if (vLoading || wLoading) {
@@ -312,6 +337,86 @@ export default function ImportedListingsDBPage() {
           </table>
         </div>
       </div>
+      {/* Edit Modal */}
+      {editingItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl border border-gray-100">
+            <h3 className="text-2xl font-black text-gray-900 mb-6">Edit Imported Listing</h3>
+            
+            <div className="space-y-4 mb-8">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Business Name</label>
+                <input 
+                  type="text" 
+                  value={editingItem.title || ""} 
+                  onChange={e => setEditingItem({...editingItem, title: e.target.value})}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Full Address</label>
+                <textarea 
+                  rows={2}
+                  value={editingItem.address || ""} 
+                  onChange={e => setEditingItem({...editingItem, address: e.target.value})}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none resize-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">State</label>
+                  <input 
+                    type="text" 
+                    value={editingItem.state || ""} 
+                    onChange={e => setEditingItem({...editingItem, state: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">District</label>
+                  <input 
+                    type="text" 
+                    value={editingItem.district || ""} 
+                    onChange={e => setEditingItem({...editingItem, district: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Listing Type</label>
+                <select 
+                  value={editingItem.listingType || editingItem.baseRole} 
+                  onChange={e => setEditingItem({...editingItem, listingType: e.target.value})}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                >
+                  <option value="vendor">Vendor / Retail Shop</option>
+                  <option value="weaver">Master Weaver</option>
+                  <option value="raw_material">Raw Material Supplier</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+              <button 
+                onClick={() => setEditingItem(null)} 
+                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSaveEdit} 
+                disabled={savingEdit}
+                className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm disabled:opacity-50"
+              >
+                {savingEdit ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
