@@ -170,6 +170,25 @@ export default function CMSAdminPage() {
             },
             { id: "products-3", type: "products", title: "My Masterpieces", hideTitle: false, productLimit: 8, featuredOnly: false, discountOnly: false }
           ]
+        },
+        {
+          title: "The Sambalpuri Global Directory",
+          type: "directory",
+          status: "premium_template",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          theme: { backgroundColor: "#051815", headingColor: "#C5A059", textColor: "#E2E8F0", ticketColor: "#C5A059" },
+          rows: [
+            {
+              id: "dir-hero", type: "hero", title: "Directory Hero", hideTitle: true, heroLayout: "full",
+              heroHeadline: "The original Sambalpuri : Saree, Dress, Bedsheet, Cloth Weavers, store and Rawmaterial supplier.",
+              heroSubheadline: "Discover authentic Master Weavers and Verified Retail Shops for original Sambalpuri Handloom.",
+              heroImages: [],
+              aspectRatio: "widescreen"
+            },
+            { id: "dir-districts", type: "district_links" },
+            { id: "dir-grid", type: "directory_listings" }
+          ]
         }
       ];
 

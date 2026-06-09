@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useVendors, useWeavers } from "@/lib/db-hooks";
 import { ODISHA_DISTRICTS } from "@/lib/locations";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import DynamicRenderer from "@/components/cms/DynamicRenderer";
+import { PlatformPage, ActiveRoutes } from "@/types/cms";
 
 export default function GlobalDirectoryPage() {
   const { vendors, loading: vendorsLoading } = useVendors();
@@ -21,6 +25,32 @@ export default function GlobalDirectoryPage() {
     const wList = weavers.map(w => ({ ...w, role: "weaver", displayType: "Master Weaver" }));
     return [...vList, ...wList].filter(item => item.status === "approved" || item.status === "unclaimed");
   }, [vendors, weavers]);
+
+  const [activePage, setActivePage] = useState<PlatformPage | null>(null);
+  const [cmsLoading, setCmsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchActiveDirectory() {
+      try {
+        const routesSnap = await getDoc(doc(db, "platform_settings", "active_routes"));
+        if (routesSnap.exists()) {
+          const activeRoutes = routesSnap.data() as ActiveRoutes;
+          if (activeRoutes.activeDirectoryId) {
+            const pageSnap = await getDoc(doc(db, "platform_pages", activeRoutes.activeDirectoryId));
+            if (pageSnap.exists()) {
+              setActivePage(pageSnap.data() as PlatformPage);
+              setCmsLoading(false);
+              return;
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching active directory", err);
+      }
+      setCmsLoading(false);
+    }
+    fetchActiveDirectory();
+  }, []);
 
   const districts = useMemo(() => {
     const dSet = new Set<string>();
@@ -59,6 +89,29 @@ export default function GlobalDirectoryPage() {
   }, [combinedDirectory, selectedRole, selectedStatus, selectedDistrict, searchQuery]);
 
   const loading = vendorsLoading || weaversLoading;
+
+  if (cmsLoading) {
+    return (
+      <div className="min-h-screen bg-[#051815] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#C5A059] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#C5A059] font-bold text-sm tracking-widest uppercase animate-pulse">Loading Directory...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If a CMS template is mapped to the Directory route, render it instead!
+  if (activePage) {
+    return (
+      <div className="min-h-screen" style={{ 
+        backgroundColor: activePage.theme?.backgroundColor || "#051815",
+        color: activePage.theme?.textColor || "#E2E8F0"
+      }}>
+        <DynamicRenderer rows={activePage.rows} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#051815] font-sans pt-6 pb-20 relative overflow-hidden">

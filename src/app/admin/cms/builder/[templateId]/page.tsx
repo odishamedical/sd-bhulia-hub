@@ -211,6 +211,8 @@ export default function CMSBuilderPage() {
             <button type="button" onClick={() => addRow("split_banner_products")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Split Section</button>
             <button type="button" onClick={() => addRow("testimonials")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Testimonials</button>
             <button type="button" onClick={() => addRow("share_widget")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Share Widget</button>
+            <button type="button" onClick={() => addRow("directory_listings")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ Directory</button>
+            <button type="button" onClick={() => addRow("district_links")} className="px-3 py-1.5 bg-[#0A3A35] hover:bg-[#0A3A35]/80 text-[#C5A059] text-[10px] uppercase tracking-widest font-bold rounded">+ District Links</button>
           </div>
         </div>
 

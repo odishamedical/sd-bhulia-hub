@@ -1,4 +1,4 @@
-export type PageType = "homepage" | "store" | "weaver" | "product" | "custom";
+export type PageType = "homepage" | "store" | "weaver" | "product" | "custom" | "directory";
 export type PageStatus = "draft" | "published" | "premium_template";
 export type AspectRatio = "square" | "widescreen" | "portrait";
 
@@ -36,7 +36,7 @@ export interface CMSColumn {
 
 export interface CMSRow {
   id: string;
-  type: "hero" | "multi_banner" | "split_banner_products" | "image_grid" | "products" | "adsense" | "banner" | "testimonials" | "share_widget";
+  type: "hero" | "multi_banner" | "split_banner_products" | "image_grid" | "products" | "adsense" | "banner" | "testimonials" | "share_widget" | "directory_listings" | "district_links";
   
   // Local Theme Override
   themeOverride?: GlobalTheme;
@@ -113,6 +113,7 @@ export interface ActiveRoutes {
   defaultStoreTemplateId?: string;
   defaultWeaverTemplateId?: string;
   defaultProductTemplateId?: string;
+  activeDirectoryId?: string;
 }
 
 export interface AdCampaign {

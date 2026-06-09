@@ -62,6 +62,7 @@ export default function ActiveRoutesManager() {
   const storePages = pages.filter(p => p.type === "store");
   const weaverPages = pages.filter(p => p.type === "weaver");
   const productPages = pages.filter(p => p.type === "product");
+  const directoryPages = pages.filter(p => p.type === "directory");
 
   return (
     <div className="space-y-8 max-w-4xl">
@@ -86,6 +87,26 @@ export default function ActiveRoutesManager() {
             >
               <option value="">-- Hardcoded Legacy Homepage --</option>
               {homepages.map(p => (
+                <option key={p.id} value={p.id}>{p.title}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Directory Route */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#C5A059]/20 pb-6">
+          <div className="flex-1">
+            <h2 className="text-lg font-bold text-white mb-1">Active Directory Page</h2>
+            <p className="text-xs text-gray-400">Select the template that will be displayed at the public /directory URL.</p>
+          </div>
+          <div className="w-full sm:w-64">
+            <select 
+              value={activeRoutes.activeDirectoryId || ""} 
+              onChange={(e) => setActiveRoutes({ ...activeRoutes, activeDirectoryId: e.target.value })}
+              className="w-full px-4 py-2.5 bg-[#051815] border border-[#C5A059]/40 rounded-xl text-sm text-white focus:border-[#C5A059] outline-none"
+            >
+              <option value="">-- Hardcoded Legacy Directory --</option>
+              {directoryPages.map(p => (
                 <option key={p.id} value={p.id}>{p.title}</option>
               ))}
             </select>
