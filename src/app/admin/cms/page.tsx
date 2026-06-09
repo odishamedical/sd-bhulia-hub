@@ -14,6 +14,7 @@ export default function CMSAdminPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState<PlatformPage | null>(null);
+  const [isInjecting, setIsInjecting] = useState(false);
   
   // New Template Form State
   const [newTitle, setNewTitle] = useState("");
@@ -102,6 +103,88 @@ export default function CMSAdminPage() {
     }
   };
 
+  const handleInjectTemplates = async () => {
+    setIsInjecting(true);
+    try {
+      const luxuryTemplates: Partial<PlatformPage>[] = [
+        {
+          title: "Sambalpuri Royal Heritage (Classic)",
+          type: "homepage",
+          status: "premium_template",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          theme: { backgroundColor: "#0A1021", headingColor: "#C5A059", textColor: "#E2E8F0", ticketColor: "#C5A059" },
+          rows: [
+            {
+              id: "hero-1", type: "hero", title: "The Legacy of Threads", hideTitle: true, heroLayout: "full",
+              heroHeadline: "A Heritage Woven in Time. A Legacy Worn by Legends.",
+              heroSubheadline: "Experience the soul of Sambalpur. Every master weaver's masterpiece is a story of resilience, art, and timeless luxury.",
+              heroButtonText: "Explore the Royal Collection", heroButtonLink: "/search",
+              heroImages: ["https://images.unsplash.com/photo-1605001011155-2241b7147b4d?auto=format&fit=crop&q=80&w=1600", "https://images.unsplash.com/photo-1605001011500-bf64b2d35817?auto=format&fit=crop&q=80&w=1600"]
+            },
+            {
+              id: "split-1", type: "split_banner_products", title: "The Master Weaver's Pride", hideTitle: false, splitColumnsCount: 3,
+              splitColumns: [
+                { id: "col1", type: "ad", bannerImage: "https://images.unsplash.com/photo-1584346133934-a3afd2a33c4c?auto=format&fit=crop&q=80&w=800", bannerText: "Handwoven Perfection", bannerLink: "/weavers" },
+                { id: "col2", type: "products", productLimit: 2, featuredOnly: true },
+                { id: "col3", type: "share_widget", shareLayout: "vertical", shareText: "Wear the pride of Odisha. Share this legacy with the world." }
+              ]
+            },
+            { id: "products-1", type: "products", title: "The Royal Reserve Collection", hideTitle: false, productLimit: 8, featuredOnly: true, discountOnly: false }
+          ]
+        },
+        {
+          title: "Sambalpuri Midnight Elegance (Dark Mode)",
+          type: "homepage",
+          status: "premium_template",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          theme: { backgroundColor: "#02040A", headingColor: "#E2E8F0", textColor: "#94A3B8", ticketColor: "#3B82F6" },
+          rows: [
+            {
+              id: "hero-2", type: "hero", title: "Midnight Silk", hideTitle: true, heroLayout: "split",
+              heroHeadline: "The Deep Richness of Sambalpuri Silk.",
+              heroSubheadline: "Reserved for the elite. Woven in the shadows of tradition.",
+              heroButtonText: "Shop Midnight Collection", heroButtonLink: "/search?material=silk",
+              heroImages: ["https://images.unsplash.com/photo-1558980394-0a06c4631733?auto=format&fit=crop&q=80&w=1600"],
+              heroRightContentType: "products"
+            },
+            { id: "products-2", type: "products", title: "Exclusive Handlooms", hideTitle: false, productLimit: 4, featuredOnly: false, discountOnly: false }
+          ]
+        },
+        {
+          title: "Master Weaver Profile (Gold Standard)",
+          type: "weaver",
+          status: "premium_template",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          theme: { backgroundColor: "#0B2B26", headingColor: "#C5A059", textColor: "#E2E8F0", ticketColor: "#C5A059" },
+          rows: [
+            {
+              id: "hero-3", type: "hero", title: "Weaver Cover", hideTitle: true, heroLayout: "split",
+              heroHeadline: "Generations of Craftsmanship.",
+              heroSubheadline: "Award-winning designs straight from the loom.",
+              heroButtonText: "Contact Master Weaver", heroButtonLink: "#contact",
+              heroImages: ["https://images.unsplash.com/photo-1604077351052-e932402bc0f7?auto=format&fit=crop&q=80&w=1600"],
+              heroRightContentType: "ad"
+            },
+            { id: "products-3", type: "products", title: "My Masterpieces", hideTitle: false, productLimit: 8, featuredOnly: false, discountOnly: false }
+          ]
+        }
+      ];
+
+      for (const t of luxuryTemplates) {
+        await addDoc(collection(db, 'platform_pages'), t);
+      }
+      alert("Injected 3 Luxury Templates!");
+      window.location.reload();
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setIsInjecting(false);
+    }
+  };
+
   if (loading) return <div className="p-8 text-[#C5A059] animate-pulse">Loading Template Library...</div>;
 
   return (
@@ -112,6 +195,13 @@ export default function CMSAdminPage() {
           <p className="text-gray-300 text-xs mt-1">Design and manage all visual layouts for homepages, vendors, weavers, and products.</p>
         </div>
         <div className="flex gap-3">
+          <button 
+            onClick={handleInjectTemplates}
+            disabled={isInjecting}
+            className="bg-indigo-900/50 border border-indigo-500/40 text-indigo-300 hover:bg-indigo-900 transition-colors font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider disabled:opacity-50"
+          >
+            {isInjecting ? "Injecting..." : "✨ Inject 3 Luxury Templates"}
+          </button>
           <Link 
             href="/admin/cms/routes"
             className="bg-[#051815] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 transition-colors font-bold px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-lg flex items-center justify-center"
