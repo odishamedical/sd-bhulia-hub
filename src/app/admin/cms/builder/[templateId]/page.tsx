@@ -130,7 +130,14 @@ export default function CMSBuilderPage() {
             <p className="text-gray-300 text-xs mt-1">Editing: <span className="text-white font-bold">{pageData.title}</span> ({pageData.type} layout)</p>
           </div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
+          <Link 
+            href={`/admin/cms/preview/${templateId}`}
+            target="_blank"
+            className="px-4 py-2 bg-[#051815] border border-blue-500/50 text-blue-400 hover:bg-blue-500/10 rounded-xl text-[10px] uppercase tracking-wider font-bold transition-colors flex items-center gap-2"
+          >
+            <span>👁️</span> Live PC Preview
+          </Link>
           <button 
             onClick={() => handleSave("draft")}
             disabled={saving}
