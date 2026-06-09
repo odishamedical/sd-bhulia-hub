@@ -88,6 +88,7 @@ const SIDEBAR_CATEGORIES = [
       { name: "Visual Page Builder", path: "/admin/cms" },
       { name: "Active Routes Manager", path: "/admin/cms/routes" },
       { name: "Global Settings", path: "/admin/settings" },
+      { name: "Global Style Guide", path: "/admin/style-guide" },
       { name: "Staff & Delegation", path: "/admin/staff" },
       { name: "API & Webhooks", path: "/admin/developer/webhooks" }
     ]
