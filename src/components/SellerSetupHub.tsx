@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { auth, db } from "@/lib/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import ImageUploader from "@/components/ImageUploader";
 import { uploadBase64ToStorage } from "@/app/dashboard/page"; // Reuse the upload utility
 
@@ -182,8 +182,23 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
     try {
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         applicationStatus: "pending_approval",
-        // We do NOT change their role yet. Admin God Mode will change it upon approval.
+        role: desiredRole
       });
+
+      // Create a pending profile in the respective collection so the dashboard works
+      const collectionName = desiredRole === "weaver" ? "weavers" : desiredRole === "vendor" ? "vendors" : "resellers";
+      const generatedSlug = (storeName || personalName || "store").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + auth.currentUser.uid.slice(0, 4).toLowerCase();
+      
+      const docRef = doc(db, collectionName, auth.currentUser.uid);
+      const snap = await getDoc(docRef);
+      if (!snap.exists()) {
+        await setDoc(docRef, {
+          slug: generatedSlug,
+          title: storeName || personalName,
+          status: "pending_approval",
+          isAutoApproved: false
+        });
+      }
       alert("Application submitted successfully! You will be notified once an Admin approves your account.");
       window.location.reload();
     } catch (e) {
