@@ -72,7 +72,7 @@ export default function GlobalDirectoryPage() {
               {/* Thumbnail Image Left Side */}
               <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 relative bg-[#051815] border-r border-[#C5A059]/20">
                 <img 
-                  src={item.image || item.photo || item.photoUrl || item.imageUrl || item.thumbnail || item.cover_image || item.featured_image || item.picture || item.avatar || item.business_logo || item['Profile Photo'] || item['Business Logo'] || item.logo || item.profileImage || item.img || "/bhulia-hero.png"} 
+                  src={(item as any).image || (item as any).photo || (item as any).photoUrl || (item as any).imageUrl || (item as any).thumbnail || (item as any).cover_image || (item as any).featured_image || (item as any).picture || (item as any).avatar || (item as any).business_logo || (item as any)['Profile Photo'] || (item as any)['Business Logo'] || (item as any).logo || (item as any).profileImage || (item as any).img || "/bhulia-hero.png"} 
                   alt={item.title || "Listing"}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
