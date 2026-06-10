@@ -406,11 +406,28 @@ export default function ImportedListingsDBPage() {
       </div>
       {/* Edit Modal */}
       {editingItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl border border-gray-100 max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <h3 className="text-2xl font-black text-gray-900 mb-6">Edit Imported Listing</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-gray-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl border border-gray-100 max-h-[90vh] flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
+              <h3 className="text-xl md:text-2xl font-black text-gray-900">Edit Imported Listing</h3>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setEditingItem(null)} 
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-xs font-bold hover:bg-gray-200 transition-all"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleSaveEdit} 
+                  disabled={savingEdit}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition-all shadow-sm disabled:opacity-50"
+                >
+                  {savingEdit ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </div>
             
-            <div className="space-y-4 mb-8">
+            <div className="p-6 overflow-y-auto custom-scrollbar space-y-4">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Business Name</label>
                 <input 
@@ -577,22 +594,6 @@ export default function ImportedListingsDBPage() {
                   </div>
                 )}
               </div>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-              <button 
-                onClick={() => setEditingItem(null)} 
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handleSaveEdit} 
-                disabled={savingEdit}
-                className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm disabled:opacity-50"
-              >
-                {savingEdit ? "Saving..." : "Save Changes"}
-              </button>
             </div>
           </div>
         </div>
