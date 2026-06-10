@@ -24,6 +24,7 @@ export interface Product {
   img2?: string;
   img3?: string;
   img4?: string;
+  youtubeUrl?: string;
   // Handloom attributes
   sareeType?: string; // Legacy field for material
   material?: string; // New explicit material field

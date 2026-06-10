@@ -685,6 +685,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [img2Caption, setImg2Caption] = useState("");
   const [img3Caption, setImg3Caption] = useState("");
   const [img4Caption, setImg4Caption] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
 
   const [productMrp, setProductMrp] = useState("");
   const [productLongDesc, setProductLongDesc] = useState("");
@@ -705,6 +706,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     setIsAddInventoryOpen(true);
     setProductName(""); setProductPrice(""); setProductMrp(""); setProductDesc(""); setProductLongDesc("");
     setProductImage(""); setImg2(""); setImg3(""); setImg4("");
+    setYoutubeUrl("");
     setAvailableForRetail(true); setAvailableForWholesale(false); setCommercialPrice(""); setWholesaleTerms("");
   };
 
@@ -723,6 +725,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     setImg2(p.img2 || "");
     setImg3(p.img3 || "");
     setImg4(p.img4 || "");
+    setYoutubeUrl(p.youtubeUrl || "");
     setIsAddInventoryOpen(true);
   };
 
@@ -793,6 +796,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         img4: img4Url,
         images: finalImages,
         imageCaptions: [imgCaption, img2Caption, img3Caption, img4Caption],
+        youtubeUrl: youtubeUrl || undefined,
         stockQuantity: Number(stockQuantity),
         inStock: Number(stockQuantity) > 0,
         allowResellerMargin,
@@ -1137,7 +1141,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
                 {/* Images Section */}
                 <div className="pt-6 border-t border-gray-100">
-                  <h3 className="text-sm font-bold text-gray-900 mb-4">Product Images</h3>
+                  <h3 className="text-sm font-bold text-gray-900 mb-4">Product Images & Video</h3>
+                  <div className="mb-6">
+                    <label className="block text-xs font-bold text-[#FF0000] uppercase tracking-wider mb-2">YouTube Demo Video (Optional)</label>
+                    <input type="url" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} placeholder="e.g. https://youtube.com/shorts/..." className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#FF0000] outline-none transition-all" />
+                    <p className="text-[10px] text-gray-500 mt-1">Paste a YouTube Shorts link to embed a vertical product demo.</p>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <ImageUploader label="Main Photo" value={productImage} onChange={setProductImage} aspectRatio="portrait" captionValue={imgCaption} onCaptionChange={setImgCaption} />
                     <ImageUploader label="Photo 2" value={img2} onChange={setImg2} aspectRatio="portrait" captionValue={img2Caption} onCaptionChange={setImg2Caption} />

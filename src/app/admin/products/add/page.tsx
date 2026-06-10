@@ -39,6 +39,7 @@ export default function AddProductPage() {
   const [img3Caption, setImg3Caption] = useState("");
   const [img4Caption, setImg4Caption] = useState("");
   const [imagesCaptions, setImagesCaptions] = useState<string[]>([]);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   
   // Handloom Specs
   const [sareeType, setSareeType] = useState("");
@@ -93,6 +94,7 @@ export default function AddProductPage() {
       img4,
       images: images.filter(Boolean),
       imageCaptions: [imgCaption, img2Caption, img3Caption, img4Caption, ...imagesCaptions],
+      youtubeUrl: youtubeUrl || null,
       category: finalCategory,
       sareeType: finalMaterial || sareeType,
       material: finalMaterial,
@@ -282,7 +284,12 @@ export default function AddProductPage() {
 
         {/* Media Section */}
         <section className="space-y-4">
-          <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">5. Product Gallery</h2>
+          <h2 className="text-lg font-bold text-white border-b border-[#C5A059]/20 pb-2">5. Product Media Gallery</h2>
+          <div className="mb-6">
+            <label className="block text-xs font-bold text-[#FF0000] uppercase tracking-wider mb-2">YouTube Demo Video (Optional)</label>
+            <input type="url" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} placeholder="e.g. https://youtube.com/shorts/..." className="w-full bg-[#051815] border border-gray-300 rounded-xl p-3 text-white shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#FF0000] outline-none transition-all" />
+            <p className="text-[10px] text-gray-500 mt-1">Paste a YouTube Shorts link to embed a vertical product demo.</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <ImageUploader value={img} onChange={setImg} label="Main Product Photo (Image 1)" aspectRatio="portrait" captionValue={imgCaption} onCaptionChange={setImgCaption} />
             <ImageUploader value={img2} onChange={setImg2} label="Product Photo 2" aspectRatio="portrait" captionValue={img2Caption} onCaptionChange={setImg2Caption} />

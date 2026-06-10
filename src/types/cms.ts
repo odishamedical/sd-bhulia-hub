@@ -119,8 +119,8 @@ export interface ActiveRoutes {
 export interface AdCampaign {
   id?: string;
   title: string;
-  type: "image" | "adsense";
-  content: string; // Image URL or HTML Code
+  type: "image" | "adsense" | "youtube";
+  content: string; // Image URL, HTML Code, or YouTube URL
   linkUrl?: string; // Where the image clicks to
   placement: "homepage_top" | "homepage_middle" | "sidebar" | "content_top" | "content_bottom";
   
