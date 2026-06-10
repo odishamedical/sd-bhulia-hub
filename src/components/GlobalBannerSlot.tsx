@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useBanners } from "@/hooks/useBanners";
 import { AdCampaign } from "@/types/cms";
+import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
 interface Props {
   placementId: AdCampaign["placement"];
@@ -70,6 +71,21 @@ export default function GlobalBannerSlot({ placementId, context }: Props) {
                 className="w-full h-auto object-contain group-hover:opacity-90 transition-opacity duration-500" 
               />
               <div className="absolute top-2 right-2 bg-black/60 text-white text-[8px] uppercase px-1.5 py-0.5 rounded backdrop-blur">Ad</div>
+            </div>
+          ) : banner.type === "youtube" ? (
+            <div className="w-full relative aspect-video bg-black flex items-center justify-center">
+              {getYouTubeEmbedUrl(banner.content) ? (
+                <iframe 
+                  src={getYouTubeEmbedUrl(banner.content) || ""} 
+                  title={banner.title}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                ></iframe>
+              ) : (
+                <div className="text-red-500 text-xs">Invalid YouTube URL</div>
+              )}
+              <div className="absolute top-2 right-2 bg-black/60 text-white text-[8px] uppercase px-1.5 py-0.5 rounded backdrop-blur z-10 pointer-events-none">Ad</div>
             </div>
           ) : (
             <div className="w-full p-4 flex items-center justify-center min-h-[120px] bg-white/5 relative">

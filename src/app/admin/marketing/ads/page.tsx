@@ -15,7 +15,7 @@ export default function AdsPage() {
 
   // Form State
   const [title, setTitle] = useState("");
-  const [type, setType] = useState<"image" | "adsense">("image");
+  const [type, setType] = useState<"image" | "adsense" | "youtube">("image");
   const [placement, setPlacement] = useState<AdCampaign["placement"]>("homepage_middle");
   const [targetAudience, setTargetAudience] = useState<AdCampaign["targetAudience"]>("global");
   const [targetSpecificIdsStr, setTargetSpecificIdsStr] = useState("all");
@@ -25,6 +25,7 @@ export default function AdsPage() {
   const [linkUrl, setLinkUrl] = useState("");
   const [htmlCode, setHtmlCode] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   const [layoutSize, setLayoutSize] = useState<AdCampaign["layoutSize"]>("full");
   const [impressionLimitStr, setImpressionLimitStr] = useState("");
   const [weaversList, setWeaversList] = useState<{id:string, name:string, slug:string}[]>([]);
@@ -101,6 +102,13 @@ export default function AdsPage() {
           return;
         }
         contentValue = imageUrl;
+      } else if (type === "youtube") {
+        if (!youtubeUrl) {
+          alert("Please provide a YouTube URL.");
+          setIsUploading(false);
+          return;
+        }
+        contentValue = youtubeUrl;
       } else {
         contentValue = htmlCode;
         if (!contentValue) {
@@ -158,6 +166,7 @@ export default function AdsPage() {
     setLinkUrl("");
     setHtmlCode("");
     setImageUrl("");
+    setYoutubeUrl("");
     setLayoutSize("full");
     setImpressionLimitStr("");
   };
@@ -266,6 +275,7 @@ export default function AdsPage() {
                     <label className="block text-xs font-bold text-gray-700 mb-1">Ad Type</label>
                     <select value={type} onChange={e => setType(e.target.value as any)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                       <option value="image">Image Banner</option>
+                      <option value="youtube">YouTube Video</option>
                       <option value="adsense">AdSense / Custom HTML</option>
                     </select>
                   </div>
@@ -396,6 +406,12 @@ export default function AdsPage() {
                       <input type="url" value={linkUrl} onChange={e => setLinkUrl(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" placeholder="https://..." />
                     </div>
                   </>
+                ) : type === "youtube" ? (
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">YouTube Video Link</label>
+                    <input type="url" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" placeholder="e.g. https://www.youtube.com/watch?v=..." required />
+                    <p className="text-[10px] text-gray-500 mt-1">Paste a standard YouTube link or Shorts link. It will automatically be transformed into an embedded ad player.</p>
+                  </div>
                 ) : (
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-1">HTML / AdSense Code</label>
