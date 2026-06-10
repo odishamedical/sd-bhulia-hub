@@ -1576,7 +1576,27 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                   </div>
                 </div>
                 
-                <button className="bg-[#C5A059] text-[#051815] px-6 py-3 rounded-xl font-bold hover:bg-white transition-all shadow-lg hover:-translate-y-0.5">
+                <button 
+                  onClick={async (e) => {
+                    if (!auth.currentUser) return;
+                    const btn = e.currentTarget;
+                    btn.disabled = true;
+                    btn.innerText = "Requesting...";
+                    try {
+                      const collectionName = roleTitle.includes("Weaver") ? "weavers" : "vendors";
+                      await updateDoc(doc(db, collectionName, auth.currentUser.uid), {
+                        b2bRequested: true
+                      });
+                      alert("B2B Access Requested successfully! Admins will review your profile.");
+                      btn.innerText = "Request Sent";
+                    } catch (e) {
+                      console.error(e);
+                      alert("Failed to request B2B access.");
+                      btn.disabled = false;
+                      btn.innerText = "Request B2B Access Approval";
+                    }
+                  }}
+                  className="bg-[#C5A059] text-[#051815] px-6 py-3 rounded-xl font-bold hover:bg-white transition-all shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0">
                   Request B2B Access Approval
                 </button>
               </div>
