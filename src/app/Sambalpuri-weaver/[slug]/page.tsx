@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { useWeaverBySlug, useProducts } from "@/lib/db-hooks";
+import { useWeaverBySlug, useProducts, useWeavers } from "@/lib/db-hooks";
 import PublicProfileTemplate from "@/components/PublicProfileTemplate";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 
@@ -13,6 +13,7 @@ export default function WeaverStorePage() {
 
   const { weaver, loading: weaverLoading } = useWeaverBySlug(rawSlug);
   const { products, loading: productsLoading } = useProducts();
+  const { weavers, loading: weaversLoading } = useWeavers();
 
   const [mappedProfile, setMappedProfile] = useState<any>(null);
   const [mappedProducts, setMappedProducts] = useState<any[]>([]);
@@ -50,7 +51,7 @@ export default function WeaverStorePage() {
     }
   }, [weaver, products]);
 
-  if (weaverLoading || productsLoading) {
+  if (weaverLoading || productsLoading || weaversLoading) {
     return (
       <div className="flex-1 min-h-screen flex items-center justify-center bg-[#051815]">
         <div className="w-12 h-12 border-4 border-[#C5A059] border-t-transparent rounded-full animate-spin"></div>
@@ -82,6 +83,7 @@ export default function WeaverStorePage() {
         profile={mappedProfile} 
         products={mappedProducts}
         allProducts={products}
+        allProfiles={weavers}
       />
     </main>
   );

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { useVendorBySlug, useProducts } from "@/lib/db-hooks";
+import { useVendorBySlug, useProducts, useVendors } from "@/lib/db-hooks";
 import PublicProfileTemplate from "@/components/PublicProfileTemplate";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 
@@ -13,6 +13,7 @@ export default function VendorDetailPage() {
 
   const { vendor, loading: vendorLoading } = useVendorBySlug(rawSlug);
   const { products, loading: productsLoading } = useProducts();
+  const { vendors, loading: vendorsLoading } = useVendors();
 
   const [mappedProfile, setMappedProfile] = useState<any>(null);
   const [mappedProducts, setMappedProducts] = useState<any[]>([]);
@@ -50,7 +51,7 @@ export default function VendorDetailPage() {
     }
   }, [vendor, products]);
 
-  if (vendorLoading || productsLoading) {
+  if (vendorLoading || productsLoading || vendorsLoading) {
     return (
       <div className="flex-1 min-h-screen flex items-center justify-center bg-[#051815]">
         <div className="w-12 h-12 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
@@ -82,6 +83,7 @@ export default function VendorDetailPage() {
         profile={mappedProfile} 
         products={mappedProducts} 
         allProducts={products}
+        allProfiles={vendors}
       />
     </main>
   );

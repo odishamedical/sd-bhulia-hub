@@ -30,9 +30,10 @@ export interface PublicProfileProps {
   };
   products: Product[];
   allProducts?: Product[];
+  allProfiles?: any[];
 }
 
-export default function PublicProfileTemplate({ type, profile, products = [], allProducts = [] }: PublicProfileProps) {
+export default function PublicProfileTemplate({ type, profile, products = [], allProducts = [], allProfiles = [] }: PublicProfileProps) {
   const isWeaver = type === "weaver";
   const badgeText = isWeaver ? "Bhulia.com Verified Weavers" : "Bhulia.com Verified Sambalpuri Shop";
   const badgeColor = isWeaver ? "text-[#C5A059] border-[#C5A059]" : "text-blue-400 border-blue-400";
@@ -58,6 +59,15 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
     const others = allProducts.filter(p => !currentProductIds.has(p.id));
     return others.sort(() => Math.random() - 0.5).slice(0, 4);
   }, [allProducts, products]);
+
+  // Get similar profiles (exclude current profile, randomize 4)
+  const similarProfiles = React.useMemo(() => {
+    if (!allProfiles || allProfiles.length === 0) return [];
+    // We match roughly by the fact they are in allProfiles
+    // Filter out the current one by name or phone/googlePlaceId (since we don't pass the exact ID in profile easily)
+    const others = allProfiles.filter(p => p.title !== profile.name);
+    return others.sort(() => Math.random() - 0.5).slice(0, 4);
+  }, [allProfiles, profile.name]);
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6 relative z-10">
@@ -223,6 +233,30 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
               Open Directory Filters →
             </Link>
           </div>
+
+          {/* Similar Profiles Widget */}
+          {similarProfiles.length > 0 && (
+            <div className="bg-[#0B2B26] border border-white/10 rounded-2xl p-5 shadow-lg">
+              <h3 className="text-white font-serif text-lg font-bold mb-1">Explore More Profiles</h3>
+              <p className="text-[#C5A059] text-[10px] uppercase tracking-widest mb-4">
+                {isWeaver ? "Other Master Weavers" : "Other Authentic Stores"}
+              </p>
+              
+              <div className="space-y-4">
+                {similarProfiles.map((sp) => (
+                  <Link key={sp.id || sp.slug} href={`/${isWeaver ? 'Sambalpuri-weaver' : 'Sambalpuri-store'}/${sp.slug}`} className="group flex gap-3 items-center hover:bg-white/5 p-2 rounded-xl transition-colors">
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-white/10">
+                      <Image src={sp.img || "/bhulia-hero.png"} alt={sp.title || "Profile"} fill className="object-cover group-hover:scale-110 transition-transform duration-500" unoptimized />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-white text-xs font-bold truncate group-hover:text-[#C5A059] transition-colors">{sp.title}</h4>
+                      <div className="text-gray-400 text-[10px] truncate mt-0.5">{sp.district || "Odisha"}</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Similar Products Widget */}
           {similarProducts.length > 0 && (
