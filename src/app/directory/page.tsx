@@ -8,6 +8,7 @@ import { ODISHA_DISTRICTS } from "@/lib/locations";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 import AdBannerCard from "@/components/AdBannerCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import DirectorySidebarFilter from "@/components/DirectorySidebarFilter";
 
 export default function GlobalDirectoryPage() {
   const { vendors, loading: vendorsLoading } = useVendors(50);
@@ -183,47 +184,35 @@ export default function GlobalDirectoryPage() {
           <GlobalBannerSlot placement="directory_top" fallbackColor="from-[#0B2B26] to-[#051815]" />
         </div>
 
-        {/* Search and Filters Bar - Glass Effect */}
-        <div className="bg-[#C5A059]/10 backdrop-blur-md border border-[#C5A059]/30 rounded-2xl p-4 md:p-6 mb-12 shadow-[0_8px_32px_rgba(0,0,0,0.3)] flex flex-wrap gap-4 items-center">
-          <div className="w-full md:flex-1">
-            <input 
-              type="text" 
-              placeholder="Search name or location..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] transition-colors placeholder-gray-400"
-            />
-          </div>
-          <div className="w-full md:w-56">
-            <select 
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}
-              className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
-            >
-              <option value="all">All Roles</option>
-              <option value="weaver">Master Weavers</option>
-              <option value="vendor">Retail Stores</option>
-              <option value="raw_material">Raw Material Supplier</option>
-            </select>
-          </div>
-          <div className="w-full md:w-56">
-            <select 
-              className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
-            >
-              <option value="all">All Regions</option>
-              <option value="odisha">Odisha</option>
-              <option value="india">All India</option>
-            </select>
-          </div>
-          <div className="w-full md:w-auto flex justify-center md:justify-end min-w-[100px]">
-            <div className="text-center md:text-right">
-              <div className="text-[#C5A059] font-bold text-xl">{filteredDirectory.length}</div>
-              <div className="text-gray-400 text-[10px] uppercase tracking-widest">Total Listings</div>
+        <div className="flex flex-col lg:flex-row gap-8">
+          
+          {/* Left Sidebar */}
+          <div className="w-full lg:w-80 shrink-0">
+            <div className="sticky top-24">
+              <DirectorySidebarFilter 
+                districts={districts}
+                selectedDistrict={selectedDistrict}
+                setSelectedDistrict={setSelectedDistrict}
+                selectedRole={selectedRole}
+                setSelectedRole={setSelectedRole}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+              />
             </div>
           </div>
-        </div>
 
-        {/* Grid Area */}
+          {/* Right Content */}
+          <div className="flex-1 min-w-0">
+            {/* Top Stats */}
+            <div className="bg-[#C5A059]/10 backdrop-blur-md border border-[#C5A059]/30 rounded-2xl p-4 mb-8 shadow-sm flex justify-between items-center">
+              <div className="text-gray-300 text-sm">Showing results for your filters</div>
+              <div className="text-right">
+                <div className="text-[#C5A059] font-bold text-xl">{filteredDirectory.length}</div>
+                <div className="text-gray-400 text-[10px] uppercase tracking-widest">Listings Found</div>
+              </div>
+            </div>
+
+            {/* Grid Area */}
         {loading ? (
           <div className="py-20 text-center">
             <div className="w-12 h-12 border-4 border-[#C5A059] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -281,6 +270,8 @@ export default function GlobalDirectoryPage() {
             )}
           </div>
         )}
+          </div>
+        </div>
       </div>
     </div>
   );
