@@ -51,6 +51,40 @@ service cloud.firestore {
       allow write: if request.auth.token.admin == true; // Only system/admin can modify balances
     }
     
+    // Weavers Collection
+    match /weavers/{weaverId} {
+      allow read: if true; // Publicly visible for directory
+      allow write: if isOwner(weaverId) || request.auth.token.admin == true;
+    }
+
+    // Vendors/Stores Collection
+    match /vendors/{vendorId} {
+      allow read: if true; // Publicly visible for directory
+      allow write: if isOwner(vendorId) || request.auth.token.admin == true;
+    }
+    match /stores/{storeId} {
+      allow read: if true;
+      allow write: if isOwner(storeId) || request.auth.token.admin == true;
+    }
+
+    // Resellers Collection
+    match /resellers/{resellerId} {
+      allow read: if true;
+      allow write: if isOwner(resellerId) || request.auth.token.admin == true;
+    }
+
+    // Customers Collection
+    match /customers/{customerId} {
+      allow read: if isOwner(customerId) || request.auth.token.admin == true;
+      allow write: if isOwner(customerId) || request.auth.token.admin == true;
+    }
+
+    // Franchises Collection
+    match /franchises/{franchiseId} {
+      allow read: if true;
+      allow write: if isOwner(franchiseId) || request.auth.token.admin == true;
+    }
+
     // Verification Requests
     match /verificationRequests/{userId} {
       allow read: if isOwner(userId) || request.auth.token.admin == true;
