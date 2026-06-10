@@ -19,12 +19,17 @@ export default function WeaverStorePage() {
 
   useEffect(() => {
     if (weaver) {
+      const addressParts = (weaver.address || "").split(",").map((s: string) => s.trim()).filter((s: string) => s !== "");
+      const extDistrict = addressParts.length >= 3 ? addressParts[addressParts.length - 3] : "Sambalpur";
+      const extState = addressParts.length >= 2 ? addressParts[addressParts.length - 2].split(" ")[0].replace(/[^a-zA-Z]/g, '') : "Odisha";
+      const extCountry = addressParts.length >= 1 ? addressParts[addressParts.length - 1].replace(/[^a-zA-Z ]/g, '').trim() : "India";
+
       setMappedProfile({
         name: weaver.title || "Master Weaver",
         image: weaver.img || "/bhulia-hero.png",
-        district: weaver.address?.split(",")?.[1]?.trim() || "Sambalpur",
-        state: weaver.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "Odisha",
-        country: weaver.country || "India",
+        district: weaver.district || extDistrict,
+        state: weaver.state || extState,
+        country: weaver.country || (extCountry === "India" || extCountry === "Odisha" ? "India" : extCountry),
         description: weaver.desc || "Odishan Master Weaver specializing in traditional handlooms.",
         address: weaver.address || "Address not provided.",
         phone: weaver.phone || "N/A",

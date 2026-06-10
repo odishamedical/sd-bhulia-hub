@@ -19,12 +19,17 @@ export default function VendorDetailPage() {
 
   useEffect(() => {
     if (vendor) {
+      const addressParts = (vendor.address || "").split(",").map((s: string) => s.trim()).filter((s: string) => s !== "");
+      const extDistrict = addressParts.length >= 3 ? addressParts[addressParts.length - 3] : "Sambalpur";
+      const extState = addressParts.length >= 2 ? addressParts[addressParts.length - 2].split(" ")[0].replace(/[^a-zA-Z]/g, '') : "Odisha";
+      const extCountry = addressParts.length >= 1 ? addressParts[addressParts.length - 1].replace(/[^a-zA-Z ]/g, '').trim() : "India";
+
       setMappedProfile({
         name: vendor.title || "Retail Shop",
         image: vendor.img || "/bhulia-hero.png",
-        district: vendor.address?.split(",")?.[1]?.trim() || "Sambalpur",
-        state: vendor.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "Odisha",
-        country: vendor.country || "India",
+        district: vendor.district || extDistrict,
+        state: vendor.state || extState,
+        country: vendor.country || (extCountry === "India" || extCountry === "Odisha" ? "India" : extCountry),
         description: vendor.desc || "Verified Retail Shop for Authentic Handlooms.",
         address: vendor.address || "Address not provided.",
         phone: vendor.phone || "N/A",
