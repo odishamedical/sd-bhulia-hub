@@ -4,7 +4,8 @@ import React, { useState, useMemo } from "react";
 import { useVendors, useWeavers } from "@/lib/db-hooks";
 import Image from "next/image";
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function ImportedListingsDBPage() {
   const { vendors, loading: vLoading } = useVendors();
@@ -15,6 +16,7 @@ export default function ImportedListingsDBPage() {
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [savingEdit, setSavingEdit] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -122,6 +124,21 @@ export default function ImportedListingsDBPage() {
 
   const handleEdit = (item: any) => {
     setEditingItem({ ...item });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    setIsUploading(true);
+    try {
+      const storageRef = ref(storage, `imported/${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      setEditingItem((prev: any) => ({ ...prev, img: downloadURL }));
+    } catch (error: any) {
+      alert("Error uploading image: " + error.message);
+    }
+    setIsUploading(false);
   };
 
   const handleSaveEdit = async () => {
@@ -465,18 +482,22 @@ export default function ImportedListingsDBPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Image URL</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Image Upload</label>
                 <input 
-                  type="text" 
-                  value={editingItem.img || ""} 
-                  onChange={e => setEditingItem({...editingItem, img: e.target.value})}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
-                  placeholder="https://..."
+                  type="file" 
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={isUploading}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 text-sm font-semibold focus:border-blue-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
+                {isUploading && <p className="text-xs text-blue-600 mt-2 font-bold animate-pulse">Uploading image...</p>}
                 {editingItem.img && (
-                  <div className="mt-2 w-16 h-16 rounded-xl overflow-hidden border border-gray-200 relative">
+                  <div className="mt-4 w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-200 relative group shadow-sm">
                      {/* eslint-disable-next-line @next/next/no-img-element */}
                      <img src={editingItem.img} alt="Preview" className="w-full h-full object-cover" />
+                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                       <button onClick={() => setEditingItem((prev: any) => ({ ...prev, img: "" }))} className="text-white text-xs font-bold bg-red-600 px-2 py-1 rounded">Remove</button>
+                     </div>
                   </div>
                 )}
               </div>
