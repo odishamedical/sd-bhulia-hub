@@ -137,6 +137,9 @@ export default function ImportedListingsDBPage() {
         state: editingItem.state,
         district: editingItem.district,
         listingType: editingItem.listingType || editingItem.baseRole,
+        desc: editingItem.desc || "",
+        productsOffered: editingItem.productsOffered || "",
+        img: editingItem.img || "",
       };
 
       await updateDoc(doc(db, collectionName, editingItem.id), updates);
@@ -381,7 +384,7 @@ export default function ImportedListingsDBPage() {
       {/* Edit Modal */}
       {editingItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl border border-gray-100">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl border border-gray-100 max-h-[90vh] overflow-y-auto custom-scrollbar">
             <h3 className="text-2xl font-black text-gray-900 mb-6">Edit Imported Listing</h3>
             
             <div className="space-y-4 mb-8">
@@ -437,6 +440,45 @@ export default function ImportedListingsDBPage() {
                   <option value="weaver">Master Weaver</option>
                   <option value="raw_material">Raw Material Supplier</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Description</label>
+                <textarea 
+                  rows={3}
+                  value={editingItem.desc || ""} 
+                  onChange={e => setEditingItem({...editingItem, desc: e.target.value})}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none resize-none"
+                  placeholder="Short description of the store or weaver..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Products / Specialties</label>
+                <input 
+                  type="text" 
+                  value={editingItem.productsOffered || ""} 
+                  onChange={e => setEditingItem({...editingItem, productsOffered: e.target.value})}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  placeholder="e.g. Silk Sarees, Cotton Dress Materials, Bomkai..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Image URL</label>
+                <input 
+                  type="text" 
+                  value={editingItem.img || ""} 
+                  onChange={e => setEditingItem({...editingItem, img: e.target.value})}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  placeholder="https://..."
+                />
+                {editingItem.img && (
+                  <div className="mt-2 w-16 h-16 rounded-xl overflow-hidden border border-gray-200 relative">
+                     {/* eslint-disable-next-line @next/next/no-img-element */}
+                     <img src={editingItem.img} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
               </div>
             </div>
 
