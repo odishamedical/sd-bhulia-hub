@@ -3,9 +3,17 @@
 import React from "react";
 
 interface SidebarProps {
+  selectedCountry: string;
+  setSelectedCountry: (v: string) => void;
+  selectedState: string;
+  setSelectedState: (v: string) => void;
   districts: string[];
   selectedDistrict: string;
   setSelectedDistrict: (v: string) => void;
+  selectedBlock: string;
+  setSelectedBlock: (v: string) => void;
+  selectedVillage: string;
+  setSelectedVillage: (v: string) => void;
   selectedRole: string;
   setSelectedRole: (v: string) => void;
   searchQuery: string;
@@ -13,9 +21,17 @@ interface SidebarProps {
 }
 
 export default function DirectorySidebarFilter({
+  selectedCountry,
+  setSelectedCountry,
+  selectedState,
+  setSelectedState,
   districts,
   selectedDistrict,
   setSelectedDistrict,
+  selectedBlock,
+  setSelectedBlock,
+  selectedVillage,
+  setSelectedVillage,
   selectedRole,
   setSelectedRole,
   searchQuery,
@@ -23,7 +39,11 @@ export default function DirectorySidebarFilter({
 }: SidebarProps) {
 
   const clearAllFilters = () => {
+    setSelectedCountry("India");
+    setSelectedState("Odisha");
     setSelectedDistrict("all");
+    setSelectedBlock("");
+    setSelectedVillage("");
     setSelectedRole("all");
     setSearchQuery("");
   };
@@ -79,22 +99,99 @@ export default function DirectorySidebarFilter({
           </div>
         </div>
 
-        {/* District */}
+        {/* Country */}
+        <div className="space-y-2 pt-2 border-t border-[#C5A059]/10">
+          <label className="text-[10px] font-bold uppercase tracking-wider text-[#C5A059]">Country</label>
+          <input 
+            type="text" 
+            value={selectedCountry} 
+            onChange={e => setSelectedCountry(e.target.value)}
+            disabled
+            className="w-full bg-[#051815] border border-[#C5A059]/10 text-gray-400 text-xs px-4 py-3 rounded-xl outline-none cursor-not-allowed"
+          />
+        </div>
+
+        {/* State */}
         <div className="space-y-2">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">District (Odisha)</label>
+          <label className="text-[10px] font-bold uppercase tracking-wider text-[#C5A059]">State</label>
           <div className="relative">
             <select 
-              value={selectedDistrict} 
-              onChange={e => setSelectedDistrict(e.target.value)}
+              value={selectedState} 
+              onChange={e => {
+                setSelectedState(e.target.value);
+                setSelectedDistrict("all");
+                setSelectedBlock("");
+                setSelectedVillage("");
+              }}
               className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs p-3 rounded-xl outline-none focus:border-[#C5A059] appearance-none cursor-pointer transition-colors"
             >
-              <option value="all">All Districts</option>
-              {districts.map(d => (
-                <option key={d} value={d}>{d}</option>
-              ))}
+              <option value="all">All States</option>
+              <option value="Odisha">Odisha</option>
+              <option value="Other">Other States</option>
             </select>
             <svg className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
           </div>
+        </div>
+
+        {/* District */}
+        <div className="space-y-2">
+          <label className="text-[10px] font-bold uppercase tracking-wider text-[#C5A059]">District</label>
+          {selectedState === "Odisha" ? (
+            <div className="relative">
+              <select 
+                value={selectedDistrict} 
+                onChange={e => {
+                  setSelectedDistrict(e.target.value);
+                  setSelectedBlock("");
+                }}
+                disabled={!selectedState}
+                className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs p-3 rounded-xl outline-none focus:border-[#C5A059] appearance-none cursor-pointer transition-colors disabled:opacity-50"
+              >
+                <option value="all">All Districts</option>
+                {districts.map(d => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
+              <svg className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+            </div>
+          ) : (
+            <input 
+              type="text" 
+              value={selectedDistrict === "all" ? "" : selectedDistrict} 
+              onChange={e => setSelectedDistrict(e.target.value)}
+              placeholder="Enter District Name"
+              disabled={!selectedState}
+              className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs px-4 py-3 rounded-xl outline-none focus:border-[#C5A059] transition-colors disabled:opacity-50"
+            />
+          )}
+        </div>
+
+        {/* Block (Optional, mainly for Odisha) */}
+        {selectedState === "Odisha" && (
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-[#C5A059]">Block <span className="opacity-60 lowercase">(optional)</span></label>
+            <input 
+              type="text" 
+              value={selectedBlock} 
+              onChange={e => setSelectedBlock(e.target.value)}
+              placeholder="Enter Block Name"
+              disabled={!selectedDistrict || selectedDistrict === "all"}
+              className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs px-4 py-3 rounded-xl outline-none focus:border-[#C5A059] transition-colors disabled:opacity-50"
+            />
+          </div>
+        )}
+
+        {/* Town / Village */}
+        <div className="space-y-2">
+          <label className="text-[10px] font-bold uppercase tracking-wider text-[#C5A059]">Town / Village</label>
+          <input 
+            type="text" 
+            value={selectedVillage} 
+            onChange={e => setSelectedVillage(e.target.value)}
+            placeholder="Enter Town or Village"
+            disabled={!selectedState}
+            className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs px-4 py-3 rounded-xl outline-none focus:border-[#C5A059] transition-colors disabled:opacity-50"
+          />
         </div>
 
       </div>

@@ -15,9 +15,14 @@ export default function GlobalDirectoryPage() {
   const { weavers, loading: weaversLoading } = useWeavers(50);
 
   const [selectedRole, setSelectedRole] = useState<string>("all");
-  const [selectedDistrict, setSelectedDistrict] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [showUnverified, setShowUnverified] = useState(false);
+  
+  // Cascading Location States
+  const [selectedCountry, setSelectedCountry] = useState<string>("India");
+  const [selectedState, setSelectedState] = useState<string>("Odisha");
+  const [selectedDistrict, setSelectedDistrict] = useState<string>("all");
+  const [selectedBlock, setSelectedBlock] = useState<string>("");
+  const [selectedVillage, setSelectedVillage] = useState<string>("");
 
   const combinedDirectory = useMemo(() => {
     const vList = vendors.map(v => ({ ...v, role: "vendor", displayType: "Retail Shop" }));
@@ -37,20 +42,59 @@ export default function GlobalDirectoryPage() {
 
   const filteredDirectory = useMemo(() => {
     return combinedDirectory.filter(item => {
+      // 1. Role Filter
       if (selectedRole !== "all" && item.role !== selectedRole) return false;
-      let d = (item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha";
-      if (d.toLowerCase() === "subarnapur" || d.toLowerCase() === "suvernpur") d = "Sonepur";
       
-      if (selectedDistrict !== "all" && d !== selectedDistrict) return false;
+      // 2. Search Query Filter
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         if (!item.title?.toLowerCase().includes(q) && !item.address?.toLowerCase().includes(q)) {
           return false;
         }
       }
+
+      // Location matching logic - assuming format like "Village, Block, District, State, Country" or similar
+      const addr = (item.address || "").toLowerCase();
+      const dist = ((item as any).district || "").toLowerCase();
+      const st = ((item as any).state || "").toLowerCase();
+      const cntry = ((item as any).country || "").toLowerCase();
+      const blk = ((item as any).block || "").toLowerCase();
+      const vill = ((item as any).townVillage || "").toLowerCase();
+
+      // 3. Country Filter
+      if (selectedCountry && selectedCountry !== "India") { // Assuming default is India
+         if (!cntry.includes(selectedCountry.toLowerCase()) && !addr.includes(selectedCountry.toLowerCase())) return false;
+      }
+
+      // 4. State Filter
+      if (selectedState && selectedState !== "all") {
+        if (!st.includes(selectedState.toLowerCase()) && !addr.includes(selectedState.toLowerCase())) return false;
+      }
+
+      // 5. District Filter
+      if (selectedDistrict && selectedDistrict !== "all") {
+        let dTarget = selectedDistrict.toLowerCase();
+        if (dTarget === "sonepur") dTarget = "subarnapur"; // alias
+        if (dTarget === "subarnapur") dTarget = "sonepur"; // alias
+
+        const matchDist = dist.includes(dTarget) || dist.includes(selectedDistrict.toLowerCase());
+        const matchAddr = addr.includes(dTarget) || addr.includes(selectedDistrict.toLowerCase());
+        if (!matchDist && !matchAddr) return false;
+      }
+
+      // 6. Block Filter
+      if (selectedBlock) {
+        if (!blk.includes(selectedBlock.toLowerCase()) && !addr.includes(selectedBlock.toLowerCase())) return false;
+      }
+
+      // 7. Village/Town Filter
+      if (selectedVillage) {
+        if (!vill.includes(selectedVillage.toLowerCase()) && !addr.includes(selectedVillage.toLowerCase())) return false;
+      }
+
       return true;
     });
-  }, [combinedDirectory, selectedRole, selectedDistrict, searchQuery]);
+  }, [combinedDirectory, selectedRole, selectedCountry, selectedState, selectedDistrict, selectedBlock, selectedVillage, searchQuery]);
 
   const verifiedListings = filteredDirectory.filter(item => item.status === "approved");
   const unverifiedListings = filteredDirectory.filter(item => item.status !== "approved");
@@ -190,9 +234,17 @@ export default function GlobalDirectoryPage() {
           <div className="w-full lg:w-80 shrink-0">
             <div className="sticky top-24">
               <DirectorySidebarFilter 
+                selectedCountry={selectedCountry}
+                setSelectedCountry={setSelectedCountry}
+                selectedState={selectedState}
+                setSelectedState={setSelectedState}
                 districts={districts}
                 selectedDistrict={selectedDistrict}
                 setSelectedDistrict={setSelectedDistrict}
+                selectedBlock={selectedBlock}
+                setSelectedBlock={setSelectedBlock}
+                selectedVillage={selectedVillage}
+                setSelectedVillage={setSelectedVillage}
                 selectedRole={selectedRole}
                 setSelectedRole={setSelectedRole}
                 searchQuery={searchQuery}
