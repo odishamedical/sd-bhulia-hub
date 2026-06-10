@@ -4,14 +4,12 @@ import React, { useState, useMemo } from "react";
 import { useWeavers, useVendors, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addVendor, addCustomer, addReseller, deleteUserRecord, suspendUserRecord, convertUserRole, updateDocumentStatus } from "@/lib/db-hooks";
 
 export default function UserManagementPage() {
-  const { weavers, loading: loadingWeavers } = useWeavers();
-  const { vendors: stores, loading: loadingStores } = useVendors();
-  const { orders, loading: loadingOrders } = useOrders();
-  const { customers, loading: loadingCustomers } = useCustomers();
-  const { authUsers, loading: loadingAuth } = useAuthUsers();
-  const { resellers, loading: loadingResellers } = useResellers();
-  
-  const isDataLoading = loadingWeavers || loadingStores || loadingOrders || loadingCustomers || loadingAuth || loadingResellers;
+  const { weavers } = useWeavers(200);
+  const { vendors: stores } = useVendors(200);
+  const { orders } = useOrders(200);
+  const { customers } = useCustomers(200);
+  const { authUsers } = useAuthUsers();
+  const { resellers } = useResellers(200);
   
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");

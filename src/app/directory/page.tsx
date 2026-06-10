@@ -10,8 +10,8 @@ import AdBannerCard from "@/components/AdBannerCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function GlobalDirectoryPage() {
-  const { vendors, loading: vendorsLoading } = useVendors();
-  const { weavers, loading: weaversLoading } = useWeavers();
+  const { vendors, loading: vendorsLoading } = useVendors(50);
+  const { weavers, loading: weaversLoading } = useWeavers(50);
 
   const [selectedRole, setSelectedRole] = useState<string>("all");
   const [selectedDistrict, setSelectedDistrict] = useState<string>("all");
@@ -71,13 +71,12 @@ export default function GlobalDirectoryPage() {
               
               {/* Thumbnail Image Left Side */}
               <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 relative bg-[#051815] border-r border-[#C5A059]/20">
-                <Image 
-                  src={item.logo || item.profileImage || item.img || item.image || item.photo || item.photoUrl || "/bhulia-hero.png"} 
-                  alt={item.title || "Listing"} 
-                  fill 
-                  className="object-cover opacity-90 group-hover:opacity-100 transition-opacity" 
-                  unoptimized={true} 
+                <img 
+                  src={item.image || item.photo || item.photoUrl || item.imageUrl || item.thumbnail || item.cover_image || item.featured_image || item.picture || item.avatar || item.business_logo || item['Profile Photo'] || item['Business Logo'] || item.logo || item.profileImage || item.img || "/bhulia-hero.png"} 
+                  alt={item.title || "Listing"}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0B2B26]/50"></div>
                 <div className="absolute top-2 left-2 z-10">
                   <span className={`px-1.5 py-0.5 rounded text-[8px] uppercase font-bold tracking-widest border shadow-sm backdrop-blur-md ${
                     item.role === 'weaver' ? 'bg-amber-900/80 text-amber-300 border-amber-500/50' : 'bg-blue-900/80 text-blue-300 border-blue-500/50'

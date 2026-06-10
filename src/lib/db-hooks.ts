@@ -250,12 +250,14 @@ export function useProductById(id: string) {
   return { product, loading };
 }
 
-export function useWeavers() {
+export function useWeavers(limitCount?: number) {
   const [weavers, setWeavers] = useState<Weaver[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, "weavers"));
+    let q = query(collection(db, "weavers"));
+    if (limitCount) q = query(collection(db, "weavers"), limit(limitCount));
+    
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data: Weaver[] = [];
       snapshot.forEach((doc) => {
@@ -269,17 +271,19 @@ export function useWeavers() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [limitCount]);
 
   return { weavers, loading };
 }
 
-export function useCustomers() {
+export function useCustomers(limitCount?: number) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, "customers"));
+    let q = query(collection(db, "customers"));
+    if (limitCount) q = query(collection(db, "customers"), limit(limitCount));
+    
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data: Customer[] = [];
       snapshot.forEach((doc) => {
@@ -293,17 +297,19 @@ export function useCustomers() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [limitCount]);
 
   return { customers, loading };
 }
 
-export function useResellers() {
+export function useResellers(limitCount?: number) {
   const [resellers, setResellers] = useState<Reseller[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, "resellers"));
+    let q = query(collection(db, "resellers"));
+    if (limitCount) q = query(collection(db, "resellers"), limit(limitCount));
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data: Reseller[] = [];
       snapshot.forEach((doc) => {
@@ -317,17 +323,19 @@ export function useResellers() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [limitCount]);
 
   return { resellers, loading };
 }
 
-export function useVendors() {
+export function useVendors(limitCount?: number) {
   const [vendors, setStores] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, "vendors"));
+    let q = query(collection(db, "vendors"));
+    if (limitCount) q = query(collection(db, "vendors"), limit(limitCount));
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data: Vendor[] = [];
       snapshot.forEach((doc) => {
@@ -341,7 +349,7 @@ export function useVendors() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [limitCount]);
 
   return { vendors, loading };
 }
