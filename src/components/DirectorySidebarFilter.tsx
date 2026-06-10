@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { INDIAN_STATES, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
+import { INDIAN_STATES, ODISHA_DISTRICT_BLOCKS, ODISHA_DISTRICTS } from "@/lib/locations";
 
 interface SidebarProps {
   selectedCountry: string;
@@ -151,7 +151,7 @@ export default function DirectorySidebarFilter({
                 className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs p-3 rounded-xl outline-none focus:border-[#C5A059] appearance-none cursor-pointer transition-colors disabled:opacity-50"
               >
                 <option value="all">All Districts</option>
-                {districts.map(d => (
+                {ODISHA_DISTRICTS.map(d => (
                   <option key={d} value={d}>{d}</option>
                 ))}
               </select>
