@@ -8,6 +8,7 @@ import { auth, db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp, doc, updateDoc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import Script from "next/script";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useCart();
@@ -177,9 +178,14 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-[#051815] py-12 px-4 sm:px-6 relative z-10">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" />
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="max-w-6xl mx-auto flex flex-col gap-6">
         
-        {/* Checkout Form */}
+        {/* Breadcrumbs Navigation */}
+        <Breadcrumbs items={[{ label: "Checkout" }]} />
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* Checkout Form */}
         <div className="lg:col-span-7 bg-[#0B2B26] border border-[#C5A059]/30 rounded-3xl p-6 sm:p-10 shadow-2xl">
           <h2 className="text-2xl font-serif font-black text-[#C5A059] mb-6">Shipping Details</h2>
           <form id="checkout-form" onSubmit={handleSimulatePayment} className="space-y-6">
@@ -288,6 +294,7 @@ export default function CheckoutPage() {
           </div>
         </div>
 
+        </div>
       </div>
     </div>
   );

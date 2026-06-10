@@ -12,6 +12,7 @@ import ShareWidget from "@/components/ShareWidget";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 import ProfileBlockerModal from "../../../components/ProfileBlockerModal";
 import { FastAverageColor } from 'fast-average-color';
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function ProductDetailPage() {
   const { addToCart, addToWishlist, wishlist } = useCart();
@@ -236,6 +237,14 @@ export default function ProductDetailPage() {
       {/* Main product showcase page layout */}
       <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 py-8 flex flex-col gap-8 relative z-10">
         
+        {product && (
+          <Breadcrumbs items={[
+            { label: "Products", href: "/#cotton-sambalpuri" },
+            { label: product.category || "Collection", href: `/search?category=${encodeURIComponent(product.category || '')}` },
+            { label: product.title }
+          ]} />
+        )}
+
         {product && <GlobalBannerSlot placementId="content_top" context={{ audience: "products", specificId: product.id, category: product.category, material: product.material, design: product.design }} />}
         
         {productLoading ? (

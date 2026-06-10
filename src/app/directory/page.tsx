@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useVendors, useWeavers } from "@/lib/db-hooks";
 import { ODISHA_DISTRICTS } from "@/lib/locations";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
+import AdBannerCard from "@/components/AdBannerCard";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function GlobalDirectoryPage() {
   const { vendors, loading: vendorsLoading } = useVendors();
@@ -118,6 +120,11 @@ export default function GlobalDirectoryPage() {
       
       <div className="w-full px-4 md:px-8 lg:px-12 relative z-10">
         
+        {/* Breadcrumbs Navigation */}
+        <div className="mb-4">
+          <Breadcrumbs items={[{ label: "Verified Directory" }]} />
+        </div>
+
         {/* Sleek Header - Left Aligned */}
         <div className="mb-8 text-left w-full">
           <h1 className="text-xl md:text-3xl lg:text-4xl xl:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-3 leading-tight truncate-multiline">
