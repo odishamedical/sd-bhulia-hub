@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { db } from "./firebase";
-import { collection, doc, onSnapshot, query, where, setDoc, deleteDoc, updateDoc, getDoc, increment } from "firebase/firestore";
+import { collection, doc, onSnapshot, query, where, setDoc, deleteDoc, updateDoc, getDoc, increment, limit } from "firebase/firestore";
 import { Product } from "./products";
 
 // ============================================================================
