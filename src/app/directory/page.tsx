@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useVendors, useWeavers } from "@/lib/db-hooks";
 import { ODISHA_DISTRICTS } from "@/lib/locations";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
@@ -10,12 +11,20 @@ import AdBannerCard from "@/components/AdBannerCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DirectorySidebarFilter from "@/components/DirectorySidebarFilter";
 
-export default function GlobalDirectoryPage() {
+function DirectoryContent() {
   const { vendors, loading: vendorsLoading } = useVendors(50);
   const { weavers, loading: weaversLoading } = useWeavers(50);
 
   const [selectedRole, setSelectedRole] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams?.get("search") || "";
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
+
+  useEffect(() => {
+    if (searchParams?.get("search")) {
+      setSearchQuery(searchParams.get("search") || "");
+    }
+  }, [searchParams]);
   
   // Cascading Location States
   const [selectedCountry, setSelectedCountry] = useState<string>("India");
@@ -325,6 +334,14 @@ export default function GlobalDirectoryPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
+  );
+}
+
+export default function GlobalDirectoryPage() {
+  return (
+    <Suspense fallback={<div className="flex-1 min-h-screen flex items-center justify-center bg-[#051815]"><div className="w-12 h-12 border-4 border-[#C5A059] border-t-transparent rounded-full animate-spin"></div></div>}>
+      <DirectoryContent />
+    </Suspense>
   );
 }

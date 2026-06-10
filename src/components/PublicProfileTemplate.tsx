@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
 import ShareWidget from "./ShareWidget";
 import Breadcrumbs, { BreadcrumbItem } from "./Breadcrumbs";
+import { useRouter } from "next/navigation";
 
 export interface PublicProfileProps {
   type: "weaver" | "store";
@@ -39,6 +40,8 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
   const badgeColor = isWeaver ? "text-[#C5A059] border-[#C5A059]" : "text-blue-400 border-blue-400";
   const badgeBg = isWeaver ? "bg-[#C5A059]/10" : "bg-blue-400/10";
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [quickSearch, setQuickSearch] = useState("");
+  const router = useRouter();
   useEffect(() => {
     if (typeof window !== "undefined") {
       setUserRole(localStorage.getItem("sd_current_user_role"));
@@ -68,6 +71,15 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
     const others = allProfiles.filter(p => p.title !== profile.name);
     return others.sort(() => Math.random() - 0.5).slice(0, 4);
   }, [allProfiles, profile.name]);
+
+  const handleQuickSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (quickSearch.trim()) {
+      router.push(`/directory?search=${encodeURIComponent(quickSearch)}`);
+    } else {
+      router.push(`/directory`);
+    }
+  };
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6 relative z-10">
@@ -224,13 +236,22 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#C5A059]/5 blur-3xl rounded-full"></div>
             <h3 className="text-[#C5A059] font-bold text-sm uppercase tracking-widest mb-3 flex items-center gap-2">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-              Directory Search
+              Quick Search
             </h3>
-            <p className="text-gray-300 text-xs mb-4 leading-relaxed">
-              Looking for more options in <strong className="text-white">{profile.district || profile.state}</strong>? Or exploring different categories?
-            </p>
+            <form onSubmit={handleQuickSearch} className="mb-4">
+              <div className="relative">
+                <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                <input 
+                  type="text" 
+                  placeholder="Find Weavers, Stores..."
+                  value={quickSearch}
+                  onChange={(e) => setQuickSearch(e.target.value)}
+                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs pl-9 pr-4 py-3 rounded-xl outline-none focus:border-[#C5A059] transition-colors"
+                />
+              </div>
+            </form>
             <Link href="/directory" className="block w-full text-center bg-[#C5A059]/10 hover:bg-[#C5A059] text-[#C5A059] hover:text-[#051815] border border-[#C5A059]/50 transition-all duration-300 py-3 rounded-xl text-xs font-bold uppercase tracking-widest">
-              Open Directory Filters →
+              Explore All Listings →
             </Link>
           </div>
 
