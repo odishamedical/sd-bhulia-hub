@@ -4,12 +4,14 @@ import React, { useState, useMemo } from "react";
 import { useWeavers, useVendors, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addVendor, addCustomer, addReseller, deleteUserRecord, suspendUserRecord, convertUserRole, updateDocumentStatus } from "@/lib/db-hooks";
 
 export default function UserManagementPage() {
-  const { weavers } = useWeavers();
-  const { vendors: stores } = useVendors();
-  const { orders } = useOrders();
-  const { customers } = useCustomers();
-  const { authUsers } = useAuthUsers();
-  const { resellers } = useResellers();
+  const { weavers, loading: loadingWeavers } = useWeavers();
+  const { vendors: stores, loading: loadingStores } = useVendors();
+  const { orders, loading: loadingOrders } = useOrders();
+  const { customers, loading: loadingCustomers } = useCustomers();
+  const { authUsers, loading: loadingAuth } = useAuthUsers();
+  const { resellers, loading: loadingResellers } = useResellers();
+  
+  const isDataLoading = loadingWeavers || loadingStores || loadingOrders || loadingCustomers || loadingAuth || loadingResellers;
   
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -567,11 +569,21 @@ export default function UserManagementPage() {
                 {filteredUsers.length === 0 && (
                   <tr>
                     <td colSpan={5} className="py-24 text-center text-gray-500">
-                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                      </div>
-                      <div className="font-bold text-lg text-gray-900 mb-1">No users found</div>
-                      <div className="text-sm font-medium">Try adjusting your advanced filters or search term.</div>
+                      {isDataLoading ? (
+                        <>
+                          <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+                          <div className="font-bold text-lg text-gray-900 mb-1">Loading Ecosystem Data...</div>
+                          <div className="text-sm font-medium">Please wait while we sync with the server.</div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                          </div>
+                          <div className="font-bold text-lg text-gray-900 mb-1">No users found</div>
+                          <div className="text-sm font-medium">Try adjusting your advanced filters or search term.</div>
+                        </>
+                      )}
                     </td>
                   </tr>
                 )}
@@ -862,6 +874,25 @@ export default function UserManagementPage() {
                       className="w-4 h-4 text-orange-600 border-gray-300 rounded" 
                     />
                     <span className="text-xs font-bold text-orange-900 uppercase">VIP Auto-Approval</span>
+                  </label>
+                  
+                  <label className="flex items-center gap-2 cursor-pointer bg-purple-50 px-3 py-2 border border-purple-300 rounded-lg hover:bg-purple-100 transition-colors">
+                    <input 
+                      type="checkbox" 
+                      defaultChecked={selectedUserForDetails.canSellWholesale}
+                      onChange={async (e) => {
+                        const checked = e.target.checked;
+                        if(confirm(`${checked ? 'Enable' : 'Disable'} B2B Wholesale Privileges for this seller?`)) {
+                          const collectionName = selectedUserForDetails.role === 'weaver' ? 'weavers' : 'vendors';
+                          await updateDocumentStatus(collectionName, selectedUserForDetails.id, { canSellWholesale: checked });
+                          alert(`Wholesale Privileges ${checked ? 'enabled' : 'disabled'}!`);
+                        } else {
+                          e.target.checked = !checked;
+                        }
+                      }}
+                      className="w-4 h-4 text-purple-600 border-gray-300 rounded" 
+                    />
+                    <span className="text-xs font-bold text-purple-900 uppercase">B2B Privileges</span>
                   </label>
                 </div>
               </div>
