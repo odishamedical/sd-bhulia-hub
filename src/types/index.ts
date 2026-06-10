@@ -20,6 +20,11 @@ export interface User extends BaseDocument {
   phone?: string;
   businessName?: string;
   aadhaarNumber?: string;
+  // --- Vanity URL Monetization ---
+  slug?: string; // The SEO base slug (e.g., shyam-dash-304)
+  subscriptionTier?: "free" | "professional" | "premium" | "enterprise";
+  customDomain?: string; // Premium/Enterprise custom domain mapping
+  vanityUrlActive?: boolean;
 }
 
 export interface Review extends BaseDocument {
