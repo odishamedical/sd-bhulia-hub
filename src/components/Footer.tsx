@@ -100,7 +100,7 @@ export default function Footer() {
           
           {/* Col 1: Branding & Description */}
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity w-fit">
               <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#C5A059] shrink-0">
                 <Image src="/bhulia_logo_final.jpg" alt="Bhulia Logo" fill className="object-cover" />
               </div>
@@ -108,7 +108,7 @@ export default function Footer() {
                 <h4 className="text-lg font-serif font-bold text-[#C5A059] leading-none">Shyam Dash</h4>
                 <p className="text-[9px] text-gray-400 uppercase tracking-widest mt-1">India's Verified Handloom Marketplace.</p>
               </div>
-            </div>
+            </Link>
             <p className="text-xs text-gray-300 leading-relaxed font-sans">
               The premier luxury marketplace for authenticated, Bhulia.com Verified Sambalpuri handlooms. Partnering exclusively with master weavers and primary cooperative societies across India.
             </p>

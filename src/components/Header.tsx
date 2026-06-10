@@ -28,7 +28,7 @@ export default function Header() {
       <header className="sticky top-0 w-full z-50 bg-[#0074E4] border-b border-[#0052A3] shadow-[0_10px_30px_-10px_rgba(0,116,228,0.4)] flex flex-col transition-all duration-300">
         <div className="flex justify-between items-center gap-2 w-full px-4 sm:px-6 py-4 sm:py-6">
           {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0">
+          <Link href="/" className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0 cursor-pointer hover:opacity-90 transition-opacity">
             <div className="relative w-10 sm:w-16 h-10 sm:h-16 rounded-full overflow-hidden border border-[#C5A059] sm:border-2 shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
               <Image src="/bhulia_logo_final.jpg" alt="Bhulia Gold Logo" fill className="object-cover" />
             </div>
@@ -40,7 +40,7 @@ export default function Header() {
                 <span>SAREE</span>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Center: Dedicated Navigation Links */}
           <nav className="hidden lg:flex items-center gap-2 xl:gap-4 text-[10px] font-extrabold uppercase tracking-[0.15em] text-white whitespace-nowrap">
