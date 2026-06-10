@@ -20,7 +20,8 @@ export default function VendorDetailPage() {
   useEffect(() => {
     if (vendor) {
       const addressParts = (vendor.address || "").split(",").map((s: string) => s.trim()).filter((s: string) => s !== "");
-      const extDistrict = addressParts.length >= 3 ? addressParts[addressParts.length - 3] : "Sambalpur";
+      let extDistrict = addressParts.length >= 3 ? addressParts[addressParts.length - 3] : "Sambalpur";
+      if (extDistrict.toLowerCase() === "subarnapur" || extDistrict.toLowerCase() === "suvernpur") extDistrict = "Sonepur";
       const extState = addressParts.length >= 2 ? addressParts[addressParts.length - 2].split(" ")[0].replace(/[^a-zA-Z]/g, '') : "Odisha";
       const extCountry = addressParts.length >= 1 ? addressParts[addressParts.length - 1].replace(/[^a-zA-Z ]/g, '').trim() : "India";
 

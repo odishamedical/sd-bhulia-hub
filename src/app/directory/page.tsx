@@ -38,7 +38,7 @@ export default function GlobalDirectoryPage() {
     return combinedDirectory.filter(item => {
       if (selectedRole !== "all" && item.role !== selectedRole) return false;
       let d = (item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha";
-      if (d.toLowerCase() === "sonepur" || d.toLowerCase() === "suvernpur") d = "Subarnapur";
+      if (d.toLowerCase() === "subarnapur" || d.toLowerCase() === "suvernpur") d = "Sonepur";
       
       if (selectedDistrict !== "all" && d !== selectedDistrict) return false;
       if (searchQuery) {

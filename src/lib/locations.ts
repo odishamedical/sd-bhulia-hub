@@ -66,9 +66,9 @@ export const ODISHA_DISTRICT_BLOCKS: Record<string, string[]> = {
   "Puri": ["Astaranga", "Brahmagiri", "Delanga", "Gop", "Kakatpur", "Kanas", "Krushnaprasad", "Nimapada", "Pipili", "Puri Sadar", "Satyabadi"],
   "Rayagada": ["Bissamcuttack", "Chandrapur", "Gudari", "Gunupur", "Kalyansingpur", "Kashipur", "Kolnara", "Muniguda", "Padmapur", "Ramaguda", "Rayagada"],
   "Sambalpur": ["Bamra", "Dhankauda", "Jamankira", "Jujomura", "Kuchinda", "Maneswar", "Naktideul", "Rairakhol", "Rengali"],
-  "Subarnapur": ["Binka", "Dunguripali", "Sonepur", "Tarbha", "Ullunda", "Birmaharajpur"],
+  "Sonepur": ["Binka", "Dunguripali", "Sonepur", "Tarbha", "Ullunda", "Birmaharajpur"],
   "Sundargarh": ["Balisankara", "Bargaon", "Bisma", "Banei", "Gurundia", "Hemgir", "Koida", "Kuarmunda", "Kutra", "Lahunipara", "Lathikata", "Lephripara", "Nuagaon", "Rajgangpur", "Subdega", "Sundargarh", "Tangarpali"]
 };
 
 export const ODISHA_DISTRICTS = Object.keys(ODISHA_DISTRICT_BLOCKS).sort();
-export const WEAVER_DISTRICTS = ["Bargarh", "Subarnapur", "Sambalpur", "Boudh", "Nuapada", "Balangir", "Kalahandi"];
+export const WEAVER_DISTRICTS = ["Bargarh", "Sonepur", "Sambalpur", "Boudh", "Nuapada", "Balangir", "Kalahandi"];
