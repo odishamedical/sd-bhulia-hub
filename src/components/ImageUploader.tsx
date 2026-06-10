@@ -274,11 +274,11 @@ export default function ImageUploader({
   return (
     <div className="space-y-3 bg-blue-50/50 border border-blue-200 rounded-2xl p-4 relative">
       {/* Header Guideline */}
-      <div className="flex justify-between items-start">
-        <div>
-          <label className="block text-xs font-bold text-blue-900 uppercase tracking-widest">{label}</label>
-          <span className="block text-[9px] text-blue-700 font-mono mt-0.5">{sizeGuidelines.label}</span>
-          <span className="block text-[8px] text-gray-500 font-mono italic">{sizeGuidelines.desc}</span>
+      <div className="flex justify-between items-start mb-2">
+        <div className="w-full">
+          <label className="block text-sm sm:text-base font-black text-blue-900 uppercase tracking-widest">{label}</label>
+          <span className="block text-xs sm:text-sm text-blue-700 font-bold mt-1">{sizeGuidelines.label}</span>
+          <span className="block text-[11px] sm:text-xs text-gray-600 font-mono font-medium mt-1">{sizeGuidelines.desc}</span>
         </div>
       </div>
 

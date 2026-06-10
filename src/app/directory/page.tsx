@@ -60,11 +60,6 @@ export default function GlobalDirectoryPage() {
   const renderGridWithAds = (listings: any[]) => {
     const result = [];
     let currentAdIndex = 1;
-    
-    // Group into an actual grid container
-    result.push(
-      <div key="grid-start" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-    );
 
     for (let i = 0; i < listings.length; i++) {
       const item = listings[i];
@@ -131,10 +126,11 @@ export default function GlobalDirectoryPage() {
       }
     }
     
-    // Close the grid container
-    result.push(</div>);
-    
-    return result;
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+        {result}
+      </div>
+    );
   };
 
   return (
