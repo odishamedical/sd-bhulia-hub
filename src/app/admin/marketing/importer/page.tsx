@@ -245,6 +245,7 @@ export default function GooglePlacesImporterPage() {
                 <thead className="bg-gray-50 text-xs uppercase text-gray-500 border-b border-gray-100 sticky top-0 z-10">
                   <tr>
                     <th className="p-4 w-12 bg-gray-50"></th>
+                    <th className="p-4 font-bold bg-gray-50 w-20">Image</th>
                     <th className="p-4 font-bold bg-gray-50">Store Name</th>
                     <th className="p-4 font-bold bg-gray-50">Location</th>
                     <th className="p-4 font-bold bg-gray-50">Rating</th>
@@ -261,6 +262,18 @@ export default function GooglePlacesImporterPage() {
                           onChange={() => toggleSelect(r.id)}
                           className="w-5 h-5 rounded border-gray-300 text-[#0070F3] focus:ring-[#0070F3]"
                         />
+                      </td>
+                      <td className="p-4">
+                        {r.photoUrl ? (
+                          <div className="w-12 h-12 rounded bg-gray-200 overflow-hidden relative border border-gray-300">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={r.photoUrl} alt="Store" className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="w-12 h-12 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs border border-gray-200">
+                            No Img
+                          </div>
+                        )}
                       </td>
                       <td className="p-4 font-bold text-gray-900">{r.displayName?.text}</td>
                       <td className="p-4 text-sm text-gray-500 max-w-xs truncate" title={r.formattedAddress}>{r.formattedAddress}</td>
