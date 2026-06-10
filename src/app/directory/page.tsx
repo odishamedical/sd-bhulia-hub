@@ -68,7 +68,7 @@ export default function GlobalDirectoryPage() {
       result.push(
         <div key={item.id} className="group relative bg-[#0B2B26] rounded-2xl border border-[#C5A059]/20 hover:border-[#C5A059]/80 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:-translate-y-1 flex flex-col h-full">
           
-          <Link href={item.role === 'weaver' ? `/weaver/${item.slug}` : `/vendor/${item.slug}`} className="flex flex-col h-full cursor-pointer">
+          <Link href={item.role === 'weaver' ? `/Sambalpuri-weaver/${item.slug}` : `/Sambalpuri-store/${item.slug}`} className="flex flex-col h-full cursor-pointer">
             
             {/* Massive Square Thumbnail */}
             <div className="w-full aspect-square relative bg-[#051815] overflow-hidden">

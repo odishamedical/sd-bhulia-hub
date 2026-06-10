@@ -305,8 +305,8 @@ export default function UserManagementPage() {
           canSellWholesale: newUserCanSellWholesale,
           subscription: subscriptionData,
         }, newUid);
-        alert(`Master Weaver Profile Generated!\nPublic Link: bhulia.com/weaver/${generatedSlug}`);
-      } else if (newUserRole === "shop") {
+        alert(`Master Weaver Profile Generated!\nPublic Link: bhulia.com/Sambalpuri-weaver/${generatedSlug}`);
+      } else if (newUserRole === "shop" || newUserRole === "vendor") {
         await addVendor({
           slug: generatedSlug,
           title: newUserName,
@@ -322,7 +322,7 @@ export default function UserManagementPage() {
           canSellWholesale: newUserCanSellWholesale,
           subscription: subscriptionData,
         }, newUid);
-        alert(`B2B Vendor Profile Generated!\nPublic Link: bhulia.com/vendor/${generatedSlug}`);
+        alert(`B2B Vendor Profile Generated!\nPublic Link: bhulia.com/Sambalpuri-store/${generatedSlug}`);
       } else if (newUserRole === "reseller") {
         await addReseller({
           name: newUserName,

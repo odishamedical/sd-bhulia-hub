@@ -361,7 +361,7 @@ export default function Home() {
                 <div key={i} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl h-[380px] animate-pulse"></div>
               ))
             ) : weavers.map((dir, idx) => (
-              <Link key={idx} href={`/weaver/${dir.slug}`} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all shadow-xl cursor-pointer block">
+              <Link key={idx} href={`/Sambalpuri-weaver/${dir.slug}`} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all shadow-xl cursor-pointer block">
                 <div>
                   {/* Image Thumbnail (100% Clean & Unobstructed Face) */}
                   <div className="relative w-full aspect-square overflow-hidden bg-[#051815]">

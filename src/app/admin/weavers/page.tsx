@@ -142,7 +142,7 @@ export default function AdminWeaversPage() {
                     </td>
                     <td className="px-6 py-4 font-medium">
                       <div className="text-white font-serif">{weaver.title}</div>
-                      <div className="text-[10px] text-gray-400 mt-1 font-mono">/weaver/{weaver.slug}</div>
+                      <div className="text-[10px] text-gray-400 mt-1 font-mono">/Sambalpuri-weaver/{weaver.slug}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className="bg-[#0A3A35] border border-[#C5A059]/40 text-[#C5A059] px-3 py-1 rounded text-[10px] uppercase tracking-widest font-bold">
@@ -151,7 +151,7 @@ export default function AdminWeaversPage() {
                     </td>
                     <td className="px-6 py-4 text-right space-x-4">
                       <a 
-                        href={`/weaver/${weaver.slug}`}
+                        href={`/Sambalpuri-weaver/${weaver.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#C5A059] hover:underline font-bold text-xs uppercase tracking-wider"
