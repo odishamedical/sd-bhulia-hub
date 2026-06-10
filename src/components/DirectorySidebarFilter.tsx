@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { INDIAN_STATES, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
 
 interface SidebarProps {
   selectedCountry: string;
@@ -86,13 +87,14 @@ export default function DirectorySidebarFilter({
           <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Category</label>
           <div className="relative">
             <select 
-              value={selectedRole} 
-              onChange={e => setSelectedRole(e.target.value)}
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
               className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs p-3 rounded-xl outline-none focus:border-[#C5A059] appearance-none cursor-pointer transition-colors"
             >
-              <option value="all">All Roles</option>
+              <option value="all">All Categories</option>
               <option value="weaver">Master Weavers</option>
               <option value="vendor">Retail Stores</option>
+              <option value="wholesaler">Wholesaler (B2B)</option>
               <option value="raw_material">Raw Material Suppliers</option>
             </select>
             <svg className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -125,9 +127,10 @@ export default function DirectorySidebarFilter({
               }}
               className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs p-3 rounded-xl outline-none focus:border-[#C5A059] appearance-none cursor-pointer transition-colors"
             >
-              <option value="all">All States</option>
-              <option value="Odisha">Odisha</option>
-              <option value="Other">Other States</option>
+              <option value="all">Select State</option>
+              {INDIAN_STATES.map(s => (
+                <option key={s} value={s}>{s}</option>
+              ))}
             </select>
             <svg className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
           </div>
@@ -166,8 +169,28 @@ export default function DirectorySidebarFilter({
           )}
         </div>
 
-        {/* Block (Optional, mainly for Odisha) */}
-        {selectedState === "Odisha" && (
+        {/* Block */}
+        {selectedState === "Odisha" ? (
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-[#C5A059]">Block</label>
+            <div className="relative">
+              <select 
+                value={selectedBlock} 
+                onChange={e => setSelectedBlock(e.target.value)}
+                disabled={!selectedDistrict || selectedDistrict === "all"}
+                className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs p-3 rounded-xl outline-none focus:border-[#C5A059] appearance-none cursor-pointer transition-colors disabled:opacity-50"
+              >
+                <option value="">All Blocks</option>
+                {(selectedDistrict && selectedDistrict !== "all" && ODISHA_DISTRICT_BLOCKS[selectedDistrict]) && 
+                  ODISHA_DISTRICT_BLOCKS[selectedDistrict].map(b => (
+                    <option key={b} value={b}>{b}</option>
+                  ))
+                }
+              </select>
+              <svg className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+            </div>
+          </div>
+        ) : (
           <div className="space-y-2">
             <label className="text-[10px] font-bold uppercase tracking-wider text-[#C5A059]">Block <span className="opacity-60 lowercase">(optional)</span></label>
             <input 
@@ -175,7 +198,7 @@ export default function DirectorySidebarFilter({
               value={selectedBlock} 
               onChange={e => setSelectedBlock(e.target.value)}
               placeholder="Enter Block Name"
-              disabled={!selectedDistrict || selectedDistrict === "all"}
+              disabled={selectedState === "all" || !selectedDistrict}
               className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-white text-xs px-4 py-3 rounded-xl outline-none focus:border-[#C5A059] transition-colors disabled:opacity-50"
             />
           </div>
