@@ -5,7 +5,7 @@ import { useWeavers, useVendors, useOrders, useCustomers, useAuthUsers, useResel
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { firebaseConfig, db } from "@/lib/firebase";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, runTransaction } from "firebase/firestore";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers(200);
@@ -242,8 +242,21 @@ export default function UserManagementPage() {
     if (!newUserName.trim()) return alert("Please provide a Full Name.");
     if (!newUserEmail.trim() || !newUserPassword.trim()) return alert("Email and Password are required to create a login.");
     
-    // Auto-generate a slug from the name (e.g., "John Doe" -> "john-doe")
-    const generatedSlug = newUserName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    // Generate Serial Slug starting from 303
+    let generatedSlug = "303";
+    try {
+      const counterRef = doc(db, "system", "slug_counters");
+      generatedSlug = await runTransaction(db, async (transaction) => {
+        const counterDoc = await transaction.get(counterRef);
+        const currentCount = counterDoc.exists() ? (counterDoc.data()[newUserRole] || 303) : 303;
+        const nextCount = currentCount + 1;
+        transaction.set(counterRef, { [newUserRole]: nextCount }, { merge: true });
+        return currentCount.toString();
+      });
+    } catch (e) {
+      // Fallback
+      generatedSlug = (303 + Math.floor(Math.random() * 9000)).toString();
+    }
 
     const expiryDate = new Date();
     expiryDate.setMonth(expiryDate.getMonth() + parseInt(newSubDuration));

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { auth, db } from "@/lib/firebase";
-import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, setDoc, runTransaction } from "firebase/firestore";
 import ImageUploader from "@/components/ImageUploader";
 import { uploadBase64ToStorage } from "@/app/dashboard/page"; // Reuse the upload utility
 
@@ -185,9 +185,24 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         role: desiredRole
       });
 
+      // Generate Serial Slug starting from 303
+      let generatedSlug = "303";
+      try {
+        const counterRef = doc(db, "system", "slug_counters");
+        generatedSlug = await runTransaction(db, async (transaction) => {
+          const counterDoc = await transaction.get(counterRef);
+          const currentCount = counterDoc.exists() ? (counterDoc.data()[desiredRole] || 303) : 303;
+          const nextCount = currentCount + 1;
+          transaction.set(counterRef, { [desiredRole]: nextCount }, { merge: true });
+          return currentCount.toString();
+        });
+      } catch (e) {
+        // Fallback to random number if transaction fails
+        generatedSlug = (303 + Math.floor(Math.random() * 9000)).toString();
+      }
+      
       // Create a pending profile in the respective collection so the dashboard works
       const collectionName = desiredRole === "weaver" ? "weavers" : desiredRole === "vendor" ? "vendors" : "resellers";
-      const generatedSlug = (storeName || personalName || "store").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + auth.currentUser.uid.slice(0, 4).toLowerCase();
       
       const docRef = doc(db, collectionName, auth.currentUser.uid);
       const snap = await getDoc(docRef);
