@@ -61,14 +61,13 @@ export default function GlobalBannerSlot({ placementId, context }: Props) {
         <div key={banner.id} className={`${colClass} relative rounded-2xl overflow-hidden shadow-lg group border border-[#C5A059]/30 hover:border-[#C5A059] transition-all bg-[#0B2B26]`}>
           {banner.type === "image" ? (
             <div 
-              className="relative w-full aspect-[4/1] md:aspect-[5/2] cursor-pointer"
+              className="relative w-full cursor-pointer flex items-center justify-center"
               onClick={() => handleAdClick(banner)}
             >
-              <Image 
+              <img 
                 src={banner.content} 
                 alt={banner.title} 
-                fill 
-                className="object-cover group-hover:scale-105 transition-transform duration-700" 
+                className="w-full h-auto object-contain group-hover:opacity-90 transition-opacity duration-500" 
               />
               <div className="absolute top-2 right-2 bg-black/60 text-white text-[8px] uppercase px-1.5 py-0.5 rounded backdrop-blur">Ad</div>
             </div>
