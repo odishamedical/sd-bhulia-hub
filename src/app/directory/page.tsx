@@ -57,67 +57,83 @@ export default function GlobalDirectoryPage() {
   const loading = vendorsLoading || weaversLoading;
 
   // Render a list layout with ads injected every 15 items
-  const renderGridWithAds = (items: any[]) => {
+  const renderGridWithAds = (listings: any[]) => {
     const result = [];
     let currentAdIndex = 1;
     
-    for (let i = 0; i < items.length; i += 15) {
-      const chunk = items.slice(i, i + 15);
+    // Group into an actual grid container
+    result.push(
+      <div key="grid-start" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+    );
+
+    for (let i = 0; i < listings.length; i++) {
+      const item = listings[i];
+      const isVerified = item.status === "approved";
       
       result.push(
-        <div key={`chunk-${i}`} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {chunk.map(item => (
-            <Link key={item.id} href={`/${item.role}/${item.id}`} className="group flex items-center bg-[#0B2B26] rounded-xl overflow-hidden border border-[#C5A059]/20 hover:border-[#C5A059]/80 transition-all duration-300 hover:shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:-translate-y-0.5">
+        <div key={item.id} className="group relative bg-[#0B2B26] rounded-2xl border border-[#C5A059]/20 hover:border-[#C5A059]/80 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:-translate-y-1 flex flex-col h-full">
+          
+          <Link href={item.role === 'weaver' ? `/weaver/${item.slug}` : `/vendor/${item.slug}`} className="flex flex-col h-full cursor-pointer">
+            
+            {/* Massive Square Thumbnail */}
+            <div className="w-full aspect-square relative bg-[#051815] overflow-hidden">
+              <img 
+                src={(item as any).image || (item as any).photo || (item as any).photoUrl || (item as any).imageUrl || (item as any).thumbnail || (item as any).cover_image || (item as any).featured_image || (item as any).picture || (item as any).avatar || (item as any).business_logo || (item as any)['Profile Photo'] || (item as any)['Business Logo'] || (item as any).logo || (item as any).profileImage || (item as any).img || "/bhulia-hero.png"} 
+                alt={item.title || "Listing"}
+                className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B26] via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
               
-              {/* Thumbnail Image Left Side */}
-              <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 relative bg-[#051815] border-r border-[#C5A059]/20">
-                <img 
-                  src={(item as any).image || (item as any).photo || (item as any).photoUrl || (item as any).imageUrl || (item as any).thumbnail || (item as any).cover_image || (item as any).featured_image || (item as any).picture || (item as any).avatar || (item as any).business_logo || (item as any)['Profile Photo'] || (item as any)['Business Logo'] || (item as any).logo || (item as any).profileImage || (item as any).img || "/bhulia-hero.png"} 
-                  alt={item.title || "Listing"}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0B2B26]/50"></div>
-                <div className="absolute top-2 left-2 z-10">
-                  <span className={`px-1.5 py-0.5 rounded text-[8px] uppercase font-bold tracking-widest border shadow-sm backdrop-blur-md ${
-                    item.role === 'weaver' ? 'bg-amber-900/80 text-amber-300 border-amber-500/50' : 'bg-blue-900/80 text-blue-300 border-blue-500/50'
-                  }`}>
-                    {item.displayType}
-                  </span>
-                </div>
+              <div className="absolute top-3 left-3 z-10">
+                <span className={`px-2 py-1 rounded shadow-md backdrop-blur-md text-[9px] uppercase font-bold tracking-widest border ${
+                  item.role === 'weaver' ? 'bg-amber-900/90 text-amber-300 border-amber-500/50' : 'bg-blue-900/90 text-blue-300 border-blue-500/50'
+                }`}>
+                  {item.role === 'weaver' ? 'Master Weaver' : 'Retail Shop'}
+                </span>
+              </div>
+            </div>
+
+            {/* Content Underneath */}
+            <div className="p-4 sm:p-5 flex flex-col flex-grow">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <h3 className="text-sm sm:text-base font-bold text-white group-hover:text-[#C5A059] transition-colors line-clamp-2 leading-snug">
+                  {item.title || item.name}
+                </h3>
+                {isVerified && (
+                  <div className="shrink-0 bg-green-500 rounded-full p-0.5 mt-0.5" title="Verified Partner">
+                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+                  </div>
+                )}
               </div>
 
-              {/* Details Right Side */}
-              <div className="p-3 sm:p-4 flex-1 flex flex-col justify-center min-w-0">
-                <div className="flex items-start justify-between gap-2 mb-1">
-                  <h3 className="font-bold text-white text-sm sm:text-base truncate group-hover:text-[#C5A059] transition-colors">{item.title}</h3>
-                  {item.status === 'approved' && (
-                    <span className="shrink-0 w-4 h-4 bg-red-600 rounded-full flex items-center justify-center shadow-[0_0_8px_rgba(220,38,38,0.6)]" title="Verified Partner">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </span>
-                  )}
-                </div>
-                
-                <p className="text-gray-400 text-[10px] sm:text-xs truncate mb-2">{item.address || "Odisha, India"}</p>
-                
-                <div className="flex items-center gap-2 mt-auto">
-                  <span className="text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-wider group-hover:underline">View Profile</span>
-                  <span className="text-[#C5A059] text-xs transition-transform group-hover:translate-x-1">→</span>
-                </div>
+              <div className="text-gray-400 text-xs mb-4 flex items-center gap-1.5 opacity-80">
+                <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                <span className="truncate">{item.district || item.townVillage || item.state || "N/A"}</span>
               </div>
-            </Link>
-          ))}
+
+              <div className="flex items-center gap-2 mt-auto pt-3 border-t border-[#C5A059]/10">
+                <span className="text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-wider group-hover:underline">View Profile</span>
+                <span className="text-[#C5A059] text-xs transition-transform group-hover:translate-x-1">→</span>
+              </div>
+            </div>
+          </Link>
         </div>
       );
 
-      if (i + 15 < items.length || chunk.length === 15) {
+      // Inject Global Ad Slot every 10 listings inside the grid
+      if ((i + 1) % 10 === 0) {
         result.push(
-          <div key={`ad-${currentAdIndex}`} className="w-full my-8">
+          <div key={`ad-${currentAdIndex}`} className="col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5 w-full my-2">
             <GlobalBannerSlot placement={`directory_grid_ad_${currentAdIndex}`} fallbackColor="from-[#0B2B26] to-[#051815]" />
           </div>
         );
         currentAdIndex++;
       }
     }
+    
+    // Close the grid container
+    result.push(</div>);
+    
     return result;
   };
 
