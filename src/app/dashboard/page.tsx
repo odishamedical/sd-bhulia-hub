@@ -1536,7 +1536,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
       {activeTab === "vanity_url" && (
         <div className="max-w-4xl animate-in fade-in">
-          <VanityUrlManager currentSlug={storeSlug || "shyam-dash-303"} />
+          <VanityUrlManager currentSlug={"shyam-dash-303"} />
         </div>
       )}
 
