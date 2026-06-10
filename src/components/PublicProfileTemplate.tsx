@@ -55,9 +55,9 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
         </div>
 
         {/* Center: Details */}
-        <div className="lg:w-1/2 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-[#C5A059]/20 pb-6 lg:pb-0 lg:pr-8">
+        <div className="lg:w-1/2 flex flex-col border-b lg:border-b-0 lg:border-r border-[#C5A059]/20 pb-6 lg:pb-0 lg:pr-8">
           
-          <h2 className="text-xl md:text-2xl font-sans font-bold text-white mb-1">
+          <h2 className="text-xl md:text-2xl font-sans font-bold text-white mb-1 mt-2">
             {profile.listingType === "weaver" ? "Sambalpuri Master Weaver" : profile.listingType === "raw_material" ? "Sambalpuri Raw Material Supplier" : "Sambalpuri Handloom Store"}
           </h2>
           
@@ -93,7 +93,7 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
         </div>
 
         {/* Right: Contact & Address */}
-        <div className="lg:w-1/4 flex flex-col justify-center space-y-4">
+        <div className="lg:w-1/4 flex flex-col space-y-4">
           
           {profile.status === "unclaimed" && (
             <div className="bg-red-900 border border-red-500 p-4 rounded-xl w-full text-center shadow-lg">
@@ -130,19 +130,23 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
             </div>
           )}
 
-          <div className="space-y-3 pt-4 border-t border-[#C5A059]/20">
-            <h3 className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold">Contact Direct</h3>
+          <div className="pt-2 border-t border-[#C5A059]/20">
+            <h3 className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold mb-3">Contact Direct</h3>
             
-            <button onClick={() => {
-              const msg = `Hello ${profile.name}, I found your profile on Bhulia.com. I am interested in your handlooms.`;
-              window.open(`https://api.whatsapp.com/send?phone=${profile.whatsapp.replace(/[^0-9]/g,'')}&text=${encodeURIComponent(msg)}`, "_blank");
-            }} className="w-full flex items-center justify-center gap-2 py-3 bg-green-600/20 hover:bg-green-600/40 border border-green-500/50 text-green-400 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
-              <span>💬 WhatsApp</span>
-            </button>
-            
-            <a href={`tel:${profile.phone}`} className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/50 text-blue-400 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer">
-              <span>📞 Call Direct</span>
-            </a>
+            <div className="grid grid-cols-2 gap-2">
+              <button onClick={() => {
+                const msg = `Hello ${profile.name}, I found your profile on Bhulia.com. I am interested in your handlooms.`;
+                window.open(`https://api.whatsapp.com/send?phone=${profile.whatsapp.replace(/[^0-9]/g,'')}&text=${encodeURIComponent(msg)}`, "_blank");
+              }} className="w-full flex flex-col items-center justify-center gap-1 py-3 bg-green-600/20 hover:bg-green-600/40 border border-green-500/50 text-green-400 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer text-center">
+                <span className="text-sm">💬</span>
+                <span>WhatsApp</span>
+              </button>
+              
+              <a href={`tel:${profile.phone}`} className="w-full flex flex-col items-center justify-center gap-1 py-3 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/50 text-blue-400 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer text-center">
+                <span className="text-sm">📞</span>
+                <span>Call</span>
+              </a>
+            </div>
           </div>
         </div>
 
