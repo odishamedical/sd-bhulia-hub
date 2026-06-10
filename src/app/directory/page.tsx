@@ -37,7 +37,9 @@ export default function GlobalDirectoryPage() {
   const filteredDirectory = useMemo(() => {
     return combinedDirectory.filter(item => {
       if (selectedRole !== "all" && item.role !== selectedRole) return false;
-      const d = (item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha";
+      let d = (item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha";
+      if (d.toLowerCase() === "sonepur" || d.toLowerCase() === "suvernpur") d = "Subarnapur";
+      
       if (selectedDistrict !== "all" && d !== selectedDistrict) return false;
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
