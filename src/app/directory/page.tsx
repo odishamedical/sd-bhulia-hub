@@ -334,7 +334,7 @@ function DirectoryContent() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 
