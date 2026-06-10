@@ -169,32 +169,34 @@ export default function DashboardPage() {
     if (activeTab === "home") setActiveTab("overview");
   } else if (actualRole === "weaver") {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
-      { id: "upload", label: "My Catalog", icon: "📤", category: "Catalog & Orders" },
-      { id: "orders", label: "Order Dispatch", icon: "📦", category: "Catalog & Orders" },
-      { id: "wallet", label: "Wallet & Earnings", icon: "💰", category: "Finance" },
-      { id: "messages", label: "Messages", icon: "💬", category: "Communication" },
-      { id: "support", label: "Admin Support", icon: "📞", category: "Communication" },
-      { id: "verification", label: "Verification", icon: "🛡️", category: "Store & Trust" },
-      { id: "personal", label: "Personal Profile", icon: "👤", category: "Store & Trust" },
-      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store & Trust" },
-      { id: "vanity_url", label: "Brand & URL Settings", icon: "🌐", category: "Growth" },
-      { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store & Trust" },
-    ];
+        { id: "home", label: "Dashboard", icon: "🏠", category: "Overview" },
+        { id: "upload", label: "My Catalog", icon: "📦", category: "Catalog & Orders" },
+        { id: "orders", label: "Order Dispatch", icon: "🚚", category: "Catalog & Orders" },
+        { id: "wallet", label: "Wallet & Earnings", icon: "💰", category: "Finance" },
+        { id: "messages", label: "Messages", icon: "💬", category: "Communication" },
+        { id: "support", label: "Admin Support", icon: "🎧", category: "Communication" },
+        { id: "verification", label: "Verification", icon: "🛡️", category: "Store & Trust" },
+        { id: "personal", label: "Personal Profile", icon: "👤", category: "Store & Trust" },
+        { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store & Trust" },
+        { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Growth" },
+        { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Growth" },
+        { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store & Trust" },
+      ];
   } else if (actualRole === "vendor") {
     navItems = [
-      { id: "home", label: "Overview", icon: "📊", category: "Overview" },
-      { id: "products", label: "Products Catalog", icon: "🛍️", category: "Commerce" },
-      { id: "orders", label: "Order Management", icon: "📦", category: "Commerce" },
-      { id: "marketing", label: "Marketing", icon: "📢", category: "Growth" },
-      { id: "finance", label: "Finance & Payouts", icon: "💰", category: "Finance" },
-      { id: "messages", label: "Buyer Messages", icon: "💬", category: "Communication" },
-      { id: "support", label: "Admin Support", icon: "📞", category: "Communication" },
-      { id: "personal", label: "Personal Profile", icon: "👤", category: "Store Settings" },
-      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store Settings" },
-      { id: "vanity_url", label: "Brand & URL Settings", icon: "🌐", category: "Growth" },
-      { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store Settings" },
-    ];
+        { id: "home", label: "Overview", icon: "🏠", category: "Overview" },
+        { id: "products", label: "Products Catalog", icon: "📦", category: "Commerce" },
+        { id: "orders", label: "Order Management", icon: "🚚", category: "Commerce" },
+        { id: "marketing", label: "Marketing", icon: "📈", category: "Growth" },
+        { id: "finance", label: "Finance & Payouts", icon: "💰", category: "Finance" },
+        { id: "messages", label: "Buyer Messages", icon: "💬", category: "Communication" },
+        { id: "support", label: "Admin Support", icon: "🎧", category: "Communication" },
+        { id: "personal", label: "Personal Profile", icon: "👤", category: "Store Settings" },
+        { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store Settings" },
+        { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Growth" },
+        { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Growth" },
+        { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store Settings" },
+      ];
   } else if (actualRole === "weaver_staff" || actualRole === "store_staff") {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
@@ -1537,6 +1539,55 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
       {activeTab === "vanity_url" && (
         <div className="max-w-4xl animate-in fade-in">
           <VanityUrlManager currentSlug={"shyam-dash-303"} />
+        </div>
+      )}
+
+      {activeTab === "b2b_settings" && (
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">B2B & Wholesale Configuration</h2>
+          <p className="text-gray-500 mb-8 font-medium">Manage your wholesale supply terms and B2B catalog access.</p>
+          
+          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xl mb-8">
+            <div className="absolute top-0 right-0 p-4">
+              <span className="bg-[#C5A059] text-[#051815] text-[10px] font-black uppercase px-3 py-1.5 rounded-full tracking-widest shadow-md">Premium Feature</span>
+            </div>
+            
+            <div className="flex gap-4 items-start relative z-10">
+              <div className="bg-white/10 p-3 rounded-full shrink-0">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-2">Bulk Orders & Wholesale Reach</h3>
+                <p className="text-gray-300 text-sm mb-4 leading-relaxed max-w-2xl">
+                  Unlock access to thousands of registered shops, boutiques, and resellers across India. Sell your products in bulk quantities with special B2B pricing to scale your revenue.
+                </p>
+                <div className="space-y-2 mb-6">
+                  <div className="flex items-center gap-2 text-sm text-gray-300">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Custom MOQ (Minimum Order Quantity) Controls</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-300">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Hidden Wholesale Pricing (Only verified B2B buyers can see)</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-300">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Priority Support & Assisted Sales</span>
+                  </div>
+                </div>
+                
+                <button className="bg-[#C5A059] text-[#051815] px-6 py-3 rounded-xl font-bold hover:bg-white transition-all shadow-lg hover:-translate-y-0.5">
+                  Request B2B Access Approval
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 text-center">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400 mx-auto mb-3"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <h4 className="text-lg font-bold text-gray-900 mb-1">Your B2B Status is Pending</h4>
+            <p className="text-sm text-gray-500 max-w-md mx-auto">Once the Admin approves your request, you will be able to configure your global wholesale terms here.</p>
+          </div>
         </div>
       )}
 

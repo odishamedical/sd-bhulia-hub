@@ -583,9 +583,18 @@ export default function UserManagementPage() {
 
       {showBroadcastModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-8 w-full max-w-xl shadow-2xl border border-gray-100">
-            <h3 className="text-2xl font-black text-gray-900 mb-2">Broadcast Message</h3>
-            <p className="text-sm font-medium text-gray-500 mb-6">Send an instant WhatsApp/Email broadcast to the {filteredUsers.length} filtered users.</p>
+          <div className="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl border border-gray-100 relative">
+            <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4 sticky top-0 bg-white z-10">
+              <h3 className="text-2xl font-black text-gray-900">Send Notification Broadcast</h3>
+              <div className="flex gap-2">
+                <button onClick={() => setShowBroadcastModal(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all">Cancel</button>
+                <button onClick={handleSendBroadcast} className="px-4 py-2 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all shadow-sm">Send</button>
+              </div>
+            </div>
+            
+            <p className="text-sm text-gray-500 mb-6 font-medium">This message will be sent via WebSocket to all currently active users in the ecosystem. It will appear as a toast notification on their screens.</p>
+            
+            <label className="text-xs font-bold text-gray-500 mb-2 block uppercase tracking-widest">Message Content</label>
             <textarea 
               rows={4}
               value={broadcastMessage}
@@ -593,18 +602,20 @@ export default function UserManagementPage() {
               placeholder="Enter your message here..."
               className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none resize-none mb-6"
             ></textarea>
-            <div className="flex justify-end gap-3">
-              <button onClick={() => setShowBroadcastModal(false)} className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all">Cancel</button>
-              <button onClick={handleSendBroadcast} className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all shadow-sm">Send Broadcast</button>
-            </div>
           </div>
         </div>
       )}
 
       {showAddUserModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-8 w-full max-w-4xl shadow-2xl border border-gray-100 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-2xl font-black text-gray-900 mb-6">Create New Ecosystem User</h3>
+          <div className="bg-white rounded-3xl p-8 w-full max-w-4xl shadow-2xl border border-gray-100 max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-6 sticky top-0 bg-white z-10 pb-4 border-b border-gray-100 pt-2">
+              <h3 className="text-2xl font-black text-gray-900">Create New Ecosystem User</h3>
+              <div className="flex gap-2">
+                <button onClick={() => setShowAddUserModal(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all">Cancel</button>
+                <button onClick={handleCreateUser} className="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm">Save</button>
+              </div>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               {/* Left Column: Core & Contact */}
@@ -626,6 +637,9 @@ export default function UserManagementPage() {
                       <option value="reseller">Reseller (Marketing Agent)</option>
                       <option value="weaver">Sambalpuri Weaver</option>
                       <option value="shop">Shop</option>
+                      <option value="store">Store</option>
+                      <option value="vendor">Vendor / B2B</option>
+                      <option value="wholesaler">Wholesaler</option>
                     </select>
                   </div>
                   <div>
@@ -775,11 +789,7 @@ export default function UserManagementPage() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-              <button onClick={() => setShowAddUserModal(false)} className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all">Cancel</button>
-              <button onClick={handleCreateUser} className="px-6 py-3 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm">Save & Generate Public Profile</button>
+              </div>
             </div>
           </div>
         </div>
