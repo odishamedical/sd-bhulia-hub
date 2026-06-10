@@ -147,12 +147,18 @@ export default function ImportedListingsDBPage() {
     try {
       const collectionName = editingItem.baseRole === "weaver" ? "weavers" : "vendors";
       
-      // We explicitly pull out the editable fields
       const updates = {
         title: editingItem.title,
         address: editingItem.address,
+        country: editingItem.country,
         state: editingItem.state,
         district: editingItem.district,
+        block: editingItem.block,
+        townVillage: editingItem.townVillage,
+        pin: editingItem.pin,
+        phone: editingItem.phone,
+        whatsapp: editingItem.whatsapp,
+        website: editingItem.website,
         listingType: editingItem.listingType || editingItem.baseRole,
         desc: editingItem.desc || "",
         productsOffered: editingItem.productsOffered || "",
@@ -425,7 +431,16 @@ export default function ImportedListingsDBPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Country</label>
+                  <input 
+                    type="text" 
+                    value={editingItem.country || ""} 
+                    onChange={e => setEditingItem({...editingItem, country: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  />
+                </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">State</label>
                   <input 
@@ -444,6 +459,67 @@ export default function ImportedListingsDBPage() {
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                   />
                 </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Block</label>
+                  <input 
+                    type="text" 
+                    value={editingItem.block || ""} 
+                    onChange={e => setEditingItem({...editingItem, block: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Town / Village</label>
+                  <input 
+                    type="text" 
+                    value={editingItem.townVillage || ""} 
+                    onChange={e => setEditingItem({...editingItem, townVillage: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">PIN Code</label>
+                  <input 
+                    type="text" 
+                    value={editingItem.pin || ""} 
+                    onChange={e => setEditingItem({...editingItem, pin: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Phone Number</label>
+                  <input 
+                    type="text" 
+                    value={editingItem.phone || ""} 
+                    onChange={e => setEditingItem({...editingItem, phone: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                    placeholder="+91..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">WhatsApp Number</label>
+                  <input 
+                    type="text" 
+                    value={editingItem.whatsapp || ""} 
+                    onChange={e => setEditingItem({...editingItem, whatsapp: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                    placeholder="+91..."
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Website</label>
+                <input 
+                  type="text" 
+                  value={editingItem.website || ""} 
+                  onChange={e => setEditingItem({...editingItem, website: e.target.value})}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  placeholder="https://..."
+                />
               </div>
 
               <div>
