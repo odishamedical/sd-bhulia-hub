@@ -569,21 +569,11 @@ export default function UserManagementPage() {
                 {filteredUsers.length === 0 && (
                   <tr>
                     <td colSpan={5} className="py-24 text-center text-gray-500">
-                      {isDataLoading ? (
-                        <>
-                          <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-                          <div className="font-bold text-lg text-gray-900 mb-1">Loading Ecosystem Data...</div>
-                          <div className="text-sm font-medium">Please wait while we sync with the server.</div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                          </div>
-                          <div className="font-bold text-lg text-gray-900 mb-1">No users found</div>
-                          <div className="text-sm font-medium">Try adjusting your advanced filters or search term.</div>
-                        </>
-                      )}
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                      </div>
+                      <div className="font-bold text-lg text-gray-900 mb-1">No users found</div>
+                      <div className="text-sm font-medium">Try adjusting your advanced filters or search term.</div>
                     </td>
                   </tr>
                 )}
