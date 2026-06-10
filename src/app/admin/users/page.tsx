@@ -322,7 +322,7 @@ export default function UserManagementPage() {
           canSellWholesale: newUserCanSellWholesale,
           subscription: subscriptionData,
         }, newUid);
-        alert(`B2B Vendor Profile Generated!\nPublic Link: bhulia.com/store/${generatedSlug}`);
+        alert(`B2B Vendor Profile Generated!\nPublic Link: bhulia.com/vendor/${generatedSlug}`);
       } else if (newUserRole === "reseller") {
         await addReseller({
           name: newUserName,
