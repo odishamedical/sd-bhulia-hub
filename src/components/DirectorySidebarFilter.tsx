@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import * as Icons from "lucide-react";
 
 interface SidebarProps {
   districts: string[];
@@ -34,7 +33,7 @@ export default function DirectorySidebarFilter({
       
       <div className="flex justify-between items-center pb-4 border-b border-[#C5A059]/10">
         <span className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 text-white">
-          <Icons.Search className="w-4 h-4 text-[#C5A059]" />
+          <svg className="w-4 h-4 text-[#C5A059]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           <span>Advanced Filters</span>
         </span>
         <button 
@@ -51,7 +50,7 @@ export default function DirectorySidebarFilter({
         <div className="space-y-2">
           <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Search</label>
           <div className="relative">
-            <Icons.Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60" />
+            <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             <input 
               type="text" 
               placeholder="Name or location..."
@@ -76,7 +75,7 @@ export default function DirectorySidebarFilter({
               <option value="vendor">Retail Stores</option>
               <option value="raw_material">Raw Material Suppliers</option>
             </select>
-            <Icons.ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60 pointer-events-none" />
+            <svg className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
           </div>
         </div>
 
@@ -94,7 +93,7 @@ export default function DirectorySidebarFilter({
                 <option key={d} value={d}>{d}</option>
               ))}
             </select>
-            <Icons.ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60 pointer-events-none" />
+            <svg className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#C5A059]/60 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
           </div>
         </div>
 
