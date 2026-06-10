@@ -264,16 +264,10 @@ export default function GooglePlacesImporterPage() {
                         />
                       </td>
                       <td className="p-4">
-                        {r.photoUrl ? (
                           <div className="w-12 h-12 rounded bg-gray-200 overflow-hidden relative border border-gray-300">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={r.photoUrl} alt="Store" className="w-full h-full object-cover" />
+                            <img src={r.photoUrl || "/bhulia-hero.png"} alt="Store" className="w-full h-full object-cover" />
                           </div>
-                        ) : (
-                          <div className="w-12 h-12 rounded bg-gray-100 flex items-center justify-center text-gray-400 text-xs border border-gray-200">
-                            No Img
-                          </div>
-                        )}
                       </td>
                       <td className="p-4 font-bold text-gray-900">{r.displayName?.text}</td>
                       <td className="p-4 text-sm text-gray-500 max-w-xs truncate" title={r.formattedAddress}>{r.formattedAddress}</td>

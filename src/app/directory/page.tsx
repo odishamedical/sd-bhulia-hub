@@ -65,13 +65,13 @@ export default function GlobalDirectoryPage() {
           {chunk.map(item => (
             <Link key={item.id} href={`/${item.role}/${item.id}`} className="group block bg-[#0B2B26] rounded-2xl overflow-hidden border border-[#C5A059]/20 hover:border-[#C5A059]/80 transition-all duration-300 hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:-translate-y-1 relative">
               <div className="aspect-[4/3] w-full relative bg-[#051815]">
-                {item.logo || item.profileImage ? (
-                  <Image src={item.logo || item.profileImage} alt={item.title || "Listing"} fill className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-[#C5A059]/30 text-4xl">
-                    {item.role === 'weaver' ? '🧵' : '🏪'}
-                  </div>
-                )}
+                <Image 
+                  src={item.logo || item.profileImage || item.img || "/bhulia-hero.png"} 
+                  alt={item.title || "Listing"} 
+                  fill 
+                  className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" 
+                  unoptimized={true} 
+                />
                 <div className="absolute top-2 left-2 z-10 flex gap-1">
                   <span className={`px-2 py-0.5 rounded text-[9px] uppercase font-bold tracking-widest border shadow-sm backdrop-blur-sm ${
                     item.role === 'weaver' ? 'bg-amber-900/60 text-amber-300 border-amber-500/50' : 'bg-blue-900/60 text-blue-300 border-blue-500/50'

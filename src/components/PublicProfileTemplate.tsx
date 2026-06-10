@@ -48,7 +48,7 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
         {/* Left: Image */}
         <div className="lg:w-1/4 shrink-0">
           <div className="relative w-full aspect-square rounded-2xl overflow-hidden border-2 border-[#C5A059]/50 shadow-lg bg-[#051815]">
-            <Image src={profile.image || "/bhulia-hero.png"} alt={profile.name} fill className="object-cover" />
+            <Image src={profile.image || "/bhulia-hero.png"} alt={profile.name} fill className="object-cover" unoptimized={true} />
           </div>
         </div>
 

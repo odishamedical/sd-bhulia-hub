@@ -306,11 +306,13 @@ export default function ImportedListingsDBPage() {
                   <td className="py-4 px-2">
                     <div className="flex items-center gap-3">
                       <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-200 shrink-0 border border-gray-200 shadow-sm">
-                        {item.img ? (
-                          <Image src={item.img} alt={item.title} fill className="object-cover" />
-                        ) : (
-                          <div className="flex items-center justify-center h-full text-gray-400 text-[10px] font-bold">NO IMG</div>
-                        )}
+                        <Image 
+                          src={item.img || "/bhulia-hero.png"} 
+                          alt={item.title || "Listing"} 
+                          fill 
+                          className="object-cover" 
+                          unoptimized={true} 
+                        />
                       </div>
                       <div>
                         <div className="font-bold text-gray-900 text-base">{item.title}</div>
