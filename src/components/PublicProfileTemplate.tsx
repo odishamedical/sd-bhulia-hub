@@ -42,8 +42,31 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
   }, []);
 
   return (
-    <div className="w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8 relative z-10">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6 relative z-10">
       
+      {/* Breadcrumbs Navigation */}
+      <nav className="flex items-center flex-wrap gap-2 text-xs md:text-sm font-sans font-semibold text-gray-400">
+        <Link href="/" className="hover:text-white transition-colors">Home</Link>
+        <span className="text-[#C5A059] opacity-60">/</span>
+        <Link href="/directory" className="hover:text-white transition-colors">
+          {profile.listingType === "weaver" ? "Sambalpuri Weavers" : profile.listingType === "raw_material" ? "Raw Material" : "Sambalpuri Store"}
+        </Link>
+        {profile.state && (
+          <>
+            <span className="text-[#C5A059] opacity-60">/</span>
+            <span className="hover:text-white transition-colors cursor-pointer">{profile.state}</span>
+          </>
+        )}
+        {profile.district && (
+          <>
+            <span className="text-[#C5A059] opacity-60">/</span>
+            <span className="hover:text-white transition-colors cursor-pointer">{profile.district}</span>
+          </>
+        )}
+        <span className="text-[#C5A059] opacity-60">/</span>
+        <span className="text-[#C5A059] font-bold">{profile.name}</span>
+      </nav>
+
       {/* Hero Section */}
       <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 flex flex-col lg:flex-row gap-8 shadow-xl">
         
