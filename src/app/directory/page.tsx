@@ -56,7 +56,7 @@ export default function GlobalDirectoryPage() {
 
   const loading = vendorsLoading || weaversLoading;
 
-  // Render a grid with ads injected every 3 rows (15 items in a 5-col grid)
+  // Render a list layout with ads injected every 15 items
   const renderGridWithAds = (items: any[]) => {
     const result = [];
     let currentAdIndex = 1;
@@ -65,39 +65,44 @@ export default function GlobalDirectoryPage() {
       const chunk = items.slice(i, i + 15);
       
       result.push(
-        <div key={`chunk-${i}`} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div key={`chunk-${i}`} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {chunk.map(item => (
-            <Link key={item.id} href={`/${item.role}/${item.id}`} className="group block bg-[#0B2B26] rounded-2xl overflow-hidden border border-[#C5A059]/20 hover:border-[#C5A059]/80 transition-all duration-300 hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:-translate-y-1 relative">
-              <div className="aspect-square w-full relative bg-[#051815]">
+            <Link key={item.id} href={`/${item.role}/${item.id}`} className="group flex items-center bg-[#0B2B26] rounded-xl overflow-hidden border border-[#C5A059]/20 hover:border-[#C5A059]/80 transition-all duration-300 hover:shadow-[0_0_20px_rgba(197,160,89,0.2)] hover:-translate-y-0.5">
+              
+              {/* Thumbnail Image Left Side */}
+              <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 relative bg-[#051815] border-r border-[#C5A059]/20">
                 <Image 
-                  src={item.logo || item.profileImage || item.img || "/bhulia-hero.png"} 
+                  src={item.logo || item.profileImage || item.img || item.image || item.photo || item.photoUrl || "/bhulia-hero.png"} 
                   alt={item.title || "Listing"} 
                   fill 
-                  className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" 
+                  className="object-cover opacity-90 group-hover:opacity-100 transition-opacity" 
                   unoptimized={true} 
                 />
-                <div className="absolute top-2 left-2 z-10 flex gap-1">
-                  <span className={`px-2 py-0.5 rounded text-[9px] uppercase font-bold tracking-widest border shadow-sm backdrop-blur-sm ${
-                    item.role === 'weaver' ? 'bg-amber-900/60 text-amber-300 border-amber-500/50' : 'bg-blue-900/60 text-blue-300 border-blue-500/50'
+                <div className="absolute top-2 left-2 z-10">
+                  <span className={`px-1.5 py-0.5 rounded text-[8px] uppercase font-bold tracking-widest border shadow-sm backdrop-blur-md ${
+                    item.role === 'weaver' ? 'bg-amber-900/80 text-amber-300 border-amber-500/50' : 'bg-blue-900/80 text-blue-300 border-blue-500/50'
                   }`}>
                     {item.displayType}
                   </span>
                 </div>
-                {item.status === 'approved' && (
-                  <div className="absolute top-2 right-2 z-10">
-                    <span className="px-2 py-0.5 rounded text-[9px] uppercase font-bold tracking-widest bg-red-600/90 text-white border border-red-400 shadow-lg">
-                      Verified
-                    </span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#051815] via-transparent to-transparent opacity-90"></div>
               </div>
-              <div className="p-4 relative">
-                <h3 className="font-bold text-white text-sm line-clamp-1 group-hover:text-[#C5A059] transition-colors">{item.title}</h3>
-                <p className="text-gray-400 text-[10px] mt-1 line-clamp-1">{item.address || "Odisha, India"}</p>
-                <div className="mt-3 flex items-center justify-between">
-                  <span className="text-[#C5A059] text-[10px] font-bold uppercase tracking-wider group-hover:underline">View Profile</span>
-                  <span className="text-gray-500 text-xs">→</span>
+
+              {/* Details Right Side */}
+              <div className="p-3 sm:p-4 flex-1 flex flex-col justify-center min-w-0">
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <h3 className="font-bold text-white text-sm sm:text-base truncate group-hover:text-[#C5A059] transition-colors">{item.title}</h3>
+                  {item.status === 'approved' && (
+                    <span className="shrink-0 w-4 h-4 bg-red-600 rounded-full flex items-center justify-center shadow-[0_0_8px_rgba(220,38,38,0.6)]" title="Verified Partner">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </span>
+                  )}
+                </div>
+                
+                <p className="text-gray-400 text-[10px] sm:text-xs truncate mb-2">{item.address || "Odisha, India"}</p>
+                
+                <div className="flex items-center gap-2 mt-auto">
+                  <span className="text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-wider group-hover:underline">View Profile</span>
+                  <span className="text-[#C5A059] text-xs transition-transform group-hover:translate-x-1">→</span>
                 </div>
               </div>
             </Link>
