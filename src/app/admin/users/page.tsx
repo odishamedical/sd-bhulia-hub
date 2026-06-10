@@ -2,6 +2,10 @@
 
 import React, { useState, useMemo } from "react";
 import { useWeavers, useVendors, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addVendor, addCustomer, addReseller, deleteUserRecord, suspendUserRecord, convertUserRole, updateDocumentStatus } from "@/lib/db-hooks";
+import { initializeApp } from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { firebaseConfig, db } from "@/lib/firebase";
+import { setDoc, doc } from "firebase/firestore";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers(200);
@@ -32,6 +36,7 @@ export default function UserManagementPage() {
   // New User Form State
   const [newUserName, setNewUserName] = useState("");
   const [newUserEmail, setNewUserEmail] = useState("");
+  const [newUserPassword, setNewUserPassword] = useState("");
   const [newUserPhone, setNewUserPhone] = useState("");
   const [newUserWhatsapp, setNewUserWhatsapp] = useState("");
   const [newUserCountry, setNewUserCountry] = useState("India");
@@ -235,6 +240,7 @@ export default function UserManagementPage() {
 
   const handleCreateUser = async () => {
     if (!newUserName.trim()) return alert("Please provide a Full Name.");
+    if (!newUserEmail.trim() || !newUserPassword.trim()) return alert("Email and Password are required to create a login.");
     
     // Auto-generate a slug from the name (e.g., "John Doe" -> "john-doe")
     const generatedSlug = newUserName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-");
@@ -250,6 +256,22 @@ export default function UserManagementPage() {
     };
 
     try {
+      // 1. Create the Firebase Auth user via secondary app (so admin doesn't get logged out)
+      const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp" + Date.now());
+      const secondaryAuth = getAuth(secondaryApp);
+      const userCred = await createUserWithEmailAndPassword(secondaryAuth, newUserEmail, newUserPassword);
+      const newUid = userCred.user.uid;
+      await signOut(secondaryAuth); // Sign out of the secondary app
+      
+      // 2. Create the Users collection document
+      await setDoc(doc(db, "users", newUid), {
+        name: newUserName,
+        email: newUserEmail,
+        role: newUserRole === "shop" ? "vendor" : newUserRole,
+        applicationStatus: "approved",
+        createdAt: new Date().toISOString()
+      });
+
       if (newUserRole === "weaver") {
         await addWeaver({
           slug: generatedSlug,
@@ -269,7 +291,7 @@ export default function UserManagementPage() {
           },
           canSellWholesale: newUserCanSellWholesale,
           subscription: subscriptionData,
-        });
+        }, newUid);
         alert(`Master Weaver Profile Generated!\nPublic Link: bhulia.com/weaver/${generatedSlug}`);
       } else if (newUserRole === "shop") {
         await addVendor({
@@ -286,7 +308,7 @@ export default function UserManagementPage() {
           productLimit: parseInt(newSubLimit),
           canSellWholesale: newUserCanSellWholesale,
           subscription: subscriptionData,
-        });
+        }, newUid);
         alert(`B2B Vendor Profile Generated!\nPublic Link: bhulia.com/store/${generatedSlug}`);
       } else if (newUserRole === "reseller") {
         await addReseller({
@@ -302,7 +324,7 @@ export default function UserManagementPage() {
           commissionRate: parseInt(newSubCommission) || 15,
           status: "active",
           isB2BApproved: true,
-        });
+        }, newUid);
         alert(`Reseller Created Successfully in Database.`);
       } else {
         await addCustomer({
@@ -315,7 +337,7 @@ export default function UserManagementPage() {
           district: newUserDistrict || "N/A",
           address: newUserAddress || "N/A",
           pin: newUserPin || "N/A",
-        });
+        }, newUid);
         alert(`Customer Created Successfully in Database.`);
       }
       
@@ -324,6 +346,7 @@ export default function UserManagementPage() {
       setNewUserName("");
       setNewUserPhone("");
       setNewUserEmail("");
+      setNewUserPassword("");
       setNewUserWhatsapp("");
     } catch (e) {
       alert("Error adding customer to database.");
@@ -648,9 +671,15 @@ export default function UserManagementPage() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-xs font-bold text-gray-500 mb-1.5 block">Email Address (Used for Login)</label>
-                  <input type="email" value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} placeholder="Email" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1.5 block">Email Address (Used for Login)</label>
+                    <input type="email" value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} placeholder="Email" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1.5 block">Password</label>
+                    <input type="text" value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} placeholder="Temporary Password" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">

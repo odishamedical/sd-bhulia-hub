@@ -499,15 +499,15 @@ export function useVendorBySlug(slug: string) {
 // CREATE / UPDATE / DELETE FUNCTIONS
 // ============================================================================
 
-export async function addReseller(data: Omit<Reseller, "id" | "referralId" | "tier" | "createdAt">) {
-  const docRef = doc(collection(db, "resellers"));
+export async function addReseller(data: Omit<Reseller, "id" | "referralId" | "tier" | "createdAt">, customId?: string) {
+  const docRef = customId ? doc(db, "resellers", customId) : doc(collection(db, "resellers"));
   const referralId = `SDR-${Math.floor(1000 + Math.random() * 9000)}`;
   await setDoc(docRef, { ...data, referralId, tier: "Bronze", createdAt: new Date().toISOString() });
   return docRef.id;
 }
 
-export async function addCustomer(data: Omit<Customer, "id" | "createdAt">) {
-  const docRef = doc(collection(db, "customers"));
+export async function addCustomer(data: Omit<Customer, "id" | "createdAt">, customId?: string) {
+  const docRef = customId ? doc(db, "customers", customId) : doc(collection(db, "customers"));
   await setDoc(docRef, { ...data, createdAt: new Date().toISOString() });
   return docRef.id;
 }

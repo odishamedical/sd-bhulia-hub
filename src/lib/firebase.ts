@@ -3,7 +3,7 @@ import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, where
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyBUpo-Mc3aDs38LtkjgmUxSQNCVzg9XK2o",
   authDomain: "sd-bhulia.firebaseapp.com",
   projectId: "sd-bhulia",
