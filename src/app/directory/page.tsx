@@ -121,10 +121,10 @@ export default function GlobalDirectoryPage() {
         {/* Sleek Header - Left Aligned */}
         <div className="mb-8 text-left w-full">
           <h1 className="text-xl md:text-3xl lg:text-4xl xl:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-3 leading-tight truncate-multiline">
-            The original Sambalpuri : Saree, Dress, Bedsheet, Cloth Weavers, store and Rawmaterial supplier.
+            The Original Sambalpuri: Weavers, Stores, and Raw Material Suppliers.
           </h1>
           <p className="text-gray-300 w-full text-sm md:text-base leading-relaxed">
-            Discover authentic Master Weavers and Verified Retail Shops for original Sambalpuri Handloom Sarees straight from Odisha. Support the heritage directly.
+            Discover Authentic Master Weavers and Verified Retail Shops for original Sambalpuri Handloom Sarees, Dress Materials, Bedsheets, and Fabrics Direct from Odisha.
           </p>
         </div>
 
