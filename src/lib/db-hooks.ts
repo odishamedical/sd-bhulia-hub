@@ -250,7 +250,7 @@ export function useProductById(id: string) {
   return { product, loading };
 }
 
-export function useWeavers(limitCount?: number) {
+export function useWeavers(limitCount: number = 200) {
   const [weavers, setWeavers] = useState<Weaver[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -276,7 +276,7 @@ export function useWeavers(limitCount?: number) {
   return { weavers, loading };
 }
 
-export function useCustomers(limitCount?: number) {
+export function useCustomers(limitCount: number = 200) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -302,7 +302,7 @@ export function useCustomers(limitCount?: number) {
   return { customers, loading };
 }
 
-export function useResellers(limitCount?: number) {
+export function useResellers(limitCount: number = 200) {
   const [resellers, setResellers] = useState<Reseller[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -328,7 +328,7 @@ export function useResellers(limitCount?: number) {
   return { resellers, loading };
 }
 
-export function useVendors(limitCount?: number) {
+export function useVendors(limitCount: number = 200) {
   const [vendors, setStores] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
 
