@@ -27,6 +27,15 @@ export default function ProductCard({ product, role }: ProductCardProps) {
     }
   }
 
+  const isB2BApproved = role === "reseller" || role === "wholesaler" || role === "shop" || role === "store" || role === "weaver" || role === "super_admin";
+  const isRetail = product.availableForRetail !== false; // defaults to true
+  const isWholesale = product.availableForWholesale === true;
+
+  // Hide Wholesale-Only products from public users
+  if (!isB2BApproved && !isRetail && isWholesale) {
+    return null;
+  }
+
   return (
     <div className="group relative flex flex-col w-full bg-[#051815] border border-[#C5A059]/20 rounded-2xl overflow-hidden shadow-md hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:-translate-y-1 transition-all duration-300 h-full">
       
@@ -95,9 +104,26 @@ export default function ProductCard({ product, role }: ProductCardProps) {
 
         <div className="mt-auto border-t border-[#C5A059]/10 pt-3 flex items-center justify-between">
           <div>
-            <span className="text-lg md:text-xl font-black text-white font-sans tracking-tight">₹{finalPrice.toLocaleString()}</span>
-            {product.isSpecialOffer && priceNum > finalPrice && (
-              <span className="text-xs text-gray-500 line-through ml-2">₹{priceNum.toLocaleString()}</span>
+            {isB2BApproved && isWholesale ? (
+              <div className="flex flex-col">
+                <span className="text-lg md:text-xl font-black text-[#C5A059] font-sans tracking-tight">
+                  ₹{product.commercialPrice?.toLocaleString() || finalPrice.toLocaleString()} 
+                  <span className="text-[10px] text-[#C5A059] bg-[#C5A059]/10 px-1 py-0.5 rounded font-medium uppercase tracking-widest ml-1.5 border border-[#C5A059]/20">B2B</span>
+                </span>
+                {isRetail && (
+                  <span className="text-[10px] text-gray-500 line-through">Retail: ₹{priceNum.toLocaleString()}</span>
+                )}
+                {!isRetail && (
+                  <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Wholesale Only</span>
+                )}
+              </div>
+            ) : (
+              <>
+                <span className="text-lg md:text-xl font-black text-white font-sans tracking-tight">₹{finalPrice.toLocaleString()}</span>
+                {product.isSpecialOffer && priceNum > finalPrice && (
+                  <span className="text-xs text-gray-500 line-through ml-2">₹{priceNum.toLocaleString()}</span>
+                )}
+              </>
             )}
           </div>
           <Link href={`/product/${product.id}`} className="w-8 h-8 rounded-full bg-[#C5A059]/10 flex items-center justify-center text-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021] transition-all">
@@ -106,10 +132,10 @@ export default function ProductCard({ product, role }: ProductCardProps) {
         </div>
 
         {/* Reseller Info (Only visible to resellers) */}
-        {role === "reseller" && product.allowResellerMargin && (
+        {role === "reseller" && product.allowResellerMargin && isRetail && (
           <div className="mt-3 pt-3 border-t border-dashed border-[#C5A059]/30">
             <div className="flex justify-between items-center text-[10px]">
-              <span className="text-gray-400 font-bold uppercase tracking-widest">Reseller Margin</span>
+              <span className="text-gray-400 font-bold uppercase tracking-widest">Dropship Margin</span>
               <span className="text-green-400 font-black">{product.resellerMarginPercentage}% (₹{Math.round(priceNum * (product.resellerMarginPercentage / 100)).toLocaleString()})</span>
             </div>
           </div>

@@ -247,7 +247,25 @@ export default function ProductDetailPage() {
 
         {product && <GlobalBannerSlot placementId="content_top" context={{ audience: "products", specificId: product.id, category: product.category, material: product.material, design: product.design }} />}
         
-        {productLoading ? (
+        {(() => {
+          const isB2BApproved = userRole === "reseller" || userRole === "wholesaler" || userRole === "shop" || userRole === "store" || userRole === "weaver" || userRole === "super_admin";
+          const isRetail = product?.availableForRetail !== false;
+          const isWholesale = product?.availableForWholesale === true;
+
+          if (product && !isB2BApproved && !isRetail && isWholesale) {
+            return (
+              <div className="min-h-[60vh] flex items-center justify-center bg-transparent text-center p-6 w-full">
+                <div className="bg-[#0B2B26] border border-[#C5A059]/30 p-10 rounded-3xl shadow-2xl max-w-lg w-full">
+                  <span className="text-6xl mb-4 block">🔒</span>
+                  <h1 className="text-2xl font-bold text-[#C5A059] mb-2">B2B Exclusive Product</h1>
+                  <p className="text-gray-300 mb-6 text-sm leading-relaxed">This product is strictly available for our verified Wholesale partners. Please login with a B2B account to view commercial pricing.</p>
+                  <Link href="/" className="bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs shadow-lg">Return to Catalog</Link>
+                </div>
+              </div>
+            );
+          }
+
+          return productLoading ? (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-pulse">
             <div className="lg:col-span-6 h-[500px] bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl"></div>
             <div className="lg:col-span-6 space-y-6">
@@ -397,21 +415,59 @@ export default function ProductDetailPage() {
               {/* Pricing section */}
               <div className="flex flex-col gap-2 border-t border-b border-[#C5A059]/20 py-4">
                 <div className="flex items-baseline gap-4">
-                  <span className={`text-3xl font-serif font-bold ${userRole === "reseller" && product.allowResellerMargin ? "text-gray-400 line-through text-2xl" : "text-[#C5A059]"}`}>{product.price}</span>
-                  {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
-                    <span className="text-sm text-gray-400 line-through">{product.mrp || `₹ ${(parseFloat(product.price.replace(/[^0-9]/g, '')) * 1.2).toLocaleString('en-IN')}`}</span>
-                  )}
-                  {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
-                    <span className="text-xs text-green-400 font-bold">Direct Weaver Price</span>
-                  )}
+                  {(() => {
+                    const isB2BApproved = userRole === "reseller" || userRole === "wholesaler" || userRole === "shop" || userRole === "store" || userRole === "weaver" || userRole === "super_admin";
+                    const isRetail = product.availableForRetail !== false;
+                    const isWholesale = product.availableForWholesale === true;
+                    
+                    if (isB2BApproved && isWholesale) {
+                      return (
+                        <>
+                          <span className="text-3xl font-serif font-bold text-[#C5A059]">₹{product.commercialPrice?.toLocaleString() || product.price}</span>
+                          <span className="text-[10px] text-[#C5A059] bg-[#C5A059]/10 px-2 py-1 rounded font-bold uppercase tracking-widest border border-[#C5A059]/20 whitespace-nowrap">B2B Wholesale Price</span>
+                          {isRetail && (
+                            <span className="text-sm text-gray-500 line-through ml-2">Retail: ₹{(parseFloat(product.price.toString().replace(/[^0-9]/g, ''))).toLocaleString('en-IN')}</span>
+                          )}
+                        </>
+                      );
+                    }
+                    
+                    return (
+                      <>
+                        <span className={`text-3xl font-serif font-bold ${userRole === "reseller" && product.allowResellerMargin ? "text-gray-400 line-through text-2xl" : "text-[#C5A059]"}`}>{product.price}</span>
+                        {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
+                          <span className="text-sm text-gray-400 line-through">{product.mrp || `₹ ${(parseFloat(product.price.toString().replace(/[^0-9]/g, '')) * 1.2).toLocaleString('en-IN')}`}</span>
+                        )}
+                        {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
+                          <span className="text-xs text-green-400 font-bold">Direct Weaver Price</span>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
                 
-                {userRole === "reseller" && product.allowResellerMargin && product.resellerPrice && (
+                {userRole === "reseller" && product.allowResellerMargin && product.resellerPrice && product.availableForRetail !== false && (
                   <div className="flex items-baseline gap-4 mt-1 bg-[#C5A059]/10 p-2 rounded-lg border border-[#C5A059]/30">
                     <span className="text-3xl font-serif font-bold text-green-400">₹{product.resellerPrice}</span>
-                    <span className="text-xs text-[#C5A059] font-bold uppercase tracking-wider">Your Reseller Margin ({product.resellerMarginPercentage}%)</span>
+                    <span className="text-xs text-[#C5A059] font-bold uppercase tracking-wider">Your Dropship Margin ({product.resellerMarginPercentage}%)</span>
                   </div>
                 )}
+                
+                {(() => {
+                  const isB2BApproved = userRole === "reseller" || userRole === "wholesaler" || userRole === "shop" || userRole === "store" || userRole === "weaver" || userRole === "super_admin";
+                  if (isB2BApproved && product.availableForWholesale && product.wholesaleTerms) {
+                    return (
+                      <div className="mt-3 p-3 bg-purple-900/20 border border-purple-500/30 rounded-xl">
+                        <span className="block text-[10px] text-purple-400 font-bold uppercase tracking-widest mb-1 flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                          Wholesale Terms (MOQ & Dispatch)
+                        </span>
+                        <p className="text-xs text-purple-200 leading-relaxed font-medium">{product.wholesaleTerms}</p>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
 
               {/* Short Description */}
@@ -556,7 +612,8 @@ export default function ProductDetailPage() {
           </div>
 
         </div>
-        )}
+        );
+      })()}
 
       </div>
 

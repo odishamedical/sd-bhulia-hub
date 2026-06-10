@@ -4,7 +4,7 @@ import PremiumMetricCard from "@/components/PremiumMetricCard";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db, storage } from "@/lib/firebase";
-import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc, getDocs, query, where } from "firebase/firestore";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { onAuthStateChanged } from "firebase/auth";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS, WEAVER_DISTRICTS } from "@/lib/locations";
@@ -46,6 +46,7 @@ export default function DashboardPage() {
   const [isViewAsMode, setIsViewAsMode] = useState(false);
   const [isSellerMode, setIsSellerMode] = useState(false);
   const [storeSlug, setStoreSlug] = useState<string>("demo");
+  const [canSellWholesale, setCanSellWholesale] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -70,6 +71,17 @@ export default function DashboardPage() {
               setRole(viewAsRole);
               setUserName(viewAsName || "Viewing User");
               setIsViewAsMode(true);
+            } else if (actualRole === "weaver_staff" || actualRole === "store_staff") {
+              const bossUid = userDoc.data().bossUid;
+              if (bossUid) {
+                setRole(actualRole);
+                setUserName(userDoc.data().name || user.email?.split("@")[0] || "Staff");
+                setIsViewAsMode(false);
+                localStorage.setItem("sd_boss_uid", bossUid);
+              } else {
+                setRole("customer");
+                setUserName(user.email?.split("@")[0] || "User");
+              }
             } else {
               setRole(actualRole);
               setUserName(userDoc.data().name || user.email?.split("@")[0] || "User");
@@ -80,6 +92,15 @@ export default function DashboardPage() {
             const data = userDoc.data();
             const slug = (data.storeName || data.name || "demo").toLowerCase().replace(/[^a-z0-9]+/g, '-');
             setStoreSlug(slug);
+
+            // Fetch wholesale permissions
+            let targetCollection = actualRole === "weaver" ? "weavers" : (actualRole === "store" || actualRole === "shop" || actualRole === "vendor" ? "vendors" : null);
+            if (targetCollection) {
+              const vendorDoc = await getDoc(doc(db, targetCollection, user.uid));
+              if (vendorDoc.exists()) {
+                setCanSellWholesale(vendorDoc.data().canSellWholesale || false);
+              }
+            }
 
           } else {
             // New logic: Default to customer, no blocking onboarding
@@ -487,6 +508,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
       getDoc(doc(db, "users", auth.currentUser.uid)).then(snap => {
         if (snap.exists()) {
           const data = snap.data();
+          // Staff Members
+          setStaffMembers(data.staffMembers || []);
           // Personal
           setPersonalName(data.personalName || data.name || "");
           setPersonalCountry(data.personalCountry || "India");
@@ -622,6 +645,10 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   // Upload Form State
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
+  const [commercialPrice, setCommercialPrice] = useState("");
+  const [availableForRetail, setAvailableForRetail] = useState(true);
+  const [availableForWholesale, setAvailableForWholesale] = useState(false);
+  const [wholesaleTerms, setWholesaleTerms] = useState("");
   const [productCategory, setProductCategory] = useState("Saree");
   const [productDesc, setProductDesc] = useState("");
   const [stockQuantity, setStockQuantity] = useState(1);
@@ -658,6 +685,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     setIsAddInventoryOpen(true);
     setProductName(""); setProductPrice(""); setProductMrp(""); setProductDesc(""); setProductLongDesc("");
     setProductImage(""); setImg2(""); setImg3(""); setImg4("");
+    setAvailableForRetail(true); setAvailableForWholesale(false); setCommercialPrice(""); setWholesaleTerms("");
   };
 
   const handleEditClick = (p: any) => {
@@ -667,6 +695,10 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     setProductMrp(p.mrp?.toString() || "");
     setProductDesc(p.desc || "");
     setProductLongDesc(p.longDesc || "");
+    setAvailableForRetail(p.availableForRetail !== false);
+    setAvailableForWholesale(p.availableForWholesale || false);
+    setCommercialPrice(p.commercialPrice?.toString() || "");
+    setWholesaleTerms(p.wholesaleTerms || "");
     setProductImage(p.img || "");
     setImg2(p.img2 || "");
     setImg3(p.img3 || "");
@@ -680,9 +712,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     setIsUploading(true);
     try {
       let isAutoApprovedUser = false;
-      let targetCollection = roleTitle === "Weaver Hub" ? "weavers" : "vendors";
+      let targetCollection = roleTitle.includes("Weaver") ? "weavers" : "vendors";
       
-      const sellerDoc = await getDoc(doc(db, targetCollection, auth.currentUser.uid));
+      const uploaderUid = isStaff ? (localStorage.getItem("sd_boss_uid") || auth.currentUser.uid) : auth.currentUser.uid;
+
+      const sellerDoc = await getDoc(doc(db, targetCollection, uploaderUid));
       if (sellerDoc.exists()) {
         const sellerData = sellerDoc.data();
         isAutoApprovedUser = sellerData.isAutoApproved || false;
@@ -700,6 +734,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
       const parsedPrice = Number(productPrice.toString().replace(/[^0-9.]/g, '')) || 0;
       const parsedMrp = Number(productMrp.toString().replace(/[^0-9.]/g, '')) || 0;
+      const parsedCommercialPrice = Number(commercialPrice.toString().replace(/[^0-9.]/g, '')) || 0;
 
       // Generate GI-Tracking Product ID
       const generateProductId = () => `BHL-${Math.floor(10000 + Math.random() * 90000)}`;
@@ -718,6 +753,10 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         slug: productName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         price: parsedPrice,
         mrp: parsedMrp,
+        availableForRetail,
+        availableForWholesale,
+        commercialPrice: parsedCommercialPrice,
+        wholesaleTerms,
         category: productCategory,
         desc: productDesc,
         longDesc: productLongDesc || productDesc,
@@ -756,8 +795,9 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           bhuliaProductId,
           isBhuliaVerified: true,
           escrowStatus: "Payment Protected",
-          sellerId: auth.currentUser?.uid,
-          sellerType: roleTitle === "Vendor Hub" ? "vendor" : "weaver",
+          sellerId: uploaderUid,
+          uploadedBy: isStaff ? auth.currentUser.uid : null,
+          sellerType: roleTitle.includes("Vendor") ? "vendor" : "weaver",
           status: isAutoApprovedUser ? "approved" : "pending_approval",
           createdAt: serverTimestamp(),
         });
@@ -929,14 +969,48 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
                     <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Selling Price (₹)</label>
-                    <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required placeholder="e.g. 34500" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">MRP (₹)</label>
-                    <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required placeholder="e.g. 42000" />
-                  </div>
+                  
+                  {canSellWholesale && (
+                    <div className="md:col-span-2 p-5 bg-purple-50 rounded-2xl border border-purple-100 mb-2">
+                      <h4 className="text-sm font-bold text-purple-900 mb-4">Availability Options (B2B Privileges Enabled)</h4>
+                      <div className="flex gap-6">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="checkbox" checked={availableForRetail} onChange={e => setAvailableForRetail(e.target.checked)} className="form-checkbox text-purple-600 rounded w-5 h-5 focus:ring-purple-500" />
+                          <span className="font-bold text-gray-900 text-sm">Available for Retail</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="checkbox" checked={availableForWholesale} onChange={e => setAvailableForWholesale(e.target.checked)} className="form-checkbox text-purple-600 rounded w-5 h-5 focus:ring-purple-500" />
+                          <span className="font-bold text-gray-900 text-sm">Available for Wholesale</span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+
+                  {availableForRetail && (
+                    <>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Retail Selling Price (₹)</label>
+                        <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required={availableForRetail} placeholder="e.g. 34500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Retail MRP (₹)</label>
+                        <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required={availableForRetail} placeholder="e.g. 42000" />
+                      </div>
+                    </>
+                  )}
+                  
+                  {availableForWholesale && (
+                    <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 p-5 bg-purple-50/50 rounded-2xl border border-purple-100">
+                      <div>
+                        <label className="block text-xs font-bold text-purple-800 uppercase tracking-wider mb-2">Wholesale Commercial Price (₹)</label>
+                        <input type="text" value={commercialPrice} onChange={e => setCommercialPrice(e.target.value)} className="w-full bg-white border border-purple-200 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-purple-500 outline-none transition-all" required={availableForWholesale} placeholder="e.g. 29000" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-purple-800 uppercase tracking-wider mb-2">Wholesale Supply Terms (MOQ, Dispatch)</label>
+                        <textarea value={wholesaleTerms} onChange={e => setWholesaleTerms(e.target.value)} className="w-full bg-white border border-purple-200 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-purple-500 outline-none transition-all" required={availableForWholesale} placeholder="e.g. Min 5 Sarees, 15 days dispatch..." rows={1} />
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category</label>
                     <input list="categoryList" value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="Select or type category..." required />
@@ -1267,11 +1341,32 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                   className="flex-1 border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none" 
                 />
                 <button 
-                  onClick={() => {
-                    if (staffEmailInput && !staffMembers.includes(staffEmailInput)) {
-                      setStaffMembers(prev => [...prev, staffEmailInput]);
-                      setStaffEmailInput("");
-                      alert("Staff invitation sent! When they log in, they will have access to your catalog.");
+                  onClick={async () => {
+                    if (staffEmailInput && !staffMembers.includes(staffEmailInput.toLowerCase())) {
+                      const emailToInvite = staffEmailInput.toLowerCase();
+                      try {
+                        const q = query(collection(db, "users"), where("email", "==", emailToInvite));
+                        const querySnapshot = await getDocs(q);
+                        if (!querySnapshot.empty) {
+                          const staffDoc = querySnapshot.docs[0];
+                          await updateDoc(staffDoc.ref, {
+                            role: roleTitle.includes("Weaver") ? "weaver_staff" : "store_staff",
+                            bossUid: auth.currentUser?.uid
+                          });
+                          const newStaff = [...staffMembers, emailToInvite];
+                          setStaffMembers(newStaff);
+                          await updateDoc(doc(db, "users", auth.currentUser!.uid), {
+                            staffMembers: newStaff
+                          });
+                          setStaffEmailInput("");
+                          alert("Staff successfully linked! When they log in, they will have access to your catalog.");
+                        } else {
+                          alert("User not found! Please ask them to create an account on Bhulia.com first using this email, then try inviting them again.");
+                        }
+                      } catch (error) {
+                        console.error("Error inviting staff:", error);
+                        alert("Error inviting staff.");
+                      }
                     }
                   }}
                   disabled={!staffEmailInput}

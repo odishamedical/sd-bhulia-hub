@@ -38,6 +38,7 @@ export interface Weaver {
     expiresAt?: string;
   };
   isAutoApproved?: boolean;
+  canSellWholesale?: boolean;
   pendingChanges?: any;
 }
 
@@ -68,6 +69,7 @@ export interface Vendor {
     expiresAt?: string;
   };
   isAutoApproved?: boolean;
+  canSellWholesale?: boolean;
   pendingChanges?: any;
 }
 
@@ -116,6 +118,7 @@ export interface AuthUser {
   name: string;
   email: string;
   role: string;
+  isB2BApproved?: boolean;
   createdAt: string;
 }
 
@@ -135,6 +138,7 @@ export interface Reseller {
   tier: "Bronze" | "Silver" | "Gold" | "Platinum";
   commissionRate: number;
   status: "active" | "inactive";
+  isB2BApproved?: boolean;
   createdAt: string;
 }
 

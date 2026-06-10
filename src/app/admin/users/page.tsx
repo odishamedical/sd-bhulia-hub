@@ -40,6 +40,7 @@ export default function UserManagementPage() {
   const [newUserAddress, setNewUserAddress] = useState("");
   const [newUserPin, setNewUserPin] = useState("");
   const [allowDirectContact, setAllowDirectContact] = useState(false);
+  const [newUserCanSellWholesale, setNewUserCanSellWholesale] = useState(false);
 
   // SaaS Configuration State
   const [newSubStatus, setNewSubStatus] = useState("free_trial");
@@ -266,6 +267,7 @@ export default function UserManagementPage() {
             heroEnabled: true,
             gridStyle: "3-Column",
           },
+          canSellWholesale: newUserCanSellWholesale,
           subscription: subscriptionData,
         });
         alert(`Master Weaver Profile Generated!\nPublic Link: bhulia.com/weaver/${generatedSlug}`);
@@ -282,6 +284,7 @@ export default function UserManagementPage() {
           tier: "Silver",
           status: "approved",
           productLimit: parseInt(newSubLimit),
+          canSellWholesale: newUserCanSellWholesale,
           subscription: subscriptionData,
         });
         alert(`B2B Vendor Profile Generated!\nPublic Link: bhulia.com/store/${generatedSlug}`);
@@ -298,6 +301,7 @@ export default function UserManagementPage() {
           pin: newUserPin || "N/A",
           commissionRate: parseInt(newSubCommission) || 15,
           status: "active",
+          isB2BApproved: true,
         });
         alert(`Reseller Created Successfully in Database.`);
       } else {
@@ -655,16 +659,25 @@ export default function UserManagementPage() {
                         <p className="text-[10px] text-gray-400 mt-1">Recommended: 400x400px (JPG/PNG)</p>
                       </div>
                     </div>
-                    
-                    <label className="flex items-start gap-3 p-4 bg-orange-50 border border-orange-100 rounded-xl cursor-pointer mt-4">
-                      <input type="checkbox" checked={allowDirectContact} onChange={e => setAllowDirectContact(e.target.checked)} className="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded" />
-                      <div>
-                        <div className="text-sm font-bold text-orange-900 leading-tight">Special Provision: Unmask Contact</div>
-                        <div className="text-xs text-orange-700 mt-0.5">By default, phone numbers are masked on public pages. Check this to allow direct customer calls/WhatsApp.</div>
-                      </div>
-                    </label>
-                  </>
-                )}
+                      <label className="flex items-start gap-3 p-4 bg-orange-50 border border-orange-100 rounded-xl cursor-pointer mt-4">
+                        <input type="checkbox" checked={allowDirectContact} onChange={e => setAllowDirectContact(e.target.checked)} className="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded" />
+                        <div>
+                          <div className="text-sm font-bold text-orange-900 leading-tight">Special Provision: Unmask Contact</div>
+                          <div className="text-xs text-orange-700 mt-0.5">By default, phone numbers are masked on public pages. Check this to allow direct customer calls/WhatsApp.</div>
+                        </div>
+                      </label>
+                      
+                      {(newUserRole === 'weaver' || newUserRole === 'shop') && (
+                        <label className="flex items-start gap-3 p-4 bg-purple-50 border border-purple-100 rounded-xl cursor-pointer mt-4">
+                          <input type="checkbox" checked={newUserCanSellWholesale} onChange={e => setNewUserCanSellWholesale(e.target.checked)} className="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded" />
+                          <div>
+                            <div className="text-sm font-bold text-purple-900 leading-tight">B2B Wholesale Privileges</div>
+                            <div className="text-xs text-purple-700 mt-0.5">Allow this vendor to upload products with hidden B2B commercial prices.</div>
+                          </div>
+                        </label>
+                      )}
+                    </>
+                  )}
               </div>
 
               {/* Right Column: Geography & Admin Limits */}
