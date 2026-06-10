@@ -371,11 +371,24 @@ export default function AdsPage() {
                 {type === "image" ? (
                   <>
                     <div className="bg-gray-50 p-4 border border-gray-200 rounded-xl">
+                      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                        <h4 className="text-xs font-bold text-amber-800 flex items-center gap-1.5 mb-1">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                          Designer Guidelines (Pixel Sizes)
+                        </h4>
+                        <p className="text-xs text-amber-700 font-medium">
+                          {placement === "sidebar" ? 
+                            "Sidebar Ad: 300 x 600 px (Portrait) or 800 x 800 px (Square)" : 
+                           layoutSize === "quarter" ? 
+                            "Grid Ad: 800 x 800 px (Square)" : 
+                           "Full Row Banner: 1920 x 480 px (Widescreen)"}
+                        </p>
+                      </div>
                       <ImageUploader 
                         value={imageUrl} 
                         onChange={(url) => setImageUrl(url)} 
                         label={`Upload ${layoutSize.charAt(0).toUpperCase() + layoutSize.slice(1)} Width Banner`} 
-                        aspectRatio={layoutSize === "quarter" ? "square" : layoutSize === "half" ? "landscape" : "landscape"} 
+                        aspectRatio={placement === "sidebar" ? "portrait" : layoutSize === "quarter" ? "square" : "landscape"} 
                       />
                     </div>
                     <div>
