@@ -13,6 +13,7 @@ import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 import ProfileBlockerModal from "../../../components/ProfileBlockerModal";
 import { FastAverageColor } from 'fast-average-color';
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
 export default function ProductDetailPage() {
   const { addToCart, addToWishlist, wishlist } = useCart();
@@ -326,6 +327,25 @@ export default function ProductDetailPage() {
             
             {/* Left Side: Large image & trust badges */}
             <div className="lg:col-span-6 space-y-6">
+              
+              {/* Vertical Video Demo */}
+              {product.youtubeUrl && getYouTubeEmbedUrl(product.youtubeUrl) && (
+                <div className="w-full flex justify-center">
+                  <div className="relative w-full max-w-[400px] aspect-[9/16] rounded-3xl overflow-hidden border-2 border-[#C5A059]/50 shadow-[0_0_50px_rgba(197,160,89,0.2)] bg-black/80 flex items-center justify-center">
+                    <iframe 
+                      src={getYouTubeEmbedUrl(product.youtubeUrl) || ""} 
+                      title="Product Video Demo" 
+                      className="absolute top-0 left-0 w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen
+                    ></iframe>
+                    <div className="absolute top-4 left-4 bg-red-600 text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest shadow-lg z-10 pointer-events-none">
+                      ▶ Demo Reel
+                    </div>
+                  </div>
+                </div>
+              )}
+
             <div 
               onClick={() => setIsLightboxOpen(true)}
               className="relative w-full flex justify-center items-center rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-black/40 p-1 cursor-zoom-in group transition-all duration-500 hover:border-[#C5A059]"
