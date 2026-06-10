@@ -29,9 +29,10 @@ export interface PublicProfileProps {
     productsOffered?: string;
   };
   products: Product[];
+  allProducts?: Product[];
 }
 
-export default function PublicProfileTemplate({ type, profile, products }: PublicProfileProps) {
+export default function PublicProfileTemplate({ type, profile, products, allProducts = [] }: PublicProfileProps) {
   const isWeaver = type === "weaver";
   const badgeText = isWeaver ? "Bhulia.com Verified Weavers" : "Bhulia.com Verified Sambalpuri Shop";
   const badgeColor = isWeaver ? "text-[#C5A059] border-[#C5A059]" : "text-blue-400 border-blue-400";
@@ -49,14 +50,28 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
   if (profile.district) breadcrumbItems.push({ label: profile.district, href: "/directory" });
   breadcrumbItems.push({ label: profile.name });
 
+  // Get similar products (exclude current weaver's products, randomize 4)
+  const similarProducts = React.useMemo(() => {
+    if (!allProducts || allProducts.length === 0) return [];
+    // We filter out products that are in the `products` array (which are this weaver's)
+    const currentProductIds = new Set(products.map(p => p.id));
+    const others = allProducts.filter(p => !currentProductIds.has(p.id));
+    return others.sort(() => Math.random() - 0.5).slice(0, 4);
+  }, [allProducts, products]);
+
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6 relative z-10">
       
       {/* Breadcrumbs Navigation */}
       <Breadcrumbs items={breadcrumbItems} />
 
-      {/* Hero Section */}
-      <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 flex flex-col lg:flex-row gap-8 shadow-xl">
+      <div className="flex flex-col lg:flex-row gap-8">
+        
+        {/* Main Content (Left) */}
+        <div className="flex-1 min-w-0 flex flex-col gap-6">
+          
+          {/* Hero Section */}
+          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 flex flex-col lg:flex-row gap-8 shadow-xl">
         
         {/* Left: Image */}
         <div className="lg:w-1/4 shrink-0">
@@ -161,12 +176,12 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
           </div>
         </div>
 
-      </div>
+        </div>
+        
+        <ShareWidget title={profile.name} />
 
-      <ShareWidget title={profile.name} />
-
-      {/* Product Grid Section */}
-      <div className="space-y-6 pt-6 border-t border-[#C5A059]/20">
+        {/* Product Grid Section */}
+        <div className="space-y-6 pt-6 border-t border-[#C5A059]/20">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Product Catalog</h3>
@@ -187,8 +202,55 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
             <p className="text-sm text-gray-400">This profile hasn't uploaded any catalog items yet.</p>
           </div>
         )}
+        </div>
+      </div> {/* End Main Content */}
+
+      {/* Sidebar (Right) */}
+      <div className="w-full lg:w-80 shrink-0 space-y-6">
+        <div className="sticky top-24 space-y-6">
+          
+          {/* Quick Search Widget */}
+          <div className="bg-[#051815] border border-[#C5A059]/30 rounded-2xl p-5 shadow-lg relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#C5A059]/5 blur-3xl rounded-full"></div>
+            <h3 className="text-[#C5A059] font-bold text-sm uppercase tracking-widest mb-3 flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              Directory Search
+            </h3>
+            <p className="text-gray-300 text-xs mb-4 leading-relaxed">
+              Looking for more options in <strong className="text-white">{profile.district || profile.state}</strong>? Or exploring different categories?
+            </p>
+            <Link href="/directory" className="block w-full text-center bg-[#C5A059]/10 hover:bg-[#C5A059] text-[#C5A059] hover:text-[#051815] border border-[#C5A059]/50 transition-all duration-300 py-3 rounded-xl text-xs font-bold uppercase tracking-widest">
+              Open Directory Filters →
+            </Link>
+          </div>
+
+          {/* Similar Products Widget */}
+          {similarProducts.length > 0 && (
+            <div className="bg-[#0B2B26] border border-white/10 rounded-2xl p-5 shadow-lg">
+              <h3 className="text-white font-serif text-lg font-bold mb-1">More to Explore</h3>
+              <p className="text-[#C5A059] text-[10px] uppercase tracking-widest mb-4">Similar Products</p>
+              
+              <div className="space-y-4">
+                {similarProducts.map((sp) => (
+                  <Link key={sp.id} href={`/product/${sp.id}`} className="group flex gap-3 items-center hover:bg-white/5 p-2 rounded-xl transition-colors">
+                    <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 border border-white/10">
+                      <Image src={sp.images[0]} alt={sp.title} fill className="object-cover group-hover:scale-110 transition-transform duration-500" unoptimized />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-white text-xs font-bold truncate group-hover:text-[#C5A059] transition-colors">{sp.title}</h4>
+                      <div className="text-gray-400 text-[10px] truncate mt-0.5">{sp.weaverName || sp.vendorName}</div>
+                      <div className="text-[#C5A059] text-xs font-bold mt-1">₹{sp.price.toLocaleString("en-IN")}</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+          
+        </div>
       </div>
 
+      </div> {/* End 2-column flex */}
     </div>
   );
 }

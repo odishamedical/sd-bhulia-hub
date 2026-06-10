@@ -80,7 +80,8 @@ export default function WeaverStorePage() {
       <PublicProfileTemplate 
         type="weaver" 
         profile={mappedProfile} 
-        products={mappedProducts} 
+        products={mappedProducts}
+        allProducts={products}
       />
     </main>
   );

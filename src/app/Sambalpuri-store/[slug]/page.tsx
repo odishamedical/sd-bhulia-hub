@@ -81,6 +81,7 @@ export default function VendorDetailPage() {
         type="vendor" 
         profile={mappedProfile} 
         products={mappedProducts} 
+        allProducts={products}
       />
     </main>
   );
