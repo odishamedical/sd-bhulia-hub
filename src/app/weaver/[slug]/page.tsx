@@ -24,6 +24,7 @@ export default function WeaverStorePage() {
         image: weaver.img || "/bhulia-hero.png",
         district: weaver.address?.split(",")?.[1]?.trim() || "Sambalpur",
         state: weaver.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "Odisha",
+        country: weaver.country || "India",
         description: weaver.desc || "Odishan Master Weaver specializing in traditional handlooms.",
         address: weaver.address || "Address not provided.",
         phone: weaver.phone || "N/A",

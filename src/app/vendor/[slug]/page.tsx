@@ -24,6 +24,7 @@ export default function VendorDetailPage() {
         image: vendor.img || "/bhulia-hero.png",
         district: vendor.address?.split(",")?.[1]?.trim() || "Sambalpur",
         state: vendor.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "Odisha",
+        country: vendor.country || "India",
         description: vendor.desc || "Verified Retail Shop for Authentic Handlooms.",
         address: vendor.address || "Address not provided.",
         phone: vendor.phone || "N/A",

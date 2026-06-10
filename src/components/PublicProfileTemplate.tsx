@@ -16,6 +16,7 @@ export interface PublicProfileProps {
     image: string;
     district: string;
     state: string;
+    country?: string;
     description: string;
     address: string;
     phone: string;
@@ -45,6 +46,7 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: profile.listingType === "weaver" ? "Sambalpuri Weavers" : profile.listingType === "raw_material" ? "Raw Material" : "Sambalpuri Store", href: "/directory" }
   ];
+  if (profile.country) breadcrumbItems.push({ label: profile.country, href: "/directory" });
   if (profile.state) breadcrumbItems.push({ label: profile.state, href: "/directory" });
   if (profile.district) breadcrumbItems.push({ label: profile.district, href: "/directory" });
   breadcrumbItems.push({ label: profile.name });
