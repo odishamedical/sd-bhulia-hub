@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
 
   // Handle Reseller Subdomains (tenant routing)
   const hostname = request.headers.get('host') || '';
-  const isCustomSubdomain = hostname !== 'bhulia.com' && hostname !== 'localhost:3000' && !hostname.includes('vercel.app');
+  const isCustomSubdomain = hostname !== 'bhulia.com' && hostname !== 'www.bhulia.com' && hostname !== 'localhost:3000' && !hostname.includes('vercel.app');
   
   if (isCustomSubdomain && path === '/') {
     // Extract subdomain (e.g., storename.bhulia.com -> storename)
