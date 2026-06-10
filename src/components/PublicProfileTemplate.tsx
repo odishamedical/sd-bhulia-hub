@@ -32,7 +32,7 @@ export interface PublicProfileProps {
   allProducts?: Product[];
 }
 
-export default function PublicProfileTemplate({ type, profile, products, allProducts = [] }: PublicProfileProps) {
+export default function PublicProfileTemplate({ type, profile, products = [], allProducts = [] }: PublicProfileProps) {
   const isWeaver = type === "weaver";
   const badgeText = isWeaver ? "Bhulia.com Verified Weavers" : "Bhulia.com Verified Sambalpuri Shop";
   const badgeColor = isWeaver ? "text-[#C5A059] border-[#C5A059]" : "text-blue-400 border-blue-400";
@@ -53,8 +53,8 @@ export default function PublicProfileTemplate({ type, profile, products, allProd
   // Get similar products (exclude current weaver's products, randomize 4)
   const similarProducts = React.useMemo(() => {
     if (!allProducts || allProducts.length === 0) return [];
-    // We filter out products that are in the `products` array (which are this weaver's)
-    const currentProductIds = new Set(products.map(p => p.id));
+    const safeProducts = Array.isArray(products) ? products : [];
+    const currentProductIds = new Set(safeProducts.map(p => p.id));
     const others = allProducts.filter(p => !currentProductIds.has(p.id));
     return others.sort(() => Math.random() - 0.5).slice(0, 4);
   }, [allProducts, products]);
