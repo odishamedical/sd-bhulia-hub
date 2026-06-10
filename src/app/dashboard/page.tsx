@@ -1,6 +1,7 @@
 "use client";
 
 import PremiumMetricCard from "@/components/PremiumMetricCard";
+import VanityUrlManager from "@/components/VanityUrlManager";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db, storage } from "@/lib/firebase";
@@ -177,6 +178,7 @@ export default function DashboardPage() {
       { id: "verification", label: "Verification", icon: "🛡️", category: "Store & Trust" },
       { id: "personal", label: "Personal Profile", icon: "👤", category: "Store & Trust" },
       { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store & Trust" },
+      { id: "vanity_url", label: "Brand & URL Settings", icon: "🌐", category: "Growth" },
       { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store & Trust" },
     ];
   } else if (actualRole === "vendor") {
@@ -190,6 +192,7 @@ export default function DashboardPage() {
       { id: "support", label: "Admin Support", icon: "📞", category: "Communication" },
       { id: "personal", label: "Personal Profile", icon: "👤", category: "Store Settings" },
       { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store Settings" },
+      { id: "vanity_url", label: "Brand & URL Settings", icon: "🌐", category: "Growth" },
       { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store Settings" },
     ];
   } else if (actualRole === "weaver_staff" || actualRole === "store_staff") {
@@ -1528,6 +1531,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {activeTab === "vanity_url" && (
+        <div className="max-w-4xl animate-in fade-in">
+          <VanityUrlManager currentSlug={storeSlug || "shyam-dash-303"} />
         </div>
       )}
 
