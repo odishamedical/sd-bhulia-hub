@@ -23,6 +23,8 @@ export interface PublicProfileProps {
     googlePlaceId?: string;
     googleRating?: number;
     googleReviewsCount?: number;
+    listingType?: string;
+    productsOffered?: string;
   };
   products: Product[];
 }
@@ -54,61 +56,68 @@ export default function PublicProfileTemplate({ type, profile, products }: Publi
 
         {/* Center: Details */}
         <div className="lg:w-1/2 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-[#C5A059]/20 pb-6 lg:pb-0 lg:pr-8">
-          {(!profile.status || profile.status === "approved") ? (
-            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold uppercase tracking-widest mb-4 w-max ${badgeColor} ${badgeBg}`}>
-              <span>{badgeText}</span>
+          
+          <h2 className="text-xl md:text-2xl font-sans font-bold text-white mb-1">
+            {profile.listingType === "weaver" ? "Sambalpuri Master Weaver" : profile.listingType === "raw_material" ? "Sambalpuri Raw Material Supplier" : "Sambalpuri Handloom Store"}
+          </h2>
+          
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#C5A059] leading-tight mb-4">
+            {profile.name}
+          </h1>
+          
+          <div className="border border-white/20 rounded-xl p-4 mb-4">
+            <h3 className="text-xs text-white/60 mb-2 font-sans">Description:</h3>
+            <p className="text-sm text-white font-sans leading-relaxed">
+              {profile.status === "unclaimed" 
+                ? "This profile was collected from reliable source but Not verified. If you are the owner, please verify it."
+                : (profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms.")}
+            </p>
+          </div>
+
+          {profile.productsOffered && (
+            <div className="border border-white/20 rounded-xl p-4 mb-4">
+              <h3 className="text-xs text-white/60 mb-2 font-sans">Product Specialist:</h3>
+              <p className="text-sm text-white font-sans font-bold">
+                {profile.productsOffered}
+              </p>
             </div>
-          ) : (
-            <div className="bg-red-900/30 border border-red-500/50 p-4 rounded-xl mb-4 w-full max-w-sm">
-              <h3 className="text-red-400 font-bold text-sm mb-1">Not Verified by Bhulia.com</h3>
-              <p className="text-red-200/70 text-xs mb-3">This store is not yet verified. Are you the owner?</p>
-              <Link href={`/verify?id=${profile.googlePlaceId || ''}&type=${type}&name=${encodeURIComponent(profile.name)}`} className="inline-block bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase px-4 py-2 rounded-lg transition-colors shadow-sm">
+          )}
+
+          <div className="border border-white/20 rounded-xl p-4 mb-4">
+            <h3 className="text-xs text-white/60 mb-2 font-sans">Address:</h3>
+            <p className="text-sm text-white font-sans font-bold">
+              {profile.address || "Address not provided."}
+            </p>
+          </div>
+
+        </div>
+
+        {/* Right: Contact & Address */}
+        <div className="lg:w-1/4 flex flex-col justify-center space-y-4">
+          
+          {profile.status === "unclaimed" && (
+            <div className="bg-red-900 border border-red-500 p-4 rounded-xl w-full text-center shadow-lg">
+              <h3 className="text-white font-bold text-sm mb-1">Not Verified by Bhulia.com</h3>
+              <p className="text-white/80 text-xs mb-3">This store is not yet verified. Are you the owner?</p>
+              <Link href={`/verify?id=${profile.googlePlaceId || ''}&type=${type}&name=${encodeURIComponent(profile.name)}`} className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase px-4 py-2 rounded-lg transition-colors shadow-sm w-full">
                 Verify your page
               </Link>
             </div>
           )}
-          
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#C5A059] leading-tight mb-2">
-            {profile.name}
-          </h1>
-          
+
           {profile.googleRating ? (
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 bg-[#051815] p-3 rounded-xl border border-white/10">
               <div className="flex text-[#D4AF37] text-sm">
                 <span>★</span>
               </div>
               <div className="text-xs font-bold text-gray-300">
-                <span className="text-white">{profile.googleRating}/5</span> ({profile.googleReviewsCount} Google Reviews)
+                <span className="text-white">{profile.googleRating}/5</span> ({profile.googleReviewsCount} Reviews)
               </div>
             </div>
-          ) : (
-            <div className="flex items-center gap-3 mb-4">
-              <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                No Google Rating Data
-              </div>
-            </div>
-          )}
-          
-          <div className="text-sm font-semibold text-white uppercase tracking-widest mb-4 opacity-90">
-            📍 {profile.district}, {profile.state}
-          </div>
-          
-          <p className="text-sm text-gray-300 leading-relaxed font-sans border-l-2 border-[#C5A059] pl-3 py-1">
-            {profile.status === "unclaimed" 
-              ? "This profile was collected from reliable source but Not verified. If you are the owner, please verify it."
-              : (profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms.")}
-          </p>
-        </div>
-
-        {/* Right: Contact & Address */}
-        <div className="lg:w-1/4 flex flex-col justify-center space-y-6">
-          <div>
-            <h3 className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2">Full Address</h3>
-            <p className="text-sm text-white font-medium">{profile.address || "Address not provided."}</p>
-          </div>
+          ) : null}
 
           {(profile.address || profile.googlePlaceId) && (
-            <div className="w-full h-40 rounded-xl overflow-hidden border border-[#C5A059]/30 mt-4 shadow-inner">
+            <div className="w-full h-40 rounded-xl overflow-hidden border border-white/20 shadow-inner">
               <iframe
                 width="100%"
                 height="100%"
