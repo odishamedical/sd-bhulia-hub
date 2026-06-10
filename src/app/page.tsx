@@ -364,7 +364,7 @@ export default function Home() {
               <Link key={idx} href={`/weaver/${dir.slug}`} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-[#C5A059] transition-all shadow-xl cursor-pointer block">
                 <div>
                   {/* Image Thumbnail (100% Clean & Unobstructed Face) */}
-                  <div className="relative w-full h-48 overflow-hidden bg-[#051815]">
+                  <div className="relative w-full aspect-square overflow-hidden bg-[#051815]">
                     <Image src={dir.img} alt={dir.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0A3A35] via-transparent to-transparent" />
                   </div>

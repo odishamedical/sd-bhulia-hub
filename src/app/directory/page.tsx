@@ -68,7 +68,7 @@ export default function GlobalDirectoryPage() {
         <div key={`chunk-${i}`} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {chunk.map(item => (
             <Link key={item.id} href={`/${item.role}/${item.id}`} className="group block bg-[#0B2B26] rounded-2xl overflow-hidden border border-[#C5A059]/20 hover:border-[#C5A059]/80 transition-all duration-300 hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:-translate-y-1 relative">
-              <div className="aspect-[4/3] w-full relative bg-[#051815]">
+              <div className="aspect-square w-full relative bg-[#051815]">
                 <Image 
                   src={item.logo || item.profileImage || item.img || "/bhulia-hero.png"} 
                   alt={item.title || "Listing"} 
