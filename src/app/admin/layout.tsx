@@ -53,7 +53,8 @@ const SIDEBAR_CATEGORIES = [
       { name: "Verification Queue", path: "/admin/trust/kyc" },
       { name: "Customer Tickets", path: "/admin/support/tickets" },
       { name: "Disputes", path: "/admin/support/disputes" },
-      { name: "Fraud Analysis", path: "/admin/trust/fraud" }
+      { name: "Fraud Analysis", path: "/admin/trust/fraud" },
+      { name: "Ecosystem Guidelines", path: "/admin/support/guide" }
     ]
   },
   {
