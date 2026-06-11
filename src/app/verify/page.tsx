@@ -1,21 +1,72 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { db, storage } from "@/lib/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function VerifyContent() {
   const searchParams = useSearchParams();
   const id = searchParams?.get("id");
-  const type = searchParams?.get("type") || "business";
-  const name = searchParams?.get("name");
+  const urlType = searchParams?.get("type") || "business";
+  const urlName = searchParams?.get("name");
 
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Form State
+  const [ownerName, setOwnerName] = useState("");
+  const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [businessName, setBusinessName] = useState(urlName || "");
+  const [address, setAddress] = useState("");
+  const [gst, setGst] = useState("");
+  const [role, setRole] = useState(urlType);
+  const [documentId, setDocumentId] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    // In the future, this will submit to Firebase Firestore 'verification_requests' collection
+    if (!file) {
+      alert("Please upload a verification document.");
+      return;
+    }
+    setIsSubmitting(true);
+
+    try {
+      // 1. Upload File
+      const fileExt = file.name.split('.').pop();
+      const fileName = `verification_documents/${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+      const storageRef = ref(storage, fileName);
+      
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      // 2. Save to Firestore
+      await addDoc(collection(db, "verification_requests"), {
+        targetProfileId: id || null,
+        ownerName,
+        email,
+        whatsapp,
+        businessName,
+        address,
+        gst: gst || null,
+        role,
+        documentId,
+        documentUrl: downloadURL,
+        status: "pending",
+        createdAt: serverTimestamp()
+      });
+
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Error submitting verification:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -48,7 +99,7 @@ function VerifyContent() {
             Claim & Verify Your Business
           </h1>
           <p className="text-gray-400 text-sm md:text-base max-w-xl mx-auto">
-            {name ? `You are claiming the profile for ${name}. ` : ""}
+            {urlName ? `You are claiming the profile for ${urlName}. ` : ""}
             Verified businesses get a verified badge, priority ranking in search results, and access to the seller dashboard.
           </p>
         </div>
@@ -62,15 +113,15 @@ function VerifyContent() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-gray-300 text-sm font-semibold mb-2">Full Name</label>
-                  <input required type="text" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="Owner's Name" />
+                  <input required value={ownerName} onChange={(e) => setOwnerName(e.target.value)} type="text" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="Owner's Name" />
                 </div>
                 <div>
                   <label className="block text-gray-300 text-sm font-semibold mb-2">Email Address</label>
-                  <input required type="email" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="you@example.com" />
+                  <input required value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="you@example.com" />
                 </div>
                 <div>
                   <label className="block text-gray-300 text-sm font-semibold mb-2">WhatsApp Number</label>
-                  <input required type="tel" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="+91 XXXXX XXXXX" />
+                  <input required value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} type="tel" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="+91 XXXXX XXXXX" />
                 </div>
               </div>
             </div>
@@ -81,20 +132,20 @@ function VerifyContent() {
               <div className="grid grid-cols-1 gap-6">
                 <div>
                   <label className="block text-gray-300 text-sm font-semibold mb-2">Business/Shop Name</label>
-                  <input required type="text" defaultValue={name || ""} className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="E.g. Shyam Dash Creations" />
+                  <input required value={businessName} onChange={(e) => setBusinessName(e.target.value)} type="text" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="E.g. Shyam Dash Creations" />
                 </div>
                 <div>
                   <label className="block text-gray-300 text-sm font-semibold mb-2">Business Address</label>
-                  <textarea required className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors h-24" placeholder="Full address including District and Pincode"></textarea>
+                  <textarea required value={address} onChange={(e) => setAddress(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors h-24" placeholder="Full address including District and Pincode"></textarea>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-gray-300 text-sm font-semibold mb-2">GST Number (Optional)</label>
-                    <input type="text" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="GSTIN" />
+                    <input value={gst} onChange={(e) => setGst(e.target.value)} type="text" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="GSTIN" />
                   </div>
                   <div>
                     <label className="block text-gray-300 text-sm font-semibold mb-2">Business Role</label>
-                    <select defaultValue={type} className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors cursor-pointer">
+                    <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors cursor-pointer">
                       <option value="business">Select Role</option>
                       <option value="weaver">Master Weaver</option>
                       <option value="vendor">Retail Store</option>
@@ -108,11 +159,25 @@ function VerifyContent() {
             {/* Section 3 */}
             <div>
               <h3 className="text-[#C5A059] font-bold uppercase tracking-widest text-xs mb-4 border-b border-[#C5A059]/20 pb-2">3. Verification Documents</h3>
-              <div className="bg-[#051815] border border-dashed border-gray-600 rounded-2xl p-8 text-center hover:border-[#C5A059] transition-colors cursor-pointer group">
+              
+              <div className="mb-6">
+                <label className="block text-gray-300 text-sm font-semibold mb-2">Document ID / Serial Number</label>
+                <input required value={documentId} onChange={(e) => setDocumentId(e.target.value)} type="text" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="E.g. Aadhar Number, Trade License No." />
+                <p className="text-gray-500 text-xs mt-2">We securely store this ID even if the uploaded photo is later deleted.</p>
+              </div>
+
+              <div className="bg-[#051815] border border-dashed border-gray-600 rounded-2xl p-8 text-center hover:border-[#C5A059] transition-colors cursor-pointer group relative">
+                <input 
+                  type="file" 
+                  required 
+                  accept=".pdf,image/*"
+                  onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                />
                 <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[#C5A059]/20 transition-colors">
-                  <span className="text-2xl">📄</span>
+                  <span className="text-2xl">{file ? "✅" : "📄"}</span>
                 </div>
-                <p className="text-white font-semibold mb-1">Click to upload Trade License, Udyam Aadhar, or Weaver ID</p>
+                <p className="text-white font-semibold mb-1">{file ? file.name : "Click to upload Trade License, Udyam Aadhar, or Weaver ID"}</p>
                 <p className="text-gray-500 text-xs">PDF, JPG, or PNG (Max 5MB)</p>
               </div>
             </div>
@@ -120,8 +185,13 @@ function VerifyContent() {
           </div>
 
           <div className="mt-10 border-t border-[#C5A059]/20 pt-8 text-center">
-            <button type="submit" className="bg-[#C5A059] hover:bg-[#D4AF37] text-[#051815] font-bold text-sm uppercase tracking-widest px-10 py-4 rounded-full transition-all shadow-lg hover:-translate-y-1 w-full md:w-auto">
-              Submit Verification Request
+            <button disabled={isSubmitting} type="submit" className="bg-[#C5A059] hover:bg-[#D4AF37] disabled:opacity-50 text-[#051815] font-bold text-sm uppercase tracking-widest px-10 py-4 rounded-full transition-all shadow-lg hover:-translate-y-1 w-full md:w-auto flex items-center justify-center gap-2 mx-auto">
+              {isSubmitting ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-[#051815] border-t-transparent rounded-full animate-spin"></span>
+                  Uploading...
+                </>
+              ) : "Submit Verification Request"}
             </button>
             <p className="text-gray-500 text-[10px] uppercase tracking-widest mt-4">
               By submitting, you agree to the Bhulia.com Terms of Service & Privacy Policy
