@@ -18,79 +18,86 @@ export default function Footer() {
         
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#C5A059]/20 pb-4 md:pb-6">
           <div>
-            <h3 className="text-lg font-serif font-bold tracking-widest text-[#C5A059] uppercase mb-1">Shyam Dash Global Network</h3>
-            <p className="text-xs text-gray-300 uppercase tracking-widest">Continuous Global Ecosystem Menu E.g. Trust • Heritage • Innovation • Future</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-xs font-mono text-gray-300">Ecosystem Status:</span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/20 border border-green-500/30 text-green-300 text-xs font-mono font-bold">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-              All 4 Hub Nodes Operational
-            </span>
+            <h3 className="text-lg font-serif font-bold tracking-widest text-[#C5A059] uppercase mb-1">Join The Bhulia Ecosystem</h3>
+            <p className="text-xs text-gray-300 uppercase tracking-widest">Empowering Artisans • Connecting Buyers • Growing Together</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 border-b border-[#C5A059]/20 pb-6 md:pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 border-b border-[#C5A059]/20 pb-6 md:pb-8">
           
-          {/* Hub 1: Gold Hub */}
-          <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg">
+          {/* Ticket 1: Resellers */}
+          <div className="bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
             <div>
-              <div className="flex justify-between items-start mb-4">
-                <span className="text-xs font-mono font-bold text-[#C5A059] bg-[#C5A059]/20 px-2.5 py-1 rounded border border-[#C5A059]/30">HUB 01</span>
-                <svg className="w-5 h-5 text-gray-400 group-hover:text-[#C5A059] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xl">🤝</span>
+                <h4 className="text-base font-serif font-bold text-[#C5A059]">Resellers</h4>
               </div>
-              <h4 className="text-base font-serif font-bold text-white mb-2 group-hover:text-[#C5A059] transition-colors">shyamdash.com</h4>
-              <p className="text-xs text-gray-300 leading-relaxed font-sans">Our flagship Productive Luxury Gold Jewelry Marketplace. Featuring live MCX tickers & Sequel Armored transit.</p>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Start your journey as a Bhulia Reseller — grow with us, no upfront cost.”</p>
             </div>
-            <a href="https://sd-gold-hub.vercel.app" target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#C5A059] hover:text-white transition-colors">
-              Explore Gold Hub →
-            </a>
+            <Link href="/register-franchise" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+              Apply as Reseller
+            </Link>
           </div>
 
-          {/* Hub 2: Bhulia Hub (Active) */}
-          <div className="bg-[#0D4B45] border-2 border-[#C5A059] rounded-2xl p-5 flex flex-col justify-between shadow-[0_0_25px_rgba(197,160,89,0.3)] relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-[#C5A059]/20 rounded-full blur-2xl pointer-events-none"></div>
+          {/* Ticket 2: Weavers */}
+          <div className="bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
             <div>
-              <div className="flex justify-between items-start mb-4">
-                <span className="text-xs font-mono font-bold text-[#C5A059] bg-[#C5A059]/30 px-2.5 py-1 rounded border border-[#C5A059]">ACTIVE HUB</span>
-                <span className="w-2 h-2 rounded-full bg-[#C5A059] animate-pulse"></span>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xl">🧵</span>
+                <h4 className="text-base font-serif font-bold text-[#C5A059]">Weavers</h4>
               </div>
-              <h4 className="text-base font-serif font-bold text-[#C5A059] mb-2">bhulia.com</h4>
-              <p className="text-xs text-gray-200 leading-relaxed font-sans">Our sovereign Sambalpuri Saree & Handloom Collective. Direct artisan empowerment & Bhulia.com verification.</p>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Showcase your craft to the world — Bhulia empowers real Sambalpuri weavers.”</p>
             </div>
-            <div className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-300">
-              Currently Exploring
-            </div>
+            <Link href="/register-weaver" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+              Join as Weaver
+            </Link>
           </div>
 
-          {/* Hub 3: Dehapa Hub */}
-          <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-2xl p-5 flex flex-col justify-between hover:border-cyan-400 transition-all group shadow-lg">
+          {/* Ticket 3: Store Owners */}
+          <div className="bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
             <div>
-              <div className="flex justify-between items-start mb-4">
-                <span className="text-xs font-mono font-bold text-cyan-300 bg-cyan-500/20 px-2.5 py-1 rounded border border-cyan-500/30">HUB 03</span>
-                <svg className="w-5 h-5 text-gray-400 group-hover:text-cyan-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xl">🏪</span>
+                <h4 className="text-base font-serif font-bold text-[#C5A059]">Store Owners</h4>
               </div>
-              <h4 className="text-base font-serif font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">dehapa.com</h4>
-              <p className="text-xs text-gray-300 leading-relaxed font-sans">Our Medplum-powered Healthcare Operating System. Providing world-class telemedicine & secure patient portals.</p>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Expand your reach — list your store and connect with thousands of customers.”</p>
             </div>
-            <a href="https://sd-dehapa-hub.vercel.app" target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-cyan-300 hover:text-white transition-colors">
-              Explore Health Hub →
-            </a>
+            <Link href="/register-vendor" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+              Apply as Store Owner
+            </Link>
           </div>
 
-          {/* Hub 4: IT Hub */}
-          <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-2xl p-5 flex flex-col justify-between hover:border-indigo-400 transition-all group shadow-lg">
+          {/* Ticket 4: Raw Material Suppliers */}
+          <div className="bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
             <div>
-              <div className="flex justify-between items-start mb-4">
-                <span className="text-xs font-mono font-bold text-indigo-300 bg-indigo-500/20 px-2.5 py-1 rounded border border-indigo-500/30">HUB 04</span>
-                <svg className="w-5 h-5 text-gray-400 group-hover:text-indigo-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xl">🧶</span>
+                <h4 className="text-base font-serif font-bold text-[#C5A059]">Suppliers</h4>
               </div>
-              <h4 className="text-base font-serif font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">SD IT Hub</h4>
-              <p className="text-xs text-gray-300 leading-relaxed font-sans">Our Enterprise SaaS & Technology Infrastructure Division. Automated Stripe billing & Support OS ticketing.</p>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Support the handloom ecosystem — supply authentic raw materials to artisans.”</p>
             </div>
-            <a href="https://sd-it-hub.vercel.app" target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-indigo-300 hover:text-white transition-colors">
-              Explore IT Hub →
-            </a>
+            <Link href="/register-vendor" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+              Join as Supplier
+            </Link>
+          </div>
+
+          {/* Ticket 5: B2B Partners */}
+          <div className="bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xl">🏢</span>
+                <h4 className="text-base font-serif font-bold text-[#C5A059]">B2B Partners</h4>
+              </div>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Collaborate with Bhulia for bulk orders, corporate gifting, and global trade.”</p>
+            </div>
+            <Link href="/register-franchise" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+              Partner with Us
+            </Link>
           </div>
 
         </div>
