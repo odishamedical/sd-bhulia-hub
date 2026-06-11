@@ -32,10 +32,17 @@ export default function DashboardLayout({
   children
 }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    const activeItem = navItems.find(item => item.id === activeTab);
+    if (activeItem?.category) {
+      setExpandedCategory(activeItem.category);
+    }
+  }, [activeTab, navItems]);
 
   const toggleCategory = (category: string) => {
-    setCollapsedCategories(prev => ({ ...prev, [category]: !prev[category] }));
+    setExpandedCategory(prev => prev === category ? null : category);
   };
 
   const CATEGORY_ICONS: Record<string, string> = {
@@ -142,19 +149,19 @@ export default function DashboardLayout({
                   <button 
                     onClick={() => toggleCategory(category)}
                     className={`w-full text-left px-4 py-3 rounded-full flex justify-between items-center group transition-all ${
-                      !collapsedCategories[category] ? "bg-white/10 shadow-inner" : "hover:bg-white/5"
+                      expandedCategory === category ? "bg-white/10 shadow-inner" : "hover:bg-white/5"
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-lg opacity-90">{CATEGORY_ICONS[category] || "▪"}</span>
                       <h4 className="text-[14px] font-bold text-white tracking-wide">{category}</h4>
                     </div>
-                    <span className={`text-blue-200 opacity-60 text-lg transition-transform duration-200 ${!collapsedCategories[category] ? "rotate-180" : ""}`}>
+                    <span className={`text-blue-200 opacity-60 text-lg transition-transform duration-200 ${expandedCategory === category ? "rotate-180" : ""}`}>
                       ⌄
                     </span>
                   </button>
                   
-                  {!collapsedCategories[category] && (
+                  {expandedCategory === category && (
                     <div className="space-y-1 mt-1 mb-3 animate-in slide-in-from-top-1 fade-in duration-200">
                       {items.map((item) => (
                         <button 
