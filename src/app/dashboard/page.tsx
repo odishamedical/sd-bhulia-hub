@@ -170,65 +170,92 @@ export default function DashboardPage() {
     if (activeTab === "home") setActiveTab("overview");
   } else if (actualRole === "weaver") {
     navItems = [
-        { id: "home", label: "Dashboard", icon: "🏠", category: "Overview" },
-        { id: "upload", label: "My Catalog", icon: "📦", category: "Catalog & Orders" },
-        { id: "orders", label: "Order Dispatch", icon: "🚚", category: "Catalog & Orders" },
-        { id: "wallet", label: "Wallet & Earnings", icon: "💰", category: "Finance" },
-        { id: "messages", label: "Messages", icon: "💬", category: "Communication" },
-        { id: "support", label: "Admin Support", icon: "🎧", category: "Communication" },
-        { id: "verification", label: "Verification", icon: "🛡️", category: "Store & Trust" },
-        { id: "personal", label: "Personal Profile", icon: "👤", category: "Store & Trust" },
-        { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store & Trust" },
-        { id: "security", label: "Security & Login", icon: "🔐", category: "Store & Trust" },
-        { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Growth" },
-        { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Growth" },
-        { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Growth" },
-        { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store & Trust" },
-      ];
+      { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
+      { id: "upload", label: "Inventory Catalog", icon: "📦", category: "Commerce" },
+      { id: "orders", label: "Order Management", icon: "🚚", category: "Commerce" },
+      { id: "wallet", label: "Wallet & Payouts", icon: "💰", category: "Finance" },
+      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Growth & Marketing" },
+      { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Growth & Marketing" },
+      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store Branding" },
+      { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Store Branding" },
+      { id: "personal", label: "Personal Profile", icon: "👤", category: "Account & Security" },
+      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "Account & Security" },
+      { id: "staff", label: "Staff Accounts", icon: "👥", category: "Account & Security" },
+      { id: "security", label: "Security & Login", icon: "🔐", category: "Account & Security" },
+      { id: "messages", label: "Proxy Messages", icon: "💬", category: "Help & Communication" },
+      { id: "support", label: "Admin Support", icon: "🎧", category: "Help & Communication" },
+      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "Help & Communication" },
+    ];
   } else if (actualRole === "vendor") {
     navItems = [
-        { id: "home", label: "Overview", icon: "🏠", category: "Overview" },
-        { id: "products", label: "Products Catalog", icon: "📦", category: "Commerce" },
-        { id: "orders", label: "Order Management", icon: "🚚", category: "Commerce" },
-        { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Growth" },
-        { id: "finance", label: "Finance & Payouts", icon: "💰", category: "Finance" },
-        { id: "messages", label: "Buyer Messages", icon: "💬", category: "Communication" },
-        { id: "support", label: "Admin Support", icon: "🎧", category: "Communication" },
-        { id: "personal", label: "Personal Profile", icon: "👤", category: "Store Settings" },
-        { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store Settings" },
-        { id: "security", label: "Security & Login", icon: "🔐", category: "Store Settings" },
-        { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Growth" },
-        { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Growth" },
-        { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store Settings" },
-      ];
+      { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
+      { id: "products", label: "Inventory Catalog", icon: "📦", category: "Commerce" },
+      { id: "orders", label: "Order Management", icon: "🚚", category: "Commerce" },
+      { id: "finance", label: "Wallet & Payouts", icon: "💰", category: "Finance" },
+      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Growth & Marketing" },
+      { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Growth & Marketing" },
+      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store Branding" },
+      { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Store Branding" },
+      { id: "personal", label: "Personal Profile", icon: "👤", category: "Account & Security" },
+      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "Account & Security" },
+      { id: "staff", label: "Staff Accounts", icon: "👥", category: "Account & Security" },
+      { id: "security", label: "Security & Login", icon: "🔐", category: "Account & Security" },
+      { id: "messages", label: "Proxy Messages", icon: "💬", category: "Help & Communication" },
+      { id: "support", label: "Admin Support", icon: "🎧", category: "Help & Communication" },
+      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "Help & Communication" },
+    ];
   } else if (actualRole === "weaver_staff" || actualRole === "store_staff") {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
-      { id: "upload", label: "My Catalog", icon: "📤", category: "Catalog & Operations" },
+      { id: "upload", label: "Inventory Catalog", icon: "📦", category: "Commerce" },
+      { id: "orders", label: "Order Management", icon: "🚚", category: "Commerce" },
     ];
   } else if (actualRole === "reseller") {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
       { id: "analytics", label: "Analytics", icon: "📈", category: "Overview" },
-      { id: "curation", label: "Store Curation", icon: "🛍️", category: "Sales Engine" },
-      { id: "proxy", label: "Proxy Orders", icon: "🛒", category: "Sales Engine" },
-      { id: "links", label: "Marketing Links", icon: "🔗", category: "Sales Engine" },
-      { id: "wallet", label: "Commissions", icon: "💰", category: "Finance" },
-      { id: "verification", label: "Verification", icon: "🛡️", category: "Account & Trust" },
-      { id: "profile", label: "Profile Settings", icon: "⚙️", category: "Account & Trust" },
-      { id: "security", label: "Security & Login", icon: "🔐", category: "Account & Trust" },
-      { id: "support", label: "Admin Support", icon: "📞", category: "Account & Trust" },
+      { id: "curation", label: "Store Curation", icon: "🛍️", category: "Commerce" },
+      { id: "proxy", label: "Proxy Orders", icon: "🛒", category: "Commerce" },
+      { id: "wallet", label: "Wallet & Payouts", icon: "💰", category: "Finance" },
+      { id: "links", label: "Marketing Links", icon: "🔗", category: "Growth & Marketing" },
+      { id: "profile", label: "Personal Profile", icon: "👤", category: "Account & Security" },
+      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "Account & Security" },
+      { id: "security", label: "Security & Login", icon: "🔐", category: "Account & Security" },
+      { id: "support", label: "Admin Support", icon: "🎧", category: "Help & Communication" },
+      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "Help & Communication" },
     ];
   } else if (actualRole === "raw_material") {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
-      { id: "inventory", label: "My Materials", icon: "📦", category: "Commerce" },
-      { id: "orders", label: "Bulk Orders", icon: "🚚", category: "Commerce" },
-      { id: "wallet", label: "Wallet & Earnings", icon: "💰", category: "Finance" },
-      { id: "verification", label: "Verification", icon: "🛡️", category: "Store & Trust" },
-      { id: "personal", label: "Personal Profile", icon: "👤", category: "Store & Trust" },
-      { id: "security", label: "Security & Login", icon: "🔐", category: "Store & Trust" },
-      { id: "support", label: "Admin Support", icon: "🎧", category: "Communication" },
+      { id: "inventory", label: "Inventory Catalog", icon: "📦", category: "Commerce" },
+      { id: "orders", label: "Order Management", icon: "🚚", category: "Commerce" },
+      { id: "wallet", label: "Wallet & Payouts", icon: "💰", category: "Finance" },
+      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Growth & Marketing" },
+      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store Branding" },
+      { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Store Branding" },
+      { id: "personal", label: "Personal Profile", icon: "👤", category: "Account & Security" },
+      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "Account & Security" },
+      { id: "security", label: "Security & Login", icon: "🔐", category: "Account & Security" },
+      { id: "support", label: "Admin Support", icon: "🎧", category: "Help & Communication" },
+      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "Help & Communication" },
+    ];
+  } else if (actualRole === "wholesaler") {
+    navItems = [
+      { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
+      { id: "products", label: "Inventory Catalog", icon: "📦", category: "Commerce" },
+      { id: "orders", label: "Order Management", icon: "🚚", category: "Commerce" },
+      { id: "finance", label: "Wallet & Payouts", icon: "💰", category: "Finance" },
+      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Growth & Marketing" },
+      { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Growth & Marketing" },
+      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store Branding" },
+      { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Store Branding" },
+      { id: "personal", label: "Personal Profile", icon: "👤", category: "Account & Security" },
+      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "Account & Security" },
+      { id: "staff", label: "Staff Accounts", icon: "👥", category: "Account & Security" },
+      { id: "security", label: "Security & Login", icon: "🔐", category: "Account & Security" },
+      { id: "messages", label: "Proxy Messages", icon: "💬", category: "Help & Communication" },
+      { id: "support", label: "Admin Support", icon: "🎧", category: "Help & Communication" },
+      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "Help & Communication" },
     ];
   }
 
@@ -288,12 +315,14 @@ export default function DashboardPage() {
       {actualRole === "vendor" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" />}
       {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Vendor Hub (Staff)" />}
+      {actualRole === "wholesaler" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="B2B Wholesaler Hub" />}
       {actualRole === "reseller" && <ResellerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "super_admin" && <SuperAdminDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "raw_material" && <SupplierDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       
       {activeTab === "security" && <SecurityTab />}
       {activeTab === "marketing" && <MarketingTab />}
+      {activeTab === "help_guide" && <HelpGuideTab userRole={actualRole} />}
     </DashboardLayout>
   );
 }
