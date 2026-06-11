@@ -125,10 +125,10 @@ export default function Footer() {
           <div className="space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Quick Links</h4>
             <ul className="space-y-2.5 text-xs text-gray-300">
-              <li><Link href="/store/maa-samaleswari-weavers" className="hover:text-[#C5A059] transition-colors">Our Weaver Network</Link></li>
-              <li><Link href="/store/bhagabata-meher" className="hover:text-[#C5A059] transition-colors">Verify Bhulia.com Certificate</Link></li>
-              <li><Link href="/" className="hover:text-[#C5A059] transition-colors">Live Silk & Yarn Rates</Link></li>
-              <li><Link href="/" className="hover:text-[#C5A059] transition-colors">SD Digital Services</Link></li>
+              <li><Link href="/directory" className="hover:text-[#C5A059] transition-colors">Our Weaver Network</Link></li>
+              <li><Link href="/verify" className="hover:text-[#C5A059] transition-colors">Verify Bhulia.com Certificate</Link></li>
+              <li><Link href="/p/live-silk-rates" className="hover:text-[#C5A059] transition-colors">Live Silk & Yarn Rates</Link></li>
+              <li><Link href="/p/sd-digital-services" className="hover:text-[#C5A059] transition-colors">SD Digital Services</Link></li>
             </ul>
           </div>
 
@@ -139,7 +139,7 @@ export default function Footer() {
               <li><Link href="/p/artisan-payout-guide" className="hover:text-[#C5A059] transition-colors">Artisan Payout Guide</Link></li>
               <li><Link href="/p/secure-bvc-armored-transit" className="hover:text-[#C5A059] transition-colors">Secure BVC Armored Transit</Link></li>
               <li><Link href="/p/platform-return-policy" className="hover:text-[#C5A059] transition-colors">Platform Return Policy</Link></li>
-              <li><Link href="/p/contact-support" className="hover:text-[#C5A059] transition-colors">24/7 Concierge Support</Link></li>
+              <li><Link href="/p/contact-us" className="hover:text-[#C5A059] transition-colors">24/7 Concierge Support</Link></li>
             </ul>
           </div>
 

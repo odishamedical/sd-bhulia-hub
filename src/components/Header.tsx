@@ -47,10 +47,10 @@ const NAV_LINKS = [
       {
         section: "Support",
         links: [
-          { label: "About Us", href: "/" },
-          { label: "Contact Us", href: "/" },
-          { label: "About Our Products", href: "/" },
-          { label: "Privacy Policy", href: "/" },
+          { label: "About Us", href: "/p/about-us" },
+          { label: "Contact Us", href: "/p/contact-us" },
+          { label: "About Our Products", href: "/p/about-our-products" },
+          { label: "Privacy Policy", href: "/p/privacy-policy" },
         ]
       }
     ]
