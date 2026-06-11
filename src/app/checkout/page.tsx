@@ -5,7 +5,7 @@ import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { auth, db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp, doc, updateDoc, getDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, doc, updateDoc, getDoc, query, where, getDocs } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import Script from "next/script";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -14,13 +14,35 @@ export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useCart();
   const router = useRouter();
   
-  // Calculate total shipping
-  const shippingTotal = cart.reduce((total, item) => total + (item.shippingCharge || 0), 0);
-  const finalTotal = cartTotal + shippingTotal;
-  
   const [userUid, setUserUid] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  // Coupon State
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [couponError, setCouponError] = useState("");
+  const [validatingCoupon, setValidatingCoupon] = useState(false);
+
+  // Calculate Subtotal for the specific seller (if coupon applied)
+  let sellerSubtotal = 0;
+  let discountAmount = 0;
+
+  if (appliedCoupon) {
+    sellerSubtotal = cart
+      .filter((item: any) => item.sellerId === appliedCoupon.sellerId || item.vendorId === appliedCoupon.sellerId)
+      .reduce((total: number, item: any) => total + parseInt(item.price.replace(/[^0-9]/g, "")) * item.cartQuantity, 0);
+
+    if (appliedCoupon.type === "percentage") {
+      discountAmount = sellerSubtotal * (appliedCoupon.value / 100);
+    } else {
+      discountAmount = Math.min(sellerSubtotal, appliedCoupon.value);
+    }
+  }
+
+  // Calculate total shipping
+  const shippingTotal = cart.reduce((total, item) => total + (item.shippingCharge || 0), 0);
+  const finalTotal = cartTotal + shippingTotal - discountAmount;
 
   // Form State
   const [formData, setFormData] = useState({
@@ -45,6 +67,46 @@ export default function CheckoutPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleApplyCoupon = async () => {
+    setCouponError("");
+    if (!promoCodeInput.trim()) return;
+
+    setValidatingCoupon(true);
+    try {
+      const q = query(collection(db, "coupons"), where("code", "==", promoCodeInput.toUpperCase()));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        setCouponError("Invalid promo code.");
+        setValidatingCoupon(false);
+        return;
+      }
+
+      const couponDoc = snap.docs[0].data();
+
+      if (!couponDoc.active) {
+        setCouponError("This promo code has expired or is inactive.");
+        setValidatingCoupon(false);
+        return;
+      }
+
+      // Check if cart contains items from this seller
+      const hasSellerItems = cart.some((item: any) => item.sellerId === couponDoc.sellerId || item.vendorId === couponDoc.sellerId);
+      if (!hasSellerItems) {
+        setCouponError("This promo code is only valid for products sold by the issuing weaver.");
+        setValidatingCoupon(false);
+        return;
+      }
+
+      setAppliedCoupon({ id: snap.docs[0].id, ...couponDoc });
+      setPromoCodeInput("");
+    } catch (e) {
+      console.error(e);
+      setCouponError("Error validating promo code.");
+    }
+    setValidatingCoupon(false);
   };
 
   const handleSimulatePayment = async (e: React.FormEvent) => {
@@ -256,11 +318,52 @@ export default function CheckoutPage() {
               )}
             </div>
 
+            {/* Promo Code Input */}
+            <div className="border-t border-[#C5A059]/20 pt-6 mb-6">
+              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Have a Promo Code?</label>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  disabled={appliedCoupon !== null}
+                  value={appliedCoupon ? appliedCoupon.code : promoCodeInput} 
+                  onChange={e => setPromoCodeInput(e.target.value)}
+                  placeholder="e.g. DIWALI20" 
+                  className="flex-1 bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white focus:border-[#C5A059] outline-none font-mono uppercase text-sm disabled:opacity-50"
+                />
+                {!appliedCoupon ? (
+                  <button 
+                    onClick={handleApplyCoupon}
+                    disabled={validatingCoupon || !promoCodeInput}
+                    type="button"
+                    className="px-4 py-2 bg-[#C5A059] text-[#0A1021] font-bold rounded-xl text-sm hover:brightness-110 transition-colors disabled:opacity-50"
+                  >
+                    {validatingCoupon ? "..." : "Apply"}
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => setAppliedCoupon(null)}
+                    type="button"
+                    className="px-4 py-2 bg-red-900/30 text-red-400 border border-red-500/30 font-bold rounded-xl text-sm hover:bg-red-900/50 transition-colors"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+              {couponError && <p className="text-red-400 text-xs mt-2 font-medium">{couponError}</p>}
+              {appliedCoupon && <p className="text-green-400 text-xs mt-2 font-medium">Coupon applied to eligible products!</p>}
+            </div>
+
             <div className="border-t border-[#C5A059]/20 pt-4 space-y-3 mb-8">
               <div className="flex justify-between text-sm text-gray-300">
                 <span>Subtotal</span>
                 <span>₹{cartTotal.toLocaleString()}</span>
               </div>
+              {appliedCoupon && (
+                <div className="flex justify-between text-sm text-green-400 font-bold">
+                  <span>Discount ({appliedCoupon.code})</span>
+                  <span>-₹{discountAmount.toLocaleString()}</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm text-gray-300">
                 <span>Shipping</span>
                 <span className={shippingTotal === 0 ? "text-green-400 font-bold" : "text-white"}>
