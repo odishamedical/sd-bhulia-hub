@@ -156,7 +156,7 @@ export default function HomeDraftV2() {
             <span className="text-[#C5A059] text-xs font-bold uppercase tracking-[0.2em] mb-4">Our Promise</span>
             <h3 className="text-3xl md:text-5xl font-serif font-bold text-white mb-6 leading-tight">100% Authentic.<br/>0% Middlemen.</h3>
             <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-8">
-              Every masterpiece carries the **Bhulia.com Verified** seal. When you purchase from our platform, payments flow directly into the artisan's Jan Dhan account via a secure D2C escrow. We preserve 800 years of Odisha's living heritage while ensuring maximum profit retention for the creators.
+              Discover 100% Authentic Sambalpuri Handloom Sarees at Bhulia.com — each piece carries the Bhulia Verified Seal, connecting you directly to real weavers. By choosing us, you help preserve Odisha’s 800‑year heritage while supporting artisans at fair prices.
             </p>
             <div>
               <Link href="/directory" className="inline-block px-8 py-3 bg-[#051815] border border-[#C5A059] text-[#C5A059] font-bold text-xs uppercase tracking-widest hover:bg-[#C5A059] hover:text-[#0A1021] transition-all">
