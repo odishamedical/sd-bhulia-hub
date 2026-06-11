@@ -32,6 +32,11 @@ export default function DashboardLayout({
   children
 }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
+
+  const toggleCategory = (category: string) => {
+    setCollapsedCategories(prev => ({ ...prev, [category]: !prev[category] }));
+  };
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-gray-900 font-sans flex flex-col items-center">
@@ -122,23 +127,34 @@ export default function DashboardLayout({
                   return acc;
                 }, {} as Record<string, NavItem[]>)
               ).map(([category, items]) => (
-                <div key={category} className="mb-6">
-                  <h4 className="px-4 text-[10px] font-black text-blue-200 uppercase tracking-widest mb-2 opacity-80">{category}</h4>
-                  <div className="space-y-1">
-                    {items.map((item) => (
-                      <button 
-                        key={item.id}
-                        onClick={() => {
-                          onTabChange(item.id);
-                          setMobileMenuOpen(false);
-                        }} 
-                        className={`w-full text-left px-4 py-2.5 rounded-full text-sm font-semibold flex items-center gap-3 transition-all border border-transparent ${activeTab === item.id ? "bg-white/20 text-white border-white/20 shadow-md font-bold" : "text-white/90 hover:text-white hover:bg-white/20"}`}
-                      >
-                        <span className={`text-lg transition-transform ${activeTab === item.id ? 'scale-110' : ''}`}>{item.icon || "▪"}</span> 
-                        {item.label}
-                      </button>
-                    ))}
-                  </div>
+                <div key={category} className="mb-4">
+                  <button 
+                    onClick={() => toggleCategory(category)}
+                    className="w-full text-left px-4 flex justify-between items-center group mb-2"
+                  >
+                    <h4 className="text-[10px] font-black text-blue-200 uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">{category}</h4>
+                    <span className="text-blue-200 opacity-60 text-xs">
+                      {collapsedCategories[category] ? "▼" : "▲"}
+                    </span>
+                  </button>
+                  
+                  {!collapsedCategories[category] && (
+                    <div className="space-y-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                      {items.map((item) => (
+                        <button 
+                          key={item.id}
+                          onClick={() => {
+                            onTabChange(item.id);
+                            setMobileMenuOpen(false);
+                          }} 
+                          className={`w-full text-left px-4 py-2.5 rounded-full text-sm font-semibold flex items-center gap-3 transition-all border border-transparent ${activeTab === item.id ? "bg-white/20 text-white border-white/20 shadow-md font-bold" : "text-white/90 hover:text-white hover:bg-white/20"}`}
+                        >
+                          <span className={`text-lg transition-transform ${activeTab === item.id ? 'scale-110' : ''}`}>{item.icon || "▪"}</span> 
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </nav>

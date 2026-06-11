@@ -2,6 +2,7 @@
 
 import PremiumMetricCard from "@/components/PremiumMetricCard";
 import VanityUrlManager from "@/components/VanityUrlManager";
+import HelpGuideTab from "@/components/HelpGuideTab";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db, storage } from "@/lib/firebase";
@@ -165,6 +166,7 @@ export default function DashboardPage() {
       { id: "logistics", label: "Logistics", icon: "🚚", category: "Operations" },
       { id: "finance", label: "Finance", icon: "💰", category: "Operations" },
       { id: "google_import", label: "Google Importer", icon: "🌍", category: "Tools" },
+      { id: "help_guide", label: "Admin Staff Guide", icon: "📘", category: "Help & Resources" },
     ];
     // Override default tab if needed
     if (activeTab === "home") setActiveTab("overview");
