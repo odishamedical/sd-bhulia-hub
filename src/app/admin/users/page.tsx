@@ -475,12 +475,13 @@ export default function UserManagementPage() {
                 Role Filter
               </h3>
               <div className="space-y-2">
-                {['all', 'user', 'customer', 'reseller', 'weaver', 'shop'].map(role => (
+                {['all', 'user', 'customer', 'reseller', 'weaver', 'shop', 'vendor', 'wholesaler', 'supplier', 'staff'].map(role => (
                   <label key={role} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-100 transition-all">
                     <input type="radio" name="role" checked={roleFilter === role} onChange={() => setRoleFilter(role)} className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" />
                     <span className="text-sm font-bold text-gray-700 capitalize">{
                       role === 'all' ? 'Entire Ecosystem' :
                       role === 'user' ? 'General Users' :
+                      role === 'staff' ? 'Admins / Staff' :
                       role + 's'
                     }</span>
                   </label>
@@ -841,7 +842,12 @@ export default function UserManagementPage() {
           <div className="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl border border-gray-100">
             <div className="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
               <div>
-                <h3 className="text-2xl font-black text-gray-900 mb-1">{selectedUserForDetails.name}</h3>
+                <div className="flex items-center gap-3 mb-1">
+                  <h3 className="text-2xl font-black text-gray-900">{selectedUserForDetails.name}</h3>
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${selectedUserForDetails.applicationStatus === 'pending' ? 'bg-amber-100 text-amber-700' : selectedUserForDetails.applicationStatus === 'suspended' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                    {selectedUserForDetails.applicationStatus || 'Active'}
+                  </span>
+                </div>
                 <div className="text-xs text-gray-500 font-mono uppercase tracking-widest flex items-center gap-2">
                   ID: {selectedUserForDetails.id} • ROLE: {selectedUserForDetails.role}
                   {selectedUserForDetails.role === 'user' && (
@@ -940,25 +946,55 @@ export default function UserManagementPage() {
             <div className="grid grid-cols-2 gap-6 mb-6">
               <div className="space-y-4">
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Phone Number</div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 flex justify-between items-center">
+                    Phone Number
+                    <button className="text-blue-500 hover:text-blue-700">Edit</button>
+                  </div>
                   <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.phone}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">WhatsApp</div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 flex justify-between items-center">
+                    WhatsApp
+                    <button className="text-blue-500 hover:text-blue-700">Edit</button>
+                  </div>
                   <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.whatsapp}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Email Address</div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 flex justify-between items-center">
+                    Email Address
+                    <button className="text-blue-500 hover:text-blue-700">Edit</button>
+                  </div>
                   <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.email}</div>
+                  <button className="text-xs text-blue-600 font-bold mt-2 hover:underline">✉ Send Password Reset</button>
+                </div>
+                <div className="mt-6 border-t border-gray-100 pt-4">
+                  <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-3">KYC & Verification</h4>
+                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-gray-700">Aadhaar Card</span>
+                      <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">Pending</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-gray-700">GSTIN</span>
+                      <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded">Verified</span>
+                    </div>
+                    <button className="w-full mt-3 bg-blue-50 text-blue-600 font-bold text-xs py-2 rounded-lg hover:bg-blue-100 transition-colors">Review Documents</button>
+                  </div>
                 </div>
               </div>
               <div className="space-y-4">
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Geography</div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 flex justify-between items-center">
+                    Geography
+                    <button className="text-blue-500 hover:text-blue-700">Edit</button>
+                  </div>
                   <div className="text-sm font-bold text-gray-900">{[selectedUserForDetails.district, selectedUserForDetails.state, selectedUserForDetails.country].filter(Boolean).filter(s => s !== "N/A").join(", ") || "N/A"}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Full Address</div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 flex justify-between items-center">
+                    Full Address
+                    <button className="text-blue-500 hover:text-blue-700">Edit</button>
+                  </div>
                   <div className="text-sm font-bold text-gray-900 leading-relaxed">{selectedUserForDetails.address}</div>
                 </div>
                 {selectedUserForDetails.role === 'reseller' && (
@@ -982,6 +1018,17 @@ export default function UserManagementPage() {
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Lifetime Volume</div>
                   <div className="text-sm font-black text-green-600">₹{selectedUserForDetails.volume.toLocaleString()}</div>
+                </div>
+                <div className="mt-6 border-t border-gray-100 pt-4">
+                  <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-3">SaaS Subscription</h4>
+                  <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-bold text-blue-900">Current Plan</span>
+                      <span className="text-xs font-black text-blue-700 uppercase">{selectedUserForDetails.subStatus || "Free Trial"}</span>
+                    </div>
+                    <div className="text-[10px] text-blue-600 font-medium">Expires: Dec 31, 2026</div>
+                    <button className="w-full mt-3 bg-white text-blue-600 font-bold text-xs py-2 rounded-lg border border-blue-200 hover:bg-blue-600 hover:text-white transition-colors">Manage Subscription</button>
+                  </div>
                 </div>
               </div>
             </div>

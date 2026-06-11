@@ -39,10 +39,7 @@ const SIDEBAR_CATEGORIES = [
     title: "User Management",
     icon: "👥",
     subLinks: [
-      { name: "Master Weavers", path: "/admin/weavers" },
-      { name: "Retail Stores", path: "/admin/stores" },
-      { name: "Franchises / Resellers", path: "/admin/franchises" },
-      { name: "All Registered Users", path: "/admin/users" }
+      { name: "User CRM & Directory", path: "/admin/users" }
     ]
   },
   {
