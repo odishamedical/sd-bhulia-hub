@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useProducts, useWeavers } from "../lib/db-hooks";
+import { useProducts, useWeavers, useVendors, useResellers } from "../lib/db-hooks";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import ProductCard from "../components/ProductCard";
@@ -12,7 +12,9 @@ import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 
 export default function HomeDraftV2() {
   const { products, loading: productsLoading } = useProducts();
-  const { weavers, loading: weaversLoading } = useWeavers();
+  const { weavers, loading: weaversLoading } = useWeavers(100);
+  const { vendors, loading: vendorsLoading } = useVendors(100);
+  const { resellers, loading: resellersLoading } = useResellers(100);
   const { user } = useAuth();
   const { cartCount } = useCart();
   const router = useRouter();
@@ -21,6 +23,10 @@ export default function HomeDraftV2() {
   
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeTab, setActiveTab] = useState<"trending" | "new" | "offers">("trending");
+
+  // Ecosystem Directory States
+  const [dirTab, setDirTab] = useState<"weavers" | "stores" | "b2b" | "suppliers">("weavers");
+  const [dirSort, setDirSort] = useState<"featured" | "recent">("featured");
 
   const heroSlides = [
     {
@@ -52,7 +58,7 @@ export default function HomeDraftV2() {
     { title: "Cotton Daily", img: "/bhulia-hero.png", link: "/search?category=Cotton Classics" },
     { title: "Bomkai", img: "/bhulia-hero.png", link: "/search?design=Bomkai" },
     { title: "Pasapalli", img: "/bhulia-hero.png", link: "/search?category=Pasapalli" },
-    { title: "Master Weavers", img: "/bhulia-hero.png", link: "#weavers" },
+    { title: "Master Weavers", img: "/bhulia-hero.png", link: "#ecosystem" },
     { title: "Bridal Collection", img: "/bhulia-hero.png", link: "/search?category=Bridal" },
     { title: "Corporate Gifts", img: "/bhulia-hero.png", link: "/search?category=Gifts" },
   ];
@@ -65,6 +71,35 @@ export default function HomeDraftV2() {
     if (activeTab === "offers") return [...products].filter(p => p.isSpecialOffer).slice(0, 6);
     return [];
   };
+
+  // Directory Logic
+  const getDirectoryData = () => {
+    let data: any[] = [];
+    if (dirTab === "weavers" && !weaversLoading) data = [...weavers];
+    if (dirTab === "stores" && !vendorsLoading) data = [...vendors];
+    if (dirTab === "b2b" && !resellersLoading) data = [...resellers];
+    if (dirTab === "suppliers") data = []; // Placeholder
+
+    if (dirSort === "featured") {
+      data.sort((a, b) => {
+        const aTier = a.tier === "Diamond" ? 3 : a.tier === "Gold" ? 2 : 1;
+        const bTier = b.tier === "Diamond" ? 3 : b.tier === "Gold" ? 2 : 1;
+        const aScore = aTier + (a.status === "approved" || a.status === "active" ? 10 : 0);
+        const bScore = bTier + (b.status === "approved" || b.status === "active" ? 10 : 0);
+        return bScore - aScore;
+      });
+    } else {
+      data.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
+    }
+
+    return data.slice(0, 8); // 8 Profiles (2 rows of 4)
+  };
+
+  const directoryLoading = (dirTab === "weavers" && weaversLoading) || (dirTab === "stores" && vendorsLoading) || (dirTab === "b2b" && resellersLoading);
 
   return (
     <main className="relative flex-1 w-full bg-[#051815] text-white font-sans flex flex-col min-h-screen">
@@ -166,33 +201,81 @@ export default function HomeDraftV2() {
           </div>
         </section>
 
-        {/* 5. Meet the Masters */}
-        <section id="weavers" className="w-full space-y-8">
-          <div className="text-center">
-            <h3 className="text-3xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-2">Master Weaver Flagships</h3>
-            <p className="text-xs text-gray-400 uppercase tracking-widest">Sovereign Boutiques & Village Clusters</p>
+        {/* 5. Ecosystem Directory Grid */}
+        <section id="ecosystem" className="w-full space-y-8">
+          <div className="flex flex-col items-center text-center">
+            <h3 className="text-3xl sm:text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-2">
+              Ecosystem Directory
+            </h3>
+            <p className="text-xs text-gray-400 uppercase tracking-widest mb-6">Discover our network of verified partners</p>
+            
+            {/* Category Tabs & Sorting Controls */}
+            <div className="w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center border-b border-[#C5A059]/20 pb-2 gap-4">
+              <div className="flex overflow-x-auto gap-4 sm:gap-8 w-full sm:w-auto scrollbar-hide">
+                <button onClick={() => setDirTab("weavers")} className={`text-xs sm:text-sm uppercase tracking-widest font-bold pb-2 transition-all whitespace-nowrap ${dirTab === "weavers" ? "text-[#C5A059] border-b-2 border-[#C5A059]" : "text-gray-500 hover:text-gray-300"}`}>Weavers</button>
+                <button onClick={() => setDirTab("stores")} className={`text-xs sm:text-sm uppercase tracking-widest font-bold pb-2 transition-all whitespace-nowrap ${dirTab === "stores" ? "text-[#C5A059] border-b-2 border-[#C5A059]" : "text-gray-500 hover:text-gray-300"}`}>Retail Stores</button>
+                <button onClick={() => setDirTab("b2b")} className={`text-xs sm:text-sm uppercase tracking-widest font-bold pb-2 transition-all whitespace-nowrap ${dirTab === "b2b" ? "text-[#C5A059] border-b-2 border-[#C5A059]" : "text-gray-500 hover:text-gray-300"}`}>B2B</button>
+                <button onClick={() => setDirTab("suppliers")} className={`text-xs sm:text-sm uppercase tracking-widest font-bold pb-2 transition-all whitespace-nowrap ${dirTab === "suppliers" ? "text-[#C5A059] border-b-2 border-[#C5A059]" : "text-gray-500 hover:text-gray-300"}`}>Suppliers</button>
+              </div>
+
+              {/* Sorting Toggle */}
+              <div className="flex bg-[#0B2B26] rounded-full p-1 border border-[#C5A059]/30 shrink-0">
+                <button onClick={() => setDirSort("featured")} className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${dirSort === "featured" ? "bg-[#C5A059] text-[#051815]" : "text-gray-400 hover:text-white"}`}>Featured</button>
+                <button onClick={() => setDirSort("recent")} className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${dirSort === "recent" ? "bg-[#C5A059] text-[#051815]" : "text-gray-400 hover:text-white"}`}>Recent</button>
+              </div>
+            </div>
           </div>
 
+          {/* 8-Item Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {weaversLoading ? (
-              [...Array(4)].map((_, i) => <div key={i} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl h-[450px] animate-pulse"></div>)
-            ) : weavers.map((dir, idx) => (
-              <Link key={idx} href={`/Sambalpuri-weaver/${dir.slug}`} className="group block relative rounded-2xl overflow-hidden h-[450px] border border-[#C5A059]/20 hover:border-[#C5A059] transition-all">
-                <Image src={dir.img} alt={dir.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#051815] via-[#051815]/50 to-transparent opacity-90"></div>
+            {directoryLoading ? (
+              [...Array(8)].map((_, i) => <div key={i} className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl h-[380px] animate-pulse"></div>)
+            ) : getDirectoryData().length === 0 ? (
+              <div className="col-span-full py-20 text-center text-gray-500 italic">No partners found in this category yet. Check back soon!</div>
+            ) : (
+              getDirectoryData().map((item, idx) => {
+                const title = item.title || item.name || "Partner";
+                const desc = item.desc || item.address || "Verified Ecosystem Partner";
+                const img = item.img || "/bhulia-hero.png";
                 
-                <div className="absolute inset-0 p-6 flex flex-col justify-end text-center items-center">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#FFF5C0] via-[#D4AF37] to-[#8A5A00] p-[2px] shadow-[0_10px_20px_rgba(0,0,0,0.8),_0_0_15px_rgba(212,175,55,0.4)] mb-4 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-500">
-                    <div className="w-full h-full rounded-full bg-[#051815] flex flex-col items-center justify-center border-2 border-dashed border-[#D4AF37]/40">
-                      <span className="text-[8px] sm:text-[9px] font-sans font-bold text-[#C5A059] uppercase tracking-[0.2em] leading-none mb-0.5">Bhulia</span>
-                      <span className="text-[10px] sm:text-[11px] font-serif font-black text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5C0] to-[#D4AF37] uppercase tracking-wider leading-none">Verified</span>
+                // Determine Verification Status
+                const isVerified = item.status === "approved" || item.status === "active";
+                const roleLink = dirTab === "stores" ? `/Sambalpuri-store/${item.slug}` : (dirTab === "weavers" ? `/Sambalpuri-weaver/${item.slug}` : `/directory`);
+
+                return (
+                  <Link key={idx} href={roleLink} className="group block relative rounded-2xl overflow-hidden h-[380px] border border-[#C5A059]/20 hover:border-[#C5A059] transition-all bg-[#0A2520]">
+                    <div className="relative w-full h-48 overflow-hidden">
+                      <Image src={img} alt={title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0A2520] to-transparent"></div>
                     </div>
-                  </div>
-                  <h4 className="text-xl font-serif font-bold text-white mb-2">{dir.title}</h4>
-                  <p className="text-xs text-gray-300 line-clamp-2">{dir.desc}</p>
-                </div>
-              </Link>
-            ))}
+                    
+                    <div className="absolute top-4 right-4 z-10">
+                      {isVerified ? (
+                        <div className="bg-gradient-to-br from-[#FFF5C0] via-[#D4AF37] to-[#8A5A00] text-[#051815] px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-[0_4px_10px_rgba(0,0,0,0.5)] flex items-center gap-1 border border-[#FFF5C0]/50">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+                          Verified
+                        </div>
+                      ) : (
+                        <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border border-gray-600 shadow-md">
+                          Unverified
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="p-6 pt-0 flex flex-col justify-end text-center h-full pb-8">
+                      <h4 className="text-xl font-serif font-bold text-white mb-2">{title}</h4>
+                      <p className="text-xs text-gray-400 line-clamp-2">{desc}</p>
+                    </div>
+                  </Link>
+                );
+              })
+            )}
+          </div>
+          
+          <div className="flex justify-center mt-8">
+            <Link href="/directory" className="px-10 py-4 border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059] hover:text-[#051815] text-xs font-bold uppercase tracking-widest transition-all shadow-lg hover:shadow-[0_0_25px_rgba(197,160,89,0.5)] rounded-full">
+              Explore Entire Ecosystem
+            </Link>
           </div>
         </section>
 
