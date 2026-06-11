@@ -152,6 +152,7 @@ export default function DashboardPage() {
       { id: "profile", label: "Profile Settings", icon: "⚙️", category: "Account" },
       { id: "address", label: "Address Book", icon: "📍", category: "Account" },
       { id: "wallet", label: "Wallet & Rewards", icon: "💎", category: "Account" },
+      { id: "security", label: "Security & Login", icon: "🔐", category: "Account" },
       { id: "seller_hub", label: "Become a Seller", icon: "🚀", category: "Seller Hub" },
       { id: "messages", label: "Messages", icon: "💬", category: "Help" },
       { id: "support", label: "Support Tickets", icon: "📞", category: "Help" },
@@ -178,6 +179,7 @@ export default function DashboardPage() {
         { id: "verification", label: "Verification", icon: "🛡️", category: "Store & Trust" },
         { id: "personal", label: "Personal Profile", icon: "👤", category: "Store & Trust" },
         { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store & Trust" },
+        { id: "security", label: "Security & Login", icon: "🔐", category: "Store & Trust" },
         { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Growth" },
         { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Growth" },
         { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store & Trust" },
@@ -193,6 +195,7 @@ export default function DashboardPage() {
         { id: "support", label: "Admin Support", icon: "🎧", category: "Communication" },
         { id: "personal", label: "Personal Profile", icon: "👤", category: "Store Settings" },
         { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store Settings" },
+        { id: "security", label: "Security & Login", icon: "🔐", category: "Store Settings" },
         { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Growth" },
         { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Growth" },
         { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store Settings" },
@@ -212,7 +215,19 @@ export default function DashboardPage() {
       { id: "wallet", label: "Commissions", icon: "💰", category: "Finance" },
       { id: "verification", label: "Verification", icon: "🛡️", category: "Account & Trust" },
       { id: "profile", label: "Profile Settings", icon: "⚙️", category: "Account & Trust" },
+      { id: "security", label: "Security & Login", icon: "🔐", category: "Account & Trust" },
       { id: "support", label: "Admin Support", icon: "📞", category: "Account & Trust" },
+    ];
+  } else if (actualRole === "raw_material") {
+    navItems = [
+      { id: "home", label: "Dashboard", icon: "📊", category: "Overview" },
+      { id: "inventory", label: "My Materials", icon: "📦", category: "Commerce" },
+      { id: "orders", label: "Bulk Orders", icon: "🚚", category: "Commerce" },
+      { id: "wallet", label: "Wallet & Earnings", icon: "💰", category: "Finance" },
+      { id: "verification", label: "Verification", icon: "🛡️", category: "Store & Trust" },
+      { id: "personal", label: "Personal Profile", icon: "👤", category: "Store & Trust" },
+      { id: "security", label: "Security & Login", icon: "🔐", category: "Store & Trust" },
+      { id: "support", label: "Admin Support", icon: "🎧", category: "Communication" },
     ];
   }
 
@@ -274,6 +289,9 @@ export default function DashboardPage() {
       {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Vendor Hub (Staff)" />}
       {actualRole === "reseller" && <ResellerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "super_admin" && <SuperAdminDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+      {actualRole === "raw_material" && <SupplierDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+      
+      {activeTab === "security" && <SecurityTab />}
     </DashboardLayout>
   );
 }
@@ -2837,6 +2855,151 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
           </div>
         </div>
       )}
+    </div>
+  );
+}
+/* ==========================================
+   SECURITY TAB (SHARED)
+   ========================================== */
+import { EmailAuthProvider, linkWithCredential, updatePassword } from "firebase/auth";
+
+function SecurityTab() {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      const providers = auth.currentUser.providerData.map(p => p.providerId);
+      if (providers.includes("google.com") && !providers.includes("password")) {
+        setIsGoogleUser(true);
+      }
+    }
+  }, []);
+
+  const handleUpdateSecurity = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match.");
+      return;
+    }
+    if (password.length < 6) {
+      setMessage("Password must be at least 6 characters.");
+      return;
+    }
+    if (!auth.currentUser || !auth.currentUser.email) return;
+
+    setLoading(true);
+    setMessage("");
+    try {
+      if (isGoogleUser) {
+        // Link Google Account with an Email/Password credential
+        const credential = EmailAuthProvider.credential(auth.currentUser.email, password);
+        await linkWithCredential(auth.currentUser, credential);
+        setMessage("Success! You can now log in using your email and this password.");
+        setIsGoogleUser(false);
+      } else {
+        // Just update existing password
+        await updatePassword(auth.currentUser, password);
+        setMessage("Password updated successfully.");
+      }
+      setPassword("");
+      setConfirmPassword("");
+    } catch (error: any) {
+      console.error(error);
+      setMessage(error.message || "Failed to update security settings.");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
+      <h2 className="text-xl font-bold text-gray-900 mb-2">Security & Login</h2>
+      <p className="text-sm text-gray-500 font-medium mb-6">Manage your account security and login methods.</p>
+
+      {message && (
+        <div className={"p-4 rounded-xl text-sm font-bold "}>
+          {message}
+        </div>
+      )}
+
+      {isGoogleUser ? (
+        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 mb-6">
+          <h3 className="font-bold text-blue-900 flex items-center gap-2"><span>🛡️</span> Google Connected Account</h3>
+          <p className="text-sm text-blue-700 mt-1">You currently log in using Google. Set a password below to enable Email/Password login as a backup.</p>
+        </div>
+      ) : (
+        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 mb-6">
+          <h3 className="font-bold text-gray-900 flex items-center gap-2"><span>🔑</span> Email & Password Account</h3>
+          <p className="text-sm text-gray-600 mt-1">Change your password below to keep your account secure.</p>
+        </div>
+      )}
+
+      <form onSubmit={handleUpdateSecurity} className="space-y-5">
+        <div>
+          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">New Password</label>
+          <input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="••••••••" />
+        </div>
+        <div>
+          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Confirm Password</label>
+          <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="••••••••" />
+        </div>
+        <button disabled={loading} type="submit" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm disabled:opacity-50">
+          {loading ? "Saving..." : isGoogleUser ? "Add Password Login" : "Update Password"}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+/* ==========================================
+   SUPPLIER DASHBOARD (RAW MATERIAL)
+   ========================================== */
+function SupplierDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
+  return (
+    <div className="space-y-6">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black text-[#8B4513] tracking-tight">Raw Material Hub</h1>
+          <p className="text-gray-500 mt-2 font-medium">Supply authentic silk, cotton, and dyes to Bhulia weavers.</p>
+        </div>
+      </header>
+
+      {activeTab === "home" && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in">
+          <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Bulk Orders</h3>
+            <div className="text-4xl font-black text-[#8B4513]">0</div>
+            <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#8B4513] font-bold text-left">View Orders →</button>
+          </div>
+          <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Inventory Items</h3>
+            <div className="text-4xl font-black text-[#8B4513]">0</div>
+            <button onClick={() => onTabChange("inventory")} className="mt-6 text-sm text-[#8B4513] font-bold text-left">Manage Inventory →</button>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "inventory" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-in fade-in">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-900">My Materials</h2>
+            <button className="px-5 py-2 bg-[#8B4513] text-white rounded-xl text-xs font-bold">+ Add Material</button>
+          </div>
+          <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium">No materials added yet.</div>
+        </div>
+      )}
+
+      {activeTab === "orders" && (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-in fade-in">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Bulk Orders</h2>
+          <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium">No bulk orders yet.</div>
+        </div>
+      )}
+      
+      {activeTab === "security" && <SecurityTab />}
     </div>
   );
 }
