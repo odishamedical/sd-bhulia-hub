@@ -438,13 +438,18 @@ export default function UserManagementPage() {
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Ecosystem Hub</h1>
-          <p className="text-gray-800 mt-2 font-semibold">Unified management for Customers, Weavers, and Retail Shops.</p>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+            <div className="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2 rounded-xl text-white shadow-md">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            Ecosystem Hub
+          </h1>
+          <p className="text-gray-500 mt-2 font-medium text-sm">Unified management for Customers, Weavers, and Retail Shops.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <button 
             onClick={() => setShowAddUserModal(true)}
-            className="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm flex items-center gap-2"
+            className="px-5 py-2.5 bg-blue-600 text-white rounded-full text-sm font-bold hover:bg-blue-700 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
             Add New User
@@ -452,7 +457,7 @@ export default function UserManagementPage() {
           <button 
             onClick={() => setShowBroadcastModal(true)}
             disabled={filteredUsers.length === 0}
-            className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all disabled:opacity-50 shadow-sm flex items-center gap-2"
+            className="px-5 py-2.5 bg-green-500 text-white rounded-full text-sm font-bold hover:bg-green-600 transition-all disabled:opacity-50 shadow-md hover:shadow-lg flex items-center gap-2"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
             Broadcast
@@ -460,14 +465,14 @@ export default function UserManagementPage() {
           <button 
             onClick={handleExportCSV}
             disabled={isExporting || filteredUsers.length === 0}
-            className="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all disabled:opacity-50 shadow-sm flex items-center gap-2"
+            className="px-5 py-2.5 bg-gray-900 text-white rounded-full text-sm font-bold hover:bg-black transition-all disabled:opacity-50 shadow-md hover:shadow-lg flex items-center gap-2"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             {isExporting ? "Exporting..." : "Export CRM"}
           </button>
           <button 
             onClick={() => setShowFilters(!showFilters)}
-            className={`px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all flex items-center gap-2 ${showFilters ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}
+            className={`px-5 py-2.5 rounded-full text-sm font-bold border-2 transition-all flex items-center gap-2 shadow-sm ${showFilters ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
             {showFilters ? 'Hide Filters' : 'Filters'}
@@ -584,13 +589,26 @@ export default function UserManagementPage() {
               </thead>
               <tbody className="text-sm divide-y divide-gray-50">
                 {filteredUsers.map((user, idx) => (
-                  <tr key={`${user.id}-${user.role}-${idx}`} className="group hover:bg-gray-50 transition-colors">
+                  <tr key={`${user.id}-${user.role}-${idx}`} className="group hover:bg-blue-50/40 transition-colors border-b border-gray-50">
                     <td className="py-4 px-6">
-                      <div className="font-bold text-gray-900 text-base">{user.name}</div>
-                      <div className="text-xs text-gray-500 font-mono mt-1">ID: {user.id} • {user.phone}</div>
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm ${
+                          user.role === 'weaver' ? 'bg-orange-100 text-orange-700' :
+                          user.role === 'shop' ? 'bg-purple-100 text-purple-700' :
+                          user.role === 'reseller' ? 'bg-green-100 text-green-700' :
+                          user.role === 'customer' ? 'bg-blue-100 text-blue-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>
+                          {user.name.split(' ').map((n: string) => n[0]).join('').substring(0,2).toUpperCase() || '?'}
+                        </div>
+                        <div>
+                          <div className="font-bold text-gray-900 text-sm group-hover:text-blue-700 transition-colors">{user.name}</div>
+                          <div className="text-xs text-gray-400 font-mono mt-0.5">ID: {user.id} • {user.phone}</div>
+                        </div>
+                      </div>
                     </td>
                     <td className="py-4 px-6">
-                      <span className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest border ${
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${
                         user.role === 'weaver' ? 'bg-orange-50 text-orange-700 border-orange-200' :
                         user.role === 'shop' ? 'bg-purple-50 text-purple-700 border-purple-200' :
                         user.role === 'reseller' ? 'bg-green-50 text-green-700 border-green-200' :
@@ -601,15 +619,21 @@ export default function UserManagementPage() {
                       </span>
                     </td>
                     <td className="py-4 px-6">
-                      <div className="font-bold text-gray-700">{user.district}</div>
-                      <div className="text-xs text-gray-500">{user.state}, {(user as any).country}</div>
+                      <div className="font-semibold text-gray-700 text-sm">{user.district}</div>
+                      <div className="text-[11px] text-gray-400 font-medium">{user.state}, {(user as any).country}</div>
                     </td>
                     <td className="py-4 px-6 text-right">
-                      <div className="font-black text-gray-900">₹{user.volume.toLocaleString()}</div>
+                      {user.volume > 0 ? (
+                        <div className="inline-block bg-green-50 px-3 py-1 rounded-lg border border-green-100 text-green-800 font-bold text-sm shadow-sm">
+                          ₹{user.volume.toLocaleString()}
+                        </div>
+                      ) : (
+                        <div className="font-bold text-gray-400 text-sm">₹0</div>
+                      )}
                     </td>
                     <td className="py-4 px-6 text-right">
-                      <button onClick={() => setSelectedUserForDetails(user)} className="px-4 py-2 border border-gray-200 text-gray-700 rounded-xl text-xs font-bold hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all">
-                        View CRM Details
+                      <button onClick={() => setSelectedUserForDetails(user)} className="p-2 bg-white border border-gray-200 text-gray-500 rounded-full hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm group-hover:shadow-md">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                       </button>
                     </td>
                   </tr>
