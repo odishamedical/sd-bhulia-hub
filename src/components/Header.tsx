@@ -9,11 +9,63 @@ import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import CartDrawer from "./CartDrawer";
 
+// Centralized Navigation Structure
+const NAV_LINKS = [
+  { label: "HOME", href: "/" },
+  {
+    label: "PRODUCTS",
+    subLinks: [
+      {
+        section: "By Material",
+        links: [
+          { label: "Pure Silk (Pata)", href: "/search?category=Pure Silk Pata" },
+          { label: "Cotton Daily", href: "/search?category=Cotton Daily" },
+          { label: "Mix Blends", href: "/search?category=Mix Blends" },
+        ]
+      },
+      {
+        section: "By Design",
+        links: [
+          { label: "Sambalpuri Ikat", href: "/search?category=Sambalpuri Ikat" },
+          { label: "Pasapalli Double Ikat", href: "/search?category=Pasapalli" },
+          { label: "Bomkai", href: "/search?category=Bomkai" },
+        ]
+      },
+      {
+        section: "Collections",
+        links: [
+          { label: "Master Weavers", href: "/search?category=Master Weavers" },
+        ]
+      }
+    ]
+  },
+  { label: "SAMBALPURI HANDLOOM", href: "/directory" },
+  { label: "VERIFY PROFILE", href: "/verify" },
+  {
+    label: "ABOUT US",
+    subLinks: [
+      {
+        section: "Support",
+        links: [
+          { label: "About Us", href: "/" },
+          { label: "Contact Us", href: "/" },
+          { label: "About Our Products", href: "/" },
+          { label: "Privacy Policy", href: "/" },
+        ]
+      }
+    ]
+  }
+];
+
 export default function Header() {
   const { user, loginWithGoogle } = useAuth();
   const { cartCount, walletBalance } = useCart();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  
+  // Mobile UI State for Collapsible Menus
+  const [openMobileMenus, setOpenMobileMenus] = useState<Record<string, boolean>>({});
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -21,6 +73,13 @@ export default function Header() {
   if (pathname?.startsWith("/franchise/dashboard") || pathname?.startsWith("/admin") || pathname?.startsWith("/dashboard")) {
     return null;
   }
+
+  const toggleMobileMenu = (label: string) => {
+    setOpenMobileMenus(prev => ({
+      ...prev,
+      [label]: !prev[label]
+    }));
+  };
 
   return (
     <>
@@ -42,63 +101,50 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* Center: Dedicated Navigation Links */}
+          {/* Center: Dedicated Navigation Links (Desktop) */}
           <nav className="hidden lg:flex items-center gap-2 xl:gap-4 text-[10px] font-extrabold uppercase tracking-[0.15em] text-white whitespace-nowrap">
-            <Link href="/" className="hover:bg-white/20 px-4 py-2 rounded-full transition-all">HOME</Link>
-            
-            <div className="relative group">
-              <button className="flex items-center gap-1 hover:bg-white/20 px-4 py-2 rounded-full transition-all cursor-pointer">
-                <span>PRODUCTS</span>
-                <span className="text-[10px]">▼</span>
-              </button>
-              
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[400px] bg-[#0A1128]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-5 px-6 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50 flex gap-6 text-left normal-case tracking-normal">
-                
-                {/* By Material */}
-                <div className="flex-1 space-y-3">
-                  <h3 className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 text-[10px] uppercase tracking-widest font-bold">By Material</h3>
-                  <div className="flex flex-col gap-3">
-                    <Link href="/search?category=Pure Silk Pata" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Pure Silk (Pata)</Link>
-                    <Link href="/search?category=Pure Cotton" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Pure Cotton</Link>
-                    <Link href="/search?category=Mix Blends" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Mix Blends</Link>
+            {NAV_LINKS.map((navItem, index) => {
+              if (!navItem.subLinks) {
+                return (
+                  <Link key={index} href={navItem.href!} className="hover:bg-white/20 px-4 py-2 rounded-full transition-all">
+                    {navItem.label}
+                  </Link>
+                );
+              }
+
+              return (
+                <div key={index} className="relative group">
+                  <button className="flex items-center gap-1 hover:bg-white/20 px-4 py-2 rounded-full transition-all cursor-pointer">
+                    <span>{navItem.label}</span>
+                    <span className="text-[10px]">▼</span>
+                  </button>
+                  
+                  <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-[#0A1128]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-5 px-6 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50 flex gap-6 text-left normal-case tracking-normal min-w-[200px]`}>
+                    
+                    {navItem.subLinks.map((subSection, subIndex) => (
+                      <div key={subIndex} className={`flex-1 space-y-3 ${subIndex > 0 ? "border-l border-[#C5A059]/10 pl-6" : ""}`}>
+                        <h3 className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 text-[10px] uppercase tracking-widest font-bold whitespace-nowrap">{subSection.section}</h3>
+                        <div className="flex flex-col gap-3 min-w-[120px]">
+                          {subSection.links.map((link, linkIndex) => (
+                            <Link key={linkIndex} href={link.href} className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform whitespace-nowrap">
+                              {link.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                    
                   </div>
                 </div>
-
-                {/* By Design */}
-                <div className="flex-1 space-y-3 border-l border-[#C5A059]/10 pl-6">
-                  <h3 className="text-[#C5A059] border-b border-[#C5A059]/20 pb-2 text-[10px] uppercase tracking-widest font-bold">By Design</h3>
-                  <div className="flex flex-col gap-3">
-                    <Link href="/search?category=Sambalpuri Ikat" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Sambalpuri Ikat</Link>
-                    <Link href="/search?category=Pasapalli" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Pasapalli Double Ikat</Link>
-                    <Link href="/search?category=Bomkai" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Bomkai</Link>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <Link href="/directory" className="hover:bg-white/20 px-4 py-2 rounded-full transition-all">SAMBALPURI HANDLOOM</Link>
-            
-            <div className="relative group">
-              <button className="flex items-center gap-1 hover:bg-white/20 px-4 py-2 rounded-full transition-all cursor-pointer">
-                <span>ABOUT US</span>
-                <span className="text-[10px]">▼</span>
-              </button>
-              
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[220px] bg-[#0A1128]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-3 px-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50 flex flex-col gap-3 text-left normal-case tracking-normal">
-                <Link href="/" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">About Us</Link>
-                <Link href="/" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Contact Us</Link>
-                <Link href="/" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">About Our Products</Link>
-                <Link href="/" className="text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-transform">Our Privacy Policy</Link>
-              </div>
-            </div>
+              );
+            })}
           </nav>
 
-          {/* Right Side: User Menu / Sign In / Register (Desktop) & Mobile Hamburger */}
+          {/* Right Side: User Menu & Mobile Hamburger */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <UserMenu />
 
-            {/* Desktop Sign In / Register Button (Visible when logged out) */}
+            {/* Desktop Sign In Button */}
             {!user && (
               <button onClick={() => router.push('/login')} className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow cursor-pointer hover:brightness-110 transition-all">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
@@ -190,32 +236,54 @@ export default function Header() {
               )}
             </div>
 
-            {/* Middle Section: Categorized Links */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-[10px] text-gray-500 font-bold uppercase tracking-widest border-b border-[#C5A059]/10 pb-2">Collections</h3>
-                <Link href="/search?category=Cotton Classics" onClick={() => setMobileNavOpen(false)} className="flex items-center gap-3 text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">
-                  <span className="w-2 h-2 rounded-full bg-[#C5A059]/50"></span> Cotton Sambalpuri
-                </Link>
-                <Link href="/search?category=Silk Masterpieces" onClick={() => setMobileNavOpen(false)} className="flex items-center gap-3 text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">
-                  <span className="w-2 h-2 rounded-full bg-[#C5A059]/50"></span> Pata Sambalpuri (Silk)
-                </Link>
-                <Link href="/search?design=Bomkai" onClick={() => setMobileNavOpen(false)} className="flex items-center gap-3 text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">
-                  <span className="w-2 h-2 rounded-full bg-[#C5A059]/50"></span> Cotton Bomkai
-                </Link>
-              </div>
+            {/* Middle Section: Categorized Links from NAV_LINKS */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+              {NAV_LINKS.map((navItem, index) => {
+                if (!navItem.subLinks) {
+                  return (
+                    <Link key={index} href={navItem.href!} onClick={() => setMobileNavOpen(false)} className="block px-4 py-3 text-sm font-bold text-gray-200 hover:bg-white/5 hover:text-[#C5A059] rounded-xl transition-colors uppercase tracking-widest">
+                      {navItem.label}
+                    </Link>
+                  );
+                }
 
-              <div className="space-y-4">
-                <h3 className="text-[10px] text-gray-500 font-bold uppercase tracking-widest border-b border-[#C5A059]/10 pb-2">Discover</h3>
-                <Link href="/search" onClick={() => setMobileNavOpen(false)} className="block text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">Search All Products</Link>
-                <Link href="/directory" onClick={() => setMobileNavOpen(false)} className="block text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">Sambalpuri Handloom</Link>
-              </div>
-              
-              <div className="space-y-4">
-                <h3 className="text-[10px] text-gray-500 font-bold uppercase tracking-widest border-b border-[#C5A059]/10 pb-2">Support</h3>
-                <Link href="/" onClick={() => setMobileNavOpen(false)} className="block text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">About Us</Link>
-                <Link href="/" onClick={() => setMobileNavOpen(false)} className="block text-sm font-bold text-gray-200 hover:text-[#C5A059] transition-colors">Contact Us</Link>
-              </div>
+                const isOpen = openMobileMenus[navItem.label];
+
+                return (
+                  <div key={index} className="overflow-hidden">
+                    <button 
+                      onClick={() => toggleMobileMenu(navItem.label)} 
+                      className="w-full flex items-center justify-between px-4 py-3 text-sm font-bold text-gray-200 hover:bg-white/5 rounded-xl transition-colors uppercase tracking-widest"
+                    >
+                      <span className={isOpen ? "text-[#C5A059]" : ""}>{navItem.label}</span>
+                      <svg className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180 text-[#C5A059]" : "text-gray-500"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    
+                    {/* Collapsible Sub-menu */}
+                    {isOpen && (
+                      <div className="pl-6 pr-4 py-2 space-y-4 border-l border-[#C5A059]/20 ml-6 my-2 bg-white/5 rounded-xl">
+                        {navItem.subLinks.map((subSection, subIndex) => (
+                          <div key={subIndex} className="space-y-2">
+                            <h3 className="text-[9px] text-[#C5A059] font-bold uppercase tracking-widest">{subSection.section}</h3>
+                            <div className="space-y-1">
+                              {subSection.links.map((link, linkIndex) => (
+                                <Link 
+                                  key={linkIndex} 
+                                  href={link.href} 
+                                  onClick={() => setMobileNavOpen(false)} 
+                                  className="block py-2 text-xs font-semibold text-gray-300 hover:text-white transition-colors"
+                                >
+                                  {link.label}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Bottom Section: Account Management */}
