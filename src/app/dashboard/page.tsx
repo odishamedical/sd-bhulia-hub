@@ -1309,19 +1309,6 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         </div>
       )}
 
-      {activeTab === "marketing" && (
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Marketing & Promotions</h2>
-          <div className="bg-blue-50 border border-blue-100 p-6 rounded-2xl flex flex-col items-center justify-center text-center space-y-4">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl">📢</div>
-            <h3 className="font-bold text-blue-900 text-lg">Promote Your Store on the Homepage!</h3>
-            <p className="text-blue-700 font-medium text-sm max-w-md">Marketing tools will be unlocked once your store completes 10 successful sales. Need early access? Request a promotion package.</p>
-            <button className="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl shadow-sm hover:bg-blue-700 transition-colors mt-2">
-              Request Featured Placement
-            </button>
-          </div>
-        </div>
-      )}
 
       {activeTab === "messages" && (
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-in fade-in">
