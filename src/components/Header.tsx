@@ -88,8 +88,8 @@ export default function Header() {
         <div className="flex justify-between items-center gap-2 w-full px-4 sm:px-6 py-4 sm:py-6">
           {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
           <Link href="/" className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0 cursor-pointer hover:opacity-90 transition-opacity">
-            <div className="relative w-10 sm:w-16 h-10 sm:h-16 rounded-full overflow-hidden border border-[#C5A059] sm:border-2 shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
-              <Image src="/logo.png" alt="Bhulia Gold Logo" fill className="object-cover" />
+            <div className="relative w-12 sm:w-20 h-12 sm:h-20 rounded-full overflow-hidden shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
+              <Image src="/logo.png" alt="Bhulia Gold Logo" fill className="object-cover scale-[1.15]" />
             </div>
             <div className="min-w-0 flex flex-col items-stretch">
               <h1 className="text-2xl sm:text-3xl font-sans font-black tracking-tight text-white leading-none">Bhulia.com</h1>

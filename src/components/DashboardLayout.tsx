@@ -76,8 +76,8 @@ export default function DashboardLayout({
             <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
           <Link href="/">
-            <div className="relative w-10 h-10 rounded-full overflow-hidden shadow-sm cursor-pointer border border-white/20">
-              <Image src="/logo.png" alt="Bhulia Logo" fill className="object-cover" />
+            <div className="relative w-12 h-12 rounded-full overflow-hidden shadow-sm cursor-pointer">
+              <Image src="/logo.png" alt="Bhulia Logo" fill className="object-cover scale-[1.15]" />
             </div>
           </Link>
           <div>
