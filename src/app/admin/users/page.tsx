@@ -53,6 +53,9 @@ export default function UserManagementPage() {
   const [newSubCommission, setNewSubCommission] = useState("15");
   const [newSubDuration, setNewSubDuration] = useState("1"); // months
 
+  // Verification State
+  const [verificationFilter, setVerificationFilter] = useState("all");
+
   // Generate unified mock users from ecosystem data
   const users = useMemo(() => {
     // Weavers
@@ -74,6 +77,7 @@ export default function UserManagementPage() {
       slug: w.slug,
       isAutoApproved: w.isAutoApproved,
       maxProductsAllowed: w.subscription?.uploadLimit,
+      status: w.status || "approved",
     }));
 
     // Shops/Franchises
@@ -95,6 +99,7 @@ export default function UserManagementPage() {
       slug: s.slug,
       isAutoApproved: s.isAutoApproved,
       maxProductsAllowed: s.productLimit,
+      status: s.status || "approved",
     }));
 
     // Extract Customers from Orders (Mocking legacy customers from purchases)
@@ -112,6 +117,7 @@ export default function UserManagementPage() {
       address: orders.find(o => o.customerName === name)?.customerAddress || "N/A",
       email: "N/A",
       referralId: `SDC-${String(`order_cust_${idx}`).substring(0,6).toUpperCase()}`,
+      status: "approved",
     }));
 
     // Explicitly Registered Customers (May not have purchased yet)
@@ -129,6 +135,7 @@ export default function UserManagementPage() {
       address: c.address || "N/A",
       email: c.email || authUsers.find(u => u.id === c.id || u.id === c.userId)?.email || "N/A",
       referralId: `SDC-${c.id.substring(0,6).toUpperCase()}`,
+      status: c.status || "approved",
     }));
 
     // General Identity Provider Users (e.g. Gmail login)
@@ -146,6 +153,7 @@ export default function UserManagementPage() {
       address: "N/A",
       email: u.email || "N/A",
       referralId: `SDU-${u.id.substring(0,6).toUpperCase()}`,
+      status: "approved",
     }));
 
     // Resellers (Marketing Agents)
@@ -165,6 +173,7 @@ export default function UserManagementPage() {
       referralId: r.referralId || "N/A",
       tier: r.tier || "Bronze",
       commissionRate: r.commissionRate || 10,
+      status: r.status || "approved",
     }));
 
     // Deduplicate logic: prioritize higher roles over generic 'user' to prevent the exact same person from appearing 3 times
@@ -196,10 +205,11 @@ export default function UserManagementPage() {
       const matchVolume = minVolume === "" || u.volume >= parseInt(minVolume);
       const matchProduct = productIdFilter === "" || u.purchasedProductIds.includes(productIdFilter);
       const matchSubStatus = subStatusFilter === "all" || u.subStatus === subStatusFilter;
+      const matchVerification = verificationFilter === "all" || (verificationFilter === "pending" ? u.status === "pending" : u.status === verificationFilter);
 
-      return matchSearch && matchRole && matchState && matchDistrict && matchVolume && matchProduct && matchSubStatus;
+      return matchSearch && matchRole && matchState && matchDistrict && matchVolume && matchProduct && matchSubStatus && matchVerification;
     });
-  }, [users, searchTerm, roleFilter, stateFilter, districtFilter, minVolume, productIdFilter, subStatusFilter]);
+  }, [users, searchTerm, roleFilter, stateFilter, districtFilter, minVolume, productIdFilter, subStatusFilter, verificationFilter]);
 
   const allStates = Array.from(new Set(users.map(u => u.state))).sort();
   const allDistricts = Array.from(new Set(users.map(u => u.district))).sort();
@@ -475,17 +485,11 @@ export default function UserManagementPage() {
                 Role Filter
               </h3>
               <div className="space-y-2">
-                {['all', 'user', 'customer', 'reseller', 'weaver', 'shop', 'vendor', 'wholesaler', 'supplier', 'staff'].map(role => (
-                  <label key={role} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-100 transition-all">
-                    <input type="radio" name="role" checked={roleFilter === role} onChange={() => setRoleFilter(role)} className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" />
-                    <span className="text-sm font-bold text-gray-700 capitalize">{
-                      role === 'all' ? 'Entire Ecosystem' :
-                      role === 'user' ? 'General Users' :
-                      role === 'staff' ? 'Admins / Staff' :
-                      role + 's'
-                    }</span>
-                  </label>
-                ))}
+                <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+                  {['all', 'user', 'customer', 'reseller', 'weaver', 'shop', 'vendor', 'wholesaler', 'supplier', 'staff'].map(role => (
+                    <option key={role} value={role}>{role === 'all' ? 'Entire Ecosystem' : role === 'user' ? 'General Users' : role.charAt(0).toUpperCase() + role.slice(1) + 's'}</option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -516,6 +520,15 @@ export default function UserManagementPage() {
                     <option value="active">Active (Paid)</option>
                     <option value="free_trial">Free Trial</option>
                     <option value="expired">Expired / Expiring Soon</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 mb-1.5 block">Verification Status</label>
+                  <select value={verificationFilter} onChange={e => setVerificationFilter(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+                    <option value="all">All Statuses</option>
+                    <option value="approved">Approved & Active</option>
+                    <option value="pending">Pending Verification</option>
+                    <option value="rejected">Rejected / Suspended</option>
                   </select>
                 </div>
               </div>
