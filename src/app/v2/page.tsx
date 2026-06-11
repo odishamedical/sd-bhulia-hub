@@ -53,6 +53,8 @@ export default function HomeDraftV2() {
     { title: "Bomkai", img: "/bhulia-hero.png", link: "/search?design=Bomkai" },
     { title: "Pasapalli", img: "/bhulia-hero.png", link: "/search?category=Pasapalli" },
     { title: "Master Weavers", img: "/bhulia-hero.png", link: "#weavers" },
+    { title: "Bridal Collection", img: "/bhulia-hero.png", link: "/search?category=Bridal" },
+    { title: "Corporate Gifts", img: "/bhulia-hero.png", link: "/search?category=Gifts" },
   ];
 
   // Vault Tab Logic
@@ -140,7 +142,7 @@ export default function HomeDraftV2() {
             )}
           </div>
           <div className="flex justify-center mt-8">
-            <Link href="/search" className="px-8 py-3 border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 text-xs font-bold uppercase tracking-widest transition-all">View Entire Vault</Link>
+            <Link href="/search" className="px-8 py-3 border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10 text-xs font-bold uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(197,160,89,0.2)] hover:shadow-[0_0_25px_rgba(197,160,89,0.4)]">View Entire Vault Collection</Link>
           </div>
         </section>
 
@@ -180,8 +182,11 @@ export default function HomeDraftV2() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#051815] via-[#051815]/50 to-transparent opacity-90"></div>
                 
                 <div className="absolute inset-0 p-6 flex flex-col justify-end text-center items-center">
-                  <div className="w-16 h-16 rounded-full border border-[#C5A059] bg-[#0A2520]/80 backdrop-blur flex items-center justify-center mb-4">
-                    <span className="text-xs font-serif text-[#C5A059] uppercase">Verified</span>
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#FFF5C0] via-[#D4AF37] to-[#8A5A00] p-[2px] shadow-[0_10px_20px_rgba(0,0,0,0.8),_0_0_15px_rgba(212,175,55,0.4)] mb-4 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-500">
+                    <div className="w-full h-full rounded-full bg-[#051815] flex flex-col items-center justify-center border-2 border-dashed border-[#D4AF37]/40">
+                      <span className="text-[8px] sm:text-[9px] font-sans font-bold text-[#C5A059] uppercase tracking-[0.2em] leading-none mb-0.5">Bhulia</span>
+                      <span className="text-[10px] sm:text-[11px] font-serif font-black text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5C0] to-[#D4AF37] uppercase tracking-wider leading-none">Verified</span>
+                    </div>
                   </div>
                   <h4 className="text-xl font-serif font-bold text-white mb-2">{dir.title}</h4>
                   <p className="text-xs text-gray-300 line-clamp-2">{dir.desc}</p>
