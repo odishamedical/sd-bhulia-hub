@@ -944,28 +944,124 @@ export default function UserManagementPage() {
             )}
 
             <div className="grid grid-cols-2 gap-6 mb-6">
+              
+              {/* Orphan Credentials Block */}
+              {selectedUserForDetails.email === 'N/A' && (selectedUserForDetails.role === 'weaver' || selectedUserForDetails.role === 'shop') && (
+                <div className="col-span-2 grid grid-cols-1 gap-4 bg-purple-50 p-6 rounded-2xl border border-purple-100 mb-2">
+                  <div className="col-span-full mb-1 border-b border-purple-200 pb-2">
+                    <h4 className="text-sm font-bold text-purple-900 uppercase">Orphan Profile / Dummy Account</h4>
+                  </div>
+                  <p className="text-sm text-purple-800 font-medium mt-0">This profile does not have an active login account. Create credentials below.</p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <input id="crmDummyEmail" type="email" placeholder="Email (e.g. gmail.com)" className="flex-1 bg-white border border-purple-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" />
+                    <input id="crmDummyPwd" type="text" placeholder="Password" defaultValue="bhulia123" className="w-32 bg-white border border-purple-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" />
+                    <button 
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        const emailInput = document.getElementById('crmDummyEmail') as HTMLInputElement;
+                        const pwdInput = document.getElementById('crmDummyPwd') as HTMLInputElement;
+                        if (!emailInput.value || !pwdInput.value) { alert('Enter email and password'); return; }
+                        
+                        const btn = e.currentTarget;
+                        btn.textContent = "Creating...";
+                        btn.disabled = true;
+                        try {
+                          const { initializeApp } = await import('firebase/app');
+                          const { getAuth, createUserWithEmailAndPassword } = await import('firebase/auth');
+                          const { setDoc, updateDoc, getDoc, doc, serverTimestamp } = await import('firebase/firestore');
+                          
+                          const secondaryApp = initializeApp(auth.app.options, "Secondary" + Date.now());
+                          const secondaryAuth = getAuth(secondaryApp);
+                          
+                          const cred = await createUserWithEmailAndPassword(secondaryAuth, emailInput.value, pwdInput.value);
+                          const newUid = cred.user.uid;
+                          
+                          const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : 'stores';
+                          const oldDocRef = doc(db, col, selectedUserForDetails.id);
+                          const newDocRef = doc(db, col, newUid);
+                          const oldSnap = await getDoc(oldDocRef);
+                          if (oldSnap.exists()) {
+                            await setDoc(newDocRef, { ...oldSnap.data(), uid: newUid, updatedAt: serverTimestamp() });
+                            await setDoc(doc(db, 'users', newUid), {
+                              uid: newUid,
+                              email: emailInput.value,
+                              role: selectedUserForDetails.role,
+                              weaverDocId: newUid,
+                              createdAt: serverTimestamp()
+                            });
+                            await updateDoc(oldDocRef, { status: "migrated", migratedTo: newUid });
+                            alert('Credentials created successfully! They can now log in.');
+                            setSelectedUserForDetails({...selectedUserForDetails, email: emailInput.value});
+                          }
+                          await secondaryAuth.signOut();
+                        } catch (err: any) {
+                          alert(err.message);
+                        } finally {
+                          btn.textContent = "Create Login & Claim Profile";
+                          btn.disabled = false;
+                        }
+                      }}
+                      className="bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+                    >
+                      Create Login
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-4">
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 flex justify-between items-center">
                     Phone Number
-                    <button className="text-blue-500 hover:text-blue-700">Edit</button>
+                    <button onClick={async () => {
+                      const val = prompt('Edit Phone Number:', selectedUserForDetails.phone);
+                      if (val && val !== selectedUserForDetails.phone) {
+                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'shop' ? 'stores' : 'users';
+                        await updateDocumentStatus(col, selectedUserForDetails.id, { phoneNumber: val });
+                        setSelectedUserForDetails({...selectedUserForDetails, phone: val});
+                        alert('Updated!');
+                      }
+                    }} className="text-blue-500 hover:text-blue-700">Edit</button>
                   </div>
                   <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.phone}</div>
                 </div>
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 flex justify-between items-center">
                     WhatsApp
-                    <button className="text-blue-500 hover:text-blue-700">Edit</button>
+                    <button onClick={async () => {
+                      const val = prompt('Edit WhatsApp:', selectedUserForDetails.whatsapp);
+                      if (val && val !== selectedUserForDetails.whatsapp) {
+                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'shop' ? 'stores' : 'users';
+                        await updateDocumentStatus(col, selectedUserForDetails.id, { whatsapp: val });
+                        setSelectedUserForDetails({...selectedUserForDetails, whatsapp: val});
+                        alert('Updated!');
+                      }
+                    }} className="text-blue-500 hover:text-blue-700">Edit</button>
                   </div>
                   <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.whatsapp}</div>
                 </div>
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 flex justify-between items-center">
                     Email Address
-                    <button className="text-blue-500 hover:text-blue-700">Edit</button>
+                    <button onClick={async () => {
+                      const val = prompt('Edit Email Address in DB (Note: Does not change their Auth login email, only CRM record):', selectedUserForDetails.email);
+                      if (val && val !== selectedUserForDetails.email) {
+                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'shop' ? 'stores' : 'users';
+                        await updateDocumentStatus(col, selectedUserForDetails.id, { email: val });
+                        setSelectedUserForDetails({...selectedUserForDetails, email: val});
+                        alert('Updated!');
+                      }
+                    }} className="text-blue-500 hover:text-blue-700">Edit</button>
                   </div>
                   <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.email}</div>
-                  <button className="text-xs text-blue-600 font-bold mt-2 hover:underline">✉ Send Password Reset</button>
+                  <button onClick={async () => {
+                    if(!selectedUserForDetails.email || selectedUserForDetails.email === 'N/A') return alert('No valid email to reset.');
+                    if(confirm(`Send password reset link to ${selectedUserForDetails.email}?`)){
+                      const { sendPasswordResetEmail } = await import('firebase/auth');
+                      await sendPasswordResetEmail(auth, selectedUserForDetails.email);
+                      alert('Password reset link sent!');
+                    }
+                  }} className="text-xs text-blue-600 font-bold mt-2 hover:underline">✉ Send Password Reset</button>
                 </div>
                 <div className="mt-6 border-t border-gray-100 pt-4">
                   <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-3">KYC & Verification</h4>
@@ -978,7 +1074,9 @@ export default function UserManagementPage() {
                       <span className="text-xs font-bold text-gray-700">GSTIN</span>
                       <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded">Verified</span>
                     </div>
-                    <button className="w-full mt-3 bg-blue-50 text-blue-600 font-bold text-xs py-2 rounded-lg hover:bg-blue-100 transition-colors">Review Documents</button>
+                    <button onClick={() => {
+                      alert('KYC Document Review module is opening... (Requires backend verification pipeline).');
+                    }} className="w-full mt-3 bg-blue-50 text-blue-600 font-bold text-xs py-2 rounded-lg hover:bg-blue-100 transition-colors">Review Documents</button>
                   </div>
                 </div>
               </div>
@@ -986,14 +1084,33 @@ export default function UserManagementPage() {
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 flex justify-between items-center">
                     Geography
-                    <button className="text-blue-500 hover:text-blue-700">Edit</button>
+                    <button onClick={async () => {
+                      const val = prompt('Edit Geography (e.g. District, State):', [selectedUserForDetails.district, selectedUserForDetails.state].filter(Boolean).join(", "));
+                      if (val) {
+                        const parts = val.split(",");
+                        const district = parts[0]?.trim() || "";
+                        const state = parts[1]?.trim() || "";
+                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'shop' ? 'stores' : 'users';
+                        await updateDocumentStatus(col, selectedUserForDetails.id, { district, state });
+                        setSelectedUserForDetails({...selectedUserForDetails, district, state});
+                        alert('Updated!');
+                      }
+                    }} className="text-blue-500 hover:text-blue-700">Edit</button>
                   </div>
                   <div className="text-sm font-bold text-gray-900">{[selectedUserForDetails.district, selectedUserForDetails.state, selectedUserForDetails.country].filter(Boolean).filter(s => s !== "N/A").join(", ") || "N/A"}</div>
                 </div>
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1 flex justify-between items-center">
                     Full Address
-                    <button className="text-blue-500 hover:text-blue-700">Edit</button>
+                    <button onClick={async () => {
+                      const val = prompt('Edit Full Address:', selectedUserForDetails.address);
+                      if (val && val !== selectedUserForDetails.address) {
+                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'shop' ? 'stores' : 'users';
+                        await updateDocumentStatus(col, selectedUserForDetails.id, { address: val });
+                        setSelectedUserForDetails({...selectedUserForDetails, address: val});
+                        alert('Updated!');
+                      }
+                    }} className="text-blue-500 hover:text-blue-700">Edit</button>
                   </div>
                   <div className="text-sm font-bold text-gray-900 leading-relaxed">{selectedUserForDetails.address}</div>
                 </div>
@@ -1027,7 +1144,9 @@ export default function UserManagementPage() {
                       <span className="text-xs font-black text-blue-700 uppercase">{selectedUserForDetails.subStatus || "Free Trial"}</span>
                     </div>
                     <div className="text-[10px] text-blue-600 font-medium">Expires: Dec 31, 2026</div>
-                    <button className="w-full mt-3 bg-white text-blue-600 font-bold text-xs py-2 rounded-lg border border-blue-200 hover:bg-blue-600 hover:text-white transition-colors">Manage Subscription</button>
+                    <button onClick={() => {
+                      alert('SaaS Subscription management is handled via Razorpay Subscriptions module. This will be unlocked when payment gateways are verified.');
+                    }} className="w-full mt-3 bg-white text-blue-600 font-bold text-xs py-2 rounded-lg border border-blue-200 hover:bg-blue-600 hover:text-white transition-colors">Manage Subscription</button>
                   </div>
                 </div>
               </div>
