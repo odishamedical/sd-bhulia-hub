@@ -3017,7 +3017,7 @@ function MarketingTab() {
           <h2 className="text-xl font-bold text-gray-900">Marketing & Promos</h2>
           <p className="text-sm text-gray-500 font-medium">Create discount codes and run flash sales.</p>
         </div>
-        <button className="px-6 py-2.5 bg-[#0A1021] text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-[#C5A059] hover:text-[#0A1021] transition-all shadow-md">
+        <button onClick={() => alert("Coupon creation engine will be activated in the next update!")} className="px-6 py-2.5 bg-[#0A1021] text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-[#C5A059] hover:text-[#0A1021] transition-all shadow-md">
           + Create Coupon
         </button>
       </header>
