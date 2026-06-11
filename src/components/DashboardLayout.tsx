@@ -77,7 +77,7 @@ export default function DashboardLayout({
           </button>
           <Link href="/">
             <div className="relative w-10 h-10 rounded-full overflow-hidden shadow-sm cursor-pointer border border-white/20">
-              <Image src="/bhulia_logo_final.jpg" alt="Bhulia Logo" fill className="object-cover" />
+              <Image src="/logo.png" alt="Bhulia Logo" fill className="object-cover" />
             </div>
           </Link>
           <div>

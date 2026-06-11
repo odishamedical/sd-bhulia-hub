@@ -109,7 +109,7 @@ export default function Footer() {
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity w-fit">
               <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#C5A059] shrink-0">
-                <Image src="/bhulia_logo_final.jpg" alt="Bhulia Logo" fill className="object-cover" />
+                <Image src="/logo.png" alt="Bhulia Logo" fill className="object-cover" />
               </div>
               <div>
                 <h4 className="text-lg font-serif font-bold text-[#C5A059] leading-none">Shyam Dash</h4>
