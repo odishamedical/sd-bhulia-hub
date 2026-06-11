@@ -60,8 +60,11 @@ export default function HelpGuideTab({ userRole }: { userRole: string }) {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6 border-b border-gray-100 pb-8">
         <div>
-          <h2 className="text-3xl font-black text-gray-900 flex items-center gap-3">
-            <span className="text-4xl">📘</span> Dashboard Master Guide
+          <h2 className="text-3xl font-black text-[#0074E4] flex items-center gap-3">
+            <div className="bg-blue-100 p-2 rounded-2xl shadow-inner">
+              <span className="text-3xl">📘</span>
+            </div>
+            Dashboard Master Guide
           </h2>
           <p className="text-gray-500 mt-2 text-lg">
             Everything you need to know to operate your {userRole.replace("_", " ")} business on Bhulia Hub.
@@ -89,7 +92,9 @@ export default function HelpGuideTab({ userRole }: { userRole: string }) {
       </div>
 
       {/* CATEGORY BREAKDOWN */}
-      <h3 className="text-2xl font-bold text-gray-900 mb-6">Understanding Your Menu</h3>
+      <h3 className="text-2xl font-black text-[#0074E4] mb-6 flex items-center gap-2">
+        <span className="text-xl">🗺️</span> Understanding Your Menu
+      </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
         {CATEGORY_GUIDES.map((cat, idx) => (
           <div 
@@ -101,10 +106,12 @@ export default function HelpGuideTab({ userRole }: { userRole: string }) {
               className="w-full text-left p-5 flex items-start justify-between gap-4"
             >
               <div className="flex items-center gap-4">
-                <span className="text-2xl">{cat.icon}</span>
+                <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center shadow-sm">
+                  <span className="text-2xl">{cat.icon}</span>
+                </div>
                 <div>
-                  <h4 className="font-bold text-gray-900 text-lg">{cat.title}</h4>
-                  <p className="text-sm text-gray-500 font-medium">{cat.description}</p>
+                  <h4 className="font-bold text-[#0074E4] text-lg">{cat.title}</h4>
+                  <p className="text-sm text-gray-600 font-medium">{cat.description}</p>
                 </div>
               </div>
               <span className={`text-gray-400 transition-transform ${openCategory === idx ? 'rotate-180' : ''}`}>
@@ -124,19 +131,21 @@ export default function HelpGuideTab({ userRole }: { userRole: string }) {
       </div>
 
       {/* FAQ SECTION */}
-      <h3 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h3>
+      <h3 className="text-2xl font-black text-[#0074E4] mb-6 mt-4 flex items-center gap-2">
+        <span className="text-xl">❓</span> Frequently Asked Questions
+      </h3>
       <div className="space-y-4">
-        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-          <h4 className="font-bold text-gray-900 mb-2">How do I verify my account to get a trusted badge?</h4>
-          <p className="text-sm text-gray-600">Navigate to <strong>Support & Verification &gt; Verification (KYC)</strong>. Upload your required documents. Our admin team usually approves KYC submissions within 24-48 hours.</p>
+        <div className="bg-white p-6 rounded-2xl border-l-4 border-l-[#0074E4] border border-y-gray-200 border-r-gray-200 shadow-sm hover:shadow-md transition-shadow">
+          <h4 className="font-bold text-[#0074E4] text-lg mb-2">How do I verify my account to get a trusted badge?</h4>
+          <p className="text-sm text-gray-600 font-medium leading-relaxed">Navigate to <strong className="text-gray-900 bg-gray-100 px-1 rounded">Support & Verification &gt; Verification (KYC)</strong>. Upload your required documents. Our admin team usually approves KYC submissions within 24-48 hours.</p>
         </div>
-        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-          <h4 className="font-bold text-gray-900 mb-2">When do I receive my payouts?</h4>
-          <p className="text-sm text-gray-600">You can view your available balance in <strong>Finance & Accounting &gt; Wallet & Payouts</strong>. Payouts are processed every Tuesday and Friday directly to your registered bank account.</p>
+        <div className="bg-white p-6 rounded-2xl border-l-4 border-l-[#0074E4] border border-y-gray-200 border-r-gray-200 shadow-sm hover:shadow-md transition-shadow">
+          <h4 className="font-bold text-[#0074E4] text-lg mb-2">When do I receive my payouts?</h4>
+          <p className="text-sm text-gray-600 font-medium leading-relaxed">You can view your available balance in <strong className="text-gray-900 bg-gray-100 px-1 rounded">Finance & Accounting &gt; Wallet & Payouts</strong>. Payouts are processed every Tuesday and Friday directly to your registered bank account.</p>
         </div>
-        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-          <h4 className="font-bold text-gray-900 mb-2">Can I sell wholesale (B2B) and retail at the same time?</h4>
-          <p className="text-sm text-gray-600">Yes! In <strong>Marketing & Growth &gt; B2B Setup</strong>, you can configure special wholesale pricing. Retail customers will see the standard MRP, while approved B2B Resellers will automatically see your wholesale rates when they log in.</p>
+        <div className="bg-white p-6 rounded-2xl border-l-4 border-l-[#0074E4] border border-y-gray-200 border-r-gray-200 shadow-sm hover:shadow-md transition-shadow">
+          <h4 className="font-bold text-[#0074E4] text-lg mb-2">Can I sell wholesale (B2B) and retail at the same time?</h4>
+          <p className="text-sm text-gray-600 font-medium leading-relaxed">Yes! In <strong className="text-gray-900 bg-gray-100 px-1 rounded">Marketing & Growth &gt; B2B Setup</strong>, you can configure special wholesale pricing. Retail customers will see the standard MRP, while approved B2B Resellers will automatically see your wholesale rates when they log in.</p>
         </div>
       </div>
     </div>
