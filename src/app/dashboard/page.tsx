@@ -180,6 +180,7 @@ export default function DashboardPage() {
         { id: "personal", label: "Personal Profile", icon: "👤", category: "Store & Trust" },
         { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Store & Trust" },
         { id: "security", label: "Security & Login", icon: "🔐", category: "Store & Trust" },
+        { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Growth" },
         { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Growth" },
         { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Growth" },
         { id: "staff", label: "Staff Accounts", icon: "👥", category: "Store & Trust" },
@@ -189,7 +190,7 @@ export default function DashboardPage() {
         { id: "home", label: "Overview", icon: "🏠", category: "Overview" },
         { id: "products", label: "Products Catalog", icon: "📦", category: "Commerce" },
         { id: "orders", label: "Order Management", icon: "🚚", category: "Commerce" },
-        { id: "marketing", label: "Marketing", icon: "📈", category: "Growth" },
+        { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Growth" },
         { id: "finance", label: "Finance & Payouts", icon: "💰", category: "Finance" },
         { id: "messages", label: "Buyer Messages", icon: "💬", category: "Communication" },
         { id: "support", label: "Admin Support", icon: "🎧", category: "Communication" },
@@ -292,6 +293,7 @@ export default function DashboardPage() {
       {actualRole === "raw_material" && <SupplierDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       
       {activeTab === "security" && <SecurityTab />}
+      {activeTab === "marketing" && <MarketingTab />}
     </DashboardLayout>
   );
 }
@@ -1246,6 +1248,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                           <span className="text-xs font-mono text-gray-900 font-bold">{order.trackingNumber || 'AWB-PENDING'}</span>
                         </div>
                       )}
+                      <button onClick={() => window.open(`/dashboard/print-slip?orderId=${order.id}`, '_blank')} className="mt-2 w-full px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 transition-colors rounded-lg text-[10px] font-bold uppercase tracking-widest border border-gray-300 shadow-sm flex items-center justify-center gap-1">🖨️ Print Slip</button>
                     </td>
                   </tr>
                 )) : (
@@ -3000,6 +3003,32 @@ function SupplierDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
       )}
       
       {activeTab === "security" && <SecurityTab />}
+    </div>
+  );
+}
+/* ==========================================
+   MARKETING & PROMOTIONS TAB
+   ========================================== */
+function MarketingTab() {
+  return (
+    <div className="space-y-6 animate-in fade-in max-w-4xl">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">Marketing & Promos</h2>
+          <p className="text-sm text-gray-500 font-medium">Create discount codes and run flash sales.</p>
+        </div>
+        <button className="px-6 py-2.5 bg-[#0A1021] text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-[#C5A059] hover:text-[#0A1021] transition-all shadow-md">
+          + Create Coupon
+        </button>
+      </header>
+
+      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+        <div className="text-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-200 text-gray-500 font-medium">
+          <div className="text-4xl mb-4">🏷️</div>
+          <p className="text-gray-900 font-bold text-lg mb-2">No Active Promotions</p>
+          <p className="text-sm">Create a coupon code (e.g. DIWALI20) to share with your customers.</p>
+        </div>
+      </div>
     </div>
   );
 }
