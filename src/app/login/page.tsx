@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState, Suspense } from "react";
 import { auth, googleProvider } from "@/lib/firebase";
-import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function LoginForm() {
@@ -11,6 +11,7 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect") || "/dashboard";
@@ -18,9 +19,13 @@ function LoginForm() {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setMessage("");
     try {
       if (isRegistering) {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await sendEmailVerification(userCredential.user);
+        setMessage("Account created! Please check your email to verify your address.");
+        // We will still redirect them, but they'll see the banner in the dashboard.
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
@@ -47,6 +52,7 @@ function LoginForm() {
       </div>
       
       {error && <div className="bg-red-900/50 border border-red-500 text-red-200 p-3 rounded mb-4 text-sm">{error}</div>}
+      {message && <div className="bg-green-900/50 border border-green-500 text-green-200 p-3 rounded mb-4 text-sm">{message}</div>}
       
       <form onSubmit={handleAuth} className="space-y-4">
         <div>

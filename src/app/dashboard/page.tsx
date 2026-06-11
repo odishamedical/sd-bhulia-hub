@@ -24,21 +24,7 @@ import DashboardLayout, { NavItem } from "@/components/DashboardLayout";
 import ImageUploader from "@/components/ImageUploader";
 import SellerSetupHub from "@/components/SellerSetupHub";
 
-export const uploadBase64ToStorage = async (base64Str: string | null, folder: string) => {
-  if (!base64Str) return "";
-  if (base64Str.startsWith("http")) return base64Str; // Already uploaded
-  if (!base64Str.startsWith("data:image")) return base64Str;
-
-  try {
-    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.jpg`;
-    const storageRef = ref(storage, `${folder}/${fileName}`);
-    await uploadString(storageRef, base64Str, 'data_url');
-    return await getDownloadURL(storageRef);
-  } catch (e) {
-    console.error("Storage upload failed", e);
-    return "";
-  }
-};
+import { uploadBase64ToStorage } from "@/lib/storageUtils";
 
 export default function DashboardPage() {
   const [role, setRole] = useState<string | null>(null);
@@ -291,12 +277,44 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {auth.currentUser && !auth.currentUser.emailVerified && !isViewAsMode && (
+        <div className="bg-yellow-50 text-yellow-800 p-4 rounded-xl mb-6 flex justify-between items-center shadow-sm border border-yellow-200">
+          <div className="flex items-center gap-3">
+            <span className="text-xl">⚠️</span>
+            <div>
+              <span className="font-bold text-sm block">Unverified Email Address</span>
+              <span className="text-xs font-medium">Please check your inbox to verify your email. Some features may be restricted until verified.</span>
+            </div>
+          </div>
+          <button 
+            onClick={async () => {
+              const { sendEmailVerification } = await import("firebase/auth");
+              if (auth.currentUser) {
+                try {
+                  await sendEmailVerification(auth.currentUser);
+                  alert("Verification email sent! Check your inbox.");
+                } catch (err: any) {
+                  alert(err.message);
+                }
+              }
+            }}
+            className="px-4 py-2 bg-yellow-100 text-yellow-900 text-xs font-bold rounded-lg hover:bg-yellow-200 transition-colors"
+          >
+            Resend Link
+          </button>
+        </div>
+      )}
 
-
-      {actualRole === "customer" && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
-      {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
-      {actualRole === "vendor" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
-      {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" />}
+      {activeTab === "seller_hub" ? (
+        <SellerSetupHub userRole={actualRole} />
+      ) : (
+        <>
+          {actualRole === "customer" && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+          {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+          {actualRole === "vendor" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+          {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" />}
+        </>
+      )}
       {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Vendor Hub (Staff)" />}
       {actualRole === "wholesaler" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="B2B Wholesaler Hub" />}
       {actualRole === "reseller" && <ResellerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
@@ -2850,6 +2868,70 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
               </div>
             )}
 
+            {selectedItem.type === "weavers" && !personalDataCache[selectedItem.id] && (
+              <div className="grid grid-cols-1 gap-4 bg-purple-50 p-6 rounded-2xl border border-purple-100 mb-8">
+                <div className="col-span-full mb-2 border-b border-purple-200 pb-2">
+                  <h4 className="text-sm font-bold text-purple-900 uppercase">Orphan Profile / Dummy Account</h4>
+                </div>
+                <p className="text-sm text-purple-800 font-medium">This Weaver profile does not have an active login account. Create credentials for them below.</p>
+                <div className="flex flex-col gap-3">
+                  <input id="dummyEmail" type="email" placeholder="Weaver's Email (e.g. gmail.com)" className="bg-white border border-purple-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" />
+                  <input id="dummyPassword" type="text" placeholder="Temporary Password" defaultValue="bhulia123" className="bg-white border border-purple-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" />
+                  <button 
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      const emailInput = document.getElementById('dummyEmail') as HTMLInputElement;
+                      const pwdInput = document.getElementById('dummyPassword') as HTMLInputElement;
+                      if (!emailInput.value || !pwdInput.value) { alert('Enter email and password'); return; }
+                      
+                      const btn = e.currentTarget;
+                      btn.textContent = "Creating...";
+                      btn.disabled = true;
+                      try {
+                        const { initializeApp } = await import('firebase/app');
+                        const { getAuth, createUserWithEmailAndPassword } = await import('firebase/auth');
+                        const { setDoc } = await import('firebase/firestore');
+                        
+                        const secondaryApp = initializeApp(auth.app.options, "Secondary" + Date.now());
+                        const secondaryAuth = getAuth(secondaryApp);
+                        
+                        const cred = await createUserWithEmailAndPassword(secondaryAuth, emailInput.value, pwdInput.value);
+                        const newUid = cred.user.uid;
+                        
+                        // 1. Copy weaver data to new ID
+                        const oldDocRef = doc(db, 'weavers', selectedItem.id);
+                        const newDocRef = doc(db, 'weavers', newUid);
+                        const oldSnap = await getDoc(oldDocRef);
+                        if (oldSnap.exists()) {
+                          await setDoc(newDocRef, { ...oldSnap.data(), uid: newUid, updatedAt: serverTimestamp() });
+                          await setDoc(doc(db, 'users', newUid), {
+                            uid: newUid,
+                            email: emailInput.value,
+                            role: 'weaver',
+                            weaverDocId: newUid,
+                            createdAt: serverTimestamp()
+                          });
+                          await updateDoc(oldDocRef, { status: "migrated", migratedTo: newUid, title: oldSnap.data().title + " (MIGRATED)" });
+                          alert('Credentials created successfully! They can now log in.');
+                          setSelectedItem(null);
+                        }
+                        
+                        await secondaryAuth.signOut();
+                      } catch (err: any) {
+                        alert(err.message);
+                      } finally {
+                        btn.textContent = "Create Login & Claim Profile";
+                        btn.disabled = false;
+                      }
+                    }}
+                    className="w-full bg-purple-600 text-white font-bold py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+                  >
+                    Create Login & Claim Profile
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="flex justify-between gap-4">
               <button onClick={handleReject} disabled={isSubmitting} className="px-6 py-3 border border-red-200 text-red-600 font-bold rounded-xl hover:bg-red-50 transition-colors disabled:opacity-50">Reject</button>
               <button onClick={handleApprove} disabled={isSubmitting} className="px-8 py-3 bg-[#0070F3] text-white font-bold rounded-xl hover:bg-[#005BB5] transition-colors shadow-sm disabled:opacity-50">Approve & Publish</button>
@@ -2873,12 +2955,15 @@ function SecurityTab() {
   const [isGoogleUser, setIsGoogleUser] = useState(false);
 
   useEffect(() => {
-    if (auth.currentUser) {
-      const providers = auth.currentUser.providerData.map(p => p.providerId);
-      if (providers.includes("google.com") && !providers.includes("password")) {
-        setIsGoogleUser(true);
+    const checkProvider = (user: any) => {
+      if (user) {
+        const providers = user.providerData.map((p: any) => p.providerId);
+        setIsGoogleUser(providers.includes("google.com") && !providers.includes("password"));
       }
-    }
+    };
+    checkProvider(auth.currentUser);
+    const unsubscribe = onAuthStateChanged(auth, checkProvider);
+    return () => unsubscribe();
   }, []);
 
   const handleUpdateSecurity = async (e: React.FormEvent) => {

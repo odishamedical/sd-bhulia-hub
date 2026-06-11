@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, setDoc, runTransaction } from "firebase/firestore";
 import ImageUploader from "@/components/ImageUploader";
-import { uploadBase64ToStorage } from "@/app/dashboard/page";
+import { uploadBase64ToStorage } from "@/lib/storageUtils";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS, WEAVER_DISTRICTS } from "@/lib/locations";
 
 interface SellerSetupHubProps {
