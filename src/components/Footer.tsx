@@ -112,12 +112,12 @@ export default function Footer() {
                 <Image src="/logo.png" alt="Bhulia Logo" fill className="object-cover scale-[1.15]" />
               </div>
               <div>
-                <h4 className="text-lg font-serif font-bold text-[#C5A059] leading-none">Shyam Dash</h4>
-                <p className="text-[9px] text-gray-400 uppercase tracking-widest mt-1">India's Verified Handloom Marketplace.</p>
+                <h4 className="text-lg font-serif font-bold text-[#C5A059] leading-none">Bhulia.com</h4>
+                <p className="text-[9px] text-gray-400 uppercase tracking-widest mt-1">Only original Sambalpuri</p>
               </div>
             </Link>
             <p className="text-xs text-gray-300 leading-relaxed font-sans">
-              The premier luxury marketplace for authenticated, Bhulia.com Verified Sambalpuri handlooms. Partnering exclusively with master weavers and primary cooperative societies across India.
+              Discover 100% Authentic Sambalpuri Handloom Sarees at Bhulia.com — each piece carries the Bhulia Verified Seal, connecting you directly to real weavers. By choosing us, you help preserve Odisha’s 800‑year heritage while supporting artisans at fair prices.
             </p>
           </div>
 
