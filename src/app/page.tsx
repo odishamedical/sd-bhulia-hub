@@ -243,8 +243,8 @@ export default function HomeDraftV2() {
                 const roleLink = dirTab === "stores" ? `/Sambalpuri-store/${item.slug}` : (dirTab === "weavers" ? `/Sambalpuri-weaver/${item.slug}` : `/directory`);
 
                 return (
-                  <Link key={idx} href={roleLink} className="group block relative rounded-2xl overflow-hidden h-[380px] border border-[#C5A059]/20 hover:border-[#C5A059] transition-all bg-[#0A2520]">
-                    <div className="relative w-full h-48 overflow-hidden">
+                  <Link key={idx} href={roleLink} className="group flex flex-col relative rounded-2xl overflow-hidden h-[380px] border border-[#C5A059]/20 hover:border-[#C5A059] transition-all bg-[#0A2520]">
+                    <div className="relative w-full h-48 shrink-0 overflow-hidden">
                       <Image src={img} alt={title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0A2520] to-transparent"></div>
                     </div>
@@ -262,9 +262,12 @@ export default function HomeDraftV2() {
                       )}
                     </div>
 
-                    <div className="p-6 pt-0 flex flex-col justify-end text-center h-full pb-8">
-                      <h4 className="text-xl font-serif font-bold text-white mb-2">{title}</h4>
-                      <p className="text-xs text-gray-400 line-clamp-2">{desc}</p>
+                    <div className="p-6 flex flex-col flex-1 justify-center items-center text-center">
+                      <h4 className="text-xl font-serif font-bold text-white mb-2 line-clamp-1">{title}</h4>
+                      <p className="text-xs text-gray-400 line-clamp-2 mb-4">{desc}</p>
+                      <span className="mt-auto text-[#C5A059] text-[10px] font-bold uppercase tracking-widest border border-[#C5A059]/30 px-4 py-1.5 rounded-full group-hover:bg-[#C5A059] group-hover:text-[#051815] transition-all">
+                        View Profile →
+                      </span>
                     </div>
                   </Link>
                 );
