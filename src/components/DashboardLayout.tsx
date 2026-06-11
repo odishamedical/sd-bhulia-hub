@@ -38,6 +38,17 @@ export default function DashboardLayout({
     setCollapsedCategories(prev => ({ ...prev, [category]: !prev[category] }));
   };
 
+  const CATEGORY_ICONS: Record<string, string> = {
+    "Dashboard & Reports": "📊",
+    "Catalog & Inventory": "🛍️",
+    "Orders & Logistics": "📦",
+    "User Management": "👥",
+    "Support & Verification": "🛡️",
+    "Marketing & Growth": "📢",
+    "Finance & Accounting": "💰",
+    "Platform & System": "⚙️",
+  };
+
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-gray-900 font-sans flex flex-col items-center">
       {/* STICKY TOP BRANDING HEADER */}
@@ -127,19 +138,24 @@ export default function DashboardLayout({
                   return acc;
                 }, {} as Record<string, NavItem[]>)
               ).map(([category, items]) => (
-                <div key={category} className="mb-4">
+                <div key={category} className="mb-2">
                   <button 
                     onClick={() => toggleCategory(category)}
-                    className="w-full text-left px-4 flex justify-between items-center group mb-2"
+                    className={`w-full text-left px-4 py-3 rounded-full flex justify-between items-center group transition-all ${
+                      !collapsedCategories[category] ? "bg-white/10 shadow-inner" : "hover:bg-white/5"
+                    }`}
                   >
-                    <h4 className="text-[10px] font-black text-blue-200 uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">{category}</h4>
-                    <span className="text-blue-200 opacity-60 text-xs">
-                      {collapsedCategories[category] ? "▼" : "▲"}
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg opacity-90">{CATEGORY_ICONS[category] || "▪"}</span>
+                      <h4 className="text-[14px] font-bold text-white tracking-wide">{category}</h4>
+                    </div>
+                    <span className={`text-blue-200 opacity-60 text-lg transition-transform duration-200 ${!collapsedCategories[category] ? "rotate-180" : ""}`}>
+                      ⌄
                     </span>
                   </button>
                   
                   {!collapsedCategories[category] && (
-                    <div className="space-y-1 animate-in slide-in-from-top-1 fade-in duration-200">
+                    <div className="space-y-1 mt-1 mb-3 animate-in slide-in-from-top-1 fade-in duration-200">
                       {items.map((item) => (
                         <button 
                           key={item.id}
@@ -147,9 +163,8 @@ export default function DashboardLayout({
                             onTabChange(item.id);
                             setMobileMenuOpen(false);
                           }} 
-                          className={`w-full text-left px-4 py-2.5 rounded-full text-sm font-semibold flex items-center gap-3 transition-all border border-transparent ${activeTab === item.id ? "bg-white/20 text-white border-white/20 shadow-md font-bold" : "text-white/90 hover:text-white hover:bg-white/20"}`}
+                          className={`w-full text-left pl-14 pr-4 py-2.5 rounded-full text-sm font-medium transition-all ${activeTab === item.id ? "bg-white/20 text-white font-bold" : "text-blue-100 hover:text-white hover:bg-white/10"}`}
                         >
-                          <span className={`text-lg transition-transform ${activeTab === item.id ? 'scale-110' : ''}`}>{item.icon || "▪"}</span> 
                           {item.label}
                         </button>
                       ))}
