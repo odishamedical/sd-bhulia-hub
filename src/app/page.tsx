@@ -154,9 +154,9 @@ export default function HomeDraftV2() {
           </div>
           <div className="w-full md:w-1/2 p-8 sm:p-16 flex flex-col justify-center text-center md:text-left">
             <span className="text-[#C5A059] text-xs font-bold uppercase tracking-[0.2em] mb-4">Our Promise</span>
-            <h3 className="text-3xl md:text-5xl font-serif font-bold text-white mb-6 leading-tight">100% Authentic.<br/>0% Middlemen.</h3>
+            <h3 className="text-3xl md:text-5xl font-serif font-bold text-white mb-6 leading-tight">Discover 100% Authentic Sambalpuri Handloom Sarees at Bhulia.com</h3>
             <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-8">
-              Discover 100% Authentic Sambalpuri Handloom Sarees at Bhulia.com - each piece carries the Bhulia Verified Seal, connecting you directly to real weavers. By choosing us, you help preserve Odisha's 800-year heritage while supporting artisans at fair prices.
+              Each piece carries the Bhulia Verified Seal, connecting you directly to real weavers. By choosing us, you help preserve Odisha's 800-year heritage while supporting artisans at fair prices.
             </p>
             <div>
               <Link href="/directory" className="inline-block px-8 py-3 bg-[#051815] border border-[#C5A059] text-[#C5A059] font-bold text-xs uppercase tracking-widest hover:bg-[#C5A059] hover:text-[#0A1021] transition-all">
