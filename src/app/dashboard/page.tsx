@@ -55,6 +55,14 @@ export default function DashboardPage() {
     // Load saved seller mode preference
     const savedMode = localStorage.getItem("sd_seller_mode");
     if (savedMode === "true") setIsSellerMode(true);
+
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const applyParam = params.get("apply");
+      if (applyParam) {
+        setActiveTab("seller_hub");
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -153,11 +161,13 @@ export default function DashboardPage() {
       { id: "profile", label: "Profile Settings", icon: "👤", category: "User Management" },
       { id: "address", label: "Address Book", icon: "📍", category: "User Management" },
       { id: "wallet", label: "Wallet & Rewards", icon: "💎", category: "Finance & Accounting" },
-      { id: "seller_hub", label: "Become a Seller", icon: "🚀", category: "Marketing & Growth" },
       { id: "messages", label: "Messages", icon: "💬", category: "Support & Verification" },
       { id: "support", label: "Support Tickets", icon: "📞", category: "Support & Verification" },
       { id: "security", label: "Security & Login", icon: "🔐", category: "Platform & System" },
     ];
+    if (activeTab === "seller_hub") {
+      navItems.push({ id: "seller_hub", label: "Partner Application", icon: "🚀", category: "Marketing & Growth" });
+    }
   } else if (actualRole === "super_admin") {
     navItems = [
       { id: "overview", label: "Overview", icon: "📊", category: "Dashboard & Reports" },
@@ -251,6 +261,14 @@ export default function DashboardPage() {
       activeTab={activeTab}
       onTabChange={setActiveTab}
       storeSlug={storeSlug}
+      isSellerMode={isSellerMode}
+      onSellerModeToggle={() => {
+        const newMode = !isSellerMode;
+        setIsSellerMode(newMode);
+        localStorage.setItem("sd_seller_mode", String(newMode));
+        setActiveTab("home");
+      }}
+      showDualRoleToggle={!isCustomer && !isSuperAdmin && !!displayRole}
     >
       {isViewAsMode && (
         <div className="bg-blue-600 text-white p-3 rounded-xl mb-6 flex justify-between items-center shadow-lg animate-in fade-in slide-in-from-top-4">
@@ -273,26 +291,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Dual-Role Switcher (Visible only to approved sellers/vendors) */}
-      {!isCustomer && !isSuperAdmin && displayRole && (
-        <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white p-4 rounded-xl mb-6 flex justify-between items-center shadow-lg">
-          <div>
-            <h3 className="font-bold text-sm">Dual-Role Ecosystem</h3>
-            <p className="text-xs text-gray-300 mt-0.5">You are currently operating in <span className="font-bold text-[#C5A059]">{isSellerMode ? "Seller Mode" : "Buyer Mode"}</span>.</p>
-          </div>
-          <button 
-            onClick={() => {
-              const newMode = !isSellerMode;
-              setIsSellerMode(newMode);
-              localStorage.setItem("sd_seller_mode", String(newMode));
-              setActiveTab("home"); // Reset tab on switch
-            }}
-            className="px-5 py-2 bg-white text-gray-900 text-xs font-bold rounded-lg shadow-sm hover:bg-gray-100 transition-colors flex items-center gap-2"
-          >
-            <span>🔄</span> Switch to {isSellerMode ? "Buyer Mode" : "Seller Mode"}
-          </button>
-        </div>
-      )}
+
 
       {actualRole === "customer" && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}

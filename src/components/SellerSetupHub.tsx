@@ -4,21 +4,19 @@ import React, { useState, useEffect } from "react";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, setDoc, runTransaction } from "firebase/firestore";
 import ImageUploader from "@/components/ImageUploader";
-import { uploadBase64ToStorage } from "@/app/dashboard/page"; // Reuse the upload utility
+import { uploadBase64ToStorage } from "@/app/dashboard/page";
+import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS, WEAVER_DISTRICTS } from "@/lib/locations";
 
 interface SellerSetupHubProps {
   userRole: string;
 }
 
-type TicketStatus = "todo" | "in_progress" | "completed";
-
 export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
-  const [activeTicket, setActiveTicket] = useState<string | null>(null);
+  const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [userData, setUserData] = useState<any>({});
 
-  // Form States
   // Profile
   const [desiredRole, setDesiredRole] = useState("weaver");
   const [personalName, setPersonalName] = useState("");
@@ -46,7 +44,21 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
   const [bankIfsc, setBankIfsc] = useState("");
   const [bankUpi, setBankUpi] = useState("");
 
+  // Marketing (Reseller Only)
+  const [socialLinks, setSocialLinks] = useState("");
+  const [followerCount, setFollowerCount] = useState("");
+  const [whatsappGroupSize, setWhatsappGroupSize] = useState("");
+  const [handloomExperience, setHandloomExperience] = useState("");
+
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const applyParam = params.get("apply");
+      if (applyParam) {
+        setDesiredRole(applyParam);
+      }
+    }
+
     const fetchUserData = async () => {
       if (!auth.currentUser) return;
       try {
@@ -55,7 +67,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           const data = snap.data();
           setUserData(data);
           
-          setDesiredRole(data.desiredRole || "weaver");
+          if (data.desiredRole) setDesiredRole(data.desiredRole);
           setPersonalName(data.personalName || data.name || "");
           setPhone(data.phone || "");
           setWhatsapp(data.whatsapp || "");
@@ -77,6 +89,11 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           setBankAccount(data.bankAccount || "");
           setBankIfsc(data.bankIfsc || "");
           setBankUpi(data.bankUpi || "");
+
+          setSocialLinks(data.socialLinks || "");
+          setFollowerCount(data.followerCount || "");
+          setWhatsappGroupSize(data.whatsappGroupSize || "");
+          setHandloomExperience(data.handloomExperience || "");
         }
       } catch (err) {
         console.error("Error fetching setup data:", err);
@@ -84,68 +101,63 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
       setIsLoading(false);
     };
     
-    // Slight delay to ensure auth is loaded if coming directly
     setTimeout(fetchUserData, 500);
   }, []);
 
-  // Compute status for each ticket
-  const getProfileStatus = (): TicketStatus => {
-    if (personalName && phone && whatsapp && desiredRole) return "completed";
-    if (personalName || phone) return "in_progress";
-    return "todo";
+  // Enforce Weaver Location Rule
+  useEffect(() => {
+    if (desiredRole === "weaver") {
+      setState("Odisha");
+      if (district && !WEAVER_DISTRICTS.includes(district)) {
+        setDistrict("");
+        setBlock("");
+      }
+    }
+  }, [desiredRole, district]);
+
+  // Handle District Change to reset Block
+  const handleDistrictChange = (newDistrict: string) => {
+    setDistrict(newDistrict);
+    setBlock("");
   };
 
-  const getAddressStatus = (): TicketStatus => {
-    if (address && townVillage && district && pin) return "completed";
-    if (address || district) return "in_progress";
-    return "todo";
-  };
-
-  const getKycStatus = (): TicketStatus => {
-    if (kycType && kycId && kycDocumentUrl) return "completed";
-    if (kycType || kycId) return "in_progress";
-    return "todo";
-  };
-
-  const getBankStatus = (): TicketStatus => {
-    if (bankHolder && bankName && bankAccount && bankIfsc) return "completed";
-    if (bankHolder || bankAccount) return "in_progress";
-    return "todo";
-  };
-
-  const tickets = [
-    { id: "profile", title: "Profile & Role", icon: "👤", status: getProfileStatus(), desc: "Your name, role, and contact info." },
-    { id: "address", title: "Business Address", icon: "📍", status: getAddressStatus(), desc: "Where you operate from." },
-    { id: "kyc", title: "KYC Documents", icon: "🛡️", status: getKycStatus(), desc: "Identity verification for payouts." },
-    { id: "bank", title: "Bank Details", icon: "🏦", status: getBankStatus(), desc: "Where we send your earnings." }
+  const steps = [
+    { id: 1, title: "Profile", icon: "👤", isReady: !!(personalName && phone && whatsapp) },
+    { id: 2, title: "Address", icon: "📍", isReady: !!(address && district && state && pin) },
+    { id: 3, title: "KYC", icon: "🛡️", isReady: !!(kycType && kycId && kycDocumentUrl) },
+    { id: 4, title: "Bank", icon: "🏦", isReady: !!(bankHolder && bankName && bankAccount && bankIfsc) },
   ];
 
-  const completedCount = tickets.filter(t => t.status === "completed").length;
-  const totalCount = tickets.length;
-  const progressPercent = (completedCount / totalCount) * 100;
-  const canSubmitApplication = completedCount === totalCount;
+  if (desiredRole === "reseller") {
+    steps.push({ id: 5, title: "Marketing", icon: "📈", isReady: !!(followerCount && socialLinks && handloomExperience) });
+  }
 
-  const handleSaveTicket = async () => {
+  const totalSteps = steps.length;
+  const isFinalStep = currentStep === totalSteps;
+  const progressPercent = Math.round(((currentStep - 1) / totalSteps) * 100) + (isFinalStep ? (steps[totalSteps-1].isReady ? 100/totalSteps : 0) : 0);
+  const canSubmitApplication = steps.every(s => s.isReady);
+
+  const handleNextStep = async () => {
     if (!auth.currentUser) return;
     setIsSaving(true);
     
     try {
       const updates: any = {};
       
-      if (activeTicket === "profile") {
+      if (currentStep === 1) {
         updates.desiredRole = desiredRole;
         updates.personalName = personalName;
         updates.phone = phone;
         updates.whatsapp = whatsapp;
         updates.storeName = storeName;
-      } else if (activeTicket === "address") {
+      } else if (currentStep === 2) {
         updates.address = address;
         updates.townVillage = townVillage;
         updates.block = block;
         updates.district = district;
         updates.state = state;
         updates.pin = pin;
-      } else if (activeTicket === "kyc") {
+      } else if (currentStep === 3) {
         let finalKycUrl = kycDocumentUrl;
         if (kycDocumentUrl && kycDocumentUrl.startsWith("data:image")) {
           finalKycUrl = await uploadBase64ToStorage(kycDocumentUrl, `kyc/${auth.currentUser.uid}`);
@@ -154,24 +166,34 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         updates.kycType = kycType;
         updates.kycId = kycId;
         updates.kycDocumentUrl = finalKycUrl;
-      } else if (activeTicket === "bank") {
+      } else if (currentStep === 4) {
         updates.bankHolder = bankHolder;
         updates.bankName = bankName;
         updates.bankAccount = bankAccount;
         updates.bankIfsc = bankIfsc;
         updates.bankUpi = bankUpi;
+      } else if (currentStep === 5) {
+        updates.socialLinks = socialLinks;
+        updates.followerCount = followerCount;
+        updates.whatsappGroupSize = whatsappGroupSize;
+        updates.handloomExperience = handloomExperience;
       }
 
       await updateDoc(doc(db, "users", auth.currentUser.uid), updates);
       
-      // Close modal and trick re-render to update progress
-      setActiveTicket(null);
+      if (!isFinalStep) {
+        setCurrentStep(prev => prev + 1);
+      }
     } catch (err) {
       console.error("Save error:", err);
-      alert("Failed to save. Please try again.");
+      alert("Failed to auto-save. Please try again.");
     }
     
     setIsSaving(false);
+  };
+
+  const handlePrevStep = () => {
+    if (currentStep > 1) setCurrentStep(prev => prev - 1);
   };
 
   const handleSubmitApplication = async () => {
@@ -180,12 +202,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
     
     setIsSaving(true);
     try {
+      await handleNextStep(); // Save final step data
+
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         applicationStatus: "pending_approval",
         role: desiredRole
       });
 
-      // Generate Serial Slug starting from 303
       let generatedSlug = "303";
       try {
         const counterRef = doc(db, "system", "slug_counters");
@@ -197,13 +220,10 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           return currentCount.toString();
         });
       } catch (e) {
-        // Fallback to random number if transaction fails
         generatedSlug = (303 + Math.floor(Math.random() * 9000)).toString();
       }
       
-      // Create a pending profile in the respective collection so the dashboard works
       const collectionName = desiredRole === "weaver" ? "weavers" : desiredRole === "vendor" ? "vendors" : "resellers";
-      
       const docRef = doc(db, collectionName, auth.currentUser.uid);
       const snap = await getDoc(docRef);
       if (!snap.exists()) {
@@ -226,252 +246,357 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
   if (isLoading) {
     return (
       <div className="p-8 border-2 border-dashed border-blue-200 bg-blue-50/50 rounded-2xl text-center">
-        <h3 className="text-lg font-bold text-blue-900 mb-2">Loading your setup tickets...</h3>
+        <h3 className="text-lg font-bold text-blue-900 mb-2">Loading your application...</h3>
       </div>
     );
   }
 
-  // If already applied
   if (userData?.applicationStatus === "pending_approval") {
     return (
       <div className="bg-yellow-50 p-8 rounded-3xl border border-yellow-200 text-center animate-in fade-in">
         <div className="text-5xl mb-4">⏳</div>
         <h2 className="text-2xl font-bold text-yellow-900 mb-2">Application Under Review</h2>
         <p className="text-yellow-700 font-medium">
-          You have successfully submitted all required documents. An Admin is currently reviewing your application. You will be notified once approved.
+          You have successfully submitted all required documents. An Admin is currently reviewing your application. You will be notified via WhatsApp and Email once approved.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in">
-      {/* Progress Section */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-[#0070F3]"></div>
-        <h3 className="text-sm font-bold text-gray-900 mb-2">Setup Progress</h3>
-        <p className="text-xs text-gray-500 mb-4 font-medium text-center">
-          Complete all 4 tickets to submit your application.
-        </p>
-        <div className="w-full max-w-lg bg-gray-100 rounded-full h-3 mb-2 overflow-hidden shadow-inner">
+    <div className="space-y-6 animate-in fade-in bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
+      
+      {/* Progress Bar Header */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-xl font-black text-gray-900 tracking-tight">Setup Application</h2>
+          <span className="text-xs font-bold text-[#0070F3] bg-blue-50 px-3 py-1 rounded-full">Step {currentStep} of {totalSteps}</span>
+        </div>
+        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden shadow-inner flex">
           <div 
-            className="bg-[#0070F3] h-3 rounded-full transition-all duration-700 ease-in-out shadow-[0_0_10px_rgba(0,112,243,0.5)]" 
-            style={{ width: `${progressPercent}%` }}
+            className="bg-[#0070F3] h-2 rounded-full transition-all duration-500 ease-in-out shadow-[0_0_10px_rgba(0,112,243,0.5)]" 
+            style={{ width: `${Math.min(100, Math.max(0, progressPercent))}%` }}
           ></div>
         </div>
-        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-full">{progressPercent}% Complete</span>
-      </div>
-
-      {/* Ticket Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {tickets.map(ticket => (
-          <button
-            key={ticket.id}
-            onClick={() => setActiveTicket(ticket.id)}
-            className={`flex items-center p-5 rounded-2xl border text-left transition-all group ${
-              ticket.status === "completed" 
-                ? "bg-gray-50 border-gray-200 hover:border-gray-300" 
-                : ticket.status === "in_progress"
-                ? "bg-blue-50 border-[#0070F3] shadow-[0_4px_14px_0_rgba(0,112,243,0.1)]"
-                : "bg-white border-gray-200 hover:border-[#0070F3] hover:shadow-md"
-            }`}
-          >
-            <div className="text-3xl mr-4 group-hover:scale-110 transition-transform">{ticket.icon}</div>
-            <div className="flex-1">
-              <h4 className={`font-bold ${ticket.status === "in_progress" ? "text-[#0070F3]" : "text-gray-900"}`}>{ticket.title}</h4>
-              <p className="text-[11px] text-gray-500 mt-0.5 leading-tight">{ticket.desc}</p>
+        <div className="flex justify-between mt-3">
+          {steps.map(step => (
+            <div 
+              key={step.id} 
+              className={`flex flex-col items-center flex-1 cursor-pointer transition-colors ${currentStep === step.id ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
+              onClick={() => setCurrentStep(step.id)}
+            >
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 mb-1 ${
+                step.isReady ? 'bg-green-500 border-green-500 text-white' : 
+                currentStep === step.id ? 'border-[#0070F3] text-[#0070F3]' : 'border-gray-300 text-gray-400'
+              }`}>
+                {step.isReady ? "✓" : step.id}
+              </div>
+              <span className={`text-[10px] font-bold uppercase tracking-wider hidden sm:block ${currentStep === step.id ? 'text-[#0070F3]' : 'text-gray-500'}`}>
+                {step.title}
+              </span>
             </div>
-            <div className="ml-2">
-              {ticket.status === "completed" && <span className="text-green-500 text-xl drop-shadow-sm">✅</span>}
-              {ticket.status === "in_progress" && <span className="text-[#0070F3] text-xl font-bold">→</span>}
-              {ticket.status === "todo" && <span className="text-gray-300 group-hover:text-[#0070F3] transition-colors text-xl font-bold">→</span>}
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Submit Application Button */}
-      {canSubmitApplication && (
-        <div className="flex justify-center pt-4">
-          <button 
-            onClick={handleSubmitApplication}
-            disabled={isSaving}
-            className="px-8 py-4 bg-[#0070F3] text-white font-bold rounded-full shadow-lg shadow-blue-500/30 hover:bg-[#005BB5] hover:-translate-y-1 transition-all text-sm uppercase tracking-wider disabled:opacity-50"
-          >
-            {isSaving ? "Submitting..." : "Submit Application for Review"}
-          </button>
+          ))}
         </div>
-      )}
+      </div>
 
-      {/* Slide-out Drawer Modal */}
-      {activeTicket && (
-        <div className="fixed inset-0 z-50 overflow-hidden">
-          <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity animate-in fade-in" onClick={() => setActiveTicket(null)}></div>
-          <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col transform transition-transform animate-in slide-in-from-right duration-300 border-l border-gray-100">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <span>{tickets.find(t => t.id === activeTicket)?.icon}</span>
-                {tickets.find(t => t.id === activeTicket)?.title}
-              </h2>
-              <button 
-                onClick={() => setActiveTicket(null)}
-                className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-200 transition-colors"
+      {/* Form Area */}
+      <div className="min-h-[350px]">
+        {/* === STEP 1: PROFILE === */}
+        {currentStep === 1 && (
+          <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Profile & Role</h3>
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">I want to apply as:</label>
+              <select 
+                value={desiredRole} 
+                onChange={(e) => setDesiredRole(e.target.value)}
+                className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none transition-all bg-white font-medium"
               >
-                ✕
-              </button>
+                <option value="weaver">Master Weaver (Produce & Sell)</option>
+                <option value="vendor">Vendor / Shop (Aggregator)</option>
+                <option value="reseller">Reseller (Dropship for Commission)</option>
+              </select>
             </div>
-            
-            <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
-              
-              {/* === PROFILE FORM === */}
-              {activeTicket === "profile" && (
-                <div className="space-y-5">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">I want to become a:</label>
-                    <select 
-                      value={desiredRole} 
-                      onChange={(e) => setDesiredRole(e.target.value)}
-                      className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none transition-all bg-white font-medium"
-                    >
-                      <option value="weaver">Master Weaver (Produce & Sell)</option>
-                      <option value="vendor">Vendor / Shop (Aggregator)</option>
-                      <option value="reseller">Reseller (Dropship for Commission)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Legal Name</label>
-                    <input type="text" value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="e.g. Ramesh Meher" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Brand / Store Name</label>
-                    <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="e.g. Meher Handlooms" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number</label>
-                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="+91" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Number</label>
-                    <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="+91" />
-                  </div>
-                </div>
-              )}
-
-              {/* === ADDRESS FORM === */}
-              {activeTicket === "address" && (
-                <div className="space-y-5">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street Address</label>
-                    <input type="text" value={address} onChange={e => setAddress(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="House/Shop no., Street" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Village / Town</label>
-                      <input type="text" value={townVillage} onChange={e => setTownVillage(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
-                      <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
-                      <input type="text" value={district} onChange={e => setDistrict(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
-                      <input type="text" value={pin} onChange={e => setPin(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* === KYC FORM === */}
-              {activeTicket === "kyc" && (
-                <div className="space-y-5">
-                  <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl text-xs text-yellow-800 font-medium mb-4">
-                    Your documents are stored securely and are only used to verify your identity for direct payouts.
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document Type</label>
-                    <select 
-                      value={kycType} 
-                      onChange={e => setKycType(e.target.value)}
-                      className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white"
-                    >
-                      <option value="">Select Document</option>
-                      <option value="Aadhar">Aadhar Card</option>
-                      <option value="PAN">PAN Card</option>
-                      <option value="GST">GST Certificate (Vendors)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document ID Number</label>
-                    <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none uppercase" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Clear Photo</label>
-                    <ImageUploader 
-                      value={kycDocumentUrl} 
-                      onChange={setKycDocumentUrl}
-                      label="KYC Document"
-                      aspectRatio="landscape"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* === BANK FORM === */}
-              {activeTicket === "bank" && (
-                <div className="space-y-5">
-                  <div className="bg-green-50 border border-green-200 p-4 rounded-xl text-xs text-green-800 font-medium mb-4">
-                    Profits from your sales will be auto-transferred to this account securely.
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Holder Name</label>
-                    <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Bank Name</label>
-                    <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Number</label>
-                    <input type="text" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">IFSC Code</label>
-                    <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none uppercase" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">UPI ID (Optional)</label>
-                    <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="phone@upi" />
-                  </div>
-                </div>
-              )}
-
-            </div>
-
-            <div className="px-6 py-4 border-t border-gray-100 bg-white flex gap-3 shadow-[0_-4px_10px_rgba(0,0,0,0.02)]">
-              <button 
-                onClick={() => setActiveTicket(null)} 
-                disabled={isSaving}
-                className="flex-1 py-3 border border-gray-200 text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-50 transition-colors disabled:opacity-50"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handleSaveTicket}
-                disabled={isSaving}
-                className="flex-1 py-3 bg-[#0070F3] text-white rounded-xl font-bold text-sm hover:bg-[#005BB5] shadow-sm shadow-[#0070F3]/30 transition-all disabled:opacity-50"
-              >
-                {isSaving ? "Saving..." : "Save Ticket"}
-              </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Legal Name</label>
+                <input type="text" value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="e.g. Ramesh Meher" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Brand / Store Name</label>
+                <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="e.g. Meher Handlooms" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number</label>
+                <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="+91" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Number</label>
+                <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="+91" />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* === STEP 2: ADDRESS === */}
+        {currentStep === 2 && (
+          <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Business Address</h3>
+            
+            {desiredRole === "weaver" && (
+              <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl text-xs text-yellow-800 font-medium mb-4 flex items-start gap-2">
+                <span className="text-lg">🎖️</span>
+                <span><strong>Global Rule Enforcement:</strong> As a Master Weaver, you must be from one of the authentic GI-Tag regions in Odisha.</span>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street / Local Address</label>
+              <input type="text" value={address} onChange={e => setAddress(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="House/Shop no., Street" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
+                <select 
+                  value={state} 
+                  onChange={e => setState(e.target.value)}
+                  disabled={desiredRole === "weaver"}
+                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white disabled:bg-gray-100"
+                >
+                  <option value="">Select State</option>
+                  {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
+                {state === "Odisha" ? (
+                  <select 
+                    value={district} 
+                    onChange={e => handleDistrictChange(e.target.value)}
+                    className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white"
+                  >
+                    <option value="">Select District</option>
+                    {(desiredRole === "weaver" ? WEAVER_DISTRICTS : ODISHA_DISTRICTS).map(d => (
+                      <option key={d} value={d}>{d}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input type="text" value={district} onChange={e => handleDistrictChange(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="Enter District" />
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="md:col-span-2">
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block / City</label>
+                {state === "Odisha" && district && ODISHA_DISTRICT_BLOCKS[district] ? (
+                  <select 
+                    value={block} 
+                    onChange={e => setBlock(e.target.value)}
+                    className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white"
+                  >
+                    <option value="">Select Block</option>
+                    {ODISHA_DISTRICT_BLOCKS[district].map(b => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="Enter Block/City" />
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
+                <input type="text" value={pin} onChange={e => setPin(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="XXXXXX" />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Village / Town (Local Name)</label>
+              <input type="text" value={townVillage} onChange={e => setTownVillage(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
+            </div>
+          </div>
+        )}
+
+        {/* === STEP 3: KYC === */}
+        {currentStep === 3 && (
+          <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Identity Verification</h3>
+            <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl text-xs text-blue-800 font-medium mb-4">
+              Your documents are stored securely and are only used to verify your identity for direct payouts and fraud prevention.
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document Type</label>
+                <select 
+                  value={kycType} 
+                  onChange={e => setKycType(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white"
+                >
+                  <option value="">Select Document</option>
+                  <option value="Aadhar">Aadhar Card</option>
+                  <option value="PAN">PAN Card</option>
+                  <option value="GST">GST Certificate</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document ID Number</label>
+                <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none uppercase" placeholder="e.g. 1234 5678 9012" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Clear Photo</label>
+              <ImageUploader 
+                value={kycDocumentUrl} 
+                onChange={setKycDocumentUrl}
+                label="KYC Document"
+                aspectRatio="landscape"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* === STEP 4: BANK === */}
+        {currentStep === 4 && (
+          <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Bank Details</h3>
+            <div className="bg-green-50 border border-green-200 p-4 rounded-xl text-xs text-green-800 font-medium mb-4">
+              Profits and commissions from your sales will be auto-transferred to this account securely.
+            </div>
+            
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Holder Name (must match KYC)</label>
+              <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Number</label>
+                <input type="password" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="XXXX XXXX XXXX" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Re-Enter Account Number</label>
+                <input type="text" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Bank Name</label>
+                <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="e.g. State Bank of India" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">IFSC Code</label>
+                <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none uppercase" placeholder="SBIN000XXXX" />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">UPI ID (Optional but recommended)</label>
+              <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="yourphone@ybl" />
+            </div>
+          </div>
+        )}
+
+        {/* === STEP 5: MARKETING (RESELLER ONLY) === */}
+        {currentStep === 5 && desiredRole === "reseller" && (
+          <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Marketing Network</h3>
+            <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 p-4 rounded-xl text-xs text-[#996515] font-medium mb-4">
+              To approve you as a Reseller, we need to understand your marketing strength and network.
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Social Media Followers</label>
+                <select 
+                  value={followerCount} 
+                  onChange={e => setFollowerCount(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white"
+                >
+                  <option value="">Select Range</option>
+                  <option value="under_1k">Under 1,000</option>
+                  <option value="1k_5k">1,000 - 5,000</option>
+                  <option value="5k_20k">5,000 - 20,000</option>
+                  <option value="over_20k">Over 20,000</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Group/Community Size</label>
+                <select 
+                  value={whatsappGroupSize} 
+                  onChange={e => setWhatsappGroupSize(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white"
+                >
+                  <option value="">Select Size</option>
+                  <option value="no_group">No Group Yet</option>
+                  <option value="under_100">Under 100 Members</option>
+                  <option value="100_500">100 - 500 Members</option>
+                  <option value="over_500">Over 500 Members</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Social Media Profile Links</label>
+              <textarea 
+                value={socialLinks} 
+                onChange={e => setSocialLinks(e.target.value)} 
+                rows={2}
+                className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" 
+                placeholder="Paste Instagram, Facebook Page, or YouTube channel URLs here..."
+              ></textarea>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Previous Experience selling Handlooms?</label>
+              <textarea 
+                value={handloomExperience} 
+                onChange={e => setHandloomExperience(e.target.value)} 
+                rows={2}
+                className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" 
+                placeholder="Briefly describe if you have sold Sambalpuri handlooms before, or your primary expected customers."
+              ></textarea>
+            </div>
+          </div>
+        )}
+
+      </div>
+
+      {/* Navigation Footer */}
+      <div className="pt-6 border-t border-gray-100 flex items-center justify-between mt-8">
+        {currentStep > 1 ? (
+          <button 
+            onClick={handlePrevStep}
+            disabled={isSaving}
+            className="px-6 py-3 text-gray-600 font-bold hover:bg-gray-100 rounded-xl transition-colors disabled:opacity-50 text-sm"
+          >
+            ← Previous
+          </button>
+        ) : <div></div>}
+
+        {!isFinalStep ? (
+          <button 
+            onClick={handleNextStep}
+            disabled={isSaving}
+            className="px-8 py-3 bg-[#0070F3] text-white font-bold rounded-xl shadow-sm hover:bg-[#005BB5] hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 text-sm"
+          >
+            {isSaving ? "Saving..." : "Save & Next →"}
+          </button>
+        ) : (
+          <button 
+            onClick={handleSubmitApplication}
+            disabled={isSaving || !canSubmitApplication}
+            className="px-8 py-3 bg-green-600 text-white font-bold rounded-xl shadow-sm hover:bg-green-700 hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 disabled:hover:translate-y-0 text-sm"
+          >
+            {isSaving ? "Submitting..." : "Submit Final Application 🚀"}
+          </button>
+        )}
+      </div>
+
     </div>
   );
 }

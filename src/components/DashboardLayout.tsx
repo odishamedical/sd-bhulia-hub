@@ -20,6 +20,9 @@ interface DashboardLayoutProps {
   onTabChange: (id: string) => void;
   storeSlug?: string;
   children: React.ReactNode;
+  isSellerMode?: boolean;
+  onSellerModeToggle?: () => void;
+  showDualRoleToggle?: boolean;
 }
 
 export default function DashboardLayout({
@@ -29,7 +32,10 @@ export default function DashboardLayout({
   activeTab,
   onTabChange,
   storeSlug = "demo",
-  children
+  children,
+  isSellerMode,
+  onSellerModeToggle,
+  showDualRoleToggle
 }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
@@ -104,6 +110,24 @@ export default function DashboardLayout({
         {/* Right Side */}
         <div className="flex items-center gap-4 flex-shrink-0">
           <Link href="/" className="text-sm font-bold text-blue-100 hover:text-white md:hidden transition-colors">Marketplace</Link>
+          
+          {showDualRoleToggle && (
+            <div className="hidden md:flex items-center gap-1 bg-[#0052A3] rounded-full p-1 border border-white/10 shadow-inner">
+              <button 
+                onClick={() => isSellerMode && onSellerModeToggle?.()}
+                className={`text-[10px] font-bold uppercase px-3 py-1 rounded-full transition-all ${!isSellerMode ? 'bg-white text-blue-900 shadow-sm' : 'text-blue-200 hover:text-white'}`}
+              >
+                🛍️ Buyer
+              </button>
+              <button 
+                onClick={() => !isSellerMode && onSellerModeToggle?.()}
+                className={`text-[10px] font-bold uppercase px-3 py-1 rounded-full transition-all ${isSellerMode ? 'bg-gradient-to-r from-[#C5A059] to-[#996515] text-white shadow-sm' : 'text-blue-200 hover:text-white'}`}
+              >
+                💼 Seller
+              </button>
+            </div>
+          )}
+
           <div className="w-9 h-9 rounded-full bg-white/20 border border-white/20 flex items-center justify-center text-white font-bold uppercase hidden sm:flex shadow-sm">
              {userName?.charAt(0) || "U"}
           </div>
