@@ -599,7 +599,7 @@ export default function UserManagementPage() {
                           user.role === 'customer' ? 'bg-blue-100 text-blue-700' :
                           'bg-gray-100 text-gray-700'
                         }`}>
-                          {user.name.split(' ').map((n: string) => n[0]).join('').substring(0,2).toUpperCase() || '?'}
+                          {String(user?.name || '?').trim().split(/\s+/).filter(Boolean).map((n: string) => n[0]).join('').substring(0,2).toUpperCase() || '?'}
                         </div>
                         <div>
                           <div className="font-bold text-gray-900 text-sm group-hover:text-blue-700 transition-colors">{user.name}</div>
