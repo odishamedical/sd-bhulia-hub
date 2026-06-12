@@ -7,13 +7,12 @@ export default function GlobalSearchConsole() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Hide on Admin, Dashboard, Auth, and the dedicated /search page itself.
+  // Hide on Admin, Dashboard, Auth
   if (
     pathname?.startsWith("/admin") ||
     pathname?.startsWith("/dashboard") ||
     pathname?.startsWith("/franchise/dashboard") ||
-    pathname?.startsWith("/login") ||
-    pathname === "/search"
+    pathname?.startsWith("/login")
   ) {
     return null;
   }
