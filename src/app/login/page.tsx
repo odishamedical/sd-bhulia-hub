@@ -54,6 +54,20 @@ function LoginForm() {
       {error && <div className="bg-red-900/50 border border-red-500 text-red-200 p-3 rounded mb-4 text-sm">{error}</div>}
       {message && <div className="bg-green-900/50 border border-green-500 text-green-200 p-3 rounded mb-4 text-sm">{message}</div>}
       
+      <button 
+        onClick={handleGoogleSignIn}
+        className="w-full bg-white text-black font-semibold py-3 rounded flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors mb-6"
+      >
+        <Image src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" width={20} height={20} />
+        Continue with Google
+      </button>
+      
+      <div className="mb-6 flex items-center justify-center">
+        <span className="h-px bg-gray-700 flex-1"></span>
+        <span className="px-4 text-gray-500 text-sm">OR</span>
+        <span className="h-px bg-gray-700 flex-1"></span>
+      </div>
+      
       <form onSubmit={handleAuth} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
@@ -79,20 +93,6 @@ function LoginForm() {
           {isRegistering ? "Register" : "Sign In"}
         </button>
       </form>
-      
-      <div className="mt-6 flex items-center justify-center">
-        <span className="h-px bg-gray-700 flex-1"></span>
-        <span className="px-4 text-gray-500 text-sm">OR</span>
-        <span className="h-px bg-gray-700 flex-1"></span>
-      </div>
-      
-      <button 
-        onClick={handleGoogleSignIn}
-        className="mt-6 w-full bg-white text-black font-semibold py-3 rounded flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
-      >
-        <Image src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" width={20} height={20} />
-        Continue with Google
-      </button>
       
       <div className="mt-6 text-center text-sm text-gray-400">
         {isRegistering ? "Already have an account? " : "Don't have an account? "}
