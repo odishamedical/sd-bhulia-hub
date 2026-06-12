@@ -210,11 +210,14 @@ function SearchContent() {
           
           {/* Type Dropdown */}
           <div className="relative group">
-            <button className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#0066CC]/90 hover:bg-[#0052A3] text-white border border-white/30 shadow-md backdrop-blur-md transition-all text-xs md:text-sm font-bold uppercase tracking-widest">
+            <button 
+              onClick={() => setMobileFilterOpen(true)}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#0066CC]/90 hover:bg-[#0052A3] text-white border border-white/30 shadow-md backdrop-blur-md transition-all text-xs md:text-sm font-bold uppercase tracking-widest"
+            >
               <span>{selectedCategory || "Browse By Type"}</span>
-              <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              <svg className="w-4 h-4 shrink-0 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[220px]">
+            <div className="hidden lg:block absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[220px]">
               <div className="bg-white/95 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-2xl p-2 flex flex-col">
                 <button onClick={() => { setSelectedCategory(""); updateFilters("category", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-700 hover:text-[#0066CC] hover:bg-[#0066CC]/10 rounded-lg">All Types</button>
                 {["Saree", "Dress material", "Bedsheet", "RedyMade shirts", "Redy made Kurti", "Kurti dress material"].map(cat => (
@@ -226,11 +229,14 @@ function SearchContent() {
 
           {/* Material Dropdown */}
           <div className="relative group">
-            <button className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#0066CC]/90 hover:bg-[#0052A3] text-white border border-white/30 shadow-md backdrop-blur-md transition-all text-xs md:text-sm font-bold uppercase tracking-widest">
+            <button 
+              onClick={() => setMobileFilterOpen(true)}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#0066CC]/90 hover:bg-[#0052A3] text-white border border-white/30 shadow-md backdrop-blur-md transition-all text-xs md:text-sm font-bold uppercase tracking-widest"
+            >
               <span>{selectedMaterial || "Browse By Material"}</span>
-              <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              <svg className="w-4 h-4 shrink-0 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[220px]">
+            <div className="hidden lg:block absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[220px]">
               <div className="bg-white/95 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-2xl p-2 flex flex-col">
                 <button onClick={() => { setSelectedMaterial(""); updateFilters("material", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-700 hover:text-[#0066CC] hover:bg-[#0066CC]/10 rounded-lg">All Materials</button>
                 {["Pure Cotton", "Pure Silk (Pata)", "Mix Silk(Pata) (Silk+Polyster)", "Mix Cotton (Cotton+Polyster)"].map(mat => (
@@ -242,11 +248,14 @@ function SearchContent() {
 
           {/* Design Dropdown */}
           <div className="relative group">
-            <button className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#0066CC]/90 hover:bg-[#0052A3] text-white border border-white/30 shadow-md backdrop-blur-md transition-all text-xs md:text-sm font-bold uppercase tracking-widest">
+            <button 
+              onClick={() => setMobileFilterOpen(true)}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#0066CC]/90 hover:bg-[#0052A3] text-white border border-white/30 shadow-md backdrop-blur-md transition-all text-xs md:text-sm font-bold uppercase tracking-widest"
+            >
               <span>{selectedDesign || "Browse By Design"}</span>
-              <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              <svg className="w-4 h-4 shrink-0 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[260px]">
+            <div className="hidden lg:block absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[260px]">
               <div className="bg-white/95 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-2xl p-2 flex flex-col">
                 <button onClick={() => { setSelectedDesign(""); updateFilters("design", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-700 hover:text-[#0066CC] hover:bg-[#0066CC]/10 rounded-lg">All Designs</button>
                 {["Sambalpuri Ikat (Bandha)", "Sambalpuri Traditional Ikat Design", "Sambalpuri Modern Ikat Design", "Sambalpuri Double Ikat (Pashapali/Saptapar)", "Bomkei", "Bomkei+Ikat"].map(des => (
