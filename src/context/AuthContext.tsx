@@ -6,6 +6,7 @@ import { auth, googleProvider } from "../lib/firebase";
 
 interface AuthContextType {
   user: User | null;
+  userData: any;
   loading: boolean;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
@@ -13,6 +14,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  userData: null,
   loading: true,
   loginWithGoogle: async () => {},
   logout: async () => {},
@@ -22,6 +24,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,6 +40,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const userDocRef = doc(db, "users", currentUser.uid);
           const userDocSnap = await getDoc(userDocRef);
           
+          if (userDocSnap.exists()) {
+            setUserData(userDocSnap.data());
+          }
+
           if (currentUser.email === "odishamedical@gmail.com" || currentUser.email === "npfcodisha@gmail.com") {
             // Master Admin Override
             localStorage.setItem("sd_current_user_role", "super_admin");
@@ -46,12 +53,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             
             // Auto-register super admin if they don't exist
             if (!userDocSnap.exists()) {
-              await setDoc(userDocRef, {
+              const newAdminData = {
                 email: currentUser.email,
                 name: currentUser.displayName || currentUser.email.split("@")[0],
                 role: "super_admin",
                 createdAt: new Date().toISOString()
-              });
+              };
+              await setDoc(userDocRef, newAdminData);
+              setUserData(newAdminData);
             }
           } else if (userDocSnap.exists()) {
             const data = userDocSnap.data();
@@ -78,12 +87,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           } else {
             // Auto-register new general user
             const userName = currentUser.displayName || currentUser.email?.split("@")[0] || "Unknown User";
-            await setDoc(userDocRef, {
+            const newUserData = {
               email: currentUser.email,
               name: userName,
               role: "user",
               createdAt: new Date().toISOString()
-            });
+            };
+            await setDoc(userDocRef, newUserData);
+            setUserData(newUserData);
+            
             localStorage.setItem("sd_current_user_role", "user");
             localStorage.setItem("sd_current_user_uid", currentUser.uid);
             localStorage.setItem("sd_current_user_email", currentUser.email || "");
@@ -125,7 +137,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, userData, loading, loginWithGoogle, logout }}>
       {children}
     </AuthContext.Provider>
   );

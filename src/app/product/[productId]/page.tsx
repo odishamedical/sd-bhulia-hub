@@ -8,6 +8,7 @@ import { useParams } from "next/navigation";
 import { useProductBySlug, useProducts, addOrder } from "@/lib/db-hooks";
 import { MASTER_FRANCHISES } from "@/app/reseller/data";
 import { useCart } from "@/context/CartContext";
+import { useLeadCapture } from "@/context/LeadCaptureContext";
 import ShareWidget from "@/components/ShareWidget";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 import ProfileBlockerModal from "../../../components/ProfileBlockerModal";
@@ -17,6 +18,7 @@ import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
 export default function ProductDetailPage() {
   const { addToCart, addToWishlist, wishlist } = useCart();
+  const { requireLeadCapture } = useLeadCapture();
   const params = useParams();
   const rawId = typeof params?.productId === "string" ? params.productId : "";
   const productSlug = rawId.toLowerCase();
@@ -112,36 +114,19 @@ export default function ProductDetailPage() {
       const refId = ref || localStorage.getItem("sd_referral_id");
       if (refId) {
         localStorage.setItem("sd_referral_id", refId);
-        // Set persistent cookie (30 days)
         document.cookie = `sd_referral_id=${refId}; path=/; max-age=${30 * 24 * 60 * 60};`;
         
-        // Find matching franchisee
         const matched = MASTER_FRANCHISES.find(
           (f) => f.id.toLowerCase() === refId.toLowerCase() || f.slug.toLowerCase() === refId.toLowerCase()
         );
         if (matched) {
-          /* removed setState */
         } else {
-          /* removed setState */
         }
       }
     }
 
     return () => window.removeEventListener("sd_auth_change", checkAuth);
   }, []);
-
-  const handleSocialShare = (platform: "whatsapp" | "facebook", customRefId?: string) => {
-    if (!product) return;
-    const finalRef = customRefId || userUid;
-    const shareUrl = `${window.location.origin}/product/${product.slug}?ref=${finalRef}`;
-    const message = `Check out this gorgeous authentic ${product.title} from Bhulia Hub! Direct weaver-to-consumer payout purchase. ${shareUrl}`;
-
-    if (platform === "whatsapp") {
-      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, "_blank");
-    } else if (platform === "facebook") {
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank");
-    }
-  };
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -179,14 +164,12 @@ export default function ProductDetailPage() {
     setIsOrdering(false);
 
     if (res.success) {
-      setOrderStep(2); // Success Step
+      setOrderStep(2); 
 
-      // Record local fallback
       const existingOrders = JSON.parse(localStorage.getItem("sd_all_orders") || "[]");
       existingOrders.push({ ...newOrder, id: res.id });
       localStorage.setItem("sd_all_orders", JSON.stringify(existingOrders));
 
-      // Trigger local notification fallback
       if (referralId) {
         const notifications = JSON.parse(localStorage.getItem("sd_franchise_notifications") || "[]");
         notifications.push({
@@ -208,10 +191,6 @@ export default function ProductDetailPage() {
     <main className="relative flex-1 w-full text-white font-sans flex flex-col min-h-screen transition-colors duration-1000 overflow-x-hidden" style={{ backgroundColor: bgColor ? `color-mix(in srgb, ${bgColor} 8%, #051815)` : '#051815' }}>
       <div className="absolute top-0 left-0 w-full h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[var(--bg-glow)] via-transparent to-transparent pointer-events-none opacity-40 blur-[100px] transition-all duration-1000 z-0" style={{ '--bg-glow': bgColor } as React.CSSProperties}></div>
       
-      {/* Top Sticky Header */}
-      
-
-      {/* Mobile Drawer */}
       {mobileNavOpen && (
         <div className="lg:hidden sticky top-[57px] z-40 bg-[#0B2B26]/98 backdrop-blur-md border-b border-[#C5A059]/40 px-6 py-6 space-y-4 shadow-2xl">
           <div className="flex flex-col space-y-3 text-xs font-bold uppercase tracking-widest text-gray-200">
@@ -226,7 +205,6 @@ export default function ProductDetailPage() {
         </div>
       )}
 
-      {/* Shopper Referral Alert Bar */}
       {referrerName && (
         <div className="bg-[#C5A059] text-[#051815] py-2.5 px-4 text-center text-xs font-bold uppercase tracking-wider shadow-inner flex justify-center items-center gap-2 z-30">
           <span>✨</span>
@@ -235,7 +213,6 @@ export default function ProductDetailPage() {
         </div>
       )}
 
-      {/* Main product showcase page layout */}
       <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 py-8 flex flex-col gap-8 relative z-10">
         
         {product && (
@@ -325,10 +302,8 @@ export default function ProductDetailPage() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start relative z-10">
             
-            {/* Left Side: Large image & trust badges */}
             <div className="lg:col-span-6 space-y-6">
               
-              {/* Vertical Video Demo */}
               {product.youtubeUrl && getYouTubeEmbedUrl(product.youtubeUrl) && (
                 <div className="w-full flex justify-center">
                   <div className="relative w-full max-w-[400px] aspect-[9/16] rounded-3xl overflow-hidden border-2 border-[#C5A059]/50 shadow-[0_0_50px_rgba(197,160,89,0.2)] bg-black/80 flex items-center justify-center">
@@ -354,7 +329,6 @@ export default function ProductDetailPage() {
                 <Image src={activeImg || product.img} alt={product.title} fill className="object-contain transition-transform duration-700 group-hover:scale-105 animate-fadeIn" />
               </div>
               
-              {/* Authenticity badge - replacing Bhulia.com with Bhulia Verified */}
               <div className="absolute top-4 left-4 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold shadow-lg border border-[#C5A059]">
                 ✓ BHULIA.COM VERIFIED SAMBALPURI
               </div>
@@ -374,7 +348,6 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* Product Gallery Thumbnails */}
             <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 mt-4">
               {allImages.map((image, index) => (
                 <button
@@ -391,10 +364,8 @@ export default function ProductDetailPage() {
               ))}
             </div>
 
-            {/* Sharing widgets */}
             <ShareWidget title={product.title} />
 
-            {/* Masked Contact Widgets */}
             <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl text-white">
               <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block mb-3">Direct Connect (Masked)</span>
               <div className="grid grid-cols-2 gap-3">
@@ -416,10 +387,8 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Right Side: Specific Details and direct checkout */}
           <div className="lg:col-span-6 space-y-6 lg:sticky lg:top-24 h-max pb-12">
             
-            {/* Core specs details */}
             <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-xl text-white space-y-6">
               <div>
                 <Link href={`/search?category=${encodeURIComponent(product.category || '')}`} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-[10px] font-bold uppercase tracking-widest mb-3 hover:bg-[#C5A059]/40 transition-colors cursor-pointer">
@@ -432,7 +401,6 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* Pricing section */}
               <div className="flex flex-col gap-2 border-t border-b border-[#C5A059]/20 py-4">
                 <div className="flex items-baseline gap-4">
                   {(() => {
@@ -490,12 +458,10 @@ export default function ProductDetailPage() {
                 })()}
               </div>
 
-              {/* Short Description */}
               <div className="text-gray-300 text-sm italic border-l-2 border-[#C5A059] pl-3 py-1">
                 {product.desc || product.longDesc?.substring(0, 100) + '...'}
               </div>
 
-              {/* Weaver Specs details - Minimalist Schema */}
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
                   <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Material</span>
@@ -523,7 +489,6 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* Sold By Section (B2B Directory Link) */}
               <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-xl p-4 flex items-center justify-between">
                 <div>
                   <span className="text-[9px] uppercase tracking-widest text-[#C5A059] font-bold block mb-0.5">Sold By</span>
@@ -537,12 +502,10 @@ export default function ProductDetailPage() {
                 </Link>
               </div>
 
-              {/* Detailed Description */}
               <div className="space-y-2 border-t border-[#C5A059]/20 pt-4 text-gray-200">
                 <h3 className="text-xs uppercase tracking-widest text-[#C5A059] font-bold">Artisan Masterpiece Story</h3>
                 <p className="text-xs sm:text-sm font-sans leading-relaxed">{product.longDesc}</p>
               </div>
-              {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-4 mt-6">
                 {(product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0)) ? (
                   <button 
@@ -553,14 +516,14 @@ export default function ProductDetailPage() {
                   </button>
                 ) : (
                   <button 
-                    onClick={() => addToCart(product)}
+                    onClick={() => requireLeadCapture(() => addToCart(product), "cart")}
                     className="w-full py-4 bg-gradient-to-r from-[#E57138] to-[#D56128] text-white font-bold uppercase tracking-wider rounded-xl shadow-[0_0_15px_rgba(229,113,56,0.3)] hover:shadow-[0_0_25px_rgba(229,113,56,0.5)] hover:-translate-y-1 transition-all"
                   >
                     🛒 Add to Cart
                   </button>
                 )}
                 <button 
-                  onClick={() => addToWishlist(product)}
+                  onClick={() => requireLeadCapture(() => addToWishlist(product), "wishlist")}
                   className={`w-full py-4 border-2 ${wishlist.some(w => w.id === product.id) ? 'bg-[#C5A059]/20 border-[#C5A059] text-[#C5A059]' : 'border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10'} font-bold uppercase tracking-wider rounded-xl transition-all`}
                 >
                   {wishlist.some(w => w.id === product.id) ? '❤️ Saved to Wishlist' : '🤍 Add to Wishlist'}

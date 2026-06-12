@@ -9,9 +9,11 @@ import { MASTER_STORES } from "@/app/Sambalpuri-store/data";
 import { MASTER_FRANCHISES, DEFAULT_FRANCHISE, FranchiseListing } from "@/app/reseller/data";
 import { MASTER_PRODUCTS, Product } from "@/lib/products";
 import { useCart } from "@/context/CartContext";
+import { useLeadCapture } from "@/context/LeadCaptureContext";
 
 export default function DynamicSlugPage() {
   const { addToCart, addToWishlist, wishlist } = useCart();
+  const { requireLeadCapture } = useLeadCapture();
   const params = useParams();
   const router = useRouter();
   const rawSlug = typeof params?.slug === "string" ? params.slug : "";
@@ -466,13 +468,13 @@ export default function DynamicSlugPage() {
                           
                           <div className="grid grid-cols-2 gap-2 mt-2">
                             <button 
-                              onClick={() => addToCart(prod)}
+                              onClick={() => requireLeadCapture(() => addToCart(prod), "cart")}
                               className="w-full py-2 bg-gradient-to-r from-[#E57138] to-[#D56128] text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all text-center block"
                             >
                               Add to Cart
                             </button>
                             <button 
-                              onClick={() => addToWishlist(prod)}
+                              onClick={() => requireLeadCapture(() => addToWishlist(prod), "wishlist")}
                               className={`w-full py-2 border ${wishlist.some(w => w.id === prod.id) ? 'bg-[#C5A059] text-[#0A1021] border-[#C5A059]' : 'border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/10'} font-bold text-xs uppercase tracking-wider rounded-xl transition-all text-center block`}
                             >
                               {wishlist.some(w => w.id === prod.id) ? '❤️ Saved' : '🤍 Wishlist'}

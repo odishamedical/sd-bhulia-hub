@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { auth, db } from "@/lib/firebase";
@@ -12,6 +13,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useCart();
+  const { user, userData } = useAuth();
   const router = useRouter();
   
   const [userUid, setUserUid] = useState<string | null>(null);
@@ -56,14 +58,20 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserUid(user.uid);
-        setFormData(prev => ({ ...prev, email: user.email || "" }));
-      }
-    });
-    return () => unsubscribe();
-  }, []);
+    if (user) {
+      setUserUid(user.uid);
+      setFormData(prev => ({
+        ...prev,
+        email: user.email || prev.email,
+        fullName: userData?.name || prev.fullName,
+        phone: userData?.whatsapp || userData?.phone || prev.phone,
+        address: userData?.address || prev.address,
+        city: userData?.city || prev.city,
+        state: userData?.state || prev.state,
+        pincode: userData?.pincode || prev.pincode,
+      }));
+    }
+  }, [user, userData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -208,6 +216,22 @@ export default function CheckoutPage() {
 
     const verifyData = await verifyRes.json();
     if (verifyData.success) {
+      // Save address back to user profile if logged in
+      if (userUid) {
+        try {
+          await updateDoc(doc(db, "users", userUid), {
+            whatsapp: formData.phone,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+            pincode: formData.pincode,
+          });
+        } catch (err) {
+          console.error("Failed to save address to profile", err);
+        }
+      }
+
       // 3. Clear Cart & Show Success
       clearCart();
       setSuccess(true);

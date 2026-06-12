@@ -31,6 +31,7 @@ export const metadata: Metadata = {
 
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
+import { LeadCaptureProvider } from "@/context/LeadCaptureContext";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import Header from "@/components/Header";
 import GlobalSearchConsole from "@/components/GlobalSearchConsole";
@@ -53,8 +54,9 @@ export default function RootLayout({
       <body className="font-sans min-h-full flex flex-col bg-[#051815] text-white overflow-x-hidden">
         <AuthProvider>
           <CartProvider>
-            <GlobalMaintenanceGate>
-              <Header />
+            <LeadCaptureProvider>
+              <GlobalMaintenanceGate>
+                <Header />
               <GlobalSearchConsole />
               <div className="flex-1 flex flex-col min-h-[calc(100vh-200px)] relative pb-16 lg:pb-0">
                 {children}
@@ -62,7 +64,8 @@ export default function RootLayout({
               <Footer />
               <BackToTopButton />
               <MobileBottomNav />
-            </GlobalMaintenanceGate>
+              </GlobalMaintenanceGate>
+            </LeadCaptureProvider>
           </CartProvider>
         </AuthProvider>
       </body>

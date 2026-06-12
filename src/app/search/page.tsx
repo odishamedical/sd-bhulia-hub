@@ -9,6 +9,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { useProducts } from "@/lib/db-hooks";
 import { useCart } from "@/context/CartContext";
+import { useLeadCapture } from "@/context/LeadCaptureContext";
 import { Suspense } from "react";
 import ProductCard from "@/components/ProductCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -17,7 +18,8 @@ function SearchContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { products, loading } = useProducts({ status: "approved" });
-  const { addToCart } = useCart();
+  const { addToCart, addToWishlist, wishlist } = useCart();
+  const { requireLeadCapture } = useLeadCapture();
 
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [role, setRole] = useState<string | null>(null);
