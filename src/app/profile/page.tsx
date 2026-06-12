@@ -11,22 +11,7 @@ import Link from "next/link";
 import Header from "../../components/Header";
 import ImageCropperModal from "@/components/ImageCropperModal";
 
-const INDIAN_STATES = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", 
-  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", 
-  "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", 
-  "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", 
-  "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-  "Delhi", "Jammu and Kashmir"
-].sort();
-
-const ODISHA_DISTRICTS = [
-  "Angul", "Balangir", "Balasore", "Bargarh", "Bhadrak", "Boudh", "Cuttack", 
-  "Deogarh", "Dhenkanal", "Gajapati", "Ganjam", "Jagatsinghpur", "Jajpur", 
-  "Jharsuguda", "Kalahandi", "Kandhamal", "Kendrapara", "Kendujhar (Keonjhar)", 
-  "Khordha", "Koraput", "Malkangiri", "Mayurbhanj", "Nabarangpur", "Nayagarh", 
-  "Nuapada", "Puri", "Rayagada", "Sambalpur", "Subarnapur (Sonepur)", "Sundargarh"
-].sort();
+import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
 
 function ProfileContent() {
   const { user } = useAuth();
@@ -53,18 +38,19 @@ function ProfileContent() {
   const [selectedImageSrc, setSelectedImageSrc] = useState("");
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   
-  // Address State
-  const [addresses, setAddresses] = useState<unknown[]>([]);
+  const [addresses, setAddresses] = useState<any[]>([]);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [country, setCountry] = useState("India");
   const [otherCountry, setOtherCountry] = useState("");
   const [state, setState] = useState("");
   const [district, setDistrict] = useState("");
-  const [localAddress, setLocalAddress] = useState("");
+  const [block, setBlock] = useState("");
+  const [cityTownVillage, setCityTownVillage] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
   const [pinCode, setPinCode] = useState("");
   
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [orders, setOrders] = useState<unknown[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) {
@@ -144,7 +130,9 @@ function ProfileContent() {
       country: country === "Other" ? otherCountry : country,
       state,
       district,
-      localAddress,
+      block,
+      cityTownVillage,
+      streetAddress,
       pinCode,
       isDefault: addresses.length === 0
     };
@@ -311,9 +299,29 @@ function ProfileContent() {
                 ) : null}
               </div>
 
+              {country === "India" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Block</label>
+                    {state === "Odisha" && district ? (
+                      <select value={block} onChange={(e) => setBlock(e.target.value)} className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]">
+                        <option value="">Select Block (Optional)</option>
+                        {(ODISHA_DISTRICT_BLOCKS[district] || []).map(b => <option key={b} value={b}>{b}</option>)}
+                      </select>
+                    ) : (
+                      <input value={block} onChange={(e) => setBlock(e.target.value)} type="text" className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="Enter Block (Optional)" />
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">City / Town / Village *</label>
+                    <input required value={cityTownVillage} onChange={(e) => setCityTownVillage(e.target.value)} type="text" className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]" />
+                  </div>
+                </div>
+              )}
+
               <div>
-                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Local Address (Town/Village, House No, Street) *</label>
-                <textarea required value={localAddress} onChange={e => setLocalAddress(e.target.value)} rows={3} className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]"></textarea>
+                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Street Address (House No, Street, Landmark) *</label>
+                <textarea required value={streetAddress} onChange={e => setStreetAddress(e.target.value)} rows={3} className="w-full bg-[#0A2520] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#C5A059]"></textarea>
               </div>
 
               <div>
@@ -446,8 +454,8 @@ function ProfileContent() {
                       )}
                       <p className="font-bold text-white mb-2">{name}</p>
                       <p className="text-sm text-gray-300 leading-relaxed">
-                        {addr.localAddress}<br/>
-                        {addr.district}, {addr.state} - {addr.pinCode}<br/>
+                        {addr.streetAddress}<br/>
+                        {addr.cityTownVillage ? `${addr.cityTownVillage}, ` : ""}{addr.block ? `${addr.block}, ` : ""}{addr.district}, {addr.state} - {addr.pinCode}<br/>
                         {addr.country}
                       </p>
                       <p className="text-xs text-gray-400 mt-3 font-mono">Ph: {phone}</p>

@@ -347,9 +347,9 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
   const [state, setState] = useState("Odisha");
   const [district, setDistrict] = useState("");
   const [block, setBlock] = useState("");
-  const [townVillage, setTownVillage] = useState("");
-  const [pin, setPin] = useState("");
-  const [address, setAddress] = useState("");
+  const [cityTownVillage, setCityTownVillage] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -364,12 +364,12 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           setPhone(data.phone || "");
           setWhatsapp(data.whatsapp || "");
           setCountry(data.country || "India");
-          setState(data.state || "Odisha");
-          setDistrict(data.district || "");
-          setBlock(data.block || "");
-          setTownVillage(data.townVillage || "");
-          setPin(data.pin || "");
-          setAddress(data.address || "");
+          setState(data.address?.state || data.state || "Odisha");
+          setDistrict(data.address?.district || data.district || "");
+          setBlock(data.address?.block || data.block || "");
+          setCityTownVillage(data.address?.cityTownVillage || data.townVillage || "");
+          setPincode(data.address?.pincode || data.pin || "");
+          setStreetAddress(typeof data.address === "string" ? data.address : (data.address?.streetAddress || ""));
         }
       });
     }
@@ -404,12 +404,14 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
         phone,
         whatsapp,
         country,
-        state,
-        district,
-        block,
-        townVillage,
-        pin,
-        address
+        address: {
+          state,
+          district,
+          block,
+          cityTownVillage,
+          pincode,
+          streetAddress
+        }
       });
       alert("Profile updated successfully!");
       const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
@@ -421,7 +423,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
     setIsSaving(false);
   };
 
-  const isProfileIncomplete = userData && (!userData.phone || !userData.address || !userData.district);
+  const isProfileIncomplete = userData && (!userData.phone || !userData.address || (!userData.address?.district && !userData.district));
 
   return (
     <div className="space-y-6 relative">
@@ -644,17 +646,17 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town/Village</label>
-                  <input type="text" value={townVillage} onChange={e => setTownVillage(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none" />
+                  <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code *</label>
-                  <input type="text" required value={pin} onChange={e => setPin(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none" />
+                  <input type="text" required value={pincode} onChange={e => setPincode(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none" />
                 </div>
               </div>
               
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Complete Address (House No, Street, Landmark) *</label>
-                <textarea required value={address} onChange={e => setAddress(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={3} placeholder="Enter your full address including house/flat number, street name, and any landmarks..."></textarea>
+                <textarea required value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={3} placeholder="Enter your full address including house/flat number, street name, and any landmarks..."></textarea>
               </div>
             </div>
 
@@ -754,12 +756,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [country, setCountry] = useState("India");
-  const [address, setAddress] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
   const [district, setDistrict] = useState("");
   const [block, setBlock] = useState("");
-  const [townVillage, setTownVillage] = useState("");
+  const [cityTownVillage, setCityTownVillage] = useState("");
   const [state, setState] = useState("");
-  const [pin, setPin] = useState("");
+  const [pincode, setPincode] = useState("");
   const [kycType, setKycType] = useState("");
   const [kycId, setKycId] = useState("");
   const [kycDocumentUrl, setKycDocumentUrl] = useState("");
@@ -800,12 +802,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           setPhone(data.phone || "");
           setWhatsapp(data.whatsapp || "");
           setCountry(data.country || "India");
-          setAddress(data.address || "");
-          setDistrict(data.district || "");
-          setBlock(data.block || "");
-          setTownVillage(data.townVillage || "");
-          setState(data.state || "");
-          setPin(data.pin || "");
+          setStreetAddress(typeof data.address === "string" ? data.address : (data.address?.streetAddress || ""));
+          setDistrict(data.address?.district || data.district || "");
+          setBlock(data.address?.block || data.block || "");
+          setCityTownVillage(data.address?.cityTownVillage || data.townVillage || "");
+          setState(data.address?.state || data.state || "");
+          setPincode(data.address?.pincode || data.pin || "");
         }
       });
     }
@@ -864,12 +866,14 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         phone,
         whatsapp,
         country,
-        address,
-        district,
-        block,
-        townVillage,
-        state,
-        pin,
+        address: {
+          state,
+          district,
+          block,
+          cityTownVillage,
+          streetAddress,
+          pincode
+        }
       });
 
       // 2. Generate clean slug from store name
@@ -891,8 +895,15 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         state,
         district,
         block,
-        townVillage,
-        address: `${address}, ${townVillage}, ${block}, ${district}, ${state} - ${pin}`,
+        cityTownVillage,
+        address: {
+          state,
+          district,
+          block,
+          cityTownVillage,
+          streetAddress,
+          pincode
+        },
         tier: "Silver", // Default
         status: "approved" // Auto-approve for MVP
       }, { merge: true });
@@ -2001,21 +2012,24 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                       {ODISHA_DISTRICT_BLOCKS[district].map(b => <option key={b} value={b}>{b}</option>)}
                     </select>
                   ) : (
-                    <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town / Village</label>
-                  <input type="text" value={townVillage} onChange={e => setTownVillage(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town / Village / City</label>
+                  <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
+              </div>
 
-                <div className="col-span-2">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Public Address</label>
-                  <textarea value={address} onChange={e => setAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required rows={2} />
-                </div>
+              <div className="mb-4">
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street Address (House No, Landmark)</label>
+                <textarea required value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none min-h-[80px]" />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN / ZIP Code</label>
-                  <input type="text" value={pin} onChange={e => setPin(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  <input type="text" value={pincode} onChange={e => setPincode(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
               </div>
             </div>

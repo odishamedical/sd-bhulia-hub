@@ -80,7 +80,7 @@ export default function Footer() {
               </div>
               <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Support the handloom ecosystem — supply authentic raw materials to artisans.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Dvendor" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Draw_material" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
               Join as Supplier
             </Link>
           </div>
@@ -95,7 +95,7 @@ export default function Footer() {
               </div>
               <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Collaborate with Bhulia for bulk orders, corporate gifting, and global trade.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Dreseller" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Db2b" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
               Partner with Us
             </Link>
           </div>

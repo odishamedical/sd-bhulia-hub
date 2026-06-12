@@ -25,17 +25,18 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
   const [storeName, setStoreName] = useState("");
   
   // Address
-  const [address, setAddress] = useState("");
-  const [townVillage, setTownVillage] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
+  const [cityTownVillage, setCityTownVillage] = useState("");
   const [block, setBlock] = useState("");
   const [district, setDistrict] = useState("");
   const [state, setState] = useState("Odisha");
-  const [pin, setPin] = useState("");
+  const [pincode, setPincode] = useState("");
 
   // KYC
   const [kycType, setKycType] = useState("");
   const [kycId, setKycId] = useState("");
   const [kycDocumentUrl, setKycDocumentUrl] = useState("");
+  const [gstNumber, setGstNumber] = useState("");
 
   // Bank
   const [bankHolder, setBankHolder] = useState("");
@@ -73,16 +74,17 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           setWhatsapp(data.whatsapp || "");
           setStoreName(data.storeName || "");
 
-          setAddress(data.address || "");
-          setTownVillage(data.townVillage || "");
-          setBlock(data.block || "");
-          setDistrict(data.district || "");
-          setState(data.state || "Odisha");
-          setPin(data.pin || "");
+          setStreetAddress(typeof data.address === 'string' ? data.address : (data.address?.streetAddress || ""));
+          setCityTownVillage(data.address?.cityTownVillage || data.townVillage || "");
+          setBlock(data.address?.block || data.block || "");
+          setDistrict(data.address?.district || data.district || "");
+          setState(data.address?.state || data.state || "Odisha");
+          setPincode(data.address?.pincode || data.pin || "");
 
           setKycType(data.kycType || "");
           setKycId(data.kycId || "");
           setKycDocumentUrl(data.kycDocumentUrl || "");
+          setGstNumber(data.gst || "");
 
           setBankHolder(data.bankHolder || "");
           setBankName(data.bankName || "");
@@ -123,7 +125,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
 
   const steps = [
     { id: 1, title: "Profile", icon: "👤", isReady: !!(personalName && phone && whatsapp) },
-    { id: 2, title: "Address", icon: "📍", isReady: !!(address && district && state && pin) },
+    { id: 2, title: "Address", icon: "📍", isReady: !!(streetAddress && district && state && pincode) },
     { id: 3, title: "KYC", icon: "🛡️", isReady: !!(kycType && kycId && kycDocumentUrl) },
     { id: 4, title: "Bank", icon: "🏦", isReady: !!(bankHolder && bankName && bankAccount && bankIfsc) },
   ];
@@ -151,12 +153,14 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         updates.whatsapp = whatsapp;
         updates.storeName = storeName;
       } else if (currentStep === 2) {
-        updates.address = address;
-        updates.townVillage = townVillage;
-        updates.block = block;
-        updates.district = district;
-        updates.state = state;
-        updates.pin = pin;
+        updates.address = {
+          state,
+          district,
+          block,
+          cityTownVillage,
+          streetAddress,
+          pincode
+        };
       } else if (currentStep === 3) {
         let finalKycUrl = kycDocumentUrl;
         if (kycDocumentUrl && kycDocumentUrl.startsWith("data:image")) {
@@ -166,6 +170,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         updates.kycType = kycType;
         updates.kycId = kycId;
         updates.kycDocumentUrl = finalKycUrl;
+        updates.gst = gstNumber;
       } else if (currentStep === 4) {
         updates.bankHolder = bankHolder;
         updates.bankName = bankName;
@@ -223,7 +228,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         generatedSlug = (303 + Math.floor(Math.random() * 9000)).toString();
       }
       
-      const collectionName = desiredRole === "weaver" ? "weavers" : desiredRole === "vendor" ? "vendors" : "resellers";
+      const collectionName = desiredRole === "weaver" ? "weavers" : (desiredRole === "vendor" || desiredRole === "b2b" || desiredRole === "raw_material") ? "vendors" : "resellers";
       const docRef = doc(db, collectionName, auth.currentUser.uid);
       const snap = await getDoc(docRef);
       if (!snap.exists()) {
@@ -314,6 +319,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
               >
                 <option value="weaver">Master Weaver (Produce & Sell)</option>
                 <option value="vendor">Vendor / Shop (Aggregator)</option>
+                <option value="b2b">B2B Wholesaler</option>
+                <option value="raw_material">Raw Material Supplier</option>
                 <option value="reseller">Reseller (Dropship for Commission)</option>
               </select>
             </div>
@@ -352,7 +359,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
 
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street / Local Address</label>
-              <input type="text" value={address} onChange={e => setAddress(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="House/Shop no., Street" />
+              <input type="text" value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="House/Shop no., Street" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -408,13 +415,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
-                <input type="text" value={pin} onChange={e => setPin(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="XXXXXX" />
+                <input type="text" value={pincode} onChange={e => setPincode(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="XXXXXX" />
               </div>
             </div>
             
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Village / Town (Local Name)</label>
-              <input type="text" value={townVillage} onChange={e => setTownVillage(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
+              <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
             </div>
           </div>
         )}
@@ -455,6 +462,11 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                 label="KYC Document"
                 aspectRatio="landscape"
               />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">GST Number (Optional)</label>
+              <input type="text" value={gstNumber} onChange={e => setGstNumber(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none uppercase" placeholder="e.g. 21AAAAA1234A1Z1" />
             </div>
           </div>
         )}

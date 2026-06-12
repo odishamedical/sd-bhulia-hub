@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
 import Image from "next/image";
 import { auth, db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp, doc, updateDoc, getDoc, query, where, getDocs } from "firebase/firestore";
@@ -46,14 +47,15 @@ export default function CheckoutPage() {
   const shippingTotal = cart.reduce((total, item) => total + (item.shippingCharge || 0), 0);
   const finalTotal = cartTotal + shippingTotal - discountAmount;
 
-  // Form State
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
-    address: "",
-    city: "",
-    state: "",
+    state: "Odisha",
+    district: "",
+    block: "",
+    cityTownVillage: "",
+    streetAddress: "",
     pincode: "",
   });
 
@@ -65,10 +67,12 @@ export default function CheckoutPage() {
         email: user.email || prev.email,
         fullName: userData?.name || prev.fullName,
         phone: userData?.whatsapp || userData?.phone || prev.phone,
-        address: userData?.address || prev.address,
-        city: userData?.city || prev.city,
-        state: userData?.state || prev.state,
-        pincode: userData?.pincode || prev.pincode,
+        state: userData?.address?.state || userData?.state || prev.state,
+        district: userData?.address?.district || userData?.district || prev.district,
+        block: userData?.address?.block || userData?.block || prev.block,
+        cityTownVillage: userData?.address?.cityTownVillage || userData?.city || prev.cityTownVillage,
+        streetAddress: userData?.address?.streetAddress || userData?.address || prev.streetAddress,
+        pincode: userData?.address?.pincode || userData?.pincode || prev.pincode,
       }));
     }
   }, [user, userData]);
@@ -222,10 +226,14 @@ export default function CheckoutPage() {
           await updateDoc(doc(db, "users", userUid), {
             whatsapp: formData.phone,
             phone: formData.phone,
-            address: formData.address,
-            city: formData.city,
-            state: formData.state,
-            pincode: formData.pincode,
+            address: {
+              state: formData.state,
+              district: formData.district,
+              block: formData.block,
+              cityTownVillage: formData.cityTownVillage,
+              streetAddress: formData.streetAddress,
+              pincode: formData.pincode,
+            }
           });
         } catch (err) {
           console.error("Failed to save address to profile", err);
@@ -292,24 +300,55 @@ export default function CheckoutPage() {
               <input required name="email" value={formData.email} onChange={handleChange} type="email" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" />
             </div>
 
-            <div>
-              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Delivery Address</label>
-              <textarea required name="address" value={formData.address} onChange={handleChange} rows={3} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none resize-none"></textarea>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">City</label>
-                <input required name="city" value={formData.city} onChange={handleChange} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" />
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">State</label>
-                <input required name="state" value={formData.state} onChange={handleChange} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" />
+                <select name="state" value={formData.state} onChange={(e) => setFormData({...formData, state: e.target.value, district: "", block: ""})} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none cursor-pointer">
+                  <option value="">Select State</option>
+                  {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
               </div>
+              <div>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">District</label>
+                {formData.state === "Odisha" ? (
+                  <select required name="district" value={formData.district} onChange={(e) => setFormData({...formData, district: e.target.value, block: ""})} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none cursor-pointer">
+                    <option value="">Select District</option>
+                    {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                ) : (
+                  <input required name="district" value={formData.district} onChange={handleChange} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" placeholder="Enter District" />
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Block</label>
+                {formData.state === "Odisha" && formData.district ? (
+                  <select name="block" value={formData.block} onChange={handleChange} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none cursor-pointer">
+                    <option value="">Select Block (Optional)</option>
+                    {(ODISHA_DISTRICT_BLOCKS[formData.district] || []).map(b => <option key={b} value={b}>{b}</option>)}
+                  </select>
+                ) : (
+                  <input name="block" value={formData.block} onChange={handleChange} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" placeholder="Enter Block (Optional)" />
+                )}
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">City / Town / Village</label>
+                <input required name="cityTownVillage" value={formData.cityTownVillage} onChange={handleChange} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Pincode</label>
                 <input required name="pincode" value={formData.pincode} onChange={handleChange} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none" />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Street Address</label>
+              <textarea required name="streetAddress" value={formData.streetAddress} onChange={handleChange} rows={3} className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none resize-none" placeholder="Shop number, street, landmark..."></textarea>
             </div>
 
           </form>
