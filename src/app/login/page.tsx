@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { auth, googleProvider } from "@/lib/firebase";
-import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function LoginForm() {
@@ -15,6 +15,15 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect") || "/dashboard";
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.push(redirectUrl);
+      }
+    });
+    return () => unsubscribe();
+  }, [router, redirectUrl]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
