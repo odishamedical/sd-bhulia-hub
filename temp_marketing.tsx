@@ -1,4 +1,4 @@
-﻿function MarketingTab() {
+function MarketingTab() {
   const [coupons, setCoupons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -121,9 +121,9 @@
                   <tr key={coupon.id} className="text-sm hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-4 font-mono font-black text-blue-700">{coupon.code}</td>
                     <td className="py-4 px-4 capitalize font-medium">{coupon.type}</td>
-                    <td className="py-4 px-4 font-bold">{coupon.type === "percentage" ? ${coupon.value}% : ₹}</td>
+                    <td className="py-4 px-4 font-bold">{coupon.type === "percentage" ? `${coupon.value}%` : `₹${coupon.value}`}</td>
                     <td className="py-4 px-4">
-                      <span className={"px-3 py-1 text-xs font-bold rounded-full "}>
+                      <span className={`px-3 py-1 text-xs font-bold rounded-full ${coupon.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                         {coupon.active ? "Active" : "Inactive"}
                       </span>
                     </td>

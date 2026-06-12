@@ -11,6 +11,7 @@ import { useProducts } from "@/lib/db-hooks";
 import { useCart } from "@/context/CartContext";
 import { Suspense } from "react";
 import ProductCard from "@/components/ProductCard";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 function SearchContent() {
   const router = useRouter();
@@ -133,15 +134,135 @@ function SearchContent() {
       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank");
     }
   };
+  const FilterContent = (
+    <>
+      {/* Category Filter */}
+      <div>
+        <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Category</label>
+        <select 
+          value={selectedCategory}
+          onChange={(e) => {
+            setSelectedCategory(e.target.value);
+            updateFilters("category", e.target.value);
+          }}
+          className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none focus:border-[#C5A059]"
+        >
+          <option value="">All Categories</option>
+          <option value="Saree">Saree</option>
+          <option value="Dress material">Dress material</option>
+          <option value="Bedsheet">Bedsheet</option>
+          <option value="RedyMade shirts">RedyMade shirts</option>
+          <option value="Redy made Kurti">Redy made Kurti</option>
+          <option value="Kurti dress material">Kurti dress material</option>
+        </select>
+      </div>
+
+      {/* Material Filter */}
+      <div>
+        <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Material</label>
+        <select 
+          value={selectedMaterial}
+          onChange={(e) => {
+            setSelectedMaterial(e.target.value);
+            updateFilters("material", e.target.value);
+          }}
+          className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none focus:border-[#C5A059]"
+        >
+          <option value="">All Materials</option>
+          <option value="Pure Cotton">Pure Cotton</option>
+          <option value="Pure Silk (Pata)">Pure Silk (Pata)</option>
+          <option value="Mix Silk(Pata) (Silk+Polyster)">Mix Silk(Pata) (Silk+Polyster)</option>
+          <option value="Mix Cotton (Cotton+Polyster)">Mix Cotton (Cotton+Polyster)</option>
+        </select>
+      </div>
+
+      {/* Design Filter */}
+      <div>
+        <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Design</label>
+        <select 
+          value={selectedDesign}
+          onChange={(e) => {
+            setSelectedDesign(e.target.value);
+            updateFilters("design", e.target.value);
+          }}
+          className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none focus:border-[#C5A059]"
+        >
+          <option value="">All Designs</option>
+          <option value="Sambalpuri Ikat (Bandha)">Sambalpuri Ikat (Bandha)</option>
+          <option value="Sambalpuri Traditional Ikat Design">Sambalpuri Traditional Ikat Design</option>
+          <option value="Sambalpuri Modern Ikat Design">Sambalpuri Modern Ikat Design</option>
+          <option value="Sambalpuri Double Ikat (Pashapali/Saptapar)">Sambalpuri Double Ikat</option>
+          <option value="Bomkei">Bomkei</option>
+          <option value="Bomkei+Ikat">Bomkei+Ikat</option>
+        </select>
+      </div>
+    </>
+  );
 
   return (
     <div className="min-h-screen bg-[#051815] font-sans pt-6 pb-20">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         
+        {/* Breadcrumbs */}
+        <div className="mb-4">
+          <Breadcrumbs items={[{ label: "All Products" }]} />
+        </div>
+
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-2">Global Catalog Search</h1>
           <p className="text-gray-300 text-sm">Browse 100% Bhulia.com verified sovereign handloom masterpieces directly from the weavers.</p>
+        </div>
+
+        {/* Top Blue Pill Filter Menus */}
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-8 bg-[#0B2B26] p-4 rounded-2xl border border-[#C5A059]/30 relative z-40">
+          {/* Type Dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-2 bg-[#051815] border border-[#C5A059]/50 hover:bg-[#C5A059] hover:text-[#0A1021] text-[#C5A059] px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all">
+              <span>{selectedCategory || "Browse By Type"}</span>
+              <svg className="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[220px]">
+              <div className="bg-[#051815]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-2 flex flex-col">
+                <button onClick={() => { setSelectedCategory(""); updateFilters("category", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-300 hover:text-white hover:bg-white/10 rounded-lg">All Types</button>
+                {["Saree", "Dress material", "Bedsheet", "RedyMade shirts", "Redy made Kurti", "Kurti dress material"].map(cat => (
+                  <button key={cat} onClick={() => { setSelectedCategory(cat); updateFilters("category", cat); }} className={`text-left px-4 py-2 text-xs font-bold rounded-lg transition-colors ${selectedCategory === cat ? 'bg-[#C5A059] text-[#0A1021]' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}>{cat}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Material Dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-2 bg-[#051815] border border-[#C5A059]/50 hover:bg-[#C5A059] hover:text-[#0A1021] text-[#C5A059] px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all">
+              <span>{selectedMaterial || "Browse By Material"}</span>
+              <svg className="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[220px]">
+              <div className="bg-[#051815]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-2 flex flex-col">
+                <button onClick={() => { setSelectedMaterial(""); updateFilters("material", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-300 hover:text-white hover:bg-white/10 rounded-lg">All Materials</button>
+                {["Pure Cotton", "Pure Silk (Pata)", "Mix Silk(Pata) (Silk+Polyster)", "Mix Cotton (Cotton+Polyster)"].map(mat => (
+                  <button key={mat} onClick={() => { setSelectedMaterial(mat); updateFilters("material", mat); }} className={`text-left px-4 py-2 text-xs font-bold rounded-lg transition-colors ${selectedMaterial === mat ? 'bg-[#C5A059] text-[#0A1021]' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}>{mat}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Design Dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-2 bg-[#051815] border border-[#C5A059]/50 hover:bg-[#C5A059] hover:text-[#0A1021] text-[#C5A059] px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all">
+              <span>{selectedDesign || "Browse By Design"}</span>
+              <svg className="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[260px]">
+              <div className="bg-[#051815]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-2 flex flex-col">
+                <button onClick={() => { setSelectedDesign(""); updateFilters("design", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-300 hover:text-white hover:bg-white/10 rounded-lg">All Designs</button>
+                {["Sambalpuri Ikat (Bandha)", "Sambalpuri Traditional Ikat Design", "Sambalpuri Modern Ikat Design", "Sambalpuri Double Ikat (Pashapali/Saptapar)", "Bomkei", "Bomkei+Ikat"].map(des => (
+                  <button key={des} onClick={() => { setSelectedDesign(des); updateFilters("design", des); }} className={`text-left px-4 py-2 text-xs font-bold rounded-lg transition-colors ${selectedDesign === des ? 'bg-[#C5A059] text-[#0A1021]' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}>{des}</button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 2xl:grid-cols-6 gap-8">
@@ -149,7 +270,6 @@ function SearchContent() {
           {/* PC View: Sticky Left Sidebar */}
           <div className="hidden lg:block lg:col-span-1 space-y-6 bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl p-6 h-fit sticky top-24">
             <h3 className="text-xl font-serif font-bold text-white mb-4 border-b border-[#C5A059]/20 pb-2">Filter Catalog</h3>
-            
             {/* Price Brackets */}
             <div>
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Price Bracket</label>
@@ -183,84 +303,38 @@ function SearchContent() {
               </div>
             </div>
 
-            {/* Category Filter */}
-            <div>
-              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Category</label>
-              <select 
-                value={selectedCategory}
-                onChange={(e) => {
-                  setSelectedCategory(e.target.value);
-                  updateFilters("category", e.target.value);
-                }}
-                className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none focus:border-[#C5A059]"
-              >
-                <option value="">All Categories</option>
-                <option value="Saree">Saree</option>
-                <option value="Dress material">Dress material</option>
-                <option value="Bedsheet">Bedsheet</option>
-                <option value="RedyMade shirts">RedyMade shirts</option>
-                <option value="Redy made Kurti">Redy made Kurti</option>
-                <option value="Kurti dress material">Kurti dress material</option>
-              </select>
-            </div>
+            {FilterContent}
+            {FilterContent}
+          </div>
 
-            {/* Material Filter */}
-            <div>
-              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Material</label>
-              <select 
-                value={selectedMaterial}
-                onChange={(e) => {
-                  setSelectedMaterial(e.target.value);
-                  updateFilters("material", e.target.value);
-                }}
-                className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none focus:border-[#C5A059]"
-              >
-                <option value="">All Materials</option>
-                <option value="Pure Cotton">Pure Cotton</option>
-                <option value="Pure Silk (Pata)">Pure Silk (Pata)</option>
-                <option value="Mix Silk(Pata) (Silk+Polyster)">Mix Silk(Pata) (Silk+Polyster)</option>
-                <option value="Mix Cotton (Cotton+Polyster)">Mix Cotton (Cotton+Polyster)</option>
-              </select>
-            </div>
+          {/* Mobile Filter Floating Button */}
+          <button 
+            onClick={() => setMobileFilterOpen(true)}
+            className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-gradient-to-r from-[#0B2B26] to-[#051815] border border-[#C5A059] text-[#C5A059] px-6 py-3 rounded-full font-bold text-sm uppercase tracking-widest shadow-[0_10px_30px_rgba(0,0,0,0.8)] flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+            Filter & Sort
+          </button>
 
-            {/* Design Filter */}
-            <div>
-              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Design</label>
-              <select 
-                value={selectedDesign}
-                onChange={(e) => {
-                  setSelectedDesign(e.target.value);
-                  updateFilters("design", e.target.value);
-                }}
-                className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none focus:border-[#C5A059]"
-              >
-                <option value="">All Designs</option>
-                <option value="Sambalpuri Ikat (Bandha)">Sambalpuri Ikat (Bandha)</option>
-                <option value="Sambalpuri Traditional Ikat Design">Sambalpuri Traditional Ikat Design</option>
-                <option value="Sambalpuri Modern Ikat Design">Sambalpuri Modern Ikat Design</option>
-                <option value="Sambalpuri Double Ikat (Pashapali/Saptapar)">Sambalpuri Double Ikat</option>
-                <option value="Bomkei">Bomkei</option>
-                <option value="Bomkei+Ikat">Bomkei+Ikat</option>
-              </select>
-            </div>
-
-            {role === "reseller" && (
-              <div className="bg-[#051815] border border-[#C5A059]/30 rounded-xl p-4">
-                <label className="flex items-start space-x-3 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={showResellerOnly} 
-                    onChange={e => setShowResellerOnly(e.target.checked)} 
-                    className="form-checkbox text-[#C5A059] rounded w-4 h-4 mt-0.5 focus:ring-[#C5A059] bg-[#0B2B26] border-[#C5A059]/40" 
-                  />
-                  <div>
-                    <span className="text-xs font-bold text-[#C5A059] uppercase tracking-widest block">Reseller Promotable Only</span>
-                    <span className="text-[10px] text-gray-400 leading-tight">Only show products that offer you a commission</span>
-                  </div>
-                </label>
+          {/* Mobile Filter Drawer */}
+          <div className={`fixed inset-0 z-[70] transition-transform duration-300 lg:hidden ${mobileFilterOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileFilterOpen(false)}></div>
+            <div className="absolute right-0 top-0 bottom-0 w-[85%] max-w-sm bg-[#051815] shadow-2xl border-l border-[#C5A059]/30 flex flex-col">
+              <div className="p-4 flex justify-between items-center border-b border-[#C5A059]/20 bg-[#0B2B26]">
+                <h3 className="text-lg font-serif font-bold text-white">Filters</h3>
+                <button onClick={() => setMobileFilterOpen(false)} className="text-gray-400 hover:text-white">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
               </div>
-            )}
-
+              <div className="p-6 overflow-y-auto flex-1 space-y-6">
+                {FilterContent}
+              </div>
+              <div className="p-4 border-t border-[#C5A059]/20 bg-[#0B2B26]">
+                <button onClick={() => setMobileFilterOpen(false)} className="w-full bg-[#C5A059] hover:bg-yellow-600 text-[#0A1021] py-3 rounded-xl font-bold uppercase tracking-widest transition-colors">
+                  Apply Filters
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Results Grid */}

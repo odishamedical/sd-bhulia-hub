@@ -207,6 +207,29 @@ function DirectoryContent() {
           </p>
         </div>
 
+        {/* Top Blue Pill Filter Menus for Roles */}
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-10 bg-[#0B2B26] p-4 rounded-2xl border border-[#C5A059]/30">
+          {[
+            { label: "All Directory", value: "all" },
+            { label: "Master Weavers", value: "weaver" },
+            { label: "Retail Shops", value: "vendor" },
+            { label: "B2B Wholesalers", value: "wholesaler" },
+            { label: "Raw Materials", value: "raw_material" }
+          ].map(roleOption => (
+            <button 
+              key={roleOption.value}
+              onClick={() => setSelectedRole(roleOption.value)}
+              className={`px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${
+                selectedRole === roleOption.value 
+                  ? 'bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] shadow-[0_0_15px_rgba(197,160,89,0.5)]' 
+                  : 'bg-[#051815] border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021]'
+              }`}
+            >
+              {roleOption.label}
+            </button>
+          ))}
+        </div>
+
         {/* SEO District Links - Fluid Width */}
         <div className="mb-10 flex flex-wrap gap-2 justify-between w-full">
           {ODISHA_DISTRICTS.map((district) => (
