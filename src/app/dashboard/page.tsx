@@ -653,8 +653,8 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
               </div>
               
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street Address</label>
-                <textarea value={address} onChange={e => setAddress(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={2}></textarea>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Complete Address (House No, Street, Landmark) *</label>
+                <textarea required value={address} onChange={e => setAddress(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={3} placeholder="Enter your full address including house/flat number, street name, and any landmarks..."></textarea>
               </div>
             </div>
 
