@@ -45,14 +45,14 @@ export default function PremiumStaticPage() {
     const families = ["/static-pages/Beautiful Family.png", "/static-pages/Beautiful Family1.png"];
     const weavings = ["/static-pages/Sambalpuri Saree Weaving.png", "/static-pages/Sambalpuri Saree Weaving1.png"];
     const models = [
-      "/static-pages/High-Class Fashionable Models-1.PNG",
-      "/static-pages/High-Class Fashionable Models-2.PNG",
-      "/static-pages/High-Class Fashionable Models-3.PNG",
-      "/static-pages/High-Class Fashionable Models-4.PNG",
-      "/static-pages/High-Class Fashionable Models-5.PNG",
-      "/static-pages/High-Class Fashionable Models-6.PNG",
-      "/static-pages/High-Class Fashionable Models-7.PNG",
-      "/static-pages/High-Class Fashionable Models.PNG"
+      "/static-pages/model (1).png",
+      "/static-pages/model (2).png",
+      "/static-pages/model (3).png",
+      "/static-pages/model (4).png",
+      "/static-pages/model (5).png",
+      "/static-pages/model (6).png",
+      "/static-pages/model (7).png",
+      "/static-pages/model (8).png"
     ];
     
     setRandomFamily(families[Math.floor(Math.random() * families.length)]);
@@ -135,8 +135,8 @@ export default function PremiumStaticPage() {
                   {randomModels.map((modelSrc, i) => (
                     <div key={i} className="bg-white p-3 rounded-2xl shadow-xl border border-[#C5A059]/30 relative group overflow-hidden">
                        <div className="absolute inset-0 border-2 border-[#C5A059] m-2 pointer-events-none z-10" style={{ borderStyle: "double" }}></div>
-                       <div className="aspect-[3/4] relative rounded-xl overflow-hidden">
-                         <Image src={modelSrc} alt="Fashionable Model" fill className="object-contain sm:object-cover group-hover:scale-105 transition-transform duration-700 bg-[#0A1021]" />
+                       <div className="aspect-[9/16] relative rounded-xl overflow-hidden">
+                         <Image src={modelSrc} alt="Fashionable Model" fill className="object-cover group-hover:scale-105 transition-transform duration-700 bg-[#0A1021]" />
                        </div>
                     </div>
                   ))}
