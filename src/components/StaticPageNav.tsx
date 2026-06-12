@@ -44,7 +44,7 @@ export default function StaticPageNav() {
     <div className="w-full bg-[#E5D3B3] border-b border-[#C5A059]/20 shadow-sm relative z-40 py-3 px-4 mb-6">
       {/* Navigation Bar */}
       <div className="max-w-[1400px] mx-auto">
-        <ul className="flex flex-wrap justify-center items-center gap-4">
+        <ul className="flex overflow-x-auto whitespace-nowrap hide-scrollbar items-center md:justify-center gap-3 pb-1">
           {navCategories.map((category) => (
             <li 
               key={category.title} 
@@ -62,7 +62,7 @@ export default function StaticPageNav() {
                 `}
               >
                 {category.title}
-                <svg className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === category.title ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                <svg className={`w-4 h-4 shrink-0 transition-transform duration-200 ${activeDropdown === category.title ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
               </button>
 
               {/* Dropdown Menu */}
