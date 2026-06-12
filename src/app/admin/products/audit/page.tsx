@@ -16,7 +16,7 @@ export default function GiTagAuditQueue() {
   async function fetchPendingProducts() {
     setIsLoading(true);
     try {
-      const q = query(collection(db, "products"), where("status", "==", "pending_verification"));
+      const q = query(collection(db, "products"), where("status", "==", "pending_approval"));
       const snapshot = await getDocs(q);
       
       const products: any[] = [];
@@ -96,7 +96,7 @@ export default function GiTagAuditQueue() {
       if (!productId.startsWith("SAR-PEND")) {
         const productRef = doc(db, "products", productId);
         const updates = action === "approve" 
-          ? { status: "live", isBhuliaVerified: true, isGI: true, verifiedAt: new Date().toISOString() }
+          ? { status: "approved", isBhuliaVerified: true, isGI: true, verifiedAt: new Date().toISOString() }
           : { status: "rejected", rejectedAt: new Date().toISOString() };
         
         await updateDoc(productRef, updates);

@@ -12,7 +12,7 @@ export default function VendorDetailPage() {
   const vendorSlug = rawSlug.toLowerCase(); // keep for legacy if needed
 
   const { vendor, loading: vendorLoading } = useVendorBySlug(rawSlug);
-  const { products, loading: productsLoading } = useProducts();
+  const { products, loading: productsLoading } = useProducts({ status: "approved" });
   const { vendors, loading: vendorsLoading } = useVendors();
 
   const [mappedProfile, setMappedProfile] = useState<any>(null);

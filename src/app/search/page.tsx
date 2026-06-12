@@ -15,7 +15,7 @@ import ProductCard from "@/components/ProductCard";
 function SearchContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { products, loading } = useProducts();
+  const { products, loading } = useProducts({ status: "approved" });
   const { addToCart } = useCart();
 
   const [filteredProducts, setFilteredProducts] = useState(products);

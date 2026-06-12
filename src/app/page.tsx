@@ -11,7 +11,7 @@ import ProductCard from "../components/ProductCard";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 
 export default function HomeDraftV2() {
-  const { products, loading: productsLoading } = useProducts();
+  const { products, loading: productsLoading } = useProducts({ status: "approved" });
   const { weavers, loading: weaversLoading } = useWeavers(100);
   const { vendors, loading: vendorsLoading } = useVendors(100);
   const { resellers, loading: resellersLoading } = useResellers(100);

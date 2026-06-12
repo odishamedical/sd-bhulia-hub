@@ -22,7 +22,7 @@ export default function ProductDetailPage() {
   const productSlug = rawId.toLowerCase();
 
   const { product, loading: productLoading } = useProductBySlug(productSlug);
-  const { products, loading: allProductsLoading } = useProducts();
+  const { products, loading: allProductsLoading } = useProducts({ status: "approved" });
 
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);

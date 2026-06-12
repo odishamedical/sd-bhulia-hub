@@ -12,7 +12,7 @@ export default function WeaverStorePage() {
   const weaverSlug = rawSlug.toLowerCase(); // keep for legacy if needed
 
   const { weaver, loading: weaverLoading } = useWeaverBySlug(rawSlug);
-  const { products, loading: productsLoading } = useProducts();
+  const { products, loading: productsLoading } = useProducts({ status: "approved" });
   const { weavers, loading: weaversLoading } = useWeavers();
 
   const [mappedProfile, setMappedProfile] = useState<any>(null);

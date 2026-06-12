@@ -170,12 +170,21 @@ export function useAuthUsers() {
   return { authUsers, loading };
 }
 
-export function useProducts() {
+export function useProducts(filters?: { status?: string, sellerId?: string }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, "products"));
+    let q = query(collection(db, "products"));
+    
+    if (filters?.status && filters?.sellerId) {
+      q = query(collection(db, "products"), where("status", "==", filters.status), where("sellerId", "==", filters.sellerId));
+    } else if (filters?.status) {
+      q = query(collection(db, "products"), where("status", "==", filters.status));
+    } else if (filters?.sellerId) {
+      q = query(collection(db, "products"), where("sellerId", "==", filters.sellerId));
+    }
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data: Product[] = [];
       snapshot.forEach((doc) => {
@@ -189,7 +198,7 @@ export function useProducts() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [filters?.status, filters?.sellerId]);
 
   return { products, loading };
 }
