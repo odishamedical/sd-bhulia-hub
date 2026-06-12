@@ -206,7 +206,7 @@ function SearchContent() {
       
       {/* Top Blue Pill Filter Menus - Full Width */}
       <div className="w-full bg-[#E5D3B3] border-b border-[#C5A059]/20 relative z-40 mb-6 py-3 px-4 shadow-sm">
-        <div className="max-w-[1400px] mx-auto flex flex-wrap items-center justify-center gap-4">
+        <div className="max-w-[1400px] mx-auto flex overflow-x-auto whitespace-nowrap hide-scrollbar items-center md:justify-center gap-3 pb-1">
           
           {/* Type Dropdown */}
           <div className="relative group">
@@ -317,10 +317,10 @@ function SearchContent() {
           {/* Mobile Filter Floating Button */}
           <button 
             onClick={() => setMobileFilterOpen(true)}
-            className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-gradient-to-r from-[#0B2B26] to-[#051815] border border-[#C5A059] text-[#C5A059] px-6 py-3 rounded-full font-bold text-sm uppercase tracking-widest shadow-[0_10px_30px_rgba(0,0,0,0.8)] flex items-center gap-2"
+            className="lg:hidden fixed bottom-24 left-1/2 -translate-x-1/2 z-[60] bg-gradient-to-r from-[#0B2B26] to-[#051815] border border-[#C5A059] text-[#C5A059] px-6 py-3 rounded-full font-bold text-sm uppercase tracking-widest shadow-[0_10px_30px_rgba(0,0,0,0.8)] flex items-center gap-2"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-            Filter & Sort
+            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+            Filter Catalog
           </button>
 
           {/* Mobile Filter Drawer */}
@@ -395,16 +395,6 @@ function SearchContent() {
         </div>
       </div>
 
-      {/* Mobile Sticky Filter Button */}
-      <div className="lg:hidden fixed bottom-16 left-0 right-0 p-4 z-40 pointer-events-none flex justify-center">
-        <button 
-          onClick={() => setMobileFilterOpen(true)}
-          className="pointer-events-auto flex items-center gap-2 bg-[#0A3A35] border-2 border-[#C5A059] text-[#C5A059] px-6 py-3 rounded-full font-bold text-xs uppercase tracking-widest shadow-[0_4px_20px_rgba(197,160,89,0.3)]"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
-          Sort & Filter
-        </button>
-      </div>
 
       {/* Mobile Filter Bottom Sheet */}
       {mobileFilterOpen && (

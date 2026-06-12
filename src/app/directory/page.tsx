@@ -19,6 +19,7 @@ function DirectoryContent() {
   const searchParams = useSearchParams();
   const initialSearch = searchParams?.get("search") || "";
   const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   useEffect(() => {
     if (searchParams?.get("search")) {
@@ -192,7 +193,7 @@ function DirectoryContent() {
       
       {/* Top Blue Pill Filter Menus for Roles - Full Width */}
       <div className="w-full bg-[#E5D3B3] border-b border-[#C5A059]/20 relative z-40 mb-6 py-3 px-4 shadow-sm">
-        <div className="max-w-[1400px] mx-auto flex flex-wrap items-center justify-center gap-4">
+        <div className="max-w-[1400px] mx-auto flex overflow-x-auto whitespace-nowrap hide-scrollbar items-center md:justify-center gap-4 pb-1">
           {[
             { label: "All Directory", value: "all" },
             { label: "Master Weavers", value: "weaver" },
@@ -229,9 +230,37 @@ function DirectoryContent() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           
-          {/* Left Sidebar */}
-          <div className="w-full lg:w-80 shrink-0">
-            <div className="sticky top-24">
+          {/* Mobile Filter Button */}
+          <div className="lg:hidden w-full -mt-2 mb-2">
+            <button 
+              onClick={() => setIsMobileFilterOpen(true)}
+              className="w-full bg-[#0B2B26] border border-[#C5A059]/30 text-[#C5A059] py-3 rounded-xl font-bold uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+              Show Advanced Filters
+            </button>
+          </div>
+
+          {/* Mobile Overlay */}
+          {isMobileFilterOpen && (
+            <div 
+              className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm"
+              onClick={() => setIsMobileFilterOpen(false)}
+            />
+          )}
+
+          {/* Sidebar Drawer */}
+          <div className={`fixed inset-y-0 left-0 z-50 w-[85%] max-w-sm bg-[#051815] shadow-[0_0_50px_rgba(0,0,0,0.8)] transform transition-transform duration-300 ease-out lg:relative lg:translate-x-0 lg:w-80 lg:shrink-0 lg:z-auto lg:shadow-none lg:bg-transparent overflow-y-auto border-r border-[#C5A059]/20 lg:border-none ${isMobileFilterOpen ? "translate-x-0" : "-translate-x-full"}`}>
+            
+            {/* Mobile Close Button */}
+            <div className="lg:hidden p-4 flex justify-between items-center border-b border-[#C5A059]/20 mb-4 bg-[#0B2B26]">
+              <span className="text-[#C5A059] font-bold uppercase tracking-widest text-xs">Filters</span>
+              <button onClick={() => setIsMobileFilterOpen(false)} className="text-[#C5A059] p-2 bg-[#051815] rounded-full border border-[#C5A059]/30">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            <div className="sticky top-24 px-4 lg:px-0 pb-10 lg:pb-0">
               <DirectorySidebarFilter 
                 selectedCountry={selectedCountry}
                 setSelectedCountry={setSelectedCountry}
