@@ -40,10 +40,10 @@ export default function StaticPageNav() {
   ];
 
   return (
-    <div className="w-full relative z-40 bg-[#FBF8F1]">
+    <div className="w-full bg-[#E5D3B3] border-b border-[#C5A059]/20 shadow-sm relative z-40 py-3 px-4 mb-6">
       {/* Navigation Bar */}
-      <div className="max-w-[1400px] mx-auto px-4 pt-6 pb-2 md:pt-8 md:pb-4">
-        <ul className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
+      <div className="max-w-[1400px] mx-auto">
+        <ul className="flex flex-wrap justify-center items-center gap-4">
           {navCategories.map((category) => (
             <li 
               key={category.title} 

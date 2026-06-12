@@ -191,7 +191,7 @@ function DirectoryContent() {
     <div className="min-h-screen bg-[#051815] font-sans pt-0 pb-20 relative overflow-hidden">
       
       {/* Top Blue Pill Filter Menus for Roles - Full Width */}
-      <div className="w-full bg-[#FBF8F1] border-b border-gray-200 relative z-40 mb-6 py-3 px-4 shadow-sm">
+      <div className="w-full bg-[#E5D3B3] border-b border-[#C5A059]/20 relative z-40 mb-6 py-3 px-4 shadow-sm">
         <div className="max-w-[1400px] mx-auto flex flex-wrap items-center justify-center gap-4">
           {[
             { label: "All Directory", value: "all" },
