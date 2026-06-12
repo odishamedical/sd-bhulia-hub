@@ -135,8 +135,8 @@ export default function PremiumStaticPage() {
                   {randomModels.map((modelSrc, i) => (
                     <div key={i} className="bg-white p-3 rounded-2xl shadow-xl border border-[#C5A059]/30 relative group overflow-hidden">
                        <div className="absolute inset-0 border-2 border-[#C5A059] m-2 pointer-events-none z-10" style={{ borderStyle: "double" }}></div>
-                       <div className="aspect-[2/3] relative rounded-xl overflow-hidden">
-                         <Image src={modelSrc} alt="Fashionable Model" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                       <div className="aspect-[3/4] relative rounded-xl overflow-hidden">
+                         <Image src={modelSrc} alt="Fashionable Model" fill className="object-contain sm:object-cover group-hover:scale-105 transition-transform duration-700 bg-[#0A1021]" />
                        </div>
                     </div>
                   ))}
