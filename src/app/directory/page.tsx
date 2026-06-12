@@ -188,27 +188,11 @@ function DirectoryContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#051815] font-sans pt-12 pb-20 relative overflow-hidden">
+    <div className="min-h-screen bg-[#051815] font-sans pt-0 pb-20 relative overflow-hidden">
       
-      <div className="w-full px-4 md:px-8 lg:px-12 relative z-10">
-        
-        {/* Breadcrumbs Navigation */}
-        <div className="mb-4">
-          <Breadcrumbs items={[{ label: "Verified Directory" }]} />
-        </div>
-
-        {/* Sleek Header - Left Aligned */}
-        <div className="mb-8 text-left w-full">
-          <h1 className="text-xl md:text-3xl lg:text-4xl xl:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-3 leading-tight truncate-multiline">
-            The Original Sambalpuri: Weavers, Stores, and Raw Material Suppliers.
-          </h1>
-          <p className="text-gray-300 w-full text-sm md:text-base leading-relaxed">
-            Discover Authentic Master Weavers and Verified Retail Shops for original Sambalpuri Handloom Sarees, Dress Materials, Bedsheets, and Fabrics Direct from Odisha.
-          </p>
-        </div>
-
-        {/* Top Blue Pill Filter Menus for Roles */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-10 bg-[#0B2B26] p-4 rounded-2xl border border-[#C5A059]/30">
+      {/* Top Blue Pill Filter Menus for Roles - Full Width */}
+      <div className="w-full bg-[#FBF8F1] border-b border-gray-200 relative z-40 mb-6 py-3 px-4 shadow-sm">
+        <div className="max-w-[1400px] mx-auto flex flex-wrap items-center justify-center gap-4">
           {[
             { label: "All Directory", value: "all" },
             { label: "Master Weavers", value: "weaver" },
@@ -221,38 +205,21 @@ function DirectoryContent() {
               onClick={() => setSelectedRole(roleOption.value)}
               className={`px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${
                 selectedRole === roleOption.value 
-                  ? 'bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] shadow-[0_0_15px_rgba(197,160,89,0.5)]' 
-                  : 'bg-[#051815] border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021]'
+                  ? 'bg-[#0052A3] text-white shadow-md ring-4 ring-[#0066CC]/30 -translate-y-1' 
+                  : 'bg-[#0066CC]/90 hover:bg-[#0052A3] text-white border border-white/30 shadow-md backdrop-blur-md'
               }`}
             >
               {roleOption.label}
             </button>
           ))}
         </div>
+      </div>
 
-        {/* SEO District Links - Fluid Width */}
-        <div className="mb-10 flex flex-wrap gap-2 justify-between w-full">
-          {ODISHA_DISTRICTS.map((district) => (
-            <button 
-              key={district} 
-              onClick={() => setSelectedDistrict(district)}
-              className={`border px-3 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-widest transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 ${
-                selectedDistrict === district 
-                  ? 'bg-[#C5A059] text-[#051815] border-[#C5A059]' 
-                  : 'bg-[#051815] border-[#C5A059]/20 text-gray-400 hover:text-[#C5A059] hover:border-[#C5A059]/60 hover:bg-[#0B2B26]'
-              }`}
-            >
-              {district}
-            </button>
-          ))}
-          {selectedDistrict !== "all" && (
-            <button 
-              onClick={() => setSelectedDistrict("all")}
-              className="bg-red-900/40 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-widest hover:bg-red-900/60 transition-all"
-            >
-              Clear Filter
-            </button>
-          )}
+      <div className="w-full px-4 md:px-8 lg:px-12 relative z-10">
+        
+        {/* Breadcrumbs Navigation */}
+        <div className="mb-8">
+          <Breadcrumbs items={[{ label: "Verified Directory" }]} />
         </div>
 
         {/* Global Top Banner / Ads */}
@@ -356,6 +323,46 @@ function DirectoryContent() {
         )}
           </div>
         </div>
+
+        {/* SEO Content at Bottom */}
+        <div className="mt-16 pt-8 border-t border-[#C5A059]/10">
+          <div className="mb-6 text-center max-w-4xl mx-auto">
+            <h2 className="text-lg md:text-xl font-serif font-bold text-gray-400 mb-2">
+              The Original Sambalpuri: Weavers, Stores, and Raw Material Suppliers.
+            </h2>
+            <p className="text-gray-500 text-xs md:text-sm leading-relaxed">
+              Discover Authentic Master Weavers and Verified Retail Shops for original Sambalpuri Handloom Sarees, Dress Materials, Bedsheets, and Fabrics Direct from Odisha.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2 justify-center w-full max-w-5xl mx-auto opacity-70 hover:opacity-100 transition-opacity">
+            {ODISHA_DISTRICTS.map((district) => (
+              <button 
+                key={district} 
+                onClick={() => {
+                  setSelectedDistrict(district);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={`border px-2 py-1 rounded-md text-[9px] uppercase font-bold tracking-wider transition-all duration-300 ${
+                  selectedDistrict === district 
+                    ? 'bg-[#C5A059] text-[#051815] border-[#C5A059]' 
+                    : 'bg-transparent border-[#C5A059]/20 text-gray-500 hover:text-[#C5A059] hover:border-[#C5A059]/40'
+                }`}
+              >
+                {district}
+              </button>
+            ))}
+            {selectedDistrict !== "all" && (
+              <button 
+                onClick={() => setSelectedDistrict("all")}
+                className="bg-red-900/20 text-red-400 border border-red-500/20 px-2 py-1 rounded-md text-[9px] uppercase font-bold tracking-wider hover:bg-red-900/40 transition-all"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+
       </div>
     </div>
   );

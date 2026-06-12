@@ -200,7 +200,63 @@ function SearchContent() {
   );
 
   return (
-    <div className="min-h-screen bg-[#051815] font-sans pt-6 pb-20">
+    <div className="min-h-screen bg-[#051815] font-sans pt-0 pb-20">
+      
+      {/* Top Blue Pill Filter Menus - Full Width */}
+      <div className="w-full bg-[#FBF8F1] border-b border-gray-200 relative z-40 mb-6 py-3 px-4 shadow-sm">
+        <div className="max-w-[1400px] mx-auto flex flex-wrap items-center justify-center gap-4">
+          
+          {/* Type Dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#0066CC]/90 hover:bg-[#0052A3] text-white border border-white/30 shadow-md backdrop-blur-md transition-all text-xs md:text-sm font-bold uppercase tracking-widest">
+              <span>{selectedCategory || "Browse By Type"}</span>
+              <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[220px]">
+              <div className="bg-white/95 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-2xl p-2 flex flex-col">
+                <button onClick={() => { setSelectedCategory(""); updateFilters("category", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-700 hover:text-[#0066CC] hover:bg-[#0066CC]/10 rounded-lg">All Types</button>
+                {["Saree", "Dress material", "Bedsheet", "RedyMade shirts", "Redy made Kurti", "Kurti dress material"].map(cat => (
+                  <button key={cat} onClick={() => { setSelectedCategory(cat); updateFilters("category", cat); }} className={`text-left px-4 py-2 text-xs font-bold rounded-lg transition-colors ${selectedCategory === cat ? 'bg-[#0066CC] text-white' : 'text-gray-700 hover:text-[#0066CC] hover:bg-[#0066CC]/10'}`}>{cat}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Material Dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#0066CC]/90 hover:bg-[#0052A3] text-white border border-white/30 shadow-md backdrop-blur-md transition-all text-xs md:text-sm font-bold uppercase tracking-widest">
+              <span>{selectedMaterial || "Browse By Material"}</span>
+              <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[220px]">
+              <div className="bg-white/95 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-2xl p-2 flex flex-col">
+                <button onClick={() => { setSelectedMaterial(""); updateFilters("material", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-700 hover:text-[#0066CC] hover:bg-[#0066CC]/10 rounded-lg">All Materials</button>
+                {["Pure Cotton", "Pure Silk (Pata)", "Mix Silk(Pata) (Silk+Polyster)", "Mix Cotton (Cotton+Polyster)"].map(mat => (
+                  <button key={mat} onClick={() => { setSelectedMaterial(mat); updateFilters("material", mat); }} className={`text-left px-4 py-2 text-xs font-bold rounded-lg transition-colors ${selectedMaterial === mat ? 'bg-[#0066CC] text-white' : 'text-gray-700 hover:text-[#0066CC] hover:bg-[#0066CC]/10'}`}>{mat}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Design Dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#0066CC]/90 hover:bg-[#0052A3] text-white border border-white/30 shadow-md backdrop-blur-md transition-all text-xs md:text-sm font-bold uppercase tracking-widest">
+              <span>{selectedDesign || "Browse By Design"}</span>
+              <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[260px]">
+              <div className="bg-white/95 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-2xl p-2 flex flex-col">
+                <button onClick={() => { setSelectedDesign(""); updateFilters("design", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-700 hover:text-[#0066CC] hover:bg-[#0066CC]/10 rounded-lg">All Designs</button>
+                {["Sambalpuri Ikat (Bandha)", "Sambalpuri Traditional Ikat Design", "Sambalpuri Modern Ikat Design", "Sambalpuri Double Ikat (Pashapali/Saptapar)", "Bomkei", "Bomkei+Ikat"].map(des => (
+                  <button key={des} onClick={() => { setSelectedDesign(des); updateFilters("design", des); }} className={`text-left px-4 py-2 text-xs font-bold rounded-lg transition-colors ${selectedDesign === des ? 'bg-[#0066CC] text-white' : 'text-gray-700 hover:text-[#0066CC] hover:bg-[#0066CC]/10'}`}>{des}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <div className="w-full px-4 sm:px-6 lg:px-8">
         
         {/* Breadcrumbs */}
@@ -212,57 +268,6 @@ function SearchContent() {
         <div className="mb-6">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#C5A059] mb-2">Global Catalog Search</h1>
           <p className="text-gray-300 text-sm">Browse 100% Bhulia.com verified sovereign handloom masterpieces directly from the weavers.</p>
-        </div>
-
-        {/* Top Blue Pill Filter Menus */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-8 bg-[#0B2B26] p-4 rounded-2xl border border-[#C5A059]/30 relative z-40">
-          {/* Type Dropdown */}
-          <div className="relative group">
-            <button className="flex items-center gap-2 bg-[#051815] border border-[#C5A059]/50 hover:bg-[#C5A059] hover:text-[#0A1021] text-[#C5A059] px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all">
-              <span>{selectedCategory || "Browse By Type"}</span>
-              <svg className="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-            </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[220px]">
-              <div className="bg-[#051815]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-2 flex flex-col">
-                <button onClick={() => { setSelectedCategory(""); updateFilters("category", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-300 hover:text-white hover:bg-white/10 rounded-lg">All Types</button>
-                {["Saree", "Dress material", "Bedsheet", "RedyMade shirts", "Redy made Kurti", "Kurti dress material"].map(cat => (
-                  <button key={cat} onClick={() => { setSelectedCategory(cat); updateFilters("category", cat); }} className={`text-left px-4 py-2 text-xs font-bold rounded-lg transition-colors ${selectedCategory === cat ? 'bg-[#C5A059] text-[#0A1021]' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}>{cat}</button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Material Dropdown */}
-          <div className="relative group">
-            <button className="flex items-center gap-2 bg-[#051815] border border-[#C5A059]/50 hover:bg-[#C5A059] hover:text-[#0A1021] text-[#C5A059] px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all">
-              <span>{selectedMaterial || "Browse By Material"}</span>
-              <svg className="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-            </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[220px]">
-              <div className="bg-[#051815]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-2 flex flex-col">
-                <button onClick={() => { setSelectedMaterial(""); updateFilters("material", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-300 hover:text-white hover:bg-white/10 rounded-lg">All Materials</button>
-                {["Pure Cotton", "Pure Silk (Pata)", "Mix Silk(Pata) (Silk+Polyster)", "Mix Cotton (Cotton+Polyster)"].map(mat => (
-                  <button key={mat} onClick={() => { setSelectedMaterial(mat); updateFilters("material", mat); }} className={`text-left px-4 py-2 text-xs font-bold rounded-lg transition-colors ${selectedMaterial === mat ? 'bg-[#C5A059] text-[#0A1021]' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}>{mat}</button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Design Dropdown */}
-          <div className="relative group">
-            <button className="flex items-center gap-2 bg-[#051815] border border-[#C5A059]/50 hover:bg-[#C5A059] hover:text-[#0A1021] text-[#C5A059] px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all">
-              <span>{selectedDesign || "Browse By Design"}</span>
-              <svg className="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-            </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 min-w-[260px]">
-              <div className="bg-[#051815]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-2 flex flex-col">
-                <button onClick={() => { setSelectedDesign(""); updateFilters("design", ""); }} className="text-left px-4 py-2 text-xs font-bold text-gray-300 hover:text-white hover:bg-white/10 rounded-lg">All Designs</button>
-                {["Sambalpuri Ikat (Bandha)", "Sambalpuri Traditional Ikat Design", "Sambalpuri Modern Ikat Design", "Sambalpuri Double Ikat (Pashapali/Saptapar)", "Bomkei", "Bomkei+Ikat"].map(des => (
-                  <button key={des} onClick={() => { setSelectedDesign(des); updateFilters("design", des); }} className={`text-left px-4 py-2 text-xs font-bold rounded-lg transition-colors ${selectedDesign === des ? 'bg-[#C5A059] text-[#0A1021]' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}>{des}</button>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 2xl:grid-cols-6 gap-8">
