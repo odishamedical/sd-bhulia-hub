@@ -33,6 +33,7 @@ export default function StaticPageNav() {
     {
       title: "ARTISANS & SELLERS",
       links: [
+        { name: "Register Your Business", slug: "/verify" },
         { name: "Artisan Payout Guide", slug: "artisan-payout-guide" },
         { name: "Live Silk & Yarn Rates", slug: "live-silk-rates" },
       ]
@@ -72,7 +73,7 @@ export default function StaticPageNav() {
                       {category.links.map((link) => (
                         <Link 
                           key={link.slug} 
-                          href={`/p/${link.slug}`}
+                          href={link.slug.startsWith('/') ? link.slug : `/p/${link.slug}`}
                           className="block px-6 py-3 text-sm font-bold text-[#0A1021] hover:bg-[#0066CC]/10 hover:text-[#0066CC] transition-colors border-b border-gray-100 last:border-0"
                         >
                           {link.name}

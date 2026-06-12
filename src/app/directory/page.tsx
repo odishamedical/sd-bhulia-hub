@@ -324,6 +324,18 @@ function DirectoryContent() {
           </div>
         </div>
 
+        {/* Call to Action Banner */}
+        <div className="mt-12 bg-gradient-to-r from-[#0066CC] to-[#0052A3] rounded-3xl p-8 md:p-12 text-center shadow-2xl relative overflow-hidden group">
+          <div className="absolute inset-0 bg-[#C5A059]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <h2 className="text-2xl md:text-4xl font-serif font-bold text-white mb-4 relative z-10">Are you a Master Weaver or Retailer?</h2>
+          <p className="text-blue-100 text-sm md:text-base mb-8 max-w-2xl mx-auto relative z-10">
+            Join the Bhulia.com directory to get a verified badge, priority ranking in search results, and access to the seller dashboard.
+          </p>
+          <Link href="/verify" className="inline-block bg-[#C5A059] hover:bg-[#D4AF37] text-[#0A1021] font-black text-sm uppercase tracking-widest px-10 py-4 rounded-full transition-all shadow-lg hover:-translate-y-1 hover:shadow-xl relative z-10">
+            Register Your Business Here
+          </Link>
+        </div>
+
         {/* SEO Content at Bottom */}
         <div className="mt-16 pt-8 border-t border-[#C5A059]/10">
           <div className="mb-6 text-center max-w-4xl mx-auto">
