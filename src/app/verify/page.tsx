@@ -7,7 +7,7 @@ import { db, storage } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAuth } from "@/context/AuthContext";
-import { INDIAN_STATES, ODISHA_DISTRICTS, WEAVER_DISTRICTS } from "@/lib/locations";
+import { INDIAN_STATES, ODISHA_DISTRICTS, WEAVER_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
 
 function VerifyContent() {
   const { user } = useAuth();
@@ -31,6 +31,8 @@ function VerifyContent() {
   // Address State
   const [state, setState] = useState("Odisha");
   const [district, setDistrict] = useState("");
+  const [block, setBlock] = useState("");
+  const [cityTownVillage, setCityTownVillage] = useState("");
   const [pincode, setPincode] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
   
@@ -87,10 +89,14 @@ function VerifyContent() {
         email,
         whatsapp,
         businessName,
-        state,
-        district,
-        pincode,
-        streetAddress,
+        address: {
+          state,
+          district,
+          block,
+          cityTownVillage,
+          pincode,
+          streetAddress
+        },
         gst: gst || null,
         role,
         documentId,
@@ -192,17 +198,37 @@ function VerifyContent() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-gray-300 text-sm font-semibold mb-2">District / City</label>
+                    <label className="block text-gray-300 text-sm font-semibold mb-2">District</label>
                     {state === "Odisha" ? (
-                      <select required value={district} onChange={(e) => setDistrict(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors cursor-pointer">
+                      <select required value={district} onChange={(e) => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors cursor-pointer">
                         <option value="">Select District</option>
                         {getDistrictOptions().map(d => (
                           <option key={d} value={d}>{d}</option>
                         ))}
                       </select>
                     ) : (
-                      <input required value={district} onChange={(e) => setDistrict(e.target.value)} type="text" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="Enter District/City" />
+                      <input required value={district} onChange={(e) => setDistrict(e.target.value)} type="text" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="Enter District" />
                     )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-gray-300 text-sm font-semibold mb-2">Block</label>
+                    {state === "Odisha" && district ? (
+                      <select value={block} onChange={(e) => setBlock(e.target.value)} className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors cursor-pointer">
+                        <option value="">Select Block (Optional)</option>
+                        {(ODISHA_DISTRICT_BLOCKS[district] || []).map(b => (
+                          <option key={b} value={b}>{b}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input value={block} onChange={(e) => setBlock(e.target.value)} type="text" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="Enter Block (Optional)" />
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-gray-300 text-sm font-semibold mb-2">City / Town / Village</label>
+                    <input required value={cityTownVillage} onChange={(e) => setCityTownVillage(e.target.value)} type="text" className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors" placeholder="Enter City/Town/Village" />
                   </div>
                 </div>
 
