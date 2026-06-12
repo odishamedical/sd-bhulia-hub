@@ -2893,8 +2893,17 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
 
       {activeTab === "products" && (
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 animate-in fade-in">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Product Approvals (Bhulia.com Validation)</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-blue-50 border-l-4 border-blue-600 p-6 rounded-xl mb-6 flex items-center justify-between">
+            <div>
+              <h3 className="text-blue-800 font-bold text-lg">The Admin Hub has Moved!</h3>
+              <p className="text-blue-600 text-sm mt-1">We have upgraded to the new Enterprise Admin Engine. Please use the new hub for all Product Approvals, KYC, and Orders.</p>
+            </div>
+            <a href="/admin/dashboard" className="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl shadow hover:bg-blue-700 transition-colors">
+              Go to Enterprise Admin →
+            </a>
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-6 line-through text-gray-400">Product Approvals (Legacy)</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 opacity-50 pointer-events-none">
             {pendingProducts.map(p => (
               <div key={p.id} className="p-6 border border-gray-200 rounded-2xl flex flex-col justify-between group hover:border-[#0070F3]/30 transition-colors">
                 <div>
