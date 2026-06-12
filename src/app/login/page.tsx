@@ -19,11 +19,11 @@ function LoginForm() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        router.push(redirectUrl);
+        window.location.href = redirectUrl;
       }
     });
     return () => unsubscribe();
-  }, [router, redirectUrl]);
+  }, [redirectUrl]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +38,7 @@ function LoginForm() {
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
-      router.push(redirectUrl);
+      window.location.href = redirectUrl;
     } catch (err: any) {
       setError(err.message);
     }
@@ -47,7 +47,7 @@ function LoginForm() {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-      router.push(redirectUrl);
+      window.location.href = redirectUrl;
     } catch (err: any) {
       setError(err.message);
     }
