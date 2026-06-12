@@ -214,7 +214,20 @@ export default function DashboardLayout({
         </aside>
 
         {/* RIGHT MAIN CONTENT */}
-        <div className="flex-1 space-y-8 min-w-0">
+        <div className="flex-1 space-y-6 min-w-0">
+          {/* MOBILE TOP NAVIGATION */}
+          <div className="lg:hidden flex overflow-x-auto gap-2 pb-2 custom-scrollbar -mx-4 px-4 sm:-mx-6 sm:px-6 scroll-smooth snap-x">
+            {navItems.map(item => (
+              <button
+                key={item.id}
+                onClick={() => onTabChange(item.id)}
+                className={`whitespace-nowrap snap-center px-4 py-2 rounded-full text-sm font-bold transition-all flex items-center ${activeTab === item.id ? "bg-[#0074E4] text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
+              >
+                {item.icon && <span className="mr-2">{item.icon}</span>}
+                {item.label}
+              </button>
+            ))}
+          </div>
           {children}
         </div>
       </div>

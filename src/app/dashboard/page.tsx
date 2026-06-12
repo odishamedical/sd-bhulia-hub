@@ -334,8 +334,121 @@ export default function DashboardPage() {
    1. CUSTOMER DASHBOARD
    ========================================== */
 function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
+  const [userData, setUserData] = useState<any>(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [hasSkippedPopup, setHasSkippedPopup] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Profile fields
+  const [personalName, setPersonalName] = useState("");
+  const [country, setCountry] = useState("India");
+  const [state, setState] = useState("Odisha");
+  const [district, setDistrict] = useState("");
+  const [block, setBlock] = useState("");
+  const [townVillage, setTownVillage] = useState("");
+  const [pin, setPin] = useState("");
+  const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      getDoc(doc(db, "users", auth.currentUser.uid)).then(snap => {
+        if (snap.exists()) {
+          const data = snap.data();
+          setUserData(data);
+          if (!data.phone && !hasSkippedPopup) {
+            setShowPopup(true);
+          }
+          setPersonalName(data.personalName || data.name || "");
+          setPhone(data.phone || "");
+          setWhatsapp(data.whatsapp || "");
+          setCountry(data.country || "India");
+          setState(data.state || "Odisha");
+          setDistrict(data.district || "");
+          setBlock(data.block || "");
+          setTownVillage(data.townVillage || "");
+          setPin(data.pin || "");
+          setAddress(data.address || "");
+        }
+      });
+    }
+  }, [hasSkippedPopup]);
+
+  const handleSavePhonePopup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth.currentUser) return;
+    setIsSaving(true);
+    try {
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        phone,
+        whatsapp
+      });
+      setShowPopup(false);
+      const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
+      setUserData(snap.data());
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save.");
+    }
+    setIsSaving(false);
+  };
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth.currentUser) return;
+    setIsSaving(true);
+    try {
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        personalName,
+        phone,
+        whatsapp,
+        country,
+        state,
+        district,
+        block,
+        townVillage,
+        pin,
+        address
+      });
+      alert("Profile updated successfully!");
+      const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
+      setUserData(snap.data());
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update profile.");
+    }
+    setIsSaving(false);
+  };
+
+  const isProfileIncomplete = userData && (!userData.phone || !userData.address || !userData.district);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* POPUP OVERLAY */}
+      {showPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl animate-in fade-in zoom-in-95">
+            <h2 className="text-2xl font-black text-gray-900 mb-2">Welcome to Bhulia!</h2>
+            <p className="text-sm text-gray-500 mb-6">Please provide your contact details to ensure smooth order deliveries and communication.</p>
+            <form onSubmit={handleSavePhonePopup} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number *</label>
+                <input type="text" required value={phone} onChange={e => setPhone(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:border-[#0070F3] outline-none" placeholder="+91" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Number</label>
+                <input type="text" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:border-[#0070F3] outline-none" placeholder="+91" />
+              </div>
+              <div className="flex gap-3 pt-4">
+                <button type="button" onClick={() => { setShowPopup(false); setHasSkippedPopup(true); }} className="flex-1 px-4 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold hover:bg-gray-200">Skip for now</button>
+                <button type="submit" disabled={isSaving} className="flex-1 px-4 py-3 bg-[#0074E4] text-white rounded-xl font-bold hover:bg-blue-600">{isSaving ? "Saving..." : "Save Details"}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Customer Hub</h1>
@@ -345,6 +458,18 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
 
       {activeTab === "home" && (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+          {isProfileIncomplete && !showPopup && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-3xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+              <div>
+                <h3 className="text-lg font-bold text-yellow-900">Complete Your Profile</h3>
+                <p className="text-sm text-yellow-800 mt-1">Your shipping address and contact info are missing. You must complete this to place orders.</p>
+              </div>
+              <button onClick={() => onTabChange("profile")} className="shrink-0 px-6 py-3 bg-yellow-400 text-yellow-900 rounded-xl font-bold hover:bg-yellow-500 transition-colors shadow-sm">
+                Complete Now →
+              </button>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between group hover:border-[#0070F3]/30 transition-colors">
               <div>
@@ -452,30 +577,96 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
       )}
 
       {activeTab === "profile" && (
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-3xl">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Profile Settings</h2>
-          <div className="space-y-5">
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name</label>
-              <input type="text" className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" defaultValue="Customer User" />
+          <form onSubmit={handleSaveProfile} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name *</label>
+                <input type="text" required value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
+                <input type="email" className="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50 text-gray-500 cursor-not-allowed" value={auth.currentUser?.email || ""} disabled />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number *</label>
+                <input type="text" required value={phone} onChange={e => setPhone(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Number</label>
+                <input type="text" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+              </div>
             </div>
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
-              <input type="email" className="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50 text-gray-500 cursor-not-allowed" disabled />
+
+            <div className="border-t border-gray-100 pt-6">
+              <h3 className="font-bold text-gray-900 mb-4">Location & Address</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+                  <select value={country} onChange={e => setCountry(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none">
+                    <option value="India">India</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State *</label>
+                  <select required value={state} onChange={e => setState(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none">
+                    <option value="">Select State</option>
+                    {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District *</label>
+                  {state === "Odisha" ? (
+                    <select required value={district} onChange={e => setDistrict(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none">
+                      <option value="">Select District</option>
+                      {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                    </select>
+                  ) : (
+                    <input type="text" required value={district} onChange={e => setDistrict(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none" />
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block / Tehsil</label>
+                  {state === "Odisha" && district && ODISHA_DISTRICT_BLOCKS[district as keyof typeof ODISHA_DISTRICT_BLOCKS] ? (
+                    <select value={block} onChange={e => setBlock(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none">
+                      <option value="">Select Block</option>
+                      {ODISHA_DISTRICT_BLOCKS[district as keyof typeof ODISHA_DISTRICT_BLOCKS].map(b => <option key={b} value={b}>{b}</option>)}
+                    </select>
+                  ) : (
+                    <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none" />
+                  )}
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town/Village</label>
+                  <input type="text" value={townVillage} onChange={e => setTownVillage(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code *</label>
+                  <input type="text" required value={pin} onChange={e => setPin(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none" />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street Address</label>
+                <textarea value={address} onChange={e => setAddress(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={2}></textarea>
+              </div>
             </div>
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Shipping Address</label>
-              <textarea className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={3}></textarea>
-            </div>
-            <button className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm mt-4">Save Changes</button>
-          </div>
+
+            <button type="submit" disabled={isSaving} className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm mt-4">
+              {isSaving ? "Saving..." : "Save Profile"}
+            </button>
+          </form>
         </div>
       )}
       {activeTab === "seller_hub" && (
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in">
           <h2 className="text-xl font-bold text-gray-900 mb-2">Become a Seller or Reseller</h2>
           <p className="text-sm text-gray-500 font-medium mb-6">Join the Bhulia ecosystem to start selling or earning commissions.</p>
-          <SellerSetupHub userRole={role || "customer"} />
+          <SellerSetupHub userRole={userData?.role || "customer"} />
         </div>
       )}
     </div>
