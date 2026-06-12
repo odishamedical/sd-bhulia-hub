@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation";
 import { useVendors, useWeavers } from "@/lib/db-hooks";
 import { ODISHA_DISTRICTS } from "@/lib/locations";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
-import AdBannerCard from "@/components/AdBannerCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DirectorySidebarFilter from "@/components/DirectorySidebarFilter";
 
