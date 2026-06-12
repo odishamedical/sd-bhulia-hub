@@ -58,9 +58,9 @@ export default function PremiumStaticPage() {
     setRandomFamily(families[Math.floor(Math.random() * families.length)]);
     setRandomWeaving(weavings[Math.floor(Math.random() * weavings.length)]);
     
-    // Pick 4 random unique models
+    // Pick 3 random unique models
     const shuffledModels = [...models].sort(() => 0.5 - Math.random());
-    setRandomModels(shuffledModels.slice(0, 4));
+    setRandomModels(shuffledModels.slice(0, 3));
   }, [slug]);
 
   const liveProducts = products.slice(0, 4); // First 4 live products
@@ -130,13 +130,13 @@ export default function PremiumStaticPage() {
 
             {/* High Class Fashionable Models Grid */}
             {randomModels.length > 0 && (
-              <div className="mt-4 bg-white border border-[#C5A059]/20 rounded-3xl p-6 shadow-xl">
-                <h3 className="text-center text-xl font-serif font-bold text-[#0A1021] mb-6">High-Class Fashionable Models</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="mt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   {randomModels.map((modelSrc, i) => (
-                    <div key={i} className="bg-[#FBF8F1] p-2 rounded-xl shadow-md border border-[#C5A059]/20 relative group">
-                       <div className="aspect-[3/4] relative rounded-lg overflow-hidden">
-                         <Image src={modelSrc} alt="Fashionable Model" fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                    <div key={i} className="bg-white p-3 rounded-2xl shadow-xl border border-[#C5A059]/30 relative group overflow-hidden">
+                       <div className="absolute inset-0 border-2 border-[#C5A059] m-2 pointer-events-none z-10" style={{ borderStyle: "double" }}></div>
+                       <div className="aspect-[2/3] relative rounded-xl overflow-hidden">
+                         <Image src={modelSrc} alt="Fashionable Model" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                        </div>
                     </div>
                   ))}
