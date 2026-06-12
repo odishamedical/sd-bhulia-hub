@@ -66,17 +66,19 @@ export default function StaticPageNav() {
 
               {/* Dropdown Menu */}
               {activeDropdown === category.title && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 bg-white/95 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-2xl overflow-hidden animate-fade-in z-50">
-                  <div className="py-2">
-                    {category.links.map((link) => (
-                      <Link 
-                        key={link.slug} 
-                        href={`/p/${link.slug}`}
-                        className="block px-6 py-3 text-sm font-bold text-[#0A1021] hover:bg-[#0066CC]/10 hover:text-[#0066CC] transition-colors border-b border-gray-100 last:border-0"
-                      >
-                        {link.name}
-                      </Link>
-                    ))}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-64 animate-fade-in z-50">
+                  <div className="bg-white/95 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="py-2">
+                      {category.links.map((link) => (
+                        <Link 
+                          key={link.slug} 
+                          href={`/p/${link.slug}`}
+                          className="block px-6 py-3 text-sm font-bold text-[#0A1021] hover:bg-[#0066CC]/10 hover:text-[#0066CC] transition-colors border-b border-gray-100 last:border-0"
+                        >
+                          {link.name}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}

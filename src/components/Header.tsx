@@ -119,7 +119,8 @@ export default function Header() {
                     <span className="text-[10px]">▼</span>
                   </button>
                   
-                  <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-[#0A1128]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-5 px-6 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50 flex gap-6 text-left normal-case tracking-normal min-w-[200px]`}>
+                  <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 z-50 min-w-[200px]`}>
+                    <div className={`bg-[#0A1128]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-5 px-6 flex gap-6 text-left normal-case tracking-normal`}>
                     
                     {navItem.subLinks.map((subSection, subIndex) => (
                       <div key={subIndex} className={`flex-1 space-y-3 ${subIndex > 0 ? "border-l border-[#C5A059]/10 pl-6" : ""}`}>
@@ -134,6 +135,7 @@ export default function Header() {
                       </div>
                     ))}
                     
+                    </div>
                   </div>
                 </div>
               );
