@@ -242,15 +242,16 @@ export default function ProductDetailPage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
             
-            <div className="lg:col-span-6 space-y-6">
+            {/* Column 1: Media Player */}
+            <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-max">
               
             <div 
               onClick={() => { if (activeMedia?.type === 'image') setIsLightboxOpen(true); }}
               className={`relative w-full flex justify-center items-center rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-black/40 p-1 transition-all duration-500 hover:border-[#C5A059] ${activeMedia?.type === 'image' ? 'cursor-zoom-in' : ''}`}
             >
-              <div className="relative w-full h-[50vh] sm:h-[70vh] rounded-[22px] overflow-hidden bg-[#0B2B26] flex items-center justify-center">
+              <div className="relative w-full h-[50vh] sm:h-[65vh] rounded-[22px] overflow-hidden bg-[#0B2B26] flex items-center justify-center">
                 {activeMedia?.type === 'video' ? (
                   <iframe 
                     src={getYouTubeEmbedUrl(activeMedia.url) || ""} 
@@ -313,9 +314,10 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          <div className="lg:col-span-6 space-y-6 lg:sticky lg:top-24 h-max pb-12">
-            
-            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-xl text-white space-y-6">
+            {/* Column 2: Product Details */}
+            <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24 h-max pb-12">
+              
+              <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-xl text-white space-y-6">
               <div>
                 <Link href={`/search?category=${encodeURIComponent(product.category || '')}`} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] text-[10px] font-bold uppercase tracking-widest mb-3 hover:bg-[#C5A059]/40 transition-colors cursor-pointer">
                   <span>{product.category}</span>
@@ -457,7 +459,58 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Similar Products block */}
+            <ShareWidget title={product.title} />
+
+            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl text-white">
+              <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block mb-3">Direct Connect (Masked)</span>
+              <div className="grid grid-cols-2 gap-3">
+                <button onClick={() => {
+                  const msg = `Hello ${(product as any).sellerId || "Bhulia Hub"}, I am interested in Product ID #${product.id || product.slug}. Please share details.`;
+                  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, "_blank");
+                }} className="flex items-center justify-center gap-2 py-3 bg-green-600/20 hover:bg-green-600/40 border border-green-500/50 text-green-400 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
+                  <span>💬 WhatsApp</span>
+                </button>
+                <button onClick={() => {
+                  alert(`Connecting you to ${(product as any).sellerId || "Bhulia Hub"} via secure masked call...`);
+                }} className="flex items-center justify-center gap-2 py-3 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/50 text-blue-400 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
+                  <span>📞 Call</span>
+                </button>
+              </div>
+              <p className="text-[9px] text-gray-400 leading-normal mt-3 text-center">
+                For your privacy, direct numbers are masked.
+              </p>
+            </div>
+
+          </div>
+
+          {/* Column 3: The Right Sidebar */}
+          <div className="lg:col-span-3 space-y-6 lg:sticky lg:top-24 h-max pb-12 hidden lg:block">
+            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-5 shadow-xl text-white">
+              <h3 className="text-sm font-serif font-bold text-[#C5A059] tracking-wider border-b border-[#C5A059]/20 pb-3 mb-4 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                More from this Collection
+              </h3>
+              <div className="grid grid-cols-1 gap-4">
+                {allProductsLoading ? (
+                  [...Array(3)].map((_, i) => (
+                    <div key={i} className="aspect-square bg-black/20 animate-pulse rounded-xl border border-[#C5A059]/10"></div>
+                  ))
+                ) : products.filter(p => p.id !== product.id && (p.category === product.category || p.material === product.material)).slice(0, 3).map((item, idx) => (
+                  <Link key={idx} href={`/product/${item.slug}`} className="group relative aspect-square rounded-xl overflow-hidden border border-[#C5A059]/30 hover:border-[#C5A059] shadow-lg">
+                    <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 w-full p-3">
+                      <p className="text-[10px] font-bold text-white leading-tight line-clamp-2 mb-1">{item.title}</p>
+                      <p className="text-xs font-serif font-bold text-[#C5A059]">{item.price}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          {/* Mobile Only: More from Collection */}
+          <div className="col-span-1 lg:hidden space-y-6">
             <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl text-white">
               <h3 className="text-sm font-serif font-bold text-[#C5A059] tracking-wider border-b border-[#C5A059]/20 pb-3 mb-4 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
@@ -480,29 +533,6 @@ export default function ProductDetailPage() {
                 ))}
               </div>
             </div>
-
-            <ShareWidget title={product.title} />
-
-            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl text-white">
-              <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block mb-3">Direct Connect (Masked)</span>
-              <div className="grid grid-cols-2 gap-3">
-                <button onClick={() => {
-                  const msg = `Hello ${(product as any).sellerId || "Bhulia Hub"}, I am interested in Product ID #${product.id || product.slug}. Please share details.`;
-                  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, "_blank");
-                }} className="flex items-center justify-center gap-2 py-3 bg-green-600/20 hover:bg-green-600/40 border border-green-500/50 text-green-400 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
-                  <span>💬 WhatsApp Seller</span>
-                </button>
-                <button onClick={() => {
-                  alert(`Connecting you to ${(product as any).sellerId || "Bhulia Hub"} via secure masked call...`);
-                }} className="flex items-center justify-center gap-2 py-3 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/50 text-blue-400 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
-                  <span>📞 Secure Call</span>
-                </button>
-              </div>
-              <p className="text-[10px] text-gray-400 leading-normal mt-3 text-center">
-                For your privacy, direct numbers are masked. Inquiries use our secure central routing.
-              </p>
-            </div>
-
           </div>
 
         </div>

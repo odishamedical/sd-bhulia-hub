@@ -23,6 +23,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "places.googleapis.com",
       },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+      },
     ],
   },
   typescript: {
