@@ -328,22 +328,23 @@ export default function ProductDetailPage() {
               <div className="relative w-full h-[50vh] sm:h-[70vh] rounded-[22px] overflow-hidden">
                 <Image src={activeImg || product.img} alt={product.title} fill className="object-contain transition-transform duration-700 group-hover:scale-105 animate-fadeIn" />
               </div>
-              
-              <div className="absolute top-4 left-4 bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold shadow-lg border border-[#C5A059]">
-                ✓ BHULIA.COM VERIFIED SAMBALPURI
-              </div>
-
+              {/* Premium Verified Hallmark - Bottom Right */}
               {product.isBhuliaVerified && (
-                <div className="absolute bottom-4 right-4 z-20 flex flex-col items-center justify-center p-2 rounded-2xl bg-gradient-to-b from-[#FFF5C0] via-[#D4AF37] via-[#C5A059] to-[#8A5A00] border-2 border-[#FFF0A5] shadow-[0_12px_30px_rgba(0,0,0,0.85),inset_0_3px_4px_rgba(255,255,255,0.9)] w-24 h-24 transform rotate-12 animate-pulse" style={{ animationDuration: '3s' }}>
-                  <span className="text-[8px] font-serif font-black tracking-widest text-[#0A1021] uppercase leading-none mb-1 text-center">
-                    BHULIA.COM
-                  </span>
-                  <span className="text-[10px] font-serif font-black tracking-wider text-[#0A1021] uppercase leading-none text-center">
-                    VERIFIED
-                  </span>
-                  <span className="text-[7px] font-mono text-[#0A1021] uppercase tracking-widest mt-1">
-                    ✓ PREMIUM
-                  </span>
+                <div className="absolute bottom-4 right-4 z-20 group/seal flex items-center justify-end">
+                  {/* Glassmorphic expanding container */}
+                  <div className="absolute right-6 opacity-0 group-hover/seal:opacity-100 group-hover/seal:right-10 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] bg-black/60 backdrop-blur-md border border-[#C5A059]/40 pl-6 pr-12 py-2.5 rounded-l-full shadow-2xl flex items-center whitespace-nowrap overflow-hidden">
+                    <span className="text-xs font-bold text-[#FFF5C0] tracking-[0.2em] uppercase flex items-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-[#00FF00] drop-shadow-[0_0_5px_rgba(0,255,0,0.5)]"><path d="M20 6L9 17l-5-5"></path></svg>
+                      BHULIA.COM VERIFIED SAMBALPURI
+                    </span>
+                  </div>
+                  
+                  {/* The Golden Seal Logo */}
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover/seal:scale-110 group-hover/seal:rotate-3 z-10">
+                    <Image src="/bhulia-verified-seal.png" alt="Bhulia.com Verified Sambalpuri Seal" fill className="object-contain drop-shadow-2xl" unoptimized />
+                    {/* Subtle Pulse Glow */}
+                    <div className="absolute inset-0 bg-[#C5A059]/20 rounded-full animate-ping opacity-75" style={{ animationDuration: '3s' }}></div>
+                  </div>
                 </div>
               )}
             </div>
