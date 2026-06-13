@@ -49,8 +49,6 @@ export default function StaticPageNav() {
             <li 
               key={category.title} 
               className="relative group"
-              onMouseEnter={() => setActiveDropdown(category.title)}
-              onMouseLeave={() => setActiveDropdown(null)}
             >
               <button 
                 onClick={(e) => {

@@ -315,10 +315,10 @@ function DirectoryContent() {
                   onChange={(e) => setSelectedSort(e.target.value)}
                   className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-xl px-4 py-2 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
                 >
-                  <option value="newest">Newest Members</option>
+                  <option value="newest">Newest Joiners</option>
                   <option value="rating">Highest Rated</option>
                   <option value="reviews">Most Reviews</option>
-                  <option value="alpha">Alphabetical (A-Z)</option>
+                  <option value="alpha">A-Z Name</option>
                 </select>
               </div>
             </div>
