@@ -228,7 +228,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         generatedSlug = (303 + Math.floor(Math.random() * 9000)).toString();
       }
       
-      const collectionName = desiredRole === "weaver" ? "weavers" : (desiredRole === "vendor" || desiredRole === "b2b" || desiredRole === "raw_material") ? "vendors" : "resellers";
+      const collectionName = desiredRole === "weaver" ? "weavers" : (desiredRole === "store" || desiredRole === "b2b" || desiredRole === "raw_material") ? "stores" : "resellers";
       const docRef = doc(db, collectionName, auth.currentUser.uid);
       const snap = await getDoc(docRef);
       if (!snap.exists()) {
@@ -318,7 +318,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                 className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none transition-all bg-white font-medium"
               >
                 <option value="weaver">Master Weaver (Produce & Sell)</option>
-                <option value="vendor">Vendor / Shop (Aggregator)</option>
+                <option value="store">Store / Shop (Aggregator)</option>
                 <option value="b2b">B2B Wholesaler</option>
                 <option value="raw_material">Raw Material Supplier</option>
                 <option value="reseller">Reseller (Dropship for Commission)</option>

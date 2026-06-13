@@ -5,7 +5,7 @@ import Image from "next/image";
 import UserMenu from "@/components/UserMenu";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { MASTER_STORES } from "@/app/Sambalpuri-store/data";
+import { MASTER_STORES } from "@/app/store/data";
 import { MASTER_FRANCHISES, DEFAULT_FRANCHISE, FranchiseListing } from "@/app/reseller/data";
 import { MASTER_PRODUCTS, Product } from "@/lib/products";
 import { useCart } from "@/context/CartContext";

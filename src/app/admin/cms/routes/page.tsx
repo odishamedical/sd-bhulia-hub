@@ -117,7 +117,7 @@ export default function ActiveRoutesManager() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#C5A059]/20 pb-6">
           <div className="flex-1">
             <h2 className="text-lg font-bold text-white mb-1">Default Storefront Template</h2>
-            <p className="text-xs text-gray-400">The default layout applied to all Vendor/Store pages, unless overridden in their specific profile.</p>
+            <p className="text-xs text-gray-400">The default layout applied to all Store/Store pages, unless overridden in their specific profile.</p>
           </div>
           <div className="w-full sm:w-64">
             <select 

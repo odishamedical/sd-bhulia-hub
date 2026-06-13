@@ -39,9 +39,9 @@ export interface Product {
   weavingDuration?: string;
   length?: string;
   hasBlouse?: boolean;
-  sellerId?: string; // Links product to a specific Weaver or Vendor
-  sellerType?: "weaver" | "vendor" | "store";
-  vendorName?: string;
+  sellerId?: string; // Links product to a specific Weaver or Store
+  sellerType?: "weaver" | "store" | "store";
+  storeName?: string;
   status?: string;
   rejectionReason?: string;
   images?: string[];

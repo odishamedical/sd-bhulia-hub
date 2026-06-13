@@ -87,9 +87,9 @@ export default function DashboardLayout({
 
         {/* Center: Buttons */}
         <div className="hidden md:flex flex-1 items-center justify-center gap-3">
-          {(userRole === "vendor" || userRole === "weaver" || userRole === "store_staff" || userRole === "weaver_staff") ? (
+          {(userRole === "store" || userRole === "weaver" || userRole === "store_staff" || userRole === "weaver_staff") ? (
             <>
-              <a href={`/${userRole.includes("weaver") ? "weaver" : "vendor"}/${storeSlug}`} target="_blank" className="px-5 py-2 text-sm font-bold flex items-center gap-2 rounded-full bg-white/20 text-white border border-white/20 shadow-sm hover:bg-white/30 transition-all">
+              <a href={`/${userRole.includes("weaver") ? "weaver" : "store"}/${storeSlug}`} target="_blank" className="px-5 py-2 text-sm font-bold flex items-center gap-2 rounded-full bg-white/20 text-white border border-white/20 shadow-sm hover:bg-white/30 transition-all">
                 <span>🏪</span> View My Storefront
               </a>
               <a href="/" target="_blank" className="px-5 py-2 text-sm font-bold flex items-center gap-2 rounded-full bg-[#0052A3] text-blue-50 border border-[#003d7a] shadow-sm hover:bg-[#003d7a] transition-all">

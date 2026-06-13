@@ -242,7 +242,7 @@ function VerifyContent() {
                     <select required value={role} onChange={(e) => { setRole(e.target.value); if(state === "Odisha") setDistrict(""); }} className="w-full bg-[#051815] border border-gray-700 rounded-xl px-4 py-3 text-white focus:border-[#C5A059] outline-none transition-colors cursor-pointer">
                       <option value="">Select Role</option>
                       <option value="weaver">Master Weaver</option>
-                      <option value="vendor">Retail Store</option>
+                      <option value="store">Retail Store</option>
                       <option value="wholesaler">B2B Wholesaler</option>
                       <option value="raw_material">Raw Material Supplier</option>
                     </select>

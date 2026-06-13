@@ -22,7 +22,7 @@ export interface CMSColumn {
   category?: string;
   productMaterial?: string;
   productDesign?: string;
-  vendorId?: string;
+  storeId?: string;
   productLimit?: number;
   minPrice?: number;
   maxPrice?: number;
@@ -79,7 +79,7 @@ export interface CMSRow {
   category?: string;
   productMaterial?: string;
   productDesign?: string;
-  vendorId?: string;
+  storeId?: string;
   minPrice?: number;
   maxPrice?: number;
   featuredOnly?: boolean;

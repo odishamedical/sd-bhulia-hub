@@ -37,9 +37,9 @@ export async function POST(req: Request) {
     }
 
     // --- PHASE 4: AUTO-APPROVAL PROVISIONING ---
-    // Update the Vendor/Weaver document to activate the domain
+    // Update the Store/Weaver document to activate the domain
     if (slug) {
-      const collectionsToSearch = ["vendors", "weavers"];
+      const collectionsToSearch = ["stores", "weavers"];
       let foundAndUpdated = false;
 
       for (const colName of collectionsToSearch) {
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
       }
 
       if (!foundAndUpdated) {
-        console.warn(`Vanity URL Auto-Provisioning: User with slug ${slug} not found in vendors or weavers.`);
+        console.warn(`Vanity URL Auto-Provisioning: User with slug ${slug} not found in stores or weavers.`);
       }
     }
 

@@ -265,7 +265,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
               
               <div className="space-y-4">
                 {similarProfiles.map((sp) => (
-                  <Link key={sp.id || sp.slug} href={`/${isWeaver ? 'Sambalpuri-weaver' : 'Sambalpuri-store'}/${sp.slug}`} className="group flex gap-3 items-center hover:bg-white/5 p-2 rounded-xl transition-colors">
+                  <Link key={sp.id || sp.slug} href={`/${isWeaver ? 'weaver' : 'store'}/${sp.slug}`} className="group flex gap-3 items-center hover:bg-white/5 p-2 rounded-xl transition-colors">
                     <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-white/10">
                       <Image src={sp.img || "/bhulia-hero.png"} alt={sp.title || "Profile"} fill className="object-cover group-hover:scale-110 transition-transform duration-500" unoptimized />
                     </div>
@@ -293,7 +293,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-white text-xs font-bold truncate group-hover:text-[#C5A059] transition-colors">{sp.title}</h4>
-                      <div className="text-gray-400 text-[10px] truncate mt-0.5">{sp.weaverName || sp.vendorName}</div>
+                      <div className="text-gray-400 text-[10px] truncate mt-0.5">{sp.weaverName || sp.storeName}</div>
                       <div className="text-[#C5A059] text-xs font-bold mt-1">₹{sp.price.toLocaleString("en-IN")}</div>
                     </div>
                   </Link>

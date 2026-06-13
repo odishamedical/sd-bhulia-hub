@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useVendors, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addVendor, addCustomer, addReseller, deleteUserRecord, suspendUserRecord, convertUserRole, updateDocumentStatus } from "@/lib/db-hooks";
+import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addStore, addCustomer, addReseller, deleteUserRecord, suspendUserRecord, convertUserRole, updateDocumentStatus } from "@/lib/db-hooks";
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { firebaseConfig, db } from "@/lib/firebase";
@@ -9,7 +9,7 @@ import { setDoc, doc, runTransaction } from "firebase/firestore";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers(200);
-  const { vendors: stores } = useVendors(200);
+  const { stores } = useStores(200);
   const { orders } = useOrders(200);
   const { customers } = useCustomers(200);
   const { authUsers } = useAuthUsers();
@@ -80,11 +80,11 @@ export default function UserManagementPage() {
       status: w.status || "approved",
     }));
 
-    // Shops/Franchises
+    // Retail Stores
     const sList = stores.map((s, idx) => ({
       id: s.id,
       name: s.title || `Store ${idx}`,
-      role: "shop",
+      role: "store",
       phone: s.phoneNumber || "N/A",
       state: s.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "N/A",
       district: s.address?.split(",")?.[1]?.trim() || "N/A",
@@ -241,6 +241,28 @@ export default function UserManagementPage() {
     }, 1000);
   };
 
+  const handleMigrateVendorsToStores = async () => {
+    if(!confirm("Are you sure you want to migrate all 'vendors' to 'stores' collection? This cannot be easily undone!")) return;
+    try {
+      const vendorsRef = collection(db, "vendors");
+      const vendorsSnap = await getDocs(vendorsRef);
+      if (vendorsSnap.empty) {
+        alert("No vendors found to migrate.");
+        return;
+      }
+      let count = 0;
+      for (const docSnap of vendorsSnap.docs) {
+        const storeRef = doc(db, "stores", docSnap.id);
+        await setDoc(storeRef, docSnap.data());
+        count++;
+      }
+      alert(`Successfully migrated ${count} vendors to stores!`);
+    } catch(e) {
+      console.error(e);
+      alert("Error migrating: " + e.message);
+    }
+  };
+
   const handleSendBroadcast = () => {
     if (!broadcastMessage.trim()) return alert("Please enter a message.");
     alert(`Initiating API Broadcast to ${filteredUsers.length} users via WhatsApp/Email API...`);
@@ -290,7 +312,7 @@ export default function UserManagementPage() {
       await setDoc(doc(db, "users", newUid), {
         name: newUserName,
         email: newUserEmail,
-        role: newUserRole === "shop" ? "vendor" : newUserRole,
+        role: newUserRole,
         applicationStatus: "approved",
         createdAt: new Date().toISOString()
       });
@@ -315,14 +337,14 @@ export default function UserManagementPage() {
           canSellWholesale: newUserCanSellWholesale,
           subscription: subscriptionData,
         }, newUid);
-        alert(`Master Weaver Profile Generated!\nPublic Link: bhulia.com/Sambalpuri-weaver/${generatedSlug}`);
-      } else if (newUserRole === "shop" || newUserRole === "vendor") {
-        await addVendor({
+        alert(`Master Weaver Profile Generated!\nPublic Link: bhulia.com/weaver/${generatedSlug}`);
+      } else if (newUserRole === "store") {
+        await addStore({
           slug: generatedSlug,
           title: newUserName,
           desc: `Premium handloom store located in ${newUserDistrict || newUserState || "Odisha"}.`,
           img: "/bhulia-hero.png",
-          badge: "Verified Vendor",
+          badge: "Verified Store",
           phone: newUserPhone || "N/A",
           whatsapp: newUserWhatsapp || "N/A",
           address: `${newUserAddress}, ${newUserDistrict}, ${newUserState} - ${newUserPin}`,
@@ -332,7 +354,7 @@ export default function UserManagementPage() {
           canSellWholesale: newUserCanSellWholesale,
           subscription: subscriptionData,
         }, newUid);
-        alert(`B2B Vendor Profile Generated!\nPublic Link: bhulia.com/Sambalpuri-store/${generatedSlug}`);
+        alert(`Retail Store Profile Generated!\nPublic Link: bhulia.com/store/${generatedSlug}`);
       } else if (newUserRole === "reseller") {
         await addReseller({
           name: newUserName,
@@ -491,7 +513,7 @@ export default function UserManagementPage() {
               </h3>
               <div className="space-y-2">
                 <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
-                  {['all', 'user', 'customer', 'reseller', 'weaver', 'shop', 'vendor', 'wholesaler', 'supplier', 'staff'].map(role => (
+                  {['all', 'user', 'customer', 'reseller', 'weaver', 'store', 'wholesaler', 'supplier', 'staff'].map(role => (
                     <option key={role} value={role}>{role === 'all' ? 'Entire Ecosystem' : role === 'user' ? 'General Users' : role.charAt(0).toUpperCase() + role.slice(1) + 's'}</option>
                   ))}
                 </select>
@@ -594,7 +616,7 @@ export default function UserManagementPage() {
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm ${
                           user.role === 'weaver' ? 'bg-orange-100 text-orange-700' :
-                          user.role === 'shop' ? 'bg-purple-100 text-purple-700' :
+                          user.role === 'store' ? 'bg-purple-100 text-purple-700' :
                           user.role === 'reseller' ? 'bg-green-100 text-green-700' :
                           user.role === 'customer' ? 'bg-blue-100 text-blue-700' :
                           'bg-gray-100 text-gray-700'
@@ -610,7 +632,7 @@ export default function UserManagementPage() {
                     <td className="py-4 px-6">
                       <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${
                         user.role === 'weaver' ? 'bg-orange-50 text-orange-700 border-orange-200' :
-                        user.role === 'shop' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                        user.role === 'store' ? 'bg-purple-50 text-purple-700 border-purple-200' :
                         user.role === 'reseller' ? 'bg-green-50 text-green-700 border-green-200' :
                         user.role === 'customer' ? 'bg-blue-50 text-blue-700 border-blue-200' :
                         'bg-gray-50 text-gray-700 border-gray-200'
@@ -710,10 +732,9 @@ export default function UserManagementPage() {
                       <option value="customer">Retail Customer</option>
                       <option value="reseller">Reseller (Marketing Agent)</option>
                       <option value="weaver">Sambalpuri Weaver</option>
-                      <option value="shop">Shop</option>
-                      <option value="store">Store</option>
-                      <option value="vendor">Vendor / B2B</option>
-                      <option value="wholesaler">Wholesaler</option>
+                      <option value="store">Retail Store / Franchise</option>
+                      <option value="supplier">Raw Material Supplier</option>
+                      <option value="wholesaler">B2B Wholesaler</option>
                     </select>
                   </div>
                   <div>
@@ -761,12 +782,12 @@ export default function UserManagementPage() {
                         </div>
                       </label>
                       
-                      {(newUserRole === 'weaver' || newUserRole === 'shop') && (
+                      {(newUserRole === 'weaver' || newUserRole === 'store') && (
                         <label className="flex items-start gap-3 p-4 bg-purple-50 border border-purple-100 rounded-xl cursor-pointer mt-4">
                           <input type="checkbox" checked={newUserCanSellWholesale} onChange={e => setNewUserCanSellWholesale(e.target.checked)} className="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded" />
                           <div>
                             <div className="text-sm font-bold text-purple-900 leading-tight">B2B Wholesale Privileges</div>
-                            <div className="text-xs text-purple-700 mt-0.5">Allow this vendor to upload products with hidden B2B commercial prices.</div>
+                            <div className="text-xs text-purple-700 mt-0.5">Allow this store to upload products with hidden B2B commercial prices.</div>
                           </div>
                         </label>
                       )}
@@ -897,7 +918,7 @@ export default function UserManagementPage() {
                     >
                       <option value="">+ Promote User</option>
                       <option value="weaver">To Weaver</option>
-                      <option value="shop">To Retail Store</option>
+                      <option value="store">To Retail Store</option>
                       <option value="reseller">To Reseller</option>
                       <option value="customer">To Customer</option>
                     </select>
@@ -909,7 +930,7 @@ export default function UserManagementPage() {
               </button>
             </div>
 
-            {(selectedUserForDetails.role === 'weaver' || selectedUserForDetails.role === 'shop') && (
+            {(selectedUserForDetails.role === 'weaver' || selectedUserForDetails.role === 'store') && (
               <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-2xl flex flex-col md:flex-row md:items-center gap-6">
                 <div>
                   <h4 className="text-sm font-black text-orange-900 uppercase tracking-widest flex items-center gap-2">
@@ -927,7 +948,7 @@ export default function UserManagementPage() {
                       onBlur={async (e) => {
                         const val = parseInt(e.target.value);
                         if(confirm(`Update product upload limit to ${val}?`)) {
-                          const collectionName = selectedUserForDetails.role === 'weaver' ? 'weavers' : 'vendors';
+                          const collectionName = selectedUserForDetails.role === 'weaver' ? 'weavers' : 'stores';
                           if (selectedUserForDetails.role === 'weaver') {
                             await updateDocumentStatus(collectionName, selectedUserForDetails.id, { "subscription.uploadLimit": val });
                           } else {
@@ -946,7 +967,7 @@ export default function UserManagementPage() {
                       onChange={async (e) => {
                         const checked = e.target.checked;
                         if(confirm(`${checked ? 'Enable' : 'Disable'} VIP Auto-Approval for this seller?`)) {
-                          const collectionName = selectedUserForDetails.role === 'weaver' ? 'weavers' : 'vendors';
+                          const collectionName = selectedUserForDetails.role === 'weaver' ? 'weavers' : 'stores';
                           await updateDocumentStatus(collectionName, selectedUserForDetails.id, { isAutoApproved: checked });
                           alert(`Auto-approval ${checked ? 'enabled' : 'disabled'}!`);
                         } else {
@@ -965,7 +986,7 @@ export default function UserManagementPage() {
                       onChange={async (e) => {
                         const checked = e.target.checked;
                         if(confirm(`${checked ? 'Enable' : 'Disable'} B2B Wholesale Privileges for this seller?`)) {
-                          const collectionName = selectedUserForDetails.role === 'weaver' ? 'weavers' : 'vendors';
+                          const collectionName = selectedUserForDetails.role === 'weaver' ? 'weavers' : 'stores';
                           await updateDocumentStatus(collectionName, selectedUserForDetails.id, { canSellWholesale: checked });
                           alert(`Wholesale Privileges ${checked ? 'enabled' : 'disabled'}!`);
                         } else {
@@ -983,7 +1004,7 @@ export default function UserManagementPage() {
             <div className="grid grid-cols-2 gap-6 mb-6">
               
               {/* Orphan Credentials Block */}
-              {selectedUserForDetails.email === 'N/A' && (selectedUserForDetails.role === 'weaver' || selectedUserForDetails.role === 'shop') && (
+              {selectedUserForDetails.email === 'N/A' && (selectedUserForDetails.role === 'weaver' || selectedUserForDetails.role === 'store') && (
                 <div className="col-span-2 grid grid-cols-1 gap-4 bg-purple-50 p-6 rounded-2xl border border-purple-100 mb-2">
                   <div className="col-span-full mb-1 border-b border-purple-200 pb-2">
                     <h4 className="text-sm font-bold text-purple-900 uppercase">Orphan Profile / Dummy Account</h4>
@@ -1053,7 +1074,7 @@ export default function UserManagementPage() {
                     <button onClick={async () => {
                       const val = prompt('Edit Phone Number:', selectedUserForDetails.phone);
                       if (val && val !== selectedUserForDetails.phone) {
-                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'shop' ? 'stores' : 'users';
+                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'store' ? 'stores' : 'users';
                         await updateDocumentStatus(col, selectedUserForDetails.id, { phoneNumber: val });
                         setSelectedUserForDetails({...selectedUserForDetails, phone: val});
                         alert('Updated!');
@@ -1068,7 +1089,7 @@ export default function UserManagementPage() {
                     <button onClick={async () => {
                       const val = prompt('Edit WhatsApp:', selectedUserForDetails.whatsapp);
                       if (val && val !== selectedUserForDetails.whatsapp) {
-                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'shop' ? 'stores' : 'users';
+                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'store' ? 'stores' : 'users';
                         await updateDocumentStatus(col, selectedUserForDetails.id, { whatsapp: val });
                         setSelectedUserForDetails({...selectedUserForDetails, whatsapp: val});
                         alert('Updated!');
@@ -1083,7 +1104,7 @@ export default function UserManagementPage() {
                     <button onClick={async () => {
                       const val = prompt('Edit Email Address in DB (Note: Does not change their Auth login email, only CRM record):', selectedUserForDetails.email);
                       if (val && val !== selectedUserForDetails.email) {
-                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'shop' ? 'stores' : 'users';
+                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'store' ? 'stores' : 'users';
                         await updateDocumentStatus(col, selectedUserForDetails.id, { email: val });
                         setSelectedUserForDetails({...selectedUserForDetails, email: val});
                         alert('Updated!');
@@ -1127,7 +1148,7 @@ export default function UserManagementPage() {
                         const parts = val.split(",");
                         const district = parts[0]?.trim() || "";
                         const state = parts[1]?.trim() || "";
-                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'shop' ? 'stores' : 'users';
+                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'store' ? 'stores' : 'users';
                         await updateDocumentStatus(col, selectedUserForDetails.id, { district, state });
                         setSelectedUserForDetails({...selectedUserForDetails, district, state});
                         alert('Updated!');
@@ -1142,7 +1163,7 @@ export default function UserManagementPage() {
                     <button onClick={async () => {
                       const val = prompt('Edit Full Address:', selectedUserForDetails.address);
                       if (val && val !== selectedUserForDetails.address) {
-                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'shop' ? 'stores' : 'users';
+                        const col = selectedUserForDetails.role === 'weaver' ? 'weavers' : selectedUserForDetails.role === 'store' ? 'stores' : 'users';
                         await updateDocumentStatus(col, selectedUserForDetails.id, { address: val });
                         setSelectedUserForDetails({...selectedUserForDetails, address: val});
                         alert('Updated!');
@@ -1191,7 +1212,7 @@ export default function UserManagementPage() {
             
             <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
               {selectedUserForDetails.role !== 'customer' && selectedUserForDetails.slug && (
-                <button onClick={() => window.open(`/${selectedUserForDetails.role === 'shop' ? 'store' : selectedUserForDetails.role}/${selectedUserForDetails.slug}`, '_blank')} className="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all shadow-sm">
+                <button onClick={() => window.open(`/${selectedUserForDetails.role}/${selectedUserForDetails.slug}`, '_blank')} className="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all shadow-sm">
                   View Public Profile
                 </button>
               )}

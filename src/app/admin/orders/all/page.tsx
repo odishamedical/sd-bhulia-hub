@@ -194,7 +194,7 @@ export default function MasterOrdersPage() {
                       <p className="font-bold text-gray-900">Total: ₹{order.totalAmount}</p>
                       <div className="mt-1 space-y-0.5">
                         <p className="text-[10px] text-gray-500 font-medium">Platform: ₹{order.platformShare || 0}</p>
-                        <p className="text-[10px] text-gray-500 font-medium">Vendor: ₹{order.vendorPayout || 0}</p>
+                        <p className="text-[10px] text-gray-500 font-medium">Store: ₹{order.vendorPayout || 0}</p>
                         <p className="text-[10px] text-gray-500 font-medium">Reseller: ₹{order.resellerCommission || 0}</p>
                       </div>
                     </td>

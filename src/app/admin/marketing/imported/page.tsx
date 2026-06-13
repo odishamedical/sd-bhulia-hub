@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useVendors, useWeavers } from "@/lib/db-hooks";
+import { useStores, useWeavers } from "@/lib/db-hooks";
 import Image from "next/image";
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "@/lib/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function ImportedListingsDBPage() {
-  const { vendors, loading: vLoading } = useVendors();
+  const { stores, loading: vLoading } = useStores();
   const { weavers, loading: wLoading } = useWeavers();
   
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -27,12 +27,12 @@ export default function ImportedListingsDBPage() {
   // Filter only 'unclaimed' items and map them
   const allImportedListings = useMemo(() => {
     const list = [
-      ...vendors.map(v => ({ ...v, baseRole: "vendor" })),
+      ...stores.map(v => ({ ...v, baseRole: "store" })),
       ...weavers.map(w => ({ ...w, baseRole: "weaver" }))
     ].filter(item => item.status === "unclaimed");
     
     return list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-  }, [vendors, weavers]);
+  }, [stores, weavers]);
 
   // Derived filter options
   const allStates = Array.from(new Set(allImportedListings.map(item => item.state).filter(Boolean))).sort();
@@ -82,7 +82,7 @@ export default function ImportedListingsDBPage() {
     if (!confirm("Are you sure you want to permanently delete this imported listing?")) return;
     setDeleting(id);
     try {
-      const collectionName = role === "weaver" ? "weavers" : "vendors";
+      const collectionName = role === "weaver" ? "weavers" : "stores";
       await deleteDoc(doc(db, collectionName, id));
       setSelectedIds(prev => { const n = new Set(prev); n.delete(id); return n; });
     } catch (e: any) {
@@ -95,7 +95,7 @@ export default function ImportedListingsDBPage() {
     if (!confirm("Hide this listing? It will no longer appear in the directory until approved.")) return;
     setDeleting(id);
     try {
-      const collectionName = role === "weaver" ? "weavers" : "vendors";
+      const collectionName = role === "weaver" ? "weavers" : "stores";
       await updateDoc(doc(db, collectionName, id), { status: "hidden" });
       setSelectedIds(prev => { const n = new Set(prev); n.delete(id); return n; });
     } catch (e: any) {
@@ -111,7 +111,7 @@ export default function ImportedListingsDBPage() {
     try {
       const itemsToDelete = filteredListings.filter(item => selectedIds.has(item.id));
       for (const item of itemsToDelete) {
-        const collectionName = item.baseRole === "weaver" ? "weavers" : "vendors";
+        const collectionName = item.baseRole === "weaver" ? "weavers" : "stores";
         await deleteDoc(doc(db, collectionName, item.id));
       }
       setSelectedIds(new Set());
@@ -145,7 +145,7 @@ export default function ImportedListingsDBPage() {
     if (!editingItem) return;
     setSavingEdit(true);
     try {
-      const collectionName = editingItem.baseRole === "weaver" ? "weavers" : "vendors";
+      const collectionName = editingItem.baseRole === "weaver" ? "weavers" : "stores";
       
       const updates = {
         title: editingItem.title,
@@ -249,7 +249,7 @@ export default function ImportedListingsDBPage() {
             className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2 text-sm font-semibold text-gray-900 focus:border-blue-500 outline-none"
           >
             <option value="all">All Types</option>
-            <option value="vendor">Vendor / Retail Shop</option>
+            <option value="store">Store / Retail Shop</option>
             <option value="weaver">Master Weaver</option>
             <option value="raw_material">Raw Material Supplier</option>
           </select>
@@ -546,7 +546,7 @@ export default function ImportedListingsDBPage() {
                   onChange={e => setEditingItem({...editingItem, listingType: e.target.value})}
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                 >
-                  <option value="vendor">Vendor / Retail Shop</option>
+                  <option value="store">Store / Retail Shop</option>
                   <option value="weaver">Master Weaver</option>
                   <option value="raw_material">Raw Material Supplier</option>
                 </select>

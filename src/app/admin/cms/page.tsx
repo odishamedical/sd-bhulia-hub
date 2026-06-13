@@ -211,7 +211,7 @@ export default function CMSAdminPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Visual Template Library</h1>
-          <p className="text-slate-500 text-sm mt-1 font-medium">Design and manage all visual layouts for homepages, vendors, weavers, and products.</p>
+          <p className="text-slate-500 text-sm mt-1 font-medium">Design and manage all visual layouts for homepages, stores, weavers, and products.</p>
         </div>
         <div className="flex gap-3">
           <button 
@@ -367,7 +367,7 @@ export default function CMSAdminPage() {
                 <select value={newType} onChange={e => setNewType(e.target.value as PageType)} className="w-full bg-gray-50 border border-gray-200 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all cursor-pointer">
                   <option value="homepage">Homepage / Main Site Route</option>
                   <option value="weaver">Master Weaver Profile</option>
-                  <option value="store">Retail Store / Vendor Page</option>
+                  <option value="store">Retail Store / Store Page</option>
                   <option value="product">Ultra-Premium Product Landing Page</option>
                 </select>
                 <p className="text-[10px] text-slate-500 mt-2 font-medium">This determines where this template can be assigned later.</p>

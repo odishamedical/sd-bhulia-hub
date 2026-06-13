@@ -93,7 +93,7 @@ export default function DirectorySidebarFilter({
             >
               <option value="all">All Categories</option>
               <option value="weaver">Master Weavers</option>
-              <option value="vendor">Retail Stores</option>
+              <option value="store">Retail Stores</option>
               <option value="wholesaler">Wholesaler (B2B)</option>
               <option value="raw_material">Raw Material Suppliers</option>
             </select>

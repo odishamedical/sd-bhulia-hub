@@ -13,8 +13,8 @@ export default function LogisticsIntegrationsPage() {
   const [clickpostKey, setClickpostKey] = useState("");
   const [eshopboxKey, setEshopboxKey] = useState("");
 
-  // Routing Rules state (Vendor ID -> Provider)
-  const [routingRules, setRoutingRules] = useState<{vendorId: string, provider: string}[]>([]);
+  // Routing Rules state (Store ID -> Provider)
+  const [routingRules, setRoutingRules] = useState<{storeId: string, provider: string}[]>([]);
   const [newVendorId, setNewVendorId] = useState("");
   const [newProvider, setNewProvider] = useState("shiprocket");
 
@@ -59,7 +59,7 @@ export default function LogisticsIntegrationsPage() {
 
   const addRule = () => {
     if (!newVendorId) return;
-    setRoutingRules([...routingRules, { vendorId: newVendorId, provider: newProvider }]);
+    setRoutingRules([...routingRules, { storeId: newVendorId, provider: newProvider }]);
     setNewVendorId("");
   };
 
@@ -132,11 +132,11 @@ export default function LogisticsIntegrationsPage() {
         <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
           <span>🔀</span> Dynamic Routing Rules
         </h2>
-        <p className="text-sm text-gray-500 mb-6">Assign specific shipping partners to specific vendors/weavers. If a vendor is not listed, the system will default to Shiprocket.</p>
+        <p className="text-sm text-gray-500 mb-6">Assign specific shipping partners to specific stores/weavers. If a store is not listed, the system will default to Shiprocket.</p>
 
         <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 mb-6 flex items-end gap-4">
           <div className="flex-1">
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Vendor/Weaver ID</label>
+            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Store/Weaver ID</label>
             <input 
               type="text" 
               value={newVendorId}
@@ -174,7 +174,7 @@ export default function LogisticsIntegrationsPage() {
             <table className="w-full text-left border-collapse">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr className="text-[10px] uppercase tracking-widest text-gray-500">
-                  <th className="py-3 px-4 font-bold">Vendor ID</th>
+                  <th className="py-3 px-4 font-bold">Store ID</th>
                   <th className="py-3 px-4 font-bold">Assigned Partner</th>
                   <th className="py-3 px-4 font-bold text-right">Action</th>
                 </tr>
@@ -182,7 +182,7 @@ export default function LogisticsIntegrationsPage() {
               <tbody className="divide-y divide-gray-100">
                 {routingRules.map((rule, idx) => (
                   <tr key={idx} className="hover:bg-gray-50">
-                    <td className="py-3 px-4 font-mono text-sm text-gray-900">{rule.vendorId}</td>
+                    <td className="py-3 px-4 font-mono text-sm text-gray-900">{rule.storeId}</td>
                     <td className="py-3 px-4">
                       <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700">
                         {rule.provider}

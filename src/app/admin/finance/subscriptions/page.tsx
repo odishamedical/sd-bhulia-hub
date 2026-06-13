@@ -2,11 +2,11 @@
 
 import PremiumMetricCard from "@/components/PremiumMetricCard";
 import React, { useState, useEffect } from "react";
-import { useWeavers, useVendors } from "@/lib/db-hooks";
+import { useWeavers, useStores } from "@/lib/db-hooks";
 
 export default function SubscriptionsPage() {
   const { weavers } = useWeavers();
-  const { vendors: stores } = useVendors();
+  const { stores: stores } = useStores();
   const [subscribers, setSubscribers] = useState<any[]>([]);
 
   useEffect(() => {

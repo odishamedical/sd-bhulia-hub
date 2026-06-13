@@ -33,7 +33,7 @@ export default function CheckoutPage() {
 
   if (appliedCoupon) {
     sellerSubtotal = cart
-      .filter((item: any) => item.sellerId === appliedCoupon.sellerId || item.vendorId === appliedCoupon.sellerId)
+      .filter((item: any) => item.sellerId === appliedCoupon.sellerId || item.storeId === appliedCoupon.sellerId)
       .reduce((total: number, item: any) => total + parseInt(item.price.replace(/[^0-9]/g, "")) * item.cartQuantity, 0);
 
     if (appliedCoupon.type === "percentage") {
@@ -105,7 +105,7 @@ export default function CheckoutPage() {
       }
 
       // Check if cart contains items from this seller
-      const hasSellerItems = cart.some((item: any) => item.sellerId === couponDoc.sellerId || item.vendorId === couponDoc.sellerId);
+      const hasSellerItems = cart.some((item: any) => item.sellerId === couponDoc.sellerId || item.storeId === couponDoc.sellerId);
       if (!hasSellerItems) {
         setCouponError("This promo code is only valid for products sold by the issuing weaver.");
         setValidatingCoupon(false);
@@ -262,7 +262,7 @@ export default function CheckoutPage() {
         </div>
         <h1 className="text-3xl md:text-5xl font-black text-[#C5A059] mb-4 font-serif">Payment Successful!</h1>
         <p className="text-gray-300 max-w-md text-sm leading-relaxed mb-8">
-          Your order has been securely placed. The vendor has been notified and the payment has been securely split.
+          Your order has been securely placed. The store has been notified and the payment has been securely split.
         </p>
         <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest animate-pulse">Redirecting to dashboard...</p>
       </div>

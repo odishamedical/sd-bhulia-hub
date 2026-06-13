@@ -18,7 +18,7 @@ export default function AdminProductsPage() {
 
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          (p.vendorName && p.vendorName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                          (p.storeName && p.storeName.toLowerCase().includes(searchQuery.toLowerCase())) ||
                           p.id.toLowerCase().includes(searchQuery.toLowerCase());
     
     const productStatus = p.status || "pending";
@@ -93,7 +93,7 @@ export default function AdminProductsPage() {
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
               <input 
                 type="text" 
-                placeholder="Search by ID, Title, or Vendor..." 
+                placeholder="Search by ID, Title, or Store..." 
                 className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none text-sm text-gray-900 bg-gray-50"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -119,7 +119,7 @@ export default function AdminProductsPage() {
               >
                 <option value="all">All Sellers</option>
                 <option value="weaver">Master Weavers</option>
-                <option value="vendor">Stores / Vendors</option>
+                <option value="store">Stores / Stores</option>
               </select>
               <select 
                 className="flex-1 lg:w-auto py-2 px-4 rounded-xl border border-gray-200 focus:border-[#C5A059] outline-none text-sm bg-gray-50 text-gray-900"
@@ -163,7 +163,7 @@ export default function AdminProductsPage() {
                     <td className="px-6 py-4 text-xs font-mono">{product.time}</td>
                     <td className="px-6 py-4 font-medium">
                       <a href={product.sellerType === 'weaver' ? '/admin/weavers' : '/admin/stores'} className="hover:bg-gray-100 p-2 -ml-2 rounded-lg transition-colors inline-block">
-                        <div className="text-[#0070F3] hover:text-[#005BB5] font-bold">{product.vendorName || "Admin"}</div>
+                        <div className="text-[#0070F3] hover:text-[#005BB5] font-bold">{product.storeName || "Admin"}</div>
                         <div className="text-[10px] text-gray-500 uppercase tracking-widest">{product.sellerType || "system"}</div>
                       </a>
                     </td>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { updateDocumentStatus, useProductById, useWeavers, useVendors } from "@/lib/db-hooks";
+import { updateDocumentStatus, useProductById, useWeavers, useStores } from "@/lib/db-hooks";
 import { useTaxonomy, addTaxonomyItem } from "@/lib/taxonomy-hooks";
 import ImageUploader from "@/components/ImageUploader";
 import { useRouter, useParams } from "next/navigation";
@@ -18,7 +18,7 @@ export default function EditProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { weavers } = useWeavers();
-  const { vendors } = useVendors();
+  const { stores } = useStores();
   const { taxonomy } = useTaxonomy();
 
   // Custom Taxonomy State
@@ -78,7 +78,7 @@ export default function EditProductPage() {
   const [specialOfferTag, setSpecialOfferTag] = useState("");
   const [customLayoutId, setCustomLayoutId] = useState("");
 
-  const allSellers = [...(weavers || []).map(w => ({...w, type: 'weaver'})), ...(vendors || []).map(v => ({...v, type: 'vendor'}))];
+  const allSellers = [...(weavers || []).map(w => ({...w, type: 'weaver'})), ...(stores || []).map(v => ({...v, type: 'store'}))];
 
   useEffect(() => {
     if (product) {
@@ -132,15 +132,15 @@ export default function EditProductPage() {
     
     if (category === "Other" && customCategory.trim()) {
       finalCategory = customCategory.trim();
-      await addTaxonomyItem("categories", finalCategory, "Vendor/Weaver");
+      await addTaxonomyItem("categories", finalCategory, "Store/Weaver");
     }
     if (material === "Other" && customMaterial.trim()) {
       finalMaterial = customMaterial.trim();
-      await addTaxonomyItem("materials", finalMaterial, "Vendor/Weaver");
+      await addTaxonomyItem("materials", finalMaterial, "Store/Weaver");
     }
     if (design === "Other" && customDesign.trim()) {
       finalDesign = customDesign.trim();
-      await addTaxonomyItem("designs", finalDesign, "Vendor/Weaver");
+      await addTaxonomyItem("designs", finalDesign, "Store/Weaver");
     }
 
     const parsedPrice = parseInt(price.replace(/[^0-9]/g, "")) || 0;

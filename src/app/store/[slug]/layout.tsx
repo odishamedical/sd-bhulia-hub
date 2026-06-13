@@ -30,11 +30,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       };
     }
   } catch (error) {
-    console.error("Metadata fetch error for vendor:", error);
+    console.error("Metadata fetch error for store:", error);
   }
 
   return {
-    title: "Vendor Profile | Bhulia Hub",
+    title: "Store Profile | Bhulia Hub",
   };
 }
 

@@ -20,7 +20,7 @@ const MOCK_AUDIT_LOGS = [
     actorName: "Super Admin",
     actorRole: "super_admin",
     action: "VERIFIED_KYC",
-    target: "Vendor UID: vn_882910",
+    target: "Store UID: vn_882910",
     ipAddress: "System",
     status: "success",
   },

@@ -17,7 +17,7 @@ export default function GooglePlacesImporterPage() {
   const [pageToken, setPageToken] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [importing, setImporting] = useState(false);
-  const [targetRole, setTargetRole] = useState("vendor");
+  const [targetRole, setTargetRole] = useState("store");
 
   const handleSearch = async (token?: string) => {
     const parts = [];
@@ -71,7 +71,7 @@ export default function GooglePlacesImporterPage() {
 
   const handleImport = async () => {
     if (selectedIds.size === 0) return;
-    if (!confirm(`Import ${selectedIds.size} listings to Vendors directory?`)) return;
+    if (!confirm(`Import ${selectedIds.size} listings to Stores directory?`)) return;
     
     setImporting(true);
     try {
@@ -85,7 +85,7 @@ export default function GooglePlacesImporterPage() {
         // Generate a URL-friendly slug based on the name and last 5 chars of the Google ID
         const generatedSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") + "-" + item.id.slice(-5).toLowerCase();
 
-        const collectionName = targetRole === "weaver" ? "weavers" : "vendors";
+        const collectionName = targetRole === "weaver" ? "weavers" : "stores";
 
         await setDoc(doc(db, collectionName, item.id), {
           title: title,
@@ -143,7 +143,7 @@ export default function GooglePlacesImporterPage() {
               onChange={e => setTargetRole(e.target.value)} 
               className="w-full bg-[#E6F0FF] border border-[#0070F3]/30 rounded-xl p-3 text-[#005BB5] focus:border-[#0070F3] outline-none font-bold text-sm"
             >
-              <option value="vendor">Retail Shop (Vendor)</option>
+              <option value="store">Retail Shop (Store)</option>
               <option value="weaver">Master Weaver</option>
               <option value="raw_material">Raw Material Supplier</option>
             </select>

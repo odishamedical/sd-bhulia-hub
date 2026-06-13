@@ -3,11 +3,11 @@
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useVendors, useWeavers } from "@/lib/db-hooks";
+import { useStores, useWeavers } from "@/lib/db-hooks";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 
 export default function DirectoryGridRow() {
-  const { vendors, loading: vendorsLoading } = useVendors();
+  const { stores, loading: storesLoading } = useStores();
   const { weavers, loading: weaversLoading } = useWeavers();
 
   const [selectedRole, setSelectedRole] = useState<string>("all");
@@ -16,12 +16,12 @@ export default function DirectoryGridRow() {
   const [showUnverified, setShowUnverified] = useState(false);
 
   const combinedDirectory = useMemo(() => {
-    const vList = vendors.map(v => ({ ...v, role: "vendor", displayType: "Retail Shop" }));
+    const vList = stores.map(v => ({ ...v, role: "store", displayType: "Retail Shop" }));
     const wList = weavers.map(w => ({ ...w, role: "weaver", displayType: "Master Weaver" }));
     // We shuffle them to make them random as requested
     const all = [...vList, ...wList].filter(item => item.status === "approved" || item.status === "unclaimed");
     return all.sort(() => Math.random() - 0.5);
-  }, [vendors, weavers]);
+  }, [stores, weavers]);
 
   const districts = useMemo(() => {
     const dSet = new Set<string>();
@@ -50,7 +50,7 @@ export default function DirectoryGridRow() {
   const verifiedListings = filteredDirectory.filter(item => item.status === "approved");
   const unverifiedListings = filteredDirectory.filter(item => item.status !== "approved");
 
-  const loading = vendorsLoading || weaversLoading;
+  const loading = storesLoading || weaversLoading;
 
   // Render a grid with ads injected every 3 rows (15 items in a 5-col grid)
   const renderGridWithAds = (items: any[]) => {
@@ -138,7 +138,7 @@ export default function DirectoryGridRow() {
           >
             <option value="all">All Roles</option>
             <option value="weaver">Master Weavers</option>
-            <option value="vendor">Retail Stores</option>
+            <option value="store">Retail Stores</option>
           </select>
         </div>
         <div className="w-full md:w-1/4">

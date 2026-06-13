@@ -7,7 +7,7 @@ import { PlatformPage, CMSRow, GlobalTheme, PageStatus } from "@/types/cms";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import ImageUploader from "@/components/ImageUploader";
-import { useVendors, useWeavers } from "@/lib/db-hooks";
+import { useStores, useWeavers } from "@/lib/db-hooks";
 import { useTaxonomy } from "@/lib/taxonomy-hooks";
 
 export default function CMSBuilderPage() {
@@ -20,7 +20,7 @@ export default function CMSBuilderPage() {
   const [pageData, setPageData] = useState<PlatformPage | null>(null);
 
   const { taxonomy } = useTaxonomy();
-  const { vendors: storeList } = useVendors();
+  const { stores: storeList } = useStores();
   const { weavers: weaverList } = useWeavers();
   const allSellers = [
     ...storeList.map(v => ({ id: v.id, name: v.storeName, type: "Store" })),
@@ -382,9 +382,9 @@ export default function CMSBuilderPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Vendor / Weaver</label>
-                    <select value={row.vendorId || ""} onChange={e => updateRow(row.id, "vendorId", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
-                      <option value="">-- All Vendors & Weavers --</option>
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Filter by Store / Weaver</label>
+                    <select value={row.storeId || ""} onChange={e => updateRow(row.id, "storeId", e.target.value)} className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-2 text-white text-sm outline-none">
+                      <option value="">-- All Stores & Weavers --</option>
                       {allSellers.map(s => <option key={s.id} value={s.id}>{s.name} ({s.type})</option>)}
                     </select>
                   </div>
@@ -596,12 +596,12 @@ export default function CMSBuilderPage() {
                                 </select>
                               </div>
                               <div>
-                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Vendor / Weaver</label>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Store / Weaver</label>
                                 <select 
-                                  value={col.vendorId || ""} 
+                                  value={col.storeId || ""} 
                                   onChange={e => {
                                     const newCols = [...row.splitColumns!];
-                                    newCols[colIdx].vendorId = e.target.value;
+                                    newCols[colIdx].storeId = e.target.value;
                                     updateRow(row.id, "splitColumns", newCols);
                                   }} 
                                   className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-lg px-3 py-1.5 text-white text-xs outline-none"

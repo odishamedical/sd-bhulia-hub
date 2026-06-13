@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useProducts, useWeavers, useVendors, useResellers } from "../lib/db-hooks";
+import { useProducts, useWeavers, useStores, useResellers } from "../lib/db-hooks";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import ProductCard from "../components/ProductCard";
@@ -13,7 +13,7 @@ import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 export default function HomeDraftV2() {
   const { products, loading: productsLoading } = useProducts({ status: "approved" });
   const { weavers, loading: weaversLoading } = useWeavers(100);
-  const { vendors, loading: vendorsLoading } = useVendors(100);
+  const { stores, loading: storesLoading } = useStores(100);
   const { resellers, loading: resellersLoading } = useResellers(100);
   const { user } = useAuth();
   const { cartCount } = useCart();
@@ -76,7 +76,7 @@ export default function HomeDraftV2() {
   const getDirectoryData = () => {
     let data: any[] = [];
     if (dirTab === "weavers" && !weaversLoading) data = [...weavers];
-    if (dirTab === "stores" && !vendorsLoading) data = [...vendors];
+    if (dirTab === "stores" && !storesLoading) data = [...stores];
     if (dirTab === "b2b" && !resellersLoading) data = [...resellers];
     if (dirTab === "suppliers") data = []; // Placeholder
 
@@ -99,7 +99,7 @@ export default function HomeDraftV2() {
     return data.slice(0, 8); // 8 Profiles (2 rows of 4)
   };
 
-  const directoryLoading = (dirTab === "weavers" && weaversLoading) || (dirTab === "stores" && vendorsLoading) || (dirTab === "b2b" && resellersLoading);
+  const directoryLoading = (dirTab === "weavers" && weaversLoading) || (dirTab === "stores" && storesLoading) || (dirTab === "b2b" && resellersLoading);
 
   return (
     <main className="relative flex-1 w-full bg-[#051815] text-white font-sans flex flex-col min-h-screen">
@@ -240,7 +240,7 @@ export default function HomeDraftV2() {
                 
                 // Determine Verification Status
                 const isVerified = item.status === "approved" || item.status === "active";
-                const roleLink = dirTab === "stores" ? `/Sambalpuri-store/${item.slug}` : (dirTab === "weavers" ? `/Sambalpuri-weaver/${item.slug}` : `/directory`);
+                const roleLink = dirTab === "stores" ? `/store/${item.slug}` : (dirTab === "weavers" ? `/weaver/${item.slug}` : `/directory`);
 
                 return (
                   <Link key={idx} href={roleLink} className="group flex flex-col relative rounded-2xl overflow-hidden h-[380px] border border-[#C5A059]/20 hover:border-[#C5A059] transition-all bg-[#0A2520]">

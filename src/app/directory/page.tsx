@@ -4,14 +4,14 @@ import React, { useState, useMemo, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useVendors, useWeavers } from "@/lib/db-hooks";
+import { useStores, useWeavers } from "@/lib/db-hooks";
 import { ODISHA_DISTRICTS } from "@/lib/locations";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DirectorySidebarFilter from "@/components/DirectorySidebarFilter";
 
 function DirectoryContent() {
-  const { vendors, loading: vendorsLoading } = useVendors(50);
+  const { stores, loading: storesLoading } = useStores(50);
   const { weavers, loading: weaversLoading } = useWeavers(50);
 
   const [selectedRole, setSelectedRole] = useState<string>("all");
@@ -34,11 +34,11 @@ function DirectoryContent() {
   const [selectedVillage, setSelectedVillage] = useState<string>("");
 
   const combinedDirectory = useMemo(() => {
-    const vList = vendors.map(v => ({ ...v, role: "vendor", displayType: "Retail Shop" }));
+    const vList = stores.map(v => ({ ...v, role: "store", displayType: "Retail Shop" }));
     const wList = weavers.map(w => ({ ...w, role: "weaver", displayType: "Master Weaver" }));
     const all = [...vList, ...wList].filter(item => item.status === "approved" || item.status === "unclaimed");
     return all.sort(() => Math.random() - 0.5);
-  }, [vendors, weavers]);
+  }, [stores, weavers]);
 
   const districts = useMemo(() => {
     const dSet = new Set<string>();
@@ -108,7 +108,7 @@ function DirectoryContent() {
   const verifiedListings = filteredDirectory.filter(item => item.status === "approved");
   const unverifiedListings = filteredDirectory.filter(item => item.status !== "approved");
 
-  const loading = vendorsLoading || weaversLoading;
+  const loading = storesLoading || weaversLoading;
 
   // Render a list layout with ads injected every 15 items
   const renderGridWithAds = (listings: any[]) => {
@@ -122,7 +122,7 @@ function DirectoryContent() {
       result.push(
         <div key={item.id} className="group relative bg-[#0B2B26] rounded-2xl border border-[#C5A059]/20 hover:border-[#C5A059]/80 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:-translate-y-1 flex flex-col h-full">
           
-          <Link href={item.role === 'weaver' ? `/Sambalpuri-weaver/${item.slug}` : `/Sambalpuri-store/${item.slug}`} className="flex flex-col h-full cursor-pointer">
+          <Link href={item.role === 'weaver' ? `/weaver/${item.slug}` : `/store/${item.slug}`} className="flex flex-col h-full cursor-pointer">
             
             {/* Massive Square Thumbnail */}
             <div className="w-full aspect-square relative bg-[#051815] overflow-hidden">
@@ -196,7 +196,7 @@ function DirectoryContent() {
           {[
             { label: "All Directory", value: "all" },
             { label: "Master Weavers", value: "weaver" },
-            { label: "Retail Shops", value: "vendor" },
+            { label: "Retail Shops", value: "store" },
             { label: "B2B Wholesalers", value: "wholesaler" },
             { label: "Raw Materials", value: "raw_material" }
           ].map(roleOption => (
@@ -330,13 +330,13 @@ function DirectoryContent() {
                 )}
 
                 {/* Retail Shops Group */}
-                {unverifiedListings.filter(item => item.role === "vendor").length > 0 && (
+                {unverifiedListings.filter(item => item.role === "store").length > 0 && (
                   <div>
                     <div className="flex items-center gap-3 mb-6 opacity-80">
                       <h2 className="text-xl font-serif font-bold text-[#C5A059]">Other Retail Shops</h2>
                       <div className="h-px flex-1 bg-gradient-to-r from-[#C5A059]/50 to-transparent"></div>
                     </div>
-                    {renderGridWithAds(unverifiedListings.filter(item => item.role === "vendor"))}
+                    {renderGridWithAds(unverifiedListings.filter(item => item.role === "store"))}
                   </div>
                 )}
                 

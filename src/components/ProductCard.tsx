@@ -94,9 +94,9 @@ export default function ProductCard({ product, role }: ProductCardProps) {
              <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-medium bg-[#C5A059]/10 px-1.5 py-0.5 rounded">
                 {(product.material || product.sareeType || "Handloom").slice(0, 15)}
              </span>
-             {product.vendorName && (
+             {product.storeName && (
                <span className="text-[9px] uppercase tracking-widest text-gray-500 truncate">
-                 By {product.vendorName}
+                 By {product.storeName}
                </span>
              )}
           </div>

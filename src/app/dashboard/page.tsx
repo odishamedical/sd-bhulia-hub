@@ -15,7 +15,7 @@ import {
   useTransactions,
   useProducts,
   useWeavers,
-  useVendors,
+  useStores,
   useResellers,
   updateDocumentStatus
 } from "@/lib/db-hooks";
@@ -90,7 +90,7 @@ export default function DashboardPage() {
             setStoreSlug(slug);
 
             // Fetch wholesale permissions
-            let targetCollection = actualRole === "weaver" ? "weavers" : (actualRole === "store" || actualRole === "shop" || actualRole === "vendor" ? "vendors" : null);
+            let targetCollection = actualRole === "weaver" ? "weavers" : (actualRole === "store" || actualRole === "shop" || actualRole === "store" ? "stores" : null);
             if (targetCollection) {
               const vendorDoc = await getDoc(doc(db, targetCollection, user.uid));
               if (vendorDoc.exists()) {
@@ -128,7 +128,7 @@ export default function DashboardPage() {
 
   const isCustomer = role === "customer" || role === "user" || !role;
   const isSuperAdmin = role === "super_admin";
-  const displayRole = role === "franchisee" ? "reseller" : (role === "store" || role === "shop") ? "vendor" : role;
+  const displayRole = role === "franchisee" ? "reseller" : (role === "store" || role === "shop") ? "store" : role;
   
   // Resolve actual role mapping (Dual-Role Architecture)
   let actualRole = "customer";
@@ -184,7 +184,7 @@ export default function DashboardPage() {
       { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Platform & System" },
       { id: "security", label: "Security & Login", icon: "🔐", category: "Platform & System" },
     ];
-  } else if (actualRole === "vendor" || actualRole === "wholesaler") {
+  } else if (actualRole === "store" || actualRole === "wholesaler") {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
       { id: "products", label: "Inventory Catalog", icon: "📦", category: "Catalog & Inventory" },
@@ -311,11 +311,11 @@ export default function DashboardPage() {
         <>
           {actualRole === "customer" && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
           {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
-          {actualRole === "vendor" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+          {actualRole === "store" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
           {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" />}
         </>
       )}
-      {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Vendor Hub (Staff)" />}
+      {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Store Hub (Staff)" />}
       {actualRole === "wholesaler" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="B2B Wholesaler Hub" />}
       {actualRole === "reseller" && <ResellerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "super_admin" && <SuperAdminDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
@@ -880,7 +880,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
       const slug = storeName?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || auth.currentUser.uid;
       
       // 3. Update public storefront data in the correct collection
-      const targetCollection = roleTitle === "Weaver Hub" ? "weavers" : "vendors";
+      const targetCollection = roleTitle === "Weaver Hub" ? "weavers" : "stores";
       const { setDoc } = await import("firebase/firestore");
       
       await setDoc(doc(db, targetCollection, auth.currentUser.uid), {
@@ -989,7 +989,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     setIsUploading(true);
     try {
       let isAutoApprovedUser = false;
-      let targetCollection = roleTitle.includes("Weaver") ? "weavers" : "vendors";
+      let targetCollection = roleTitle.includes("Weaver") ? "weavers" : "stores";
       
       const uploaderUid = isStaff ? (localStorage.getItem("sd_boss_uid") || auth.currentUser.uid) : auth.currentUser.uid;
 
@@ -1075,7 +1075,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           escrowStatus: "Payment Protected",
           sellerId: uploaderUid,
           uploadedBy: isStaff ? auth.currentUser.uid : null,
-          sellerType: roleTitle.includes("Vendor") ? "vendor" : "weaver",
+          sellerType: roleTitle.includes("Store") ? "store" : "weaver",
           status: isAutoApprovedUser ? "approved" : "pending_approval",
           createdAt: serverTimestamp(),
         });
@@ -1454,7 +1454,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                               let assignedPartner = "shiprocket"; // Default
                               if (logSettingsSnap.exists()) {
                                 const rules = logSettingsSnap.data().routingRules || [];
-                                const match = rules.find((r: any) => r.vendorId === (order.sellerId || "default"));
+                                const match = rules.find((r: any) => r.storeId === (order.sellerId || "default"));
                                 if (match) assignedPartner = match.provider;
                               }
 
@@ -1849,7 +1849,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                     btn.disabled = true;
                     btn.innerText = "Requesting...";
                     try {
-                      const collectionName = roleTitle.includes("Weaver") ? "weavers" : "vendors";
+                      const collectionName = roleTitle.includes("Weaver") ? "weavers" : "stores";
                       await updateDoc(doc(db, collectionName, auth.currentUser.uid), {
                         b2bRequested: true
                       });
@@ -2051,7 +2051,7 @@ function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabC
 }
 
 function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
-  return <SellerDashboard activeTab={activeTab} onTabChange={onTabChange} roleTitle="Vendor Hub" />;
+  return <SellerDashboard activeTab={activeTab} onTabChange={onTabChange} roleTitle="Store Hub" />;
 }
 
 
@@ -2561,7 +2561,7 @@ function GoogleImporterTab() {
 
   const handleImport = async () => {
     if (selectedIds.size === 0) return;
-    if (!confirm(`Import ${selectedIds.size} listings to Vendors directory?`)) return;
+    if (!confirm(`Import ${selectedIds.size} listings to Stores directory?`)) return;
     
     setImporting(true);
     try {
@@ -2575,7 +2575,7 @@ function GoogleImporterTab() {
         // Generate a URL-friendly slug based on the name and last 5 chars of the Google ID
         const generatedSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") + "-" + item.id.slice(-5).toLowerCase();
 
-        await setDoc(doc(db, "vendors", item.id), {
+        await setDoc(doc(db, "stores", item.id), {
           title: title,
           slug: generatedSlug,
           address: item.formattedAddress || "",
@@ -2605,7 +2605,7 @@ function GoogleImporterTab() {
   return (
     <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-6xl animate-in fade-in">
       <h2 className="text-2xl font-bold text-gray-900 mb-2">Google Maps Data Ingestion</h2>
-      <p className="text-gray-500 mb-8">Search Google Places and bulk-import them as Unverified vendors to capture leads.</p>
+      <p className="text-gray-500 mb-8">Search Google Places and bulk-import them as Unverified stores to capture leads.</p>
       
       <div className="flex gap-4 mb-8">
         <input 
@@ -2707,7 +2707,7 @@ function GoogleImporterTab() {
 function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
   const { products, loading: productsLoading } = useProducts();
   const { weavers, loading: weaversLoading } = useWeavers();
-  const { vendors: stores, loading: storesLoading } = useVendors();
+  const { stores: stores, loading: storesLoading } = useStores();
   const { resellers: franchises, loading: franchisesLoading } = useResellers();
   const { orders, loading: ordersLoading } = useOrders();
 

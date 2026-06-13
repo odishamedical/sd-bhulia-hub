@@ -42,7 +42,7 @@ export interface Weaver {
   pendingChanges?: any;
 }
 
-export interface Vendor {
+export interface Store {
   id: string;
   slug: string;
   title: string;
@@ -349,30 +349,30 @@ export function useResellers(limitCount: number = 200) {
   return { resellers, loading };
 }
 
-export function useVendors(limitCount: number = 200) {
-  const [vendors, setStores] = useState<Vendor[]>([]);
+export function useStores(limitCount: number = 200) {
+  const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let q = query(collection(db, "vendors"));
-    if (limitCount) q = query(collection(db, "vendors"), limit(limitCount));
+    let q = query(collection(db, "stores"));
+    if (limitCount) q = query(collection(db, "stores"), limit(limitCount));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data: Vendor[] = [];
+      const data: Store[] = [];
       snapshot.forEach((doc) => {
-        data.push({ id: doc.id, ...doc.data() } as Vendor);
+        data.push({ id: doc.id, ...doc.data() } as Store);
       });
       setStores(data);
       setLoading(false);
     }, (error) => {
-      console.error("Error fetching vendors: ", error);
+      console.error("Error fetching stores: ", error);
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, [limitCount]);
 
-  return { vendors, loading };
+  return { stores, loading };
 }
 
 
@@ -474,26 +474,26 @@ export function useWeaverBySlug(slug: string) {
   return { weaver, loading };
 }
 
-export function useVendorBySlug(slug: string) {
-  const [vendor, setStore] = useState<Vendor | null>(null);
+export function useStoreBySlug(slug: string) {
+  const [store, setStore] = useState<Store | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!slug) return;
 
-    const q = query(collection(db, "vendors"), where("slug", "==", slug));
+    const q = query(collection(db, "stores"), where("slug", "==", slug));
     const unsubscribe = onSnapshot(q, async (snapshot) => {
       if (!snapshot.empty) {
         const docSnap = snapshot.docs[0];
-        setStore({ id: docSnap.id, ...docSnap.data() } as Vendor);
+        setStore({ id: docSnap.id, ...docSnap.data() } as Store);
         setLoading(false);
       } else {
         // Fallback: Check if the slug is actually the document ID
         try {
-          const docRef = doc(db, "vendors", slug);
+          const docRef = doc(db, "stores", slug);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            setStore({ id: docSnap.id, ...docSnap.data() } as Vendor);
+            setStore({ id: docSnap.id, ...docSnap.data() } as Store);
           } else {
             // Also try to check the original casing, as the URL lowercase might have messed up the ID
             // Since onSnapshot is synchronous but getDoc is async, we can do this inside.
@@ -512,7 +512,7 @@ export function useVendorBySlug(slug: string) {
     return () => unsubscribe();
   }, [slug]);
 
-  return { vendor, loading };
+  return { store, loading };
 }
 
 
@@ -575,9 +575,9 @@ export async function deleteWeaver(id: string) {
   }
 }
 
-export async function addVendor(store: Partial<Omit<Store, 'id'>>, customId?: string) {
+export async function addStore(store: Partial<Omit<Store, 'id'>>, customId?: string) {
   try {
-    const docRef = customId ? doc(db, "vendors", customId) : doc(collection(db, "vendors"));
+    const docRef = customId ? doc(db, "stores", customId) : doc(collection(db, "stores"));
     await setDoc(docRef, store);
     return { success: true, id: docRef.id };
   } catch (error) {
@@ -586,9 +586,9 @@ export async function addVendor(store: Partial<Omit<Store, 'id'>>, customId?: st
   }
 }
 
-export async function deleteVendor(id: string) {
+export async function deleteStore(id: string) {
   try {
-    await deleteDoc(doc(db, "vendors", id));
+    await deleteDoc(doc(db, "stores", id));
     return { success: true };
   } catch (error) {
     console.error("Error deleting store:", error);
@@ -596,7 +596,7 @@ export async function deleteVendor(id: string) {
   }
 }
 
-export async function updateDocumentStatus(collectionName: "weavers" | "vendors" | "resellers" | "products", id: string, updates: any) {
+export async function updateDocumentStatus(collectionName: "weavers" | "stores" | "suppliers" | "wholesalers" | "resellers" | "products", id: string, updates: any) {
   try {
     const docRef = doc(db, collectionName, id);
     await updateDoc(docRef, updates);
@@ -673,10 +673,11 @@ export async function deleteUserRecord(role: string, id: string) {
   try {
     let collectionName = "";
     if (role === "weaver") collectionName = "weavers";
-    else if (role === "shop" || role === "vendor") collectionName = "vendors";
+    else if (role === "store" || role === "shop" || role === "store") collectionName = "stores";
+    else if (role === "supplier") collectionName = "suppliers";
+    else if (role === "wholesaler") collectionName = "wholesalers";
     else if (role === "customer") collectionName = "customers";
-    else if (role === "reseller") collectionName = "resellers";
-    else if (role === "resellere" || role === "reseller") collectionName = "resellers";
+    else if (role === "reseller" || role === "resellere") collectionName = "resellers";
     else collectionName = "users"; // Fallback to auth users collection
 
     if (collectionName) {
@@ -693,10 +694,11 @@ export async function suspendUserRecord(role: string, id: string) {
   try {
     let collectionName = "";
     if (role === "weaver") collectionName = "weavers";
-    else if (role === "shop" || role === "vendor") collectionName = "vendors";
+    else if (role === "store" || role === "shop" || role === "store") collectionName = "stores";
+    else if (role === "supplier") collectionName = "suppliers";
+    else if (role === "wholesaler") collectionName = "wholesalers";
     else if (role === "customer") collectionName = "customers";
-    else if (role === "reseller") collectionName = "resellers";
-    else if (role === "resellere" || role === "reseller") collectionName = "resellers";
+    else if (role === "reseller" || role === "resellere") collectionName = "resellers";
     else collectionName = "users"; // Fallback to auth users collection
 
     if (collectionName) {
@@ -721,7 +723,7 @@ export async function suspendUserRecord(role: string, id: string) {
 // CONVERT USER ROLE
 // ============================================================================
 
-export async function convertUserRole(userId: string, userEmail: string, userName: string, newRole: "weaver" | "shop" | "reseller" | "customer") {
+export async function convertUserRole(userId: string, userEmail: string, userName: string, newRole: "weaver" | "store" | "reseller" | "customer" | "supplier" | "wholesaler") {
   try {
     // 1. Update the role in the 'users' collection so they get the correct dashboard
     const userRef = doc(db, "users", userId);
@@ -744,13 +746,13 @@ export async function convertUserRole(userId: string, userEmail: string, userNam
         status: "approved",
         subscription: { status: "free_trial", uploadLimit: 10, commissionRate: 15 }
       });
-    } else if (newRole === "shop") {
-      await setDoc(doc(db, "vendors", userId), {
+    } else if (newRole === "store") {
+      await setDoc(doc(db, "stores", userId), {
         slug: generatedSlug,
         title: userName,
         desc: "Newly registered retail store.",
         img: "/bhulia-hero.png",
-        badge: "Verified Vendor",
+        badge: "Verified Store",
         phone: "N/A",
         whatsapp: "N/A",
         address: "N/A",

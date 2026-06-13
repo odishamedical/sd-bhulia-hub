@@ -81,7 +81,7 @@ function PrintSlipContent() {
         
         <div className="w-1/2 pl-6">
           <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Seller / Return Address</h3>
-          <p className="font-bold text-lg">{order.sellerName || "Bhulia Vendor"}</p>
+          <p className="font-bold text-lg">{order.sellerName || "Bhulia Store"}</p>
           <p className="text-sm mt-1">{order.sellerId}</p>
           <p className="text-sm mt-2 text-gray-500 italic">If undelivered, please return to seller.</p>
         </div>

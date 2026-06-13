@@ -301,15 +301,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="h-6 w-[1px] bg-white/20 mx-2 self-center shrink-0"></div>
             <span className="text-[10px] text-blue-200 font-bold uppercase tracking-wider mr-1 shrink-0">Demo Hubs:</span>
             
-            {["customer", "reseller", "vendor", "weaver"].map(role => (
+            {["customer", "reseller", "store", "weaver"].map(role => (
               <button 
                 key={role}
                 onClick={() => {
                   localStorage.setItem("sd_view_as_uid", "demo-" + role);
                   localStorage.setItem("sd_view_as_role", role);
                   localStorage.setItem("sd_view_as_name", "Demo " + role.charAt(0).toUpperCase() + role.slice(1));
-                  // Set seller mode true for vendors and weavers so they see the actual seller dashboard
-                  if (role === "vendor" || role === "weaver") {
+                  // Set seller mode true for stores and weavers so they see the actual seller dashboard
+                  if (role === "store" || role === "weaver") {
                     localStorage.setItem("sd_seller_mode", "true");
                   }
                   window.open("/dashboard", "_blank");

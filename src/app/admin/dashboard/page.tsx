@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { 
   useProducts,
   useWeavers,
-  useVendors,
+  useStores,
   useResellers,
   useOrders,
   updateDocumentStatus
@@ -14,7 +14,7 @@ import {
 export default function AdminDashboardPage() {
   const { products, loading: productsLoading } = useProducts();
   const { weavers, loading: weaversLoading } = useWeavers();
-  const { vendors: stores, loading: storesLoading } = useVendors();
+  const { stores: stores, loading: storesLoading } = useStores();
   const { resellers: franchises, loading: franchisesLoading } = useResellers();
   const { orders } = useOrders(); // Removed ordersLoading since it's unused
 
@@ -94,8 +94,8 @@ export default function AdminDashboardPage() {
         if (type === "weavers" || type === "stores" || type === "franchises") {
            // Provide fallback phone/email if not in data for simulation
            const phone = data.contactNumber || data.whatsappNumber || data.phone || "919876543210";
-           const email = data.emailAddress || data.email || "vendor@example.com";
-           const name = data.vendorName || data.ownerName || data.name || "Partner";
+           const email = data.emailAddress || data.email || "store@example.com";
+           const name = data.storeName || data.ownerName || data.name || "Partner";
 
            await fetch("/api/notifications", {
              method: "POST",
