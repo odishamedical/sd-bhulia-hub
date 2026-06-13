@@ -5,7 +5,7 @@ import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, useResell
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { firebaseConfig, db } from "@/lib/firebase";
-import { setDoc, doc, runTransaction } from "firebase/firestore";
+import { setDoc, doc, runTransaction, collection, getDocs } from "firebase/firestore";
 
 export default function UserManagementPage() {
   const { weavers } = useWeavers(200);
