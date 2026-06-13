@@ -425,7 +425,7 @@ function SearchContent() {
                     <div className="w-full aspect-square relative bg-[#051815] overflow-hidden">
                       <img 
                         src={(seller as any).image || (seller as any).photo || (seller as any).cover_image || "/bhulia-hero.png"} 
-                        alt={seller.title || seller.name || "Seller"}
+                        alt={seller.title || (seller as any).name || "Seller"}
                         className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B26] via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
@@ -434,7 +434,7 @@ function SearchContent() {
                           {seller.type === 'weaver' ? 'Master Weaver' : 'Retail Shop'}
                         </span>
                         <h4 className="text-sm font-bold text-white group-hover:text-[#C5A059] transition-colors leading-tight line-clamp-2">
-                          {seller.title || seller.name}
+                          {seller.title || (seller as any).name}
                         </h4>
                       </div>
                     </div>
