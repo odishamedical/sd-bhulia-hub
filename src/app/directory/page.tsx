@@ -387,11 +387,11 @@ function DirectoryContent() {
           <div className="hidden lg:flex flex-col lg:col-span-3 xl:col-span-3 space-y-4 h-fit sticky top-24">
             <h3 className="text-lg xl:text-xl font-serif font-bold text-[#C5A059] mb-2 border-b border-[#C5A059]/20 pb-2">New Arrivals</h3>
             {productsLoading ? (
-               <div className="space-y-4">
+               <div className="grid grid-cols-2 gap-3">
                  {[1,2,3,4].map(i => <div key={i} className="w-full aspect-[9/16] bg-[#0B2B26] border border-[#C5A059]/20 rounded-xl animate-pulse"></div>)}
                </div>
             ) : products && products.length > 0 ? (
-              <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
                 {products.slice(0, 4).map(product => (
                   <ProductCard key={product.id} product={product} role="customer" />
                 ))}

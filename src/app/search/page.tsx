@@ -414,7 +414,7 @@ function SearchContent() {
             <h3 className="text-lg xl:text-xl font-serif font-bold text-white mb-2 border-b border-[#C5A059]/20 pb-2">Top Weavers</h3>
             {storesLoading || weaversLoading ? (
                <div className="space-y-4">
-                 {[1,2,3].map(i => <div key={i} className="w-full aspect-square bg-[#0B2B26] border border-[#C5A059]/20 rounded-xl animate-pulse"></div>)}
+                 {[1,2,3].map(i => <div key={i} className="w-full aspect-[4/5] bg-[#0B2B26] border border-[#C5A059]/20 rounded-xl animate-pulse"></div>)}
                </div>
             ) : topSellers.length === 0 ? (
                <div className="p-4 bg-[#0B2B26] rounded-xl text-xs text-gray-400 text-center border border-[#C5A059]/20">No verified sellers yet.</div>
@@ -422,7 +422,7 @@ function SearchContent() {
               <div className="space-y-4">
                 {topSellers.map(seller => (
                   <Link key={seller.id} href={`/${seller.type}/${seller.slug}`} className="block group relative bg-[#0B2B26] rounded-xl border border-[#C5A059]/20 hover:border-[#C5A059]/80 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:-translate-y-1">
-                    <div className="w-full aspect-square relative bg-[#051815] overflow-hidden">
+                    <div className="w-full aspect-[4/5] relative bg-[#051815] overflow-hidden">
                       <img 
                         src={(seller as any).image || (seller as any).photo || (seller as any).cover_image || "/bhulia-hero.png"} 
                         alt={seller.title || (seller as any).name || "Seller"}
