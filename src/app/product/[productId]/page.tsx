@@ -16,6 +16,11 @@ import { FastAverageColor } from 'fast-average-color';
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
+function extractYouTubeId(url: string) {
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+  return match ? match[1] : null;
+}
+
 export default function ProductDetailPage() {
   const { addToCart, addToWishlist, wishlist } = useCart();
   const { requireLeadCapture } = useLeadCapture();
@@ -292,7 +297,7 @@ export default function ProductDetailPage() {
                   <div className="relative w-full h-full rounded-xl overflow-hidden bg-black flex items-center justify-center">
                     {media.type === 'video' ? (
                       <>
-                        <Image src={`https://img.youtube.com/vi/${media.url.split('v=')[1]?.split('&')[0] || media.url.split('/').pop()}/hqdefault.jpg`} alt="Video Thumbnail" fill className="object-cover opacity-60" />
+                        <Image src={extractYouTubeId(media.url) ? `https://i.ytimg.com/vi/${extractYouTubeId(media.url)}/0.jpg` : "/placeholder-video.jpg"} alt="Video Thumbnail" fill className="object-cover opacity-60" />
                         <div className="absolute inset-0 flex items-center justify-center z-10">
                           <span className="bg-red-600 text-white rounded-full p-2 shadow-lg">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -415,12 +420,12 @@ export default function ProductDetailPage() {
                   <span className="text-[9px] uppercase tracking-widest text-[#C5A059] font-bold block mb-0.5">Sold By</span>
                   <span className="text-sm font-bold text-white uppercase">{(product as any).sellerId || "Verified Bhulia Hub"}</span>
                 </div>
-                <Link 
-                  href={`/store/${(product as any).sellerId || "maa-samaleswari-weavers"}`}
-                  className="px-3 py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg hover:brightness-110 flex-shrink-0 ml-2"
+                <button 
+                  disabled
+                  className="px-3 py-2 bg-gray-800/80 border border-gray-600 text-gray-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg flex-shrink-0 ml-2 cursor-not-allowed"
                 >
-                  View Store
-                </Link>
+                  Store Coming Soon
+                </button>
               </div>
 
               <div className="space-y-2 border-t border-[#C5A059]/20 pt-4 text-gray-200">
