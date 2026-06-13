@@ -21,7 +21,7 @@ export default function ProductDetailPage() {
   const { requireLeadCapture } = useLeadCapture();
   const params = useParams();
   const rawId = typeof params?.productId === "string" ? params.productId : "";
-  const productSlug = rawId.toLowerCase();
+  const productSlug = rawId; // Removed .toLowerCase() to support case-sensitive Firebase IDs
 
   const { product, loading: productLoading } = useProductBySlug(productSlug);
   const { products, loading: allProductsLoading } = useProducts({ status: "approved" });

@@ -150,7 +150,8 @@ export default function LiveProductsPage() {
                         {(product as any).isHidden ? "Hidden" : "Live"}
                       </button>
                     </td>
-                    <td className="py-3 px-6 text-right">
+                    <td className="py-3 px-6 text-right space-x-3">
+                      <a href={`/admin/products/edit/${product.id}`} className="text-[#C5A059] hover:text-[#996515] text-xs font-bold transition-colors">Edit</a>
                       <button className="text-blue-600 hover:text-blue-800 text-xs font-bold transition-colors">Save</button>
                     </td>
                   </tr>

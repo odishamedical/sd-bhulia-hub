@@ -213,14 +213,26 @@ export function useProductBySlug(slug: string) {
       return;
     }
     const q = query(collection(db, "products"), where("slug", "==", slug));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       if (!snapshot.empty) {
-        const doc = snapshot.docs[0];
-        setProduct({ id: doc.id, ...doc.data() } as Product);
+        const docSnap = snapshot.docs[0];
+        setProduct({ id: docSnap.id, ...docSnap.data() } as Product);
+        setLoading(false);
       } else {
-        setProduct(null);
+        // Fallback: Check if the slug is actually the case-sensitive document ID
+        try {
+          const docRef = doc(db, "products", slug);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setProduct({ id: docSnap.id, ...docSnap.data() } as Product);
+          } else {
+            setProduct(null);
+          }
+        } catch (e) {
+          setProduct(null);
+        }
+        setLoading(false);
       }
-      setLoading(false);
     }, (error) => {
       console.error("Error fetching product by slug: ", error);
       setLoading(false);
