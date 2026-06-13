@@ -25,77 +25,82 @@ export default function Footer() {
 
         <div className="flex md:grid overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 border-b border-[#C5A059]/20 pb-6 md:pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           
-          {/* Ticket 1: Resellers */}
-          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl">🤝</span>
-                <h4 className="text-base font-serif font-bold text-[#C5A059]">Resellers</h4>
+          {/* Ticket 1: Resellers - Bronze/Gold */}
+          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#4A2E1B] to-[#1A100A] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#C5A059]/20 to-transparent rounded-bl-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <div className="absolute -inset-[100%] group-hover:animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,rgba(197,160,89,0.1)_50%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-5 border-b border-[#C5A059]/20 pb-3">
+                <span className="text-2xl drop-shadow-[0_0_10px_rgba(197,160,89,0.8)]">🤝</span>
+                <h4 className="text-lg font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D1] to-[#C5A059]">Resellers</h4>
               </div>
-              <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Start your journey as a Bhulia Reseller — grow with us, no upfront cost.”</p>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans italic opacity-90 group-hover:opacity-100 transition-opacity">“Start your journey as a Bhulia Reseller — grow with us, no upfront cost.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Dreseller" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Dreseller" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
               Apply as Reseller
             </Link>
           </div>
 
-          {/* Ticket 2: Weavers */}
-          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl">🧵</span>
-                <h4 className="text-base font-serif font-bold text-[#C5A059]">Weavers</h4>
+          {/* Ticket 2: Weavers - Heritage Maroon */}
+          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#5A1827] to-[#1F080D] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#C5A059]/20 to-transparent rounded-bl-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <div className="absolute -inset-[100%] group-hover:animate-[spin_4s_linear_infinite_reverse] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,rgba(197,160,89,0.1)_50%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-5 border-b border-[#C5A059]/20 pb-3">
+                <span className="text-2xl drop-shadow-[0_0_10px_rgba(197,160,89,0.8)]">🧵</span>
+                <h4 className="text-lg font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D1] to-[#C5A059]">Weavers</h4>
               </div>
-              <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Showcase your craft to the world — Bhulia empowers real Sambalpuri weavers.”</p>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans italic opacity-90 group-hover:opacity-100 transition-opacity">“Showcase your craft to the world — Bhulia empowers real Sambalpuri weavers.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Dweaver" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Dweaver" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
               Join as Weaver
             </Link>
           </div>
 
-          {/* Ticket 3: Store Owners */}
-          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl">🏪</span>
-                <h4 className="text-base font-serif font-bold text-[#C5A059]">Store Owners</h4>
+          {/* Ticket 3: Store Owners - Royal Indigo */}
+          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#1A2B4C] to-[#0A1121] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#C5A059]/20 to-transparent rounded-bl-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <div className="absolute -inset-[100%] group-hover:animate-[spin_5s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,rgba(197,160,89,0.1)_50%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-5 border-b border-[#C5A059]/20 pb-3">
+                <span className="text-2xl drop-shadow-[0_0_10px_rgba(197,160,89,0.8)]">🏪</span>
+                <h4 className="text-lg font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D1] to-[#C5A059]">Store Owners</h4>
               </div>
-              <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Expand your reach — list your store and connect with thousands of customers.”</p>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans italic opacity-90 group-hover:opacity-100 transition-opacity">“Expand your reach — list your store and connect with thousands of customers.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Dvendor" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Dvendor" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
               Apply as Store Owner
             </Link>
           </div>
 
-          {/* Ticket 4: Raw Material Suppliers */}
-          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl">🧶</span>
-                <h4 className="text-base font-serif font-bold text-[#C5A059]">Suppliers</h4>
+          {/* Ticket 4: Raw Material Suppliers - Emerald */}
+          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#0B3B24] to-[#041A0F] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#C5A059]/20 to-transparent rounded-bl-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <div className="absolute -inset-[100%] group-hover:animate-[spin_6s_linear_infinite_reverse] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,rgba(197,160,89,0.1)_50%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-5 border-b border-[#C5A059]/20 pb-3">
+                <span className="text-2xl drop-shadow-[0_0_10px_rgba(197,160,89,0.8)]">🧶</span>
+                <h4 className="text-lg font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D1] to-[#C5A059]">Suppliers</h4>
               </div>
-              <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Support the handloom ecosystem — supply authentic raw materials to artisans.”</p>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans italic opacity-90 group-hover:opacity-100 transition-opacity">“Support the handloom ecosystem — supply authentic raw materials to artisans.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Draw_material" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Draw_material" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
               Join as Supplier
             </Link>
           </div>
 
-          {/* Ticket 5: B2B Partners */}
-          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl">🏢</span>
-                <h4 className="text-base font-serif font-bold text-[#C5A059]">B2B Partners</h4>
+          {/* Ticket 5: B2B Partners - Deep Amethyst */}
+          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#331C42] to-[#12091A] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#C5A059]/20 to-transparent rounded-bl-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <div className="absolute -inset-[100%] group-hover:animate-[spin_4.5s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,rgba(197,160,89,0.1)_50%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-5 border-b border-[#C5A059]/20 pb-3">
+                <span className="text-2xl drop-shadow-[0_0_10px_rgba(197,160,89,0.8)]">🏢</span>
+                <h4 className="text-lg font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D1] to-[#C5A059]">B2B Partners</h4>
               </div>
-              <p className="text-xs text-gray-300 leading-relaxed font-sans italic">“Collaborate with Bhulia for bulk orders, corporate gifting, and global trade.”</p>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans italic opacity-90 group-hover:opacity-100 transition-opacity">“Collaborate with Bhulia for bulk orders, corporate gifting, and global trade.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Db2b" className="mt-6 w-full text-center py-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all border border-[#C5A059]/30 shadow-sm">
+            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Db2b" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
               Partner with Us
             </Link>
           </div>
