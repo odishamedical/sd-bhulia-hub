@@ -655,7 +655,7 @@ export default function ProductDetailPage() {
 
           <div className="relative w-full max-w-5xl h-full max-h-[90vh] flex flex-col items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <div className="relative w-full h-full max-h-[85vh]">
-              <Image src={activeMedia.url} alt="Zoomed Product" fill className="object-contain" />
+              <Image src={activeMedia?.url || ""} alt="Zoomed Product" fill className="object-contain" />
             </div>
             {product?.imageCaptions && product.imageCaptions[activeMediaIndex] && (
               <div className="mt-4 px-6 py-2 bg-black/60 backdrop-blur-md rounded-xl text-white text-sm sm:text-base text-center max-w-3xl border border-[#C5A059]/30 shadow-lg animate-fadeIn">
