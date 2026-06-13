@@ -43,37 +43,41 @@ export default function ProductDetailPage() {
   });
   const [isOrdering, setIsOrdering] = useState<boolean>(false);
   const [showProfileBlocker, setShowProfileBlocker] = useState(false);
-  const [activeImg, setActiveImg] = useState<string>("");
+  const [activeMediaIndex, setActiveMediaIndex] = useState<number>(0);
   const [bgColor, setBgColor] = useState<string>("rgba(197,160,89,0.15)");
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
   const allImages = product ? [product.img, product.img2, product.img3, product.img4, ...(product.images || [])].filter(Boolean) : [];
-  const currentImageIndex = allImages.indexOf(activeImg || (product?.img || ""));
+  
+  const allMedia = [
+    ...(product?.youtubeUrl ? [{ type: "video" as const, url: product.youtubeUrl }] : []),
+    ...allImages.map(img => ({ type: "image" as const, url: img }))
+  ];
 
-  const handleNextImage = (e: React.MouseEvent) => {
+  const activeMedia = allMedia[activeMediaIndex] || { type: 'image', url: product?.img || "" };
+
+  const handleNextMedia = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (allImages.length === 0) return;
-    const nextIndex = (currentImageIndex + 1) % allImages.length;
-    setActiveImg(allImages[nextIndex] || "");
+    if (allMedia.length === 0) return;
+    setActiveMediaIndex((prev) => (prev + 1) % allMedia.length);
   };
 
-  const handlePrevImage = (e: React.MouseEvent) => {
+  const handlePrevMedia = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (allImages.length === 0) return;
-    const prevIndex = (currentImageIndex - 1 + allImages.length) % allImages.length;
-    setActiveImg(allImages[prevIndex] || "");
+    if (allMedia.length === 0) return;
+    setActiveMediaIndex((prev) => (prev - 1 + allMedia.length) % allMedia.length);
   };
 
   useEffect(() => {
     if (product) {
-      setActiveImg(product.img);
+      setActiveMediaIndex(0);
     }
   }, [product]);
 
   useEffect(() => {
-    if (activeImg) {
+    if (activeMedia && activeMedia.type === 'image' && activeMedia.url) {
       const fac = new FastAverageColor();
-      fac.getColorAsync(activeImg, { crossOrigin: 'anonymous' })
+      fac.getColorAsync(activeMedia.url, { crossOrigin: 'anonymous' })
         .then(color => {
           setBgColor(color.rgba);
         })
@@ -82,7 +86,7 @@ export default function ProductDetailPage() {
           setBgColor("rgba(197,160,89,0.15)");
         });
     }
-  }, [activeImg]);
+  }, [activeMedia]);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -304,35 +308,29 @@ export default function ProductDetailPage() {
             
             <div className="lg:col-span-6 space-y-6">
               
-              {product.youtubeUrl && getYouTubeEmbedUrl(product.youtubeUrl) && (
-                <div className="w-full flex justify-center">
-                  <div className="relative w-full max-w-[400px] aspect-[9/16] rounded-3xl overflow-hidden border-2 border-[#C5A059]/50 shadow-[0_0_50px_rgba(197,160,89,0.2)] bg-black/80 flex items-center justify-center">
-                    <iframe 
-                      src={getYouTubeEmbedUrl(product.youtubeUrl) || ""} 
-                      title="Product Video Demo" 
-                      className="absolute top-0 left-0 w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen
-                    ></iframe>
-                    <div className="absolute top-4 left-4 bg-red-600 text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest shadow-lg z-10 pointer-events-none">
-                      ▶ Demo Reel
-                    </div>
-                  </div>
-                </div>
-              )}
-
             <div 
-              onClick={() => setIsLightboxOpen(true)}
-              className="relative w-full flex justify-center items-center rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-black/40 p-1 cursor-zoom-in group transition-all duration-500 hover:border-[#C5A059]"
+              onClick={() => { if (activeMedia?.type === 'image') setIsLightboxOpen(true); }}
+              className={`relative w-full flex justify-center items-center rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-black/40 p-1 transition-all duration-500 hover:border-[#C5A059] ${activeMedia?.type === 'image' ? 'cursor-zoom-in' : ''}`}
             >
-              <div className="relative w-full h-[50vh] sm:h-[70vh] rounded-[22px] overflow-hidden">
-                <Image src={activeImg || product.img} alt={product.title} fill className="object-contain transition-transform duration-700 group-hover:scale-105 animate-fadeIn" />
+              <div className="relative w-full h-[50vh] sm:h-[70vh] rounded-[22px] overflow-hidden bg-[#0B2B26] flex items-center justify-center">
+                {activeMedia?.type === 'video' ? (
+                  <iframe 
+                    src={getYouTubeEmbedUrl(activeMedia.url) || ""} 
+                    title="Product Video Demo" 
+                    className="absolute top-0 left-0 w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowFullScreen
+                  ></iframe>
+                ) : (
+                  <Image src={activeMedia?.url || product.img} alt={product.title} fill className="object-contain transition-transform duration-700 hover:scale-105 animate-fadeIn" />
+                )}
               </div>
+              
               {/* Premium Verified Hallmark - Bottom Right */}
               {product.isBhuliaVerified && (
-                <div className="absolute bottom-4 right-4 z-20 group/seal flex items-center justify-end">
+                <div className="absolute bottom-4 right-4 z-20 group/seal flex items-center justify-end pointer-events-none">
                   {/* Glassmorphic expanding container */}
-                  <div className="absolute right-6 opacity-0 group-hover/seal:opacity-100 group-hover/seal:right-10 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] bg-black/60 backdrop-blur-md border border-[#C5A059]/40 pl-6 pr-12 py-2.5 rounded-l-full shadow-2xl flex items-center whitespace-nowrap overflow-hidden">
+                  <div className="absolute right-6 opacity-0 group-hover/seal:opacity-100 group-hover/seal:right-10 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] bg-black/60 backdrop-blur-md border border-[#C5A059]/40 pl-6 pr-12 py-2.5 rounded-l-full shadow-2xl flex items-center whitespace-nowrap overflow-hidden pointer-events-auto">
                     <span className="text-xs font-bold text-[#FFF5C0] tracking-[0.2em] uppercase flex items-center gap-2">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-[#00FF00] drop-shadow-[0_0_5px_rgba(0,255,0,0.5)]"><path d="M20 6L9 17l-5-5"></path></svg>
                       BHULIA.COM VERIFIED SAMBALPURI
@@ -340,7 +338,7 @@ export default function ProductDetailPage() {
                   </div>
                   
                   {/* The Golden Seal Logo */}
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover/seal:scale-110 group-hover/seal:rotate-3 z-10">
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover/seal:scale-110 group-hover/seal:rotate-3 z-10 pointer-events-auto">
                     <Image src="/bhulia-verified-seal.png" alt="Bhulia.com Verified Sambalpuri Seal" fill className="object-contain drop-shadow-2xl" unoptimized />
                     {/* Subtle Pulse Glow */}
                     <div className="absolute inset-0 bg-[#C5A059]/20 rounded-full animate-ping opacity-75" style={{ animationDuration: '3s' }}></div>
@@ -350,41 +348,30 @@ export default function ProductDetailPage() {
             </div>
 
             <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 mt-4">
-              {allImages.map((image, index) => (
+              {allMedia.map((media, index) => (
                 <button
                   key={index}
-                  onClick={() => setActiveImg(image || "")}
+                  onClick={() => setActiveMediaIndex(index)}
                   className={`relative aspect-[9/16] rounded-2xl overflow-hidden border bg-[#0B2B26] p-0.5 transition-all cursor-pointer ${
-                    activeImg === image ? "border-[#C5A059] ring-1 ring-[#C5A059]/40" : "border-[#C5A059]/20 hover:border-[#C5A059]/50"
+                    activeMediaIndex === index ? "border-[#C5A059] ring-1 ring-[#C5A059]/40" : "border-[#C5A059]/20 hover:border-[#C5A059]/50"
                   }`}
                 >
-                  <div className="relative w-full h-full rounded-xl overflow-hidden">
-                    <Image src={image || ""} alt={`Thumbnail ${index + 1}`} fill className="object-cover" />
+                  <div className="relative w-full h-full rounded-xl overflow-hidden bg-black flex items-center justify-center">
+                    {media.type === 'video' ? (
+                      <>
+                        <Image src={`https://img.youtube.com/vi/${media.url.split('v=')[1]?.split('&')[0] || media.url.split('/').pop()}/maxresdefault.jpg`} alt="Video Thumbnail" fill className="object-cover opacity-60" />
+                        <div className="absolute inset-0 flex items-center justify-center z-10">
+                          <span className="bg-red-600 text-white rounded-full p-2 shadow-lg">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <Image src={media.url || ""} alt={`Thumbnail ${index + 1}`} fill className="object-cover" />
+                    )}
                   </div>
                 </button>
               ))}
-            </div>
-
-            <ShareWidget title={product.title} />
-
-            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl text-white">
-              <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block mb-3">Direct Connect (Masked)</span>
-              <div className="grid grid-cols-2 gap-3">
-                <button onClick={() => {
-                  const msg = `Hello ${(product as any).sellerId || "Bhulia Hub"}, I am interested in Product ID #${product.id || product.slug}. Please share details.`;
-                  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, "_blank");
-                }} className="flex items-center justify-center gap-2 py-3 bg-green-600/20 hover:bg-green-600/40 border border-green-500/50 text-green-400 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
-                  <span>💬 WhatsApp Seller</span>
-                </button>
-                <button onClick={() => {
-                  alert(`Connecting you to ${(product as any).sellerId || "Bhulia Hub"} via secure masked call...`);
-                }} className="flex items-center justify-center gap-2 py-3 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/50 text-blue-400 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
-                  <span>📞 Secure Call</span>
-                </button>
-              </div>
-              <p className="text-[10px] text-gray-400 leading-normal mt-3 text-center">
-                For your privacy, direct numbers are masked. Inquiries use our secure central routing.
-              </p>
             </div>
           </div>
 
@@ -593,6 +580,28 @@ export default function ProductDetailPage() {
               )}
             </div>
 
+            <ShareWidget title={product.title} />
+
+            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl text-white">
+              <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold block mb-3">Direct Connect (Masked)</span>
+              <div className="grid grid-cols-2 gap-3">
+                <button onClick={() => {
+                  const msg = `Hello ${(product as any).sellerId || "Bhulia Hub"}, I am interested in Product ID #${product.id || product.slug}. Please share details.`;
+                  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, "_blank");
+                }} className="flex items-center justify-center gap-2 py-3 bg-green-600/20 hover:bg-green-600/40 border border-green-500/50 text-green-400 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
+                  <span>💬 WhatsApp Seller</span>
+                </button>
+                <button onClick={() => {
+                  alert(`Connecting you to ${(product as any).sellerId || "Bhulia Hub"} via secure masked call...`);
+                }} className="flex items-center justify-center gap-2 py-3 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/50 text-blue-400 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer text-center">
+                  <span>📞 Secure Call</span>
+                </button>
+              </div>
+              <p className="text-[10px] text-gray-400 leading-normal mt-3 text-center">
+                For your privacy, direct numbers are masked. Inquiries use our secure central routing.
+              </p>
+            </div>
+
           </div>
 
         </div>
@@ -601,6 +610,27 @@ export default function ProductDetailPage() {
 
       </div>
 
+      {product && (
+        <div className="fixed bottom-0 left-0 w-full z-50 lg:hidden bg-[#051815]/90 backdrop-blur-md border-t border-[#C5A059]/40 px-4 py-3 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+          <div className="flex flex-col">
+            <span className="text-white font-bold text-lg leading-tight">
+              {product.price}
+            </span>
+            <span className="text-[9px] text-[#C5A059] uppercase tracking-widest">
+              Direct Weaver Price
+            </span>
+          </div>
+          <button 
+            onClick={() => {
+              requireLeadCapture(() => addToCart(product), "cart");
+            }}
+            className="bg-gradient-to-r from-[#E57138] to-[#D56128] text-white px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs shadow-lg hover:shadow-xl transition-all"
+          >
+            🛒 Add to Cart
+          </button>
+        </div>
+      )}
+
       {/* Global Footer */}
       
       {showProfileBlocker && (
@@ -608,13 +638,13 @@ export default function ProductDetailPage() {
       )}
 
       {/* Interactive Zoom Lightbox */}
-      {isLightboxOpen && (
+      {isLightboxOpen && activeMedia?.type === 'image' && (
         <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn" onClick={() => setIsLightboxOpen(false)}>
           
           {/* Previous Button */}
-          {allImages.length > 1 && (
+          {allMedia.length > 1 && (
             <button 
-              onClick={handlePrevImage}
+              onClick={handlePrevMedia}
               className="absolute left-4 sm:left-12 z-50 p-4 text-white/50 hover:text-[#C5A059] hover:bg-white/5 rounded-full transition-all backdrop-blur-sm"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-14 sm:w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -625,19 +655,19 @@ export default function ProductDetailPage() {
 
           <div className="relative w-full max-w-5xl h-full max-h-[90vh] flex flex-col items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <div className="relative w-full h-full max-h-[85vh]">
-              <Image src={activeImg || product.img} alt="Zoomed Product" fill className="object-contain" />
+              <Image src={activeMedia.url} alt="Zoomed Product" fill className="object-contain" />
             </div>
-            {product?.imageCaptions && product.imageCaptions[currentImageIndex] && (
+            {product?.imageCaptions && product.imageCaptions[activeMediaIndex] && (
               <div className="mt-4 px-6 py-2 bg-black/60 backdrop-blur-md rounded-xl text-white text-sm sm:text-base text-center max-w-3xl border border-[#C5A059]/30 shadow-lg animate-fadeIn">
-                {product.imageCaptions[currentImageIndex]}
+                {product.imageCaptions[activeMediaIndex]}
               </div>
             )}
           </div>
 
           {/* Next Button */}
-          {allImages.length > 1 && (
+          {allMedia.length > 1 && (
             <button 
-              onClick={handleNextImage}
+              onClick={handleNextMedia}
               className="absolute right-4 sm:right-12 z-50 p-4 text-white/50 hover:text-[#C5A059] hover:bg-white/5 rounded-full transition-all backdrop-blur-sm"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-14 sm:w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
