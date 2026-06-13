@@ -485,6 +485,13 @@ export default function UserManagementPage() {
             Broadcast
           </button>
           <button 
+            onClick={handleMigrateVendorsToStores}
+            className="px-5 py-2.5 bg-red-600 text-white rounded-full text-sm font-bold hover:bg-red-700 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            Migrate Vendors to Stores
+          </button>
+          <button 
             onClick={handleExportCSV}
             disabled={isExporting || filteredUsers.length === 0}
             className="px-5 py-2.5 bg-gray-900 text-white rounded-full text-sm font-bold hover:bg-black transition-all disabled:opacity-50 shadow-md hover:shadow-lg flex items-center gap-2"
