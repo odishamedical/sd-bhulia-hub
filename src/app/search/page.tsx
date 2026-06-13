@@ -64,6 +64,23 @@ function SearchContent() {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   useEffect(() => {
+    if (searchParams) {
+      setSelectedCategory(searchParams.get("category") || "");
+      setSelectedMaterial(searchParams.get("material") || "");
+      setSelectedDesign(searchParams.get("design") || "");
+      
+      const minP = searchParams.get("minPrice");
+      const maxP = searchParams.get("maxPrice");
+      if (minP && maxP) {
+        setSelectedPrice(`${minP}-${maxP}`);
+      } else {
+        setSelectedPrice("");
+      }
+      setSelectedSort(searchParams.get("sort") || "newest");
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     let result = [...products];
 
     if (selectedCategory) {

@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import React from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 export default function GlobalSearchConsole() {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   // Hide on Admin, Dashboard, Auth
   if (
@@ -17,23 +18,27 @@ export default function GlobalSearchConsole() {
     return null;
   }
 
-  const [category, setCategory] = useState("");
-  const [material, setMaterial] = useState("");
-  const [design, setDesign] = useState("");
-  const [price, setPrice] = useState("");
+  const category = searchParams?.get("category") || "";
+  const material = searchParams?.get("material") || "";
+  const design = searchParams?.get("design") || "";
+  const minPrice = searchParams?.get("minPrice") || "";
+  const maxPrice = searchParams?.get("maxPrice") || "";
+  const price = (minPrice && maxPrice) ? `${minPrice}-${maxPrice}` : "";
 
-  const handleSearch = () => {
-    const params = new URLSearchParams();
-    if (category) params.set("category", category);
-    if (material) params.set("material", material);
-    if (design) params.set("design", design);
-    
-    if (price) {
-      const [min, max] = price.split("-");
-      if (min) params.set("minPrice", min);
-      if (max) params.set("maxPrice", max);
+  const handleFilterChange = (key: string, value: string) => {
+    const params = new URLSearchParams(pathname?.includes('search') ? searchParams?.toString() : "");
+    if (key === "price") {
+      if (value) {
+        const [min, max] = value.split("-");
+        params.set("minPrice", min);
+        params.set("maxPrice", max);
+      } else {
+        params.delete("minPrice");
+        params.delete("maxPrice");
+      }
+    } else {
+      if (value) params.set(key, value); else params.delete(key);
     }
-
     router.push(`/search?${params.toString()}`);
   };
 
@@ -53,7 +58,7 @@ export default function GlobalSearchConsole() {
         <div className="flex-1 flex items-center gap-4 justify-end">
           <select 
             value={category} 
-            onChange={(e) => setCategory(e.target.value)} 
+            onChange={(e) => handleFilterChange("category", e.target.value)} 
             className="bg-white border-2 border-[#C5A059]/20 hover:border-[#C5A059]/50 rounded-xl px-4 py-3 text-[#051815] text-sm font-bold outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 transition-all cursor-pointer min-w-[180px] shadow-sm appearance-none"
             style={{ backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23051815%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 1rem top 50%", backgroundSize: "0.65rem auto" }}
           >
@@ -68,7 +73,7 @@ export default function GlobalSearchConsole() {
 
           <select 
             value={material} 
-            onChange={(e) => setMaterial(e.target.value)} 
+            onChange={(e) => handleFilterChange("material", e.target.value)} 
             className="bg-white border-2 border-[#C5A059]/20 hover:border-[#C5A059]/50 rounded-xl px-4 py-3 text-[#051815] text-sm font-bold outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 transition-all cursor-pointer min-w-[180px] shadow-sm appearance-none"
             style={{ backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23051815%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 1rem top 50%", backgroundSize: "0.65rem auto" }}
           >
@@ -81,7 +86,7 @@ export default function GlobalSearchConsole() {
 
           <select 
             value={design} 
-            onChange={(e) => setDesign(e.target.value)} 
+            onChange={(e) => handleFilterChange("design", e.target.value)} 
             className="bg-white border-2 border-[#C5A059]/20 hover:border-[#C5A059]/50 rounded-xl px-4 py-3 text-[#051815] text-sm font-bold outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 transition-all cursor-pointer min-w-[200px] shadow-sm appearance-none"
             style={{ backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23051815%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 1rem top 50%", backgroundSize: "0.65rem auto" }}
           >
@@ -96,7 +101,7 @@ export default function GlobalSearchConsole() {
 
           <select 
             value={price} 
-            onChange={(e) => setPrice(e.target.value)} 
+            onChange={(e) => handleFilterChange("price", e.target.value)} 
             className="bg-white border-2 border-[#C5A059]/20 hover:border-[#C5A059]/50 rounded-xl px-4 py-3 text-[#051815] text-sm font-bold outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 transition-all cursor-pointer min-w-[180px] shadow-sm appearance-none"
             style={{ backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23051815%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 1rem top 50%", backgroundSize: "0.65rem auto" }}
           >
@@ -110,10 +115,10 @@ export default function GlobalSearchConsole() {
           </select>
 
           <button 
-            onClick={handleSearch}
+            onClick={() => router.push("/search")}
             className="bg-gradient-to-r from-[#996515] via-[#C5A059] to-[#996515] text-[#0A1021] px-8 py-3 rounded-xl font-black text-sm uppercase tracking-widest hover:brightness-110 hover:scale-105 transition-all shadow-[0_10px_20px_-10px_rgba(197,160,89,0.8)] shrink-0 cursor-pointer ml-2"
           >
-            Explore
+            Explore All
           </button>
         </div>
 

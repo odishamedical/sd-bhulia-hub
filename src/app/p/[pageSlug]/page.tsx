@@ -152,12 +152,12 @@ export default function PremiumStaticPage() {
                <h3 className="text-sm font-bold uppercase tracking-widest text-[#0A1021]">Featured Original Masterpieces</h3>
             </div>
             
-            <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-2 gap-3">
               {productsLoading ? (
-                <div className="text-center text-[#C5A059] text-xs font-bold uppercase animate-pulse py-8">Loading Live Masterpieces...</div>
+                 {[1,2,3,4].map(i => <div key={i} className="w-full aspect-[9/16] bg-white rounded-2xl border border-[#C5A059]/30 animate-pulse"></div>)}
               ) : (
                 liveProducts.map(product => (
-                   <div key={product.id} className="relative shadow-xl rounded-2xl overflow-hidden border border-[#C5A059]/20">
+                   <div key={product.id} className="relative shadow-xl rounded-2xl overflow-hidden border border-[#C5A059]/20 bg-white">
                       <ProductCard product={product} role="customer" />
                       <div className="absolute top-2 right-2 bg-green-600 text-white text-[9px] font-black uppercase px-2 py-1 rounded shadow-md z-10 flex items-center gap-1">
                         <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>

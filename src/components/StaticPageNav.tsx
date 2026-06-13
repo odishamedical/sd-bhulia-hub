@@ -53,7 +53,8 @@ export default function StaticPageNav() {
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button 
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   if (activeDropdown === category.title) {
                     setActiveDropdown(null);
                   } else {
