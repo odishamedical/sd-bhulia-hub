@@ -112,7 +112,7 @@ function DirectoryContent() {
     // Apply Sorting
     return filtered.sort((a, b) => {
       if (selectedSort === "newest") {
-        return ((b.createdAt || 0) as number) - ((a.createdAt || 0) as number);
+        return (((b as any).createdAt || 0) as number) - (((a as any).createdAt || 0) as number);
       }
       if (selectedSort === "rating") {
         return ((b as any).googleRating || 0) - ((a as any).googleRating || 0);
