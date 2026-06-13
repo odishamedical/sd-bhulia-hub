@@ -225,9 +225,10 @@ export default function AddProductPage() {
               </select>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Weaver Name</label>
+              <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">
+                Weaver Name <span className="text-[10px] text-gray-400 normal-case tracking-normal ml-2">(Optional - for giving credit)</span>
+              </label>
               <input value={weaverName} onChange={e => setWeaverName(e.target.value)} type="text" className="w-full bg-[#051815] border border-[#C5A059]/30 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#C5A059]" placeholder="e.g. Master Weaver Nagarjuna Meher" />
-              <p className="text-[10px] text-gray-400 mt-1">Please mention the Weaver's Name if you know it, let's give them credit! Leave blank to hide on public page.</p>
             </div>
             <div className="md:col-span-2">
               <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-1">Seller Account Linking</label>
