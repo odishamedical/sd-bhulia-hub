@@ -10,10 +10,10 @@ import { useCart } from "../context/CartContext";
 import CartDrawer from "./CartDrawer";
 
 const NAV_LINKS = [
-  { label: "HOME", href: "/" },
-  { label: "PRODUCTS", href: "/search" },
-  { label: "DIRECTORY", href: "/directory" },
-  { label: "ABOUT US", href: "/p/about-us" }
+  { label: "Home", href: "/" },
+  { label: "Shop Sarees", href: "/search" },
+  { label: "Directory", href: "/directory" },
+  { label: "About Us", href: "/p/about-us" }
 ];
 
 export default function Header() {
@@ -43,27 +43,25 @@ export default function Header() {
   return (
     <>
       {/* Top Sticky Header */}
-      <header className="sticky top-0 w-full z-50 bg-[#0074E4] border-b border-[#0052A3] shadow-[0_10px_30px_-10px_rgba(0,116,228,0.4)] flex flex-col transition-all duration-300">
-        <div className="flex justify-between items-center gap-2 w-full px-4 sm:px-6 py-4 sm:py-6">
+      <header className="sticky top-0 w-full z-50 bg-[#6B1D2F] border-b border-[#4A1020] shadow-xl flex flex-col transition-all duration-300">
+        <div className="flex justify-between items-center gap-2 w-full px-4 sm:px-6 py-2 sm:py-3">
           {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-0 cursor-pointer hover:opacity-90 transition-opacity">
-            <div className="relative w-12 sm:w-20 h-12 sm:h-20 rounded-full overflow-hidden shadow-[0_0_20px_rgba(197,160,89,0.6)] shrink-0">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 cursor-pointer hover:opacity-90 transition-opacity">
+            <div className="relative w-10 sm:w-14 h-10 sm:h-14 rounded-full overflow-hidden shadow-[0_0_20px_rgba(197,160,89,0.4)] shrink-0 bg-[#0B2B26]">
               <Image src="/logo.png" alt="Bhulia Gold Logo" fill className="object-cover scale-[1.15]" />
             </div>
             <div className="min-w-0 flex flex-col items-stretch">
-              <h1 className="text-2xl sm:text-3xl font-sans font-black tracking-tight text-white leading-none">Bhulia.com</h1>
-              <div className="hidden sm:flex justify-between w-full text-[8px] sm:text-[9px] text-blue-100 font-bold uppercase mt-1.5 tracking-wider">
-                <span>ORIGINAL</span>
-                <span>SAMBALPURI</span>
-                <span>SAREE</span>
+              <h1 className="text-xl sm:text-2xl font-serif font-black tracking-wider text-[#C5A059] leading-none">Bhulia.com</h1>
+              <div className="hidden sm:block text-[8px] sm:text-[9px] text-white/80 font-semibold uppercase mt-1 tracking-widest text-center">
+                SAMBALPURI HANDLOOM MARKETPLACE
               </div>
             </div>
           </Link>
 
           {/* Center: Dedicated Navigation Links (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-2 xl:gap-4 text-[10px] font-extrabold uppercase tracking-[0.15em] text-white whitespace-nowrap">
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-4 text-sm font-semibold tracking-wide text-white whitespace-nowrap">
             {NAV_LINKS.map((navItem, index) => (
-              <Link key={index} href={navItem.href!} className="hover:bg-white/20 px-4 py-2 rounded-full transition-all">
+              <Link key={index} href={navItem.href!} className="px-4 py-2 rounded-lg hover:bg-[#0A2B26] hover:text-[#C5A059] transition-all border border-transparent hover:border-[#C5A059]/30">
                 {navItem.label}
               </Link>
             ))}
@@ -110,6 +108,9 @@ export default function Header() {
             </button>
           </div>
         </div>
+
+        {/* Golden Texture Border */}
+        <div className="w-full h-1.5 sm:h-2 bg-gradient-to-r from-[#8B5A2B] via-[#D4AF37] to-[#8B5A2B] opacity-90 shadow-[0_2px_4px_rgba(0,0,0,0.3)] border-b border-[#5C3A21]"></div>
 
         {/* Scrolling SEO Ticker */}
         <div className="w-full bg-[#051815] py-1.5 overflow-hidden flex border-t border-[#C5A059]/20">
