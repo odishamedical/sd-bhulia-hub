@@ -23,10 +23,10 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 border-b border-[#C5A059]/20 pb-6 md:pb-8">
+        <div className="flex md:grid overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 border-b border-[#C5A059]/20 pb-6 md:pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           
           {/* Ticket 1: Resellers */}
-          <div className="bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
+          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
             <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
             <div>
               <div className="flex items-center gap-2 mb-4">
@@ -41,7 +41,7 @@ export default function Footer() {
           </div>
 
           {/* Ticket 2: Weavers */}
-          <div className="bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
+          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
             <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
             <div>
               <div className="flex items-center gap-2 mb-4">
@@ -56,7 +56,7 @@ export default function Footer() {
           </div>
 
           {/* Ticket 3: Store Owners */}
-          <div className="bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
+          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
             <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
             <div>
               <div className="flex items-center gap-2 mb-4">
@@ -71,7 +71,7 @@ export default function Footer() {
           </div>
 
           {/* Ticket 4: Raw Material Suppliers */}
-          <div className="bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
+          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
             <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
             <div>
               <div className="flex items-center gap-2 mb-4">
@@ -86,7 +86,7 @@ export default function Footer() {
           </div>
 
           {/* Ticket 5: B2B Partners */}
-          <div className="bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
+          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-b from-[#0A3A35] to-[#051815] border-2 border-dashed border-[#C5A059]/40 rounded-2xl p-5 flex flex-col justify-between hover:border-[#C5A059] transition-all group shadow-lg relative overflow-hidden">
             <div className="absolute top-0 right-0 w-16 h-16 bg-[#C5A059]/10 rounded-bl-full pointer-events-none"></div>
             <div>
               <div className="flex items-center gap-2 mb-4">
