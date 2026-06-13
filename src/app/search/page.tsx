@@ -7,7 +7,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { useProducts } from "@/lib/db-hooks";
+import { useProducts, useWeavers, useStores } from "@/lib/db-hooks";
 import { useCart } from "@/context/CartContext";
 import { useLeadCapture } from "@/context/LeadCaptureContext";
 import { Suspense } from "react";
@@ -17,7 +17,15 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 function SearchContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { products, loading } = useProducts({ status: "approved" });
+  const { products, loading: productsLoading } = useProducts({ status: "approved" });
+  const { weavers, loading: weaversLoading } = useWeavers();
+  const { stores, loading: storesLoading } = useStores();
+
+  const loading = productsLoading || weaversLoading || storesLoading;
+
+  const allSellers = [...(weavers || []).map(w => ({...w, type: 'weaver'})), ...(stores || []).map(s => ({...s, type: 'store'}))];
+  const verifiedSellers = allSellers.filter(s => s.status === 'approved');
+  const topSellers = verifiedSellers.slice(0, 5);
   const { addToCart, addToWishlist, wishlist } = useCart();
   const { requireLeadCapture } = useLeadCapture();
 
@@ -281,10 +289,10 @@ function SearchContent() {
           <p className="text-gray-300 text-sm">Browse 100% Bhulia.com verified sovereign handloom masterpieces directly from the weavers.</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 2xl:grid-cols-6 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8">
           
           {/* PC View: Sticky Left Sidebar */}
-          <div className="hidden lg:block lg:col-span-1 space-y-6 bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl p-6 h-fit sticky top-24">
+          <div className="hidden lg:block lg:col-span-3 xl:col-span-3 space-y-6 bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl p-6 h-fit sticky top-24">
             <h3 className="text-xl font-serif font-bold text-white mb-4 border-b border-[#C5A059]/20 pb-2">Filter Catalog</h3>
             {/* Price Brackets */}
             <div>
@@ -354,7 +362,7 @@ function SearchContent() {
           </div>
 
           {/* Results Grid */}
-          <div className="lg:col-span-4 2xl:col-span-5">
+          <div className="lg:col-span-6 xl:col-span-6">
             <div className="flex justify-between items-center mb-6">
               <span className="text-sm text-gray-400">{filteredProducts.length} Results Found</span>
               <div className="flex items-center gap-2">
@@ -375,8 +383,8 @@ function SearchContent() {
               </div>
             </div>
             {loading ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
-                {[...Array(12)].map((_, i) => (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+                {[...Array(9)].map((_, i) => (
                   <div key={i} className="bg-[#0B2B26] border border-[#C5A059]/30 rounded-2xl aspect-[9/16] animate-pulse"></div>
                 ))}
               </div>
@@ -393,9 +401,44 @@ function SearchContent() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
                 {filteredProducts.map((item) => (
                   <ProductCard key={item.id} product={item} role={role} />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right Sidebar: Verified Sellers */}
+          <div className="hidden lg:flex flex-col lg:col-span-3 xl:col-span-3 space-y-4 h-fit sticky top-24">
+            <h3 className="text-lg xl:text-xl font-serif font-bold text-white mb-2 border-b border-[#C5A059]/20 pb-2">Top Weavers</h3>
+            {storesLoading || weaversLoading ? (
+               <div className="space-y-4">
+                 {[1,2,3].map(i => <div key={i} className="w-full aspect-square bg-[#0B2B26] border border-[#C5A059]/20 rounded-xl animate-pulse"></div>)}
+               </div>
+            ) : topSellers.length === 0 ? (
+               <div className="p-4 bg-[#0B2B26] rounded-xl text-xs text-gray-400 text-center border border-[#C5A059]/20">No verified sellers yet.</div>
+            ) : (
+              <div className="space-y-4">
+                {topSellers.map(seller => (
+                  <Link key={seller.id} href={`/${seller.type}/${seller.slug}`} className="block group relative bg-[#0B2B26] rounded-xl border border-[#C5A059]/20 hover:border-[#C5A059]/80 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:-translate-y-1">
+                    <div className="w-full aspect-square relative bg-[#051815] overflow-hidden">
+                      <img 
+                        src={(seller as any).image || (seller as any).photo || (seller as any).cover_image || "/bhulia-hero.png"} 
+                        alt={seller.title || seller.name || "Seller"}
+                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B26] via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                      <div className="absolute bottom-3 left-3 right-3 z-10">
+                        <span className={`px-2 py-0.5 rounded shadow text-[8px] uppercase font-bold tracking-widest border mb-1 inline-block ${seller.type === 'weaver' ? 'bg-amber-900/90 text-amber-300 border-amber-500/50' : 'bg-blue-900/90 text-blue-300 border-blue-500/50'}`}>
+                          {seller.type === 'weaver' ? 'Master Weaver' : 'Retail Shop'}
+                        </span>
+                        <h4 className="text-sm font-bold text-white group-hover:text-[#C5A059] transition-colors leading-tight line-clamp-2">
+                          {seller.title || seller.name}
+                        </h4>
+                      </div>
+                    </div>
+                  </Link>
                 ))}
               </div>
             )}
@@ -405,88 +448,60 @@ function SearchContent() {
       </div>
 
 
-      {/* Mobile Filter Bottom Sheet */}
-      {mobileFilterOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setMobileFilterOpen(false)}></div>
-          <div className="relative bg-[#051815] w-full rounded-t-3xl border-t border-[#C5A059]/40 p-6 flex flex-col max-h-[85vh] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] animate-[slideUp_0.3s_ease-out]">
-            <div className="flex justify-between items-center mb-6 border-b border-[#C5A059]/20 pb-4">
-              <h3 className="text-xl font-serif font-bold text-[#C5A059]">Filters</h3>
-              <button onClick={() => setMobileFilterOpen(false)} className="text-gray-400 p-2">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto space-y-6 pb-20">
-               {/* Mobile Category */}
-               <div>
-                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Category</label>
-                <select 
-                  value={selectedCategory}
-                  onChange={(e) => { setSelectedCategory(e.target.value); updateFilters("category", e.target.value); }}
-                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none"
-                >
-                  <option value="">All Categories</option>
-                  <option value="Saree">Saree</option>
-                  <option value="Dress material">Dress material</option>
-                  <option value="Bedsheet">Bedsheet</option>
-                </select>
-              </div>
+      {/* Mobile Filter Drawer */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-[85%] max-w-sm bg-[#051815] shadow-[0_0_50px_rgba(0,0,0,0.8)] transform transition-transform duration-300 ease-out lg:hidden border-r border-[#C5A059]/30 flex flex-col ${mobileFilterOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        <div className="p-4 flex justify-between items-center border-b border-[#C5A059]/20 bg-[#0B2B26]">
+          <h3 className="text-xl font-serif font-bold text-[#C5A059]">Filters</h3>
+          <button onClick={() => setMobileFilterOpen(false)} className="text-[#C5A059] p-2 bg-[#051815] rounded-full border border-[#C5A059]/30">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto space-y-6 px-6 py-6 pb-20">
+          {FilterContent}
 
-              {/* Mobile Material */}
-              <div>
-                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Material</label>
-                <select 
-                  value={selectedMaterial}
-                  onChange={(e) => { setSelectedMaterial(e.target.value); updateFilters("material", e.target.value); }}
-                  className="w-full bg-[#0B2B26] border border-[#C5A059]/30 rounded-xl px-4 py-3 text-white text-sm outline-none"
-                >
-                  <option value="">All Materials</option>
-                  <option value="Pure Cotton">Pure Cotton</option>
-                  <option value="Pure Silk (Pata)">Pure Silk (Pata)</option>
-                  <option value="Mix Silk(Pata) (Silk+Polyster)">Mix Silk(Pata) (Silk+Polyster)</option>
-                </select>
-              </div>
-
-              {/* Mobile Price */}
-              <div>
-                <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Price Range</label>
-                <div className="space-y-3">
-                  {["100-5000", "5000-6000", "6000-7000", "7000-15000", "15000-50000"].map((range) => {
-                    const [min, max] = range.split("-");
-                    return (
-                      <label key={range} className="flex items-center gap-3 cursor-pointer">
-                        <input 
-                          type="radio" 
-                          name="mobilePriceFilter"
-                          checked={selectedPrice === range}
-                          onChange={() => { setSelectedPrice(range); updateFilters("price", range); }}
-                          className="w-5 h-5 form-radio text-[#C5A059] bg-[#051815] border-[#C5A059]/40 focus:ring-[#C5A059]" 
-                        />
-                        <span className="text-sm text-gray-200 font-bold">₹ {Number(min).toLocaleString()} - ₹ {Number(max).toLocaleString()}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-[#051815] border-t border-[#C5A059]/20 flex gap-4 pb-safe">
-              <button 
-                onClick={() => { router.push("/search"); setMobileFilterOpen(false); }}
-                className="w-1/3 py-3 border border-[#C5A059]/40 text-[#C5A059] rounded-xl font-bold text-xs uppercase tracking-wider"
-              >
-                Clear
-              </button>
-              <button 
-                onClick={() => setMobileFilterOpen(false)}
-                className="w-2/3 py-3 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg"
-              >
-                Apply & View {filteredProducts.length} Results
-              </button>
+          {/* Mobile Price */}
+          <div>
+            <label className="block text-xs font-bold text-[#C5A059] uppercase tracking-widest mb-3">Price Range</label>
+            <div className="space-y-3">
+              {["100-5000", "5000-6000", "6000-7000", "7000-15000", "15000-50000"].map((range) => {
+                const [min, max] = range.split("-");
+                return (
+                  <label key={range} className="flex items-center gap-3 cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="mobilePriceFilter"
+                      checked={selectedPrice === range}
+                      onChange={() => { setSelectedPrice(range); updateFilters("price", range); }}
+                      className="w-5 h-5 form-radio text-[#C5A059] bg-[#051815] border-[#C5A059]/40 focus:ring-[#C5A059]" 
+                    />
+                    <span className="text-sm text-gray-200 font-bold">₹ {Number(min).toLocaleString()} - ₹ {Number(max).toLocaleString()}</span>
+                  </label>
+                );
+              })}
             </div>
           </div>
         </div>
+        
+        <div className="p-4 bg-[#051815] border-t border-[#C5A059]/20 flex gap-4 pb-safe mt-auto">
+          <button 
+            onClick={() => { router.push("/search"); setMobileFilterOpen(false); }}
+            className="w-1/3 py-3 border border-[#C5A059]/40 text-[#C5A059] rounded-xl font-bold text-xs uppercase tracking-wider"
+          >
+            Clear
+          </button>
+          <button 
+            onClick={() => setMobileFilterOpen(false)}
+            className="w-2/3 py-3 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg"
+          >
+            Apply & View {filteredProducts.length}
+          </button>
+        </div>
+      </div>
+
+      {/* Backdrop for Sidebar Drawer */}
+      {mobileFilterOpen && (
+        <div className="lg:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity" onClick={() => setMobileFilterOpen(false)}></div>
       )}
     </div>
   );
