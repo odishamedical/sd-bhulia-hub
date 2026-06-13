@@ -4,11 +4,12 @@ import React, { useState, useMemo, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useStores, useWeavers } from "@/lib/db-hooks";
+import { useStores, useWeavers, useProducts } from "@/lib/db-hooks";
 import { ODISHA_DISTRICTS } from "@/lib/locations";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DirectorySidebarFilter from "@/components/DirectorySidebarFilter";
+import ProductCard from "@/components/ProductCard";
 
 function DirectoryContent() {
   const { stores, loading: storesLoading } = useStores(50);
@@ -19,6 +20,10 @@ function DirectoryContent() {
   const initialSearch = searchParams?.get("search") || "";
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [selectedSort, setSelectedSort] = useState("newest");
+  
+  // Products for Right Sidebar
+  const { products, loading: productsLoading } = useProducts({ status: "approved" });
 
   useEffect(() => {
     if (searchParams?.get("search")) {
@@ -50,7 +55,7 @@ function DirectoryContent() {
   }, [combinedDirectory]);
 
   const filteredDirectory = useMemo(() => {
-    return combinedDirectory.filter(item => {
+    const filtered = combinedDirectory.filter(item => {
       // 1. Role Filter
       if (selectedRole !== "all" && item.role !== selectedRole) return false;
       
@@ -103,8 +108,26 @@ function DirectoryContent() {
 
       return true;
     });
-  }, [combinedDirectory, selectedRole, selectedCountry, selectedState, selectedDistrict, selectedBlock, selectedVillage, searchQuery]);
 
+    // Apply Sorting
+    return filtered.sort((a, b) => {
+      if (selectedSort === "newest") {
+        return ((b.createdAt || 0) as number) - ((a.createdAt || 0) as number);
+      }
+      if (selectedSort === "rating") {
+        return ((b as any).googleRating || 0) - ((a as any).googleRating || 0);
+      }
+      if (selectedSort === "reviews") {
+        return ((b as any).googleReviewsCount || 0) - ((a as any).googleReviewsCount || 0);
+      }
+      if (selectedSort === "alpha") {
+        const nameA = (a.title || (a as any).name || "").toLowerCase();
+        const nameB = (b.title || (b as any).name || "").toLowerCase();
+        return nameA.localeCompare(nameB);
+      }
+      return 0;
+    });
+  }, [combinedDirectory, selectedRole, selectedCountry, selectedState, selectedDistrict, selectedBlock, selectedVillage, searchQuery, selectedSort]);
   const verifiedListings = filteredDirectory.filter(item => item.status === "approved");
   const unverifiedListings = filteredDirectory.filter(item => item.status !== "approved");
 
@@ -227,7 +250,7 @@ function DirectoryContent() {
           <GlobalBannerSlot placement="directory_top" fallbackColor="from-[#0B2B26] to-[#051815]" />
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Mobile Filter Button */}
           <div className="lg:hidden w-full -mt-2 mb-2">
@@ -249,7 +272,7 @@ function DirectoryContent() {
           )}
 
           {/* Sidebar Drawer */}
-          <div className={`fixed inset-y-0 left-0 z-50 w-[85%] max-w-sm bg-[#051815] shadow-[0_0_50px_rgba(0,0,0,0.8)] transform transition-transform duration-300 ease-out lg:relative lg:translate-x-0 lg:w-80 lg:shrink-0 lg:z-auto lg:shadow-none lg:bg-transparent overflow-y-auto border-r border-[#C5A059]/20 lg:border-none ${isMobileFilterOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <div className={`fixed inset-y-0 left-0 z-50 w-[85%] max-w-sm bg-[#051815] shadow-[0_0_50px_rgba(0,0,0,0.8)] transform transition-transform duration-300 ease-out lg:relative lg:translate-x-0 lg:col-span-3 lg:z-auto lg:shadow-none lg:bg-transparent overflow-y-auto border-r border-[#C5A059]/20 lg:border-none ${isMobileFilterOpen ? "translate-x-0" : "-translate-x-full"}`}>
             
             {/* Mobile Close Button */}
             <div className="lg:hidden p-4 flex justify-between items-center border-b border-[#C5A059]/20 mb-4 bg-[#0B2B26]">
@@ -280,14 +303,23 @@ function DirectoryContent() {
             </div>
           </div>
 
-          {/* Right Content */}
-          <div className="flex-1 min-w-0">
-            {/* Top Stats */}
-            <div className="bg-[#C5A059]/10 backdrop-blur-md border border-[#C5A059]/30 rounded-2xl p-4 mb-8 shadow-sm flex justify-between items-center">
-              <div className="text-gray-300 text-sm">Showing results for your filters</div>
-              <div className="text-right">
-                <div className="text-[#C5A059] font-bold text-xl">{filteredDirectory.length}</div>
-                <div className="text-gray-400 text-[10px] uppercase tracking-widest">Listings Found</div>
+          {/* Center Main Content */}
+          <div className="lg:col-span-6 xl:col-span-6">
+            {/* Sleek Sort By Bar */}
+            <div className="flex justify-between items-center mb-6">
+              <span className="text-sm text-gray-400">{filteredDirectory.length} Listings Found</span>
+              <div className="flex items-center gap-2">
+                <span className="hidden sm:inline text-xs text-[#C5A059] font-bold uppercase tracking-widest">Sort By:</span>
+                <select 
+                  value={selectedSort}
+                  onChange={(e) => setSelectedSort(e.target.value)}
+                  className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-xl px-4 py-2 text-white text-sm outline-none focus:border-[#C5A059] cursor-pointer"
+                >
+                  <option value="newest">Newest Members</option>
+                  <option value="rating">Highest Rated</option>
+                  <option value="reviews">Most Reviews</option>
+                  <option value="alpha">Alphabetical (A-Z)</option>
+                </select>
               </div>
             </div>
 
@@ -349,6 +381,24 @@ function DirectoryContent() {
             )}
           </div>
         )}
+          </div>
+
+          {/* Right Sidebar: Featured Products */}
+          <div className="hidden lg:flex flex-col lg:col-span-3 xl:col-span-3 space-y-4 h-fit sticky top-24">
+            <h3 className="text-lg xl:text-xl font-serif font-bold text-[#C5A059] mb-2 border-b border-[#C5A059]/20 pb-2">New Arrivals</h3>
+            {productsLoading ? (
+               <div className="space-y-4">
+                 {[1,2,3,4].map(i => <div key={i} className="w-full aspect-[9/16] bg-[#0B2B26] border border-[#C5A059]/20 rounded-xl animate-pulse"></div>)}
+               </div>
+            ) : products && products.length > 0 ? (
+              <div className="space-y-4">
+                {products.slice(0, 4).map(product => (
+                  <ProductCard key={product.id} product={product} role="customer" />
+                ))}
+              </div>
+            ) : (
+              <div className="p-4 bg-[#0B2B26] rounded-xl text-xs text-gray-400 text-center border border-[#C5A059]/20">No products yet.</div>
+            )}
           </div>
         </div>
 
