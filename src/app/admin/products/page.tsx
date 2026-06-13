@@ -88,20 +88,20 @@ export default function AdminProductsPage() {
         <div className="text-gray-900 font-mono text-xs animate-pulse p-4">Loading catalog...</div>
       ) : (
         <>
-          <div className="bg-white p-4 rounded-3xl border border-[#C5A059]/30 shadow-sm mb-6 flex flex-col lg:flex-row gap-4 items-center">
-            <div className="flex-1 w-full relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+          <div className="bg-[#F8FAFC] p-4 rounded-3xl border border-blue-100 shadow-sm mb-6 flex flex-col lg:flex-row gap-4 items-center">
+            <div className="flex-1 w-full relative group">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">🔍</span>
               <input 
                 type="text" 
                 placeholder="Search by ID, Title, or Store..." 
-                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] outline-none text-sm text-gray-900 bg-gray-50"
+                className="w-full pl-12 pr-6 py-3 rounded-full border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none text-sm font-bold text-gray-900 bg-white shadow-sm transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <div className="flex gap-4 w-full lg:w-auto">
               <select 
-                className="flex-1 lg:w-auto py-2 px-4 rounded-xl border border-gray-200 focus:border-[#C5A059] outline-none text-sm bg-gray-50 text-gray-900"
+                className="flex-1 lg:w-auto py-3 px-5 rounded-full border-2 border-gray-200 focus:border-blue-500 outline-none text-sm font-bold bg-white text-gray-900 shadow-sm focus:ring-4 focus:ring-blue-500/20 transition-all cursor-pointer"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
@@ -113,7 +113,7 @@ export default function AdminProductsPage() {
                 <option value="out_of_stock">Out of Stock</option>
               </select>
               <select 
-                className="flex-1 lg:w-auto py-2 px-4 rounded-xl border border-gray-200 focus:border-[#C5A059] outline-none text-sm bg-gray-50 text-gray-900"
+                className="flex-1 lg:w-auto py-3 px-5 rounded-full border-2 border-gray-200 focus:border-blue-500 outline-none text-sm font-bold bg-white text-gray-900 shadow-sm focus:ring-4 focus:ring-blue-500/20 transition-all cursor-pointer"
                 value={sellerFilter}
                 onChange={(e) => setSellerFilter(e.target.value)}
               >
@@ -122,7 +122,7 @@ export default function AdminProductsPage() {
                 <option value="store">Stores / Stores</option>
               </select>
               <select 
-                className="flex-1 lg:w-auto py-2 px-4 rounded-xl border border-gray-200 focus:border-[#C5A059] outline-none text-sm bg-gray-50 text-gray-900"
+                className="flex-1 lg:w-auto py-3 px-5 rounded-full border-2 border-gray-200 focus:border-blue-500 outline-none text-sm font-bold bg-white text-gray-900 shadow-sm focus:ring-4 focus:ring-blue-500/20 transition-all cursor-pointer"
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
               >
@@ -134,17 +134,17 @@ export default function AdminProductsPage() {
             </div>
           </div>
 
-          <div className="bg-white shadow-sm border border-gray-200/80 border border-[#C5A059]/30 rounded-3xl overflow-hidden shadow-xl">
+          <div className="bg-white shadow-sm border border-gray-200/80 rounded-3xl overflow-hidden shadow-xl">
           <div className="overflow-x-auto max-h-[700px] overflow-y-auto custom-scrollbar">
             <table className="w-full text-left text-sm text-gray-200">
-              <thead className="text-xs uppercase bg-[#0A3A35] text-[#C5A059] font-bold tracking-widest border-b border-[#C5A059]/30">
+              <thead className="text-[11px] uppercase bg-[#FFF9F0] text-gray-800 font-black tracking-[0.2em] border-b-2 border-[#C5A059]">
                 <tr>
-                  <th className="px-6 py-4">Image</th>
-                  <th className="px-6 py-4">Title & Weave</th>
-                  <th className="px-6 py-4">Price</th>
-                  <th className="px-6 py-4">Weaving Time</th>
-                  <th className="px-6 py-4">Uploaded By</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
+                  <th className="px-6 py-5">Image</th>
+                  <th className="px-6 py-5">Title & Weave</th>
+                  <th className="px-6 py-5">Price</th>
+                  <th className="px-6 py-5">Weaving Time</th>
+                  <th className="px-6 py-5">Uploaded By</th>
+                  <th className="px-6 py-5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
