@@ -42,7 +42,7 @@ export default function ProductCard({ product, role }: ProductCardProps) {
       {/* Aspect Ratio 9:16 Image Container */}
       <div className="relative w-full pt-[177.77%] bg-[#0A1021] overflow-hidden">
         <Image
-          src={product.images?.[0] || product.image || "/bhulia-hero.png"}
+          src={product.img || product.image || product.images?.[0] || "/bhulia-hero.png"}
           alt={product.title}
           fill
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

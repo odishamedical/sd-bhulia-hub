@@ -116,9 +116,9 @@ export default function LiveProductsPage() {
                 filteredProducts.map(product => (
                   <tr key={product.id} className={`group transition-colors ${(product as any).isHidden ? 'bg-gray-50/50 grayscale-[0.5] opacity-60' : 'hover:bg-blue-50/30'}`}>
                     <td className="py-3 px-6">
-                      <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden relative">
-                        {product.images?.[0] ? (
-                          <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                      <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden relative shadow-sm">
+                        {(product.img || product.images?.[0] || product.image) ? (
+                          <img src={product.img || product.images?.[0] || product.image} alt={product.title} className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs font-bold">NO IMG</div>
                         )}
@@ -150,9 +150,15 @@ export default function LiveProductsPage() {
                         {(product as any).isHidden ? "Hidden" : "Live"}
                       </button>
                     </td>
-                    <td className="py-3 px-6 text-right space-x-3">
-                      <a href={`/admin/products/edit/${product.id}`} className="text-[#C5A059] hover:text-[#996515] text-xs font-bold transition-colors">Edit</a>
-                      <button className="text-blue-600 hover:text-blue-800 text-xs font-bold transition-colors">Save</button>
+                    <td className="py-3 px-6 text-right">
+                      <div className="flex flex-col gap-2 items-end">
+                        <a href={`/admin/products/edit/${product.id}`} className="inline-flex items-center justify-center gap-1.5 w-24 px-3 py-1.5 bg-[#0A1021] text-[#C5A059] border border-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021] rounded-lg text-xs font-bold transition-all shadow-sm">
+                          ✏️ Edit
+                        </a>
+                        <button className="inline-flex items-center justify-center gap-1.5 w-24 px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-600 hover:text-white rounded-lg text-xs font-bold transition-all shadow-sm">
+                          💾 Save
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
