@@ -31,17 +31,7 @@ export default function ProductDetailPage() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [userUid, setUserUid] = useState<string>("sd_super_admin_custom_uid");
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
-  const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
-  const [orderStep, setOrderStep] = useState<number>(1);
   const [referrerName, setReferrerName] = useState<string | null>(null);
-  const [orderForm, setOrderForm] = useState({
-    fullName: "",
-    mobile: "",
-    address: "",
-    pincode: "",
-    paymentMode: "payout"
-  });
-  const [isOrdering, setIsOrdering] = useState<boolean>(false);
   const [showProfileBlocker, setShowProfileBlocker] = useState(false);
   const [activeMediaIndex, setActiveMediaIndex] = useState<number>(0);
   const [bgColor, setBgColor] = useState<string>("rgba(197,160,89,0.15)");
@@ -132,64 +122,7 @@ export default function ProductDetailPage() {
     return () => window.removeEventListener("sd_auth_change", checkAuth);
   }, []);
 
-  const handlePlaceOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
 
-    if (!product) return;
-
-    const userEmail = localStorage.getItem("sd_current_user_email");
-    const isProfileComplete = localStorage.getItem("sd_current_user_profile_complete") === "true";
-
-    if (!userEmail || !isProfileComplete) {
-      setShowProfileBlocker(true);
-      return;
-    }
-
-    setIsOrdering(true);
-    const referralId = localStorage.getItem("sd_referral_id");
-    const newOrder = {
-      orderId: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
-      productName: product.title,
-      productPrice: product.price,
-      quantity: selectedQuantity,
-      customerName: orderForm.fullName,
-      customerPhone: orderForm.mobile,
-      customerAddress: `${orderForm.address}, Pin: ${orderForm.pincode}`,
-      referralId: referralId || null,
-      proxyBuyerId: null,
-      paymentMode: orderForm.paymentMode,
-      paymentStatus: "Payout Locked",
-      logisticsStatus: "Pending Weaver Handover",
-      qcStatus: "Pending Sourcing" as const,
-      timestamp: new Date().toISOString()
-    };
-
-    const res = await addOrder(newOrder);
-    setIsOrdering(false);
-
-    if (res.success) {
-      setOrderStep(2); 
-
-      const existingOrders = JSON.parse(localStorage.getItem("sd_all_orders") || "[]");
-      existingOrders.push({ ...newOrder, id: res.id });
-      localStorage.setItem("sd_all_orders", JSON.stringify(existingOrders));
-
-      if (referralId) {
-        const notifications = JSON.parse(localStorage.getItem("sd_franchise_notifications") || "[]");
-        notifications.push({
-          id: `NOTIF-${Math.floor(1000 + Math.random() * 9000)}`,
-          referralId: referralId,
-          title: "New Referral Sale!",
-          message: `Referral sale of ${selectedQuantity}x ${product.title} by ${orderForm.fullName} completed. Earned commission.`,
-          timestamp: new Date().toISOString(),
-          read: false
-        });
-        localStorage.setItem("sd_franchise_notifications", JSON.stringify(notifications));
-      }
-    } else {
-      alert("Error placing payout order. Please try again.");
-    }
-  };
 
   return (
     <main className="relative flex-1 w-full text-white font-sans flex flex-col min-h-screen transition-colors duration-1000 overflow-x-hidden" style={{ backgroundColor: bgColor ? `color-mix(in srgb, ${bgColor} 8%, #051815)` : '#051815' }}>
@@ -359,7 +292,7 @@ export default function ProductDetailPage() {
                   <div className="relative w-full h-full rounded-xl overflow-hidden bg-black flex items-center justify-center">
                     {media.type === 'video' ? (
                       <>
-                        <Image src={`https://img.youtube.com/vi/${media.url.split('v=')[1]?.split('&')[0] || media.url.split('/').pop()}/maxresdefault.jpg`} alt="Video Thumbnail" fill className="object-cover opacity-60" />
+                        <Image src={`https://img.youtube.com/vi/${media.url.split('v=')[1]?.split('&')[0] || media.url.split('/').pop()}/hqdefault.jpg`} alt="Video Thumbnail" fill className="object-cover opacity-60" />
                         <div className="absolute inset-0 flex items-center justify-center z-10">
                           <span className="bg-red-600 text-white rounded-full p-2 shadow-lg">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -484,9 +417,9 @@ export default function ProductDetailPage() {
                 </div>
                 <Link 
                   href={`/store/${(product as any).sellerId || "maa-samaleswari-weavers"}`}
-                  className="px-4 py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg hover:brightness-110"
+                  className="px-3 py-2 bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg hover:brightness-110 flex-shrink-0 ml-2"
                 >
-                  View Store & Workspace
+                  View Store
                 </Link>
               </div>
 
@@ -519,65 +452,28 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Payout Checkout block */}
-            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-xl text-white">
-              {orderStep === 1 ? (
-                <form onSubmit={handlePlaceOrder} className="space-y-4">
-                  <h3 className="text-base font-serif font-bold text-[#C5A059] tracking-wider border-b border-[#C5A059]/20 pb-2">Direct Pit Loom Payout Checkout</h3>
-                  
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[9px] uppercase tracking-widest text-gray-300 block mb-1">Full Name</label>
-                      <input required type="text" value={orderForm.fullName} onChange={e => setOrderForm({...orderForm, fullName: e.target.value})} className="w-full bg-[#0A3A35] border border-[#C5A059]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]" placeholder="Your Name" />
+            {/* Similar Products block */}
+            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl text-white">
+              <h3 className="text-sm font-serif font-bold text-[#C5A059] tracking-wider border-b border-[#C5A059]/20 pb-3 mb-4 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                More from this Collection
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {allProductsLoading ? (
+                  [...Array(4)].map((_, i) => (
+                    <div key={i} className="aspect-[9/16] bg-black/20 animate-pulse rounded-xl border border-[#C5A059]/10"></div>
+                  ))
+                ) : products.filter(p => p.id !== product.id && (p.category === product.category || p.material === product.material)).slice(0, 4).map((item, idx) => (
+                  <Link key={idx} href={`/product/${item.slug}`} className="group relative aspect-[9/16] rounded-xl overflow-hidden border border-[#C5A059]/30 hover:border-[#C5A059] shadow-lg">
+                    <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 w-full p-2">
+                      <p className="text-[9px] font-bold text-white leading-tight line-clamp-2 mb-0.5">{item.title}</p>
+                      <p className="text-[10px] font-serif font-bold text-[#C5A059]">{item.price}</p>
                     </div>
-                    <div>
-                      <label className="text-[9px] uppercase tracking-widest text-gray-300 block mb-1">Mobile Number</label>
-                      <input required type="tel" value={orderForm.mobile} onChange={e => setOrderForm({...orderForm, mobile: e.target.value})} className="w-full bg-[#0A3A35] border border-[#C5A059]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]" placeholder="91xxxxxx" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-[9px] uppercase tracking-widest text-gray-300 block mb-1">Shipping Address</label>
-                    <textarea required rows={2} value={orderForm.address} onChange={e => setOrderForm({...orderForm, address: e.target.value})} className="w-full bg-[#0A3A35] border border-[#C5A059]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]" placeholder="Complete Address"></textarea>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[9px] uppercase tracking-widest text-gray-300 block mb-1">Pincode</label>
-                      <input required type="text" value={orderForm.pincode} onChange={e => setOrderForm({...orderForm, pincode: e.target.value})} className="w-full bg-[#0A3A35] border border-[#C5A059]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]" placeholder="76xxxx" />
-                    </div>
-                    <div>
-                      <label className="text-[9px] uppercase tracking-widest text-gray-300 block mb-1">Select Quantity</label>
-                      <select value={selectedQuantity} onChange={e => setSelectedQuantity(Number(e.target.value))} className="w-full bg-[#0A3A35] border border-[#C5A059]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]">
-                        {[1, 2, 3, 4, 5].map(q => <option key={q} value={q}>{q} Saree</option>)}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="pt-2">
-                    {(product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0)) ? (
-                      <button type="button" disabled className="w-full py-3 bg-gray-800 border border-gray-700 text-gray-500 font-bold text-xs uppercase tracking-widest rounded-xl cursor-not-allowed">
-                        Out of Stock
-                      </button>
-                    ) : (
-                      <button type="submit" disabled={isOrdering} className="bhulia-gold-button w-full py-3 text-[#0A1021] font-bold text-xs uppercase tracking-widest rounded-xl transition-all hover:brightness-110 cursor-pointer disabled:opacity-50">
-                        {isOrdering ? "Securing Payout Channel..." : "Order with D2C Payout Protection"}
-                      </button>
-                    )}
-                  </div>
-                </form>
-              ) : (
-                <div className="text-center py-6 space-y-4">
-                  <span className="text-4xl">🎉</span>
-                  <h3 className="text-xl font-serif font-bold text-green-400">Order Locked & Payout Secured!</h3>
-                  <p className="text-xs text-gray-200 leading-relaxed max-w-sm mx-auto">
-                    Thank you {orderForm.fullName}. Your purchase of {selectedQuantity} {product.title} has been locked into the Shyam Dash payout registry. Weaver payout starts upon courier confirmation.
-                  </p>
-                  <button onClick={() => setOrderStep(1)} className="px-6 py-2.5 bg-[#0A3A35] border border-[#C5A059] text-white rounded-xl text-xs uppercase tracking-wider hover:bg-[#0D4B45] transition-colors cursor-pointer">
-                    Place Another Order
-                  </button>
-                </div>
-              )}
+                  </Link>
+                ))}
+              </div>
             </div>
 
             <ShareWidget title={product.title} />
