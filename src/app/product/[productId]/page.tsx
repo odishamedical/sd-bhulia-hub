@@ -5,7 +5,7 @@ import Image from "next/image";
 import UserMenu from "@/components/UserMenu";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useProductBySlug, useProducts, addOrder } from "@/lib/db-hooks";
+import { useProductBySlug, useProducts, addOrder, useWeavers, useStores } from "@/lib/db-hooks";
 import { MASTER_FRANCHISES } from "@/app/reseller/data";
 import { useCart } from "@/context/CartContext";
 import { useLeadCapture } from "@/context/LeadCaptureContext";
@@ -30,6 +30,15 @@ export default function ProductDetailPage() {
 
   const { product, loading: productLoading } = useProductBySlug(productSlug);
   const { products, loading: allProductsLoading } = useProducts({ status: "approved" });
+  
+  const { weavers } = useWeavers();
+  const { stores } = useStores();
+  
+  const allSellers = [...(weavers || []).map(w => ({...w, type: 'weaver'})), ...(stores || []).map(v => ({...v, type: 'store'}))];
+  const actualSeller = product ? allSellers.find(s => s.id === (product as any).sellerId) : null;
+  const sellerDisplayTitle = actualSeller ? (actualSeller.title || actualSeller.name || actualSeller.id) : (product ? (product as any).sellerId : null);
+  const sellerUrl = actualSeller ? (actualSeller.type === 'weaver' ? `/weaver/${actualSeller.slug || actualSeller.id}` : `/store/${actualSeller.slug || actualSeller.id}`) : '#';
+  const sellerButtonText = actualSeller ? (actualSeller.type === 'weaver' ? 'Visit Weaver Hub' : 'Visit Storefront') : 'Store Coming Soon';
 
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
@@ -422,14 +431,20 @@ export default function ProductDetailPage() {
               <div className="bg-[#0A3A35] border border-[#C5A059]/30 rounded-xl p-4 flex items-center justify-between">
                 <div>
                   <span className="text-[9px] uppercase tracking-widest text-[#C5A059] font-bold block mb-0.5">Sold By</span>
-                  <span className="text-sm font-bold text-white uppercase">{(product as any).sellerId || "Verified Bhulia Hub"}</span>
+                  <span className="text-sm font-bold text-white uppercase">{sellerDisplayTitle || "Verified Bhulia Hub"}</span>
                 </div>
-                <button 
-                  disabled
-                  className="px-3 py-2 bg-gray-800/80 border border-gray-600 text-gray-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg flex-shrink-0 ml-2 cursor-not-allowed"
-                >
-                  Store Coming Soon
-                </button>
+                {actualSeller ? (
+                  <Link href={sellerUrl} className="px-3 py-2 bg-[#C5A059]/20 hover:bg-[#C5A059]/40 border border-[#C5A059]/50 text-[#C5A059] text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg flex-shrink-0 ml-2 transition-colors">
+                    {sellerButtonText}
+                  </Link>
+                ) : (
+                  <button 
+                    disabled
+                    className="px-3 py-2 bg-gray-800/80 border border-gray-600 text-gray-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg flex-shrink-0 ml-2 cursor-not-allowed"
+                  >
+                    Store Coming Soon
+                  </button>
+                )}
               </div>
 
               <div className="space-y-2 border-t border-[#C5A059]/20 pt-4 text-gray-200">
