@@ -26,7 +26,7 @@ export default function Footer() {
         <div className="flex md:grid overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 border-b border-[#C5A059]/20 pb-6 md:pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           
           {/* Ticket 1: Resellers - Bronze/Gold */}
-          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#4A2E1B] to-[#1A100A] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
+          <div className="w-[75vw] sm:w-[260px] md:w-auto md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#4A2E1B] to-[#1A100A] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#C5A059]/20 to-transparent rounded-bl-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
             <div className="absolute -inset-[100%] group-hover:animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,rgba(197,160,89,0.1)_50%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
             <div className="relative z-10">
@@ -42,7 +42,7 @@ export default function Footer() {
           </div>
 
           {/* Ticket 2: Weavers - Heritage Maroon */}
-          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#5A1827] to-[#1F080D] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
+          <div className="w-[75vw] sm:w-[260px] md:w-auto md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#5A1827] to-[#1F080D] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#C5A059]/20 to-transparent rounded-bl-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
             <div className="absolute -inset-[100%] group-hover:animate-[spin_4s_linear_infinite_reverse] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,rgba(197,160,89,0.1)_50%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
             <div className="relative z-10">
@@ -58,7 +58,7 @@ export default function Footer() {
           </div>
 
           {/* Ticket 3: Store Owners - Royal Indigo */}
-          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#1A2B4C] to-[#0A1121] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
+          <div className="w-[75vw] sm:w-[260px] md:w-auto md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#1A2B4C] to-[#0A1121] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#C5A059]/20 to-transparent rounded-bl-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
             <div className="absolute -inset-[100%] group-hover:animate-[spin_5s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,rgba(197,160,89,0.1)_50%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
             <div className="relative z-10">
@@ -74,7 +74,7 @@ export default function Footer() {
           </div>
 
           {/* Ticket 4: Raw Material Suppliers - Emerald */}
-          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#0B3B24] to-[#041A0F] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
+          <div className="w-[75vw] sm:w-[260px] md:w-auto md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#0B3B24] to-[#041A0F] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#C5A059]/20 to-transparent rounded-bl-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
             <div className="absolute -inset-[100%] group-hover:animate-[spin_6s_linear_infinite_reverse] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,rgba(197,160,89,0.1)_50%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
             <div className="relative z-10">
@@ -90,7 +90,7 @@ export default function Footer() {
           </div>
 
           {/* Ticket 5: B2B Partners - Deep Amethyst */}
-          <div className="min-w-[85vw] md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#331C42] to-[#12091A] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
+          <div className="w-[75vw] sm:w-[260px] md:w-auto md:min-w-0 snap-center shrink-0 bg-gradient-to-br from-[#331C42] to-[#12091A] border border-[#C5A059]/40 rounded-2xl p-6 flex flex-col justify-between hover:border-[#C5A059] hover:-translate-y-2 transition-all duration-500 group shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#C5A059]/20 to-transparent rounded-bl-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
             <div className="absolute -inset-[100%] group-hover:animate-[spin_4.5s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,rgba(197,160,89,0.1)_50%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
             <div className="relative z-10">
