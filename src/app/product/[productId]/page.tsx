@@ -407,10 +407,12 @@ export default function ProductDetailPage() {
                   <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Length & Blouse</span>
                   <span className="text-xs font-semibold text-white">{product.length || "6.2 Meters"} {product.hasBlouse ? "(With Blouse)" : ""}</span>
                 </div>
-                <div>
-                  <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Weaver / Designer</span>
-                  <span className="text-xs font-semibold text-white">{product.weaverName || "Master Weaver"}</span>
-                </div>
+                {product.weaverName && product.weaverName.toLowerCase() !== "new" && (
+                  <div>
+                    <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Weaver / Designer</span>
+                    <span className="text-xs font-semibold text-white">{product.weaverName}</span>
+                  </div>
+                )}
                 <div>
                   <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Payout Protocol</span>
                   <span className="text-xs font-semibold text-green-400">Payment Protected</span>
@@ -493,10 +495,10 @@ export default function ProductDetailPage() {
               <div className="grid grid-cols-1 gap-4">
                 {allProductsLoading ? (
                   [...Array(3)].map((_, i) => (
-                    <div key={i} className="aspect-square bg-black/20 animate-pulse rounded-xl border border-[#C5A059]/10"></div>
+                    <div key={i} className="aspect-[9/16] bg-black/20 animate-pulse rounded-xl border border-[#C5A059]/10"></div>
                   ))
                 ) : products.filter(p => p.id !== product.id && (p.category === product.category || p.material === product.material)).slice(0, 3).map((item, idx) => (
-                  <Link key={idx} href={`/product/${item.slug}`} className="group relative aspect-square rounded-xl overflow-hidden border border-[#C5A059]/30 hover:border-[#C5A059] shadow-lg">
+                  <Link key={idx} href={`/product/${item.slug}`} className="group relative aspect-[9/16] rounded-xl overflow-hidden border border-[#C5A059]/30 hover:border-[#C5A059] shadow-lg">
                     <Image src={item.img} alt={item.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none"></div>
                     <div className="absolute bottom-0 left-0 w-full p-3">
