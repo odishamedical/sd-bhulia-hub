@@ -29,6 +29,7 @@ export const metadata: Metadata = {
   },
 };
 
+import { Suspense } from "react";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { LeadCaptureProvider } from "@/context/LeadCaptureContext";
@@ -57,7 +58,9 @@ export default function RootLayout({
             <LeadCaptureProvider>
               <GlobalMaintenanceGate>
                 <Header />
-              <GlobalSearchConsole />
+              <Suspense fallback={null}>
+                <GlobalSearchConsole />
+              </Suspense>
               <div className="flex-1 flex flex-col min-h-[calc(100vh-200px)] relative pb-16 lg:pb-0">
                 {children}
               </div>

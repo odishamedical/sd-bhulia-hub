@@ -154,7 +154,7 @@ export default function PremiumStaticPage() {
             
             <div className="grid grid-cols-2 gap-3">
               {productsLoading ? (
-                 {[1,2,3,4].map(i => <div key={i} className="w-full aspect-[9/16] bg-white rounded-2xl border border-[#C5A059]/30 animate-pulse"></div>)}
+                 [1,2,3,4].map(i => <div key={i} className="w-full aspect-[9/16] bg-white rounded-2xl border border-[#C5A059]/30 animate-pulse"></div>)
               ) : (
                 liveProducts.map(product => (
                    <div key={product.id} className="relative shadow-xl rounded-2xl overflow-hidden border border-[#C5A059]/20 bg-white">
