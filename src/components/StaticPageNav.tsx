@@ -44,7 +44,7 @@ export default function StaticPageNav() {
     <div className="w-full bg-[#E5D3B3] border-b border-[#C5A059]/20 shadow-sm relative z-40 py-3 px-4 mb-6">
       {/* Navigation Bar */}
       <div className="max-w-[1400px] mx-auto">
-        <ul className="flex overflow-x-auto whitespace-nowrap hide-scrollbar items-center md:justify-center gap-3 pb-1">
+        <ul className="flex overflow-x-auto lg:overflow-visible whitespace-nowrap hide-scrollbar items-center md:justify-center gap-3 pb-1">
           {navCategories.map((category) => (
             <li 
               key={category.title} 

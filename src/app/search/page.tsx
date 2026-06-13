@@ -231,7 +231,7 @@ function SearchContent() {
       
       {/* Top Blue Pill Filter Menus - Full Width */}
       <div className="w-full bg-[#E5D3B3] border-b border-[#C5A059]/20 relative z-40 mb-6 py-3 px-4 shadow-sm">
-        <div className="max-w-[1400px] mx-auto flex overflow-x-auto whitespace-nowrap hide-scrollbar items-center md:justify-center gap-3 pb-1">
+        <div className="max-w-[1400px] mx-auto flex overflow-x-auto lg:overflow-visible whitespace-nowrap hide-scrollbar items-center md:justify-center gap-3 pb-1">
           
           {/* Type Dropdown */}
           <div className="relative group">
