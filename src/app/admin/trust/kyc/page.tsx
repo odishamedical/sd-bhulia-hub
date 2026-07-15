@@ -8,6 +8,8 @@ import { db } from "@/lib/firebase";
 
 export default function KycResolutionDesk() {
   const [pendingUsers, setPendingUsers] = useState<User[]>([]);
+  const [pendingStores, setPendingStores] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<"users" | "stores">("users");
   const [isLoading, setIsLoading] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
@@ -34,8 +36,17 @@ export default function KycResolutionDesk() {
       });
 
       setPendingUsers(users);
+
+      // Fetch pending stores
+      const storesQuery = query(collection(db, "weavers"), where("status", "==", "pending"));
+      const storesSnap = await getDocs(storesQuery);
+      const stores: any[] = [];
+      storesSnap.forEach((docSnap) => {
+        stores.push({ id: docSnap.id, ...docSnap.data(), type: "store_approval" });
+      });
+      setPendingStores(stores);
     } catch (error) {
-      console.error("Failed to fetch pending KYC:", error);
+      console.error("Failed to fetch pending queues:", error);
     } finally {
       setIsLoading(false);
     }
@@ -99,7 +110,17 @@ export default function KycResolutionDesk() {
 
     setProcessingId(item.id);
     try {
-      if (item.type === "user_approval") {
+      if (item.type === "store_approval") {
+        const storeRef = doc(db, "weavers", item.id);
+        const updates = action === "approve"
+          ? { status: "approved" }
+          : action === "hold"
+          ? { status: "on_hold" }
+          : { status: "rejected", rejectionReason };
+          
+        await updateDoc(storeRef, updates);
+        setPendingStores(prev => prev.filter(s => s.id !== item.id));
+      } else if (item.type === "user_approval") {
         const userRef = doc(db, "users", item.id);
         const updates: any = action === "approve" 
           ? { status: "active", kycStatus: "verified", verifiedAt: new Date().toISOString(), applicationStatus: deleteField() }
@@ -215,8 +236,19 @@ export default function KycResolutionDesk() {
           </h1>
           <p className="text-sm text-gray-500 mt-1">Review and approve pending Weaver, Store, and Franchise applications.</p>
         </div>
-        <div className="bg-white border border-gray-200 shadow-sm px-4 py-2 rounded-lg text-sm font-bold text-gray-700">
-          Pending: <span className="text-red-600">{pendingUsers.length}</span>
+        <div className="flex gap-2">
+          <button 
+            onClick={() => setActiveTab("users")}
+            className={`px-4 py-2 rounded-lg text-sm font-bold border transition-colors ${activeTab === "users" ? "bg-gray-900 text-white border-gray-900" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}
+          >
+            User Accounts ({pendingUsers.length})
+          </button>
+          <button 
+            onClick={() => setActiveTab("stores")}
+            className={`px-4 py-2 rounded-lg text-sm font-bold border transition-colors ${activeTab === "stores" ? "bg-gray-900 text-white border-gray-900" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}
+          >
+            Store Profiles ({pendingStores.length})
+          </button>
         </div>
       </div>
 
@@ -224,7 +256,7 @@ export default function KycResolutionDesk() {
       <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
         {isLoading ? (
           <div className="p-10 text-center text-gray-500 animate-pulse">Scanning Global Queue...</div>
-        ) : pendingUsers.length === 0 ? (
+        ) : (activeTab === "users" ? pendingUsers.length === 0 : pendingStores.length === 0) ? (
           <div className="p-16 text-center">
             <div className="text-5xl mb-4">🎉</div>
             <h3 className="text-xl font-bold text-gray-900">Queue is Empty</h3>
@@ -235,40 +267,53 @@ export default function KycResolutionDesk() {
             <table className="w-full text-left text-sm">
               <thead className="bg-gray-50 border-b border-gray-200 text-gray-600 uppercase tracking-wider font-semibold text-[11px]">
                 <tr>
-                  <th className="px-6 py-4">Applicant Profile</th>
-                  <th className="px-6 py-4">Entity Type</th>
+                  <th className="px-6 py-4">{activeTab === "users" ? "Applicant Profile" : "Store Details"}</th>
+                  <th className="px-6 py-4">{activeTab === "users" ? "Entity Type" : "Location"}</th>
                   <th className="px-6 py-4">Details</th>
                   <th className="px-6 py-4 text-right">Resolution Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {pendingUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
+                {(activeTab === "users" ? pendingUsers : pendingStores).map((item) => (
+                  <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-5 align-top">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-gray-900 bg-gradient-to-br from-gray-400 to-gray-600 shadow-inner">
-                          {(user as any).displayName ? (user as any).displayName.charAt(0).toUpperCase() : "?"}
+                          {activeTab === "users" ? (item.displayName ? item.displayName.charAt(0).toUpperCase() : "?") : (item.title ? item.title.charAt(0).toUpperCase() : "S")}
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900">{(user as any).displayName || "Unregistered"}</p>
-                          <p className="text-xs text-gray-500">{user.email || user.phone}</p>
-                          <p className="text-[10px] text-gray-400 mt-1 font-mono">UID: {user.id.substring(0,8)}</p>
+                          <p className="font-bold text-gray-900">{activeTab === "users" ? (item.displayName || "Unregistered") : (item.title || item.storeName || "Unnamed Store")}</p>
+                          <p className="text-xs text-gray-500">{activeTab === "users" ? (item.email || item.phone) : (item.phone || "No phone")}</p>
+                          <p className="text-[10px] text-gray-400 mt-1 font-mono">UID: {item.id.substring(0,8)}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-5 align-top">
+                      {activeTab === "users" ? (
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
-                        user.role === 'weaver' ? 'bg-orange-100 text-orange-800 border-orange-200' :
-                        user.role === 'shop' ? 'bg-purple-100 text-purple-800 border-purple-200' :
-                        user.role === 'reseller' ? 'bg-green-100 text-green-800 border-green-200' :
-                        user.role === 'customer' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                        item.role === 'weaver' ? 'bg-orange-100 text-orange-800 border-orange-200' :
+                        item.role === 'shop' ? 'bg-purple-100 text-purple-800 border-purple-200' :
+                        item.role === 'reseller' ? 'bg-green-100 text-green-800 border-green-200' :
+                        item.role === 'customer' ? 'bg-blue-100 text-blue-800 border-blue-200' :
                         'bg-gray-100 text-gray-800 border-gray-200'
                       }`}>
-                        {user.role || "Unknown"}
+                        {item.role || "Unknown"}
                       </span>
+                      ) : (
+                        <div>
+                          <p className="font-semibold text-gray-900">{item.district}</p>
+                          <p className="text-xs text-gray-500">{item.block}</p>
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-5 text-xs text-gray-600">
-                      {(user as any).type === "document_verification" ? (
+                      {item.type === "store_approval" ? (
+                        <div>
+                          <p className="text-sm font-bold text-blue-600 uppercase mb-1">STORE APPROVAL</p>
+                          <p><span className="font-semibold">Specialties:</span> {item.specialties?.join(", ")}</p>
+                          <p><span className="font-semibold">Exp:</span> {item.weaverExperience}</p>
+                        </div>
+                      ) : item.type === "document_verification" ? (
                         <div>
                            <p className="text-sm font-bold text-blue-600 uppercase mb-1">{(user as any).documentType || "BANK"} UPLOAD</p>
                            { (user as any).documentUrl ? (
@@ -281,47 +326,42 @@ export default function KycResolutionDesk() {
                              </div>
                            )}
                         </div>
-                      ) : user.role === "weaver" ? (
+                      ) : item.role === "weaver" ? (
                         <div>
                           <p className="text-sm font-bold text-gray-900 uppercase mb-1">NEW ACCOUNT</p>
-                          <p><span className="font-semibold">Cluster:</span> {(user as any).cluster || "N/A"}</p>
-                          <p><span className="font-semibold">Village:</span> {(user as any).village || "N/A"}</p>
+                          <p><span className="font-semibold">Cluster:</span> {item.cluster || "N/A"}</p>
+                          <p><span className="font-semibold">Village:</span> {item.village || "N/A"}</p>
                         </div>
-                      ) : user.role === "store" ? (
+                      ) : item.role === "store" ? (
                         <div>
                           <p className="text-sm font-bold text-gray-900 uppercase mb-1">NEW ACCOUNT</p>
-                          <p><span className="font-semibold">Business:</span> {user.businessName || "N/A"}</p>
-                          <p><span className="font-semibold">GST:</span> {(user as any).gstNumber || "N/A"}</p>
+                          <p><span className="font-semibold">Business:</span> {item.businessName || "N/A"}</p>
+                          <p><span className="font-semibold">GST:</span> {item.gstNumber || "N/A"}</p>
                         </div>
                       ) : (
                         <p className="text-gray-400 italic">No extra metadata provided.</p>
                       )}
                     </td>
-                    <td className="px-6 py-5 align-middle text-right">
-                      {processingId === user.id ? (
-                        <div className="text-xs text-blue-600 font-semibold animate-pulse">Processing...</div>
-                      ) : (
-                        <div className="flex items-center justify-end gap-2">
-                          <button 
-                            onClick={() => setSelectedUser(user)}
-                            className="px-4 py-2 border border-gray-200 text-gray-700 hover:bg-gray-50 font-bold rounded-lg text-xs transition-colors"
-                          >
-                            View Details
-                          </button>
-                          <button 
-                            onClick={() => handleAction(user, "reject")}
-                            className="px-4 py-2 border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 font-bold rounded-lg text-xs transition-colors"
-                          >
-                            Reject
-                          </button>
-                          <button 
-                            onClick={() => handleAction(user, "approve")}
-                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs shadow-md transition-colors"
-                          >
-                            Approve
-                          </button>
-                        </div>
-                      )}
+                    <td className="px-6 py-5 align-middle">
+                      <div className="flex flex-col items-end gap-2">
+                        {processingId === item.id ? (
+                          <div className="text-blue-500 font-bold animate-pulse text-xs uppercase tracking-widest">Processing...</div>
+                        ) : (
+                          <>
+                            <button onClick={() => handleAction(item, "approve")} className="w-full sm:w-auto bg-green-500 text-white font-bold py-2 px-4 rounded shadow hover:bg-green-600 transition-colors text-xs uppercase tracking-wider">
+                              Approve
+                            </button>
+                            <button onClick={() => handleAction(item, "reject")} className="w-full sm:w-auto bg-white text-red-500 border border-red-200 font-bold py-2 px-4 rounded shadow-sm hover:bg-red-50 transition-colors text-xs uppercase tracking-wider">
+                              Reject
+                            </button>
+                            {item.type !== "store_approval" && (
+                              <button onClick={() => handleAction(item, "hold")} className="w-full sm:w-auto bg-yellow-100 text-yellow-800 font-bold py-2 px-4 rounded shadow-sm hover:bg-yellow-200 transition-colors text-xs uppercase tracking-wider">
+                                Request Visit
+                              </button>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

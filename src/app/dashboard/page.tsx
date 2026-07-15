@@ -869,6 +869,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [facebookUrl, setFacebookUrl] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
   const [currentProfileStep, setCurrentProfileStep] = useState(1);
+  const [storeStatus, setStoreStatus] = useState("");
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -920,6 +921,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
       getDoc(doc(db, targetCollection, auth.currentUser.uid)).then(snap => {
         if (snap.exists()) {
           const data = snap.data();
+          setStoreStatus(data.status || "");
           if (roleTitle === "Weaver Hub") {
             setWeaverExperience(data.weaverExperience || "");
             setGenerations(data.generations || "");
@@ -1031,7 +1033,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           pincode
         },
         tier: "Silver", // Default
-        status: "approved", // Auto-approve for MVP
+        status: storeStatus || "pending",
         ...(roleTitle === "Weaver Hub" && {
           weaverExperience,
           generations,
@@ -2058,6 +2060,16 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           }}>
             
             {/* Step Indicators */}
+            {roleTitle === "Weaver Hub" && storeStatus === "pending" && (
+              <div className="mb-6 bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl flex items-start gap-3 shadow-sm animate-in fade-in slide-in-from-top-2">
+                <div className="text-xl">⏳</div>
+                <div>
+                  <h4 className="font-bold text-sm">Store Profile Under Review</h4>
+                  <p className="text-xs mt-1">Your public store profile is currently being reviewed by our Admin team. It will be live once approved!</p>
+                </div>
+              </div>
+            )}
+            
             {roleTitle === "Weaver Hub" && (
               <div className="flex items-center justify-between mb-8">
                 <div className="flex-1 flex items-center">
