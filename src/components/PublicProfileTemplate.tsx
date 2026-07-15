@@ -117,8 +117,14 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
               </div>
             </div>
 
-            {/* Center: Details */}
-            <div className="flex-1 flex flex-col justify-center border-b md:border-b-0 md:border-r border-[#C5A059]/20 pb-6 md:pb-0 md:pr-6">
+            {/* Right Side Column (Details + Share above Address) */}
+            <div className="flex-1 flex flex-col justify-center">
+              
+              {/* Top Section: Title & Actions & Share */}
+              <div className="flex flex-col md:flex-row gap-6 md:gap-10 pb-6">
+                
+                {/* Details Section */}
+                <div className="flex-1 flex flex-col justify-center border-b md:border-b-0 md:border-r border-[#C5A059]/20 pb-6 md:pb-0 md:pr-6">
               <h2 className="text-lg md:text-xl font-sans font-bold text-white mb-1">
                 {profile.listingType === "weaver" ? "Sambalpuri Master Weaver" : profile.listingType === "raw_material" ? "Sambalpuri Raw Material Supplier" : "Sambalpuri Handloom Store"}
               </h2>
@@ -151,8 +157,20 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                   WhatsApp
                 </button>
               </div>
+              </div>
+              
+              {/* Share Widget Section (moved up next to Details) */}
+              <div className="md:w-1/4 lg:w-64 shrink-0 flex flex-col justify-center">
+                <ShareWidget 
+                  title={profile.name} 
+                  layout="vertical" 
+                  className="!bg-transparent !border-0 !shadow-none !p-0" 
+                  shareTextOverride="Promote original Sambalpuri Saree. Share this link to your network and support our weavers!"
+                />
+              </div>
+            </div>
 
-              {/* Address Row */}
+            {/* Bottom Section: Address Row (spans full width of right side) */}
               <div className="mt-5 pt-5 border-t border-[#C5A059]/20">
                 <span className="text-white/60 font-bold block mb-3 uppercase tracking-widest text-[10px]">Location & Geography</span>
                 {profile.rawAddress && typeof profile.rawAddress === "object" ? (
@@ -183,17 +201,8 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                 )}
               </div>
             </div>
-
-            {/* Right: Share Widget */}
-            <div className="md:w-1/4 lg:w-64 shrink-0 flex flex-col justify-center">
-              <ShareWidget 
-                title={profile.name} 
-                layout="vertical" 
-                className="!bg-transparent !border-0 !shadow-none !p-0" 
-                shareTextOverride="Promote original Sambalpuri Saree. Share this link to your network and support our weavers!"
-              />
-            </div>
           </div>
+
 
           {/* Verification Call to action (if unclaimed) */}
           {profile.status === "unclaimed" && (
