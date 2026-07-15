@@ -45,13 +45,22 @@ export default function DashboardPage() {
     if (savedMode === "true") setIsSellerMode(true);
 
     if (typeof window !== "undefined") {
+      const savedTab = localStorage.getItem("bhulia_active_tab");
       const params = new URLSearchParams(window.location.search);
       const applyParam = params.get("apply");
       if (applyParam) {
         setActiveTab("seller_hub");
+      } else if (savedTab) {
+        setActiveTab(savedTab);
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (activeTab) {
+      localStorage.setItem("bhulia_active_tab", activeTab);
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {

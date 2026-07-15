@@ -5,43 +5,79 @@ const CATEGORY_GUIDES = [
     icon: "👤",
     title: "1. Profile & Setup",
     description: "Your business identity.",
-    details: "This is your starting point. Set up your personal profile, configure your public storefront, complete your KYC verification for trusted badges, claim your custom brand URL, and manage staff accounts."
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Dashboard Overview:</strong> High-level view of your sales and performance.</li>
+        <li><strong>Personal Profile:</strong> Manage your name, contact info, and basic details.</li>
+        <li><strong>Setup Public Store:</strong> Edit the information customers see on your profile page.</li>
+        <li><strong>Verification (KYC):</strong> Upload documents to earn a trusted seller badge.</li>
+        <li><strong>Custom Brand URL:</strong> Claim a unique link for your store.</li>
+        <li><strong>Staff Accounts:</strong> Add family members or employees to help manage your account.</li>
+      </ul>
+    )
   },
   {
     icon: "📦",
     title: "2. Your Catalog",
     description: "Manage what you sell.",
-    details: "Upload your beautiful Sambalpuri products, organize your inventory, and configure your B2B/wholesale pricing for bulk buyers."
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Add your Sambalpuri Products:</strong> Upload new sarees, manage inventory, and update prices.</li>
+        <li><strong>B2B / Wholesale Setup:</strong> Create special bulk pricing for verified resellers.</li>
+      </ul>
+    )
   },
   {
     icon: "🚚",
     title: "3. Orders & Deliveries",
     description: "Process and ship.",
-    details: "Handle incoming orders, process shipments, and track logistics. Fast dispatching keeps your customers happy."
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Manage Orders:</strong> View incoming orders, print shipping labels, and track deliveries.</li>
+      </ul>
+    )
   },
   {
     icon: "💰",
     title: "4. Finance & Earnings",
     description: "Track your money.",
-    details: "Monitor your digital wallet balance, view detailed records of revenue, and request bank payouts directly to your registered account."
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Wallet & Bank Payouts:</strong> Monitor your earnings and request withdrawals to your bank account.</li>
+      </ul>
+    )
   },
   {
     icon: "📈",
     title: "5. Marketing & Comm",
     description: "Connect with buyers.",
-    details: "Create promotional coupons to drive sales, and manage proxy messages from customers reaching out via Admin Support."
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Marketing & Promos:</strong> Create discount coupons and promotional offers.</li>
+        <li><strong>Customer Messages:</strong> Read messages forwarded to you securely by Admin Support.</li>
+      </ul>
+    )
   },
   {
     icon: "🎧",
     title: "6. Help & Support",
     description: "Assistance when you need it.",
-    details: "Access this Master Guide anytime, or reach out to Admin Support for live help with your store or orders."
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Help & Support Guide:</strong> Access this master guide anytime to learn how the dashboard works.</li>
+        <li><strong>Contact Admin Support:</strong> Reach out directly to our admin team for assistance.</li>
+      </ul>
+    )
   },
   {
     icon: "🔐",
     title: "7. Security",
     description: "Protect your account.",
-    details: "Update critical security settings like passwords and manage your login credentials."
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Security & Password:</strong> Update your login password and manage account safety.</li>
+      </ul>
+    )
   }
 ];
 
@@ -115,9 +151,9 @@ export default function HelpGuideTab({ userRole }: { userRole: string }) {
             
             {openCategory === idx && (
               <div className="px-5 pb-5 pt-2 pl-[68px] animate-in slide-in-from-top-2 fade-in">
-                <p className="text-gray-700 text-sm leading-relaxed bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
+                <div className="text-gray-700 text-sm leading-relaxed bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
                   {cat.details}
-                </p>
+                </div>
               </div>
             )}
           </div>
