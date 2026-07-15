@@ -533,10 +533,10 @@ export default function UserManagementPage() {
         </div>
       </header>
 
-      <div className="flex flex-col xl:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Advanced Filters Sidebar */}
         {showFilters && (
-          <div className="xl:w-80 shrink-0 space-y-6">
+          <div className="w-full lg:w-64 shrink-0 space-y-6">
             <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
               <h3 className="text-sm font-black text-gray-900 mb-5 flex items-center gap-2 uppercase tracking-wider">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
