@@ -48,6 +48,16 @@ export default function VendorDetailPage() {
         googlePlaceId: store.googlePlaceId,
         googleRating: store.googleRating,
         googleReviewsCount: store.googleReviewsCount,
+        handloomExperience: store.handloomExperience,
+        generations: store.generations,
+        specialties: store.specialties,
+        materials: store.materials,
+        scale: store.scale,
+        googlePin: store.googlePin,
+        gallery: store.gallery,
+        videoUrl: store.videoUrl,
+        facebookUrl: store.facebookUrl,
+        instagramUrl: store.instagramUrl,
       });
 
       // Filter products belonging to this store

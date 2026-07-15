@@ -245,9 +245,11 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
           {/* Artisan Heritage & Visual Showcase Side-by-Side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
-            {/* Left: Artisan Heritage & Craft */}
+            {/* Left: Artisan Heritage & Craft (or Shop Details) */}
             <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl flex flex-col h-full">
-              <h3 className="text-xl font-serif text-[#C5A059] font-bold tracking-wider mb-6">Artisan Heritage & Craft</h3>
+              <h3 className="text-xl font-serif text-[#C5A059] font-bold tracking-wider mb-6">
+                {type === "store" ? "Store Details & Legacy" : "Artisan Heritage & Craft"}
+              </h3>
               
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-8 gap-x-4 flex-1">
                 {profile.generations && (
@@ -260,13 +262,15 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                   </div>
                 )}
                 
-                {profile.weaverExperience && (
+                {(profile.weaverExperience || profile.handloomExperience) && (
                   <div className="flex flex-col items-center text-center">
                     <div className="w-12 h-12 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-3">
                       <span className="text-[#C5A059] text-xl">⏳</span>
                     </div>
-                    <div className="text-sm text-white font-bold">{profile.weaverExperience}</div>
-                    <div className="text-[10px] text-white/60 uppercase font-semibold mt-1">Experience</div>
+                    <div className="text-sm text-white font-bold">{profile.weaverExperience || profile.handloomExperience}</div>
+                    <div className="text-[10px] text-white/60 uppercase font-semibold mt-1">
+                      {type === "store" ? "Retail Experience" : "Experience"}
+                    </div>
                   </div>
                 )}
 
@@ -276,7 +280,9 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                       <span className="text-[#C5A059] text-xl">🧵</span>
                     </div>
                     <div className="text-sm text-white font-bold line-clamp-2 leading-tight">{profile.specialties[0]}</div>
-                    <div className="text-[10px] text-white/60 uppercase font-semibold mt-1">Handwoven Craft</div>
+                    <div className="text-[10px] text-white/60 uppercase font-semibold mt-1">
+                      {type === "store" ? "Primary Category" : "Handwoven Craft"}
+                    </div>
                   </div>
                 )}
               </div>

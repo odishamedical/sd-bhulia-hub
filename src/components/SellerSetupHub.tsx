@@ -46,7 +46,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
   const [bankUpi, setBankUpi] = useState("");
 
   // Marketing (Reseller Only)
-  const [socialLinks, setSocialLinks] = useState("");
+  const [facebookUrl, setFacebookUrl] = useState("");
+  const [instagramUrl, setInstagramUrl] = useState("");
   const [followerCount, setFollowerCount] = useState("");
   const [whatsappGroupSize, setWhatsappGroupSize] = useState("");
   const [handloomExperience, setHandloomExperience] = useState("");
@@ -92,7 +93,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           setBankIfsc(data.bankIfsc || "");
           setBankUpi(data.bankUpi || "");
 
-          setSocialLinks(data.socialLinks || "");
+          setFacebookUrl(data.facebookUrl || "");
+          setInstagramUrl(data.instagramUrl || "");
           setFollowerCount(data.followerCount || "");
           setWhatsappGroupSize(data.whatsappGroupSize || "");
           setHandloomExperience(data.handloomExperience || "");
@@ -131,7 +133,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
   ];
 
   if (desiredRole === "reseller") {
-    steps.push({ id: 5, title: "Marketing", icon: "📈", isReady: !!(followerCount && socialLinks && handloomExperience) });
+    steps.push({ id: 5, title: "Marketing", icon: "📈", isReady: !!(followerCount && (facebookUrl || instagramUrl) && handloomExperience) });
   }
 
   const totalSteps = steps.length;
@@ -178,7 +180,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         updates.bankIfsc = bankIfsc;
         updates.bankUpi = bankUpi;
       } else if (currentStep === 5) {
-        updates.socialLinks = socialLinks;
+        updates.facebookUrl = facebookUrl;
+        updates.instagramUrl = instagramUrl;
         updates.followerCount = followerCount;
         updates.whatsappGroupSize = whatsappGroupSize;
         updates.handloomExperience = handloomExperience;
@@ -587,15 +590,27 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Social Media Profile Links</label>
-              <textarea 
-                value={socialLinks} 
-                onChange={e => setSocialLinks(e.target.value)} 
-                rows={2}
-                className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" 
-                placeholder="Paste Instagram, Facebook Page, or YouTube channel URLs here..."
-              ></textarea>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Facebook Page URL</label>
+                <input 
+                  type="url"
+                  value={facebookUrl} 
+                  onChange={e => setFacebookUrl(e.target.value)} 
+                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" 
+                  placeholder="https://facebook.com/..."
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Instagram URL</label>
+                <input 
+                  type="url"
+                  value={instagramUrl} 
+                  onChange={e => setInstagramUrl(e.target.value)} 
+                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" 
+                  placeholder="https://instagram.com/..."
+                />
+              </div>
             </div>
 
             <div>
