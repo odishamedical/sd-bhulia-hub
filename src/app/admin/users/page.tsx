@@ -194,9 +194,16 @@ export default function UserManagementPage() {
     }
       
       return Array.from(uniqueUsersMap.values());
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating users list: ", error);
-      return [];
+      return [{
+        id: "ERROR",
+        name: error?.message || String(error),
+        role: "user",
+        phone: error?.stack?.substring(0, 50) || "N/A",
+        state: "N/A", district: "N/A", country: "N/A", volume: 0, purchasedProductIds: [],
+        whatsapp: "N/A", address: "N/A", email: "N/A", referralId: "N/A", status: "error"
+      }];
     }
   }, [weavers, stores, orders, customers, authUsers, resellers]);
 
@@ -215,9 +222,16 @@ export default function UserManagementPage() {
 
       return matchSearch && matchRole && matchState && matchDistrict && matchVolume && matchProduct && matchSubStatus && matchVerification;
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error filtering users: ", error);
-      return [];
+      return [{
+        id: "ERROR",
+        name: error?.message || String(error),
+        role: "user",
+        phone: error?.stack?.substring(0, 50) || "N/A",
+        state: "N/A", district: "N/A", country: "N/A", volume: 0, purchasedProductIds: [],
+        whatsapp: "N/A", address: "N/A", email: "N/A", referralId: "N/A", status: "error"
+      }];
     }
   }, [users, searchTerm, roleFilter, stateFilter, districtFilter, minVolume, productIdFilter, subStatusFilter, verificationFilter]);
 
