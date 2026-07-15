@@ -2,52 +2,46 @@ import React, { useState } from "react";
 
 const CATEGORY_GUIDES = [
   {
-    icon: "📊",
-    title: "Dashboard & Reports",
-    description: "Your mission control center.",
-    details: "View high-level metrics, track your daily sales, monitor active orders, and access detailed ecosystem analytics (for Resellers). This is your daily snapshot of business health."
-  },
-  {
-    icon: "🛍️",
-    title: "Catalog & Inventory",
-    description: "Manage what you sell.",
-    details: "Upload new stock, organize your product catalog, and curate your professional storefront. This section controls everything your buyers see."
+    icon: "👤",
+    title: "1. Profile & Setup",
+    description: "Your business identity.",
+    details: "This is your starting point. Set up your personal profile, configure your public storefront, complete your KYC verification for trusted badges, claim your custom brand URL, and manage staff accounts."
   },
   {
     icon: "📦",
-    title: "Orders & Logistics",
+    title: "2. Your Catalog",
+    description: "Manage what you sell.",
+    details: "Upload your beautiful Sambalpuri products, organize your inventory, and configure your B2B/wholesale pricing for bulk buyers."
+  },
+  {
+    icon: "🚚",
+    title: "3. Orders & Deliveries",
     description: "Process and ship.",
-    details: "Handle incoming orders, process bulk B2B purchases, track shipments, and manage proxy orders. Keep your customers happy with fast dispatching."
-  },
-  {
-    icon: "👥",
-    title: "User Management",
-    description: "Manage people and profiles.",
-    details: "Update your personal profile, manage your physical address book, and create Staff Accounts so your team can help manage your store."
-  },
-  {
-    icon: "🛡️",
-    title: "Support & Verification",
-    description: "Trust and assistance.",
-    details: "Complete your KYC to earn trusted seller badges, communicate securely with buyers via the Admin Hub proxy, and access this Help Guide."
-  },
-  {
-    icon: "📢",
-    title: "Marketing & Growth",
-    description: "Scale your business.",
-    details: "Create promotional coupons, establish B2B/Wholesale pricing rules, and access unique marketing links to drive external traffic to your store."
+    details: "Handle incoming orders, process shipments, and track logistics. Fast dispatching keeps your customers happy."
   },
   {
     icon: "💰",
-    title: "Finance & Accounting",
+    title: "4. Finance & Earnings",
     description: "Track your money.",
-    details: "Monitor your digital wallet balance, request bank payouts, and view detailed records of commission deductions and revenue."
+    details: "Monitor your digital wallet balance, view detailed records of revenue, and request bank payouts directly to your registered account."
   },
   {
-    icon: "⚙️",
-    title: "Platform & System",
-    description: "Technical settings.",
-    details: "Claim and manage your Vanity URLs (your custom web address), and update critical security settings like passwords and two-factor authentication."
+    icon: "📈",
+    title: "5. Marketing & Comm",
+    description: "Connect with buyers.",
+    details: "Create promotional coupons to drive sales, and manage proxy messages from customers reaching out via Admin Support."
+  },
+  {
+    icon: "🎧",
+    title: "6. Help & Support",
+    description: "Assistance when you need it.",
+    details: "Access this Master Guide anytime, or reach out to Admin Support for live help with your store or orders."
+  },
+  {
+    icon: "🔐",
+    title: "7. Security",
+    description: "Protect your account.",
+    details: "Update critical security settings like passwords and manage your login credentials."
   }
 ];
 
@@ -137,15 +131,15 @@ export default function HelpGuideTab({ userRole }: { userRole: string }) {
       <div className="space-y-4">
         <div className="bg-white p-6 rounded-2xl border-l-4 border-l-[#0074E4] border border-y-gray-200 border-r-gray-200 shadow-sm hover:shadow-md transition-shadow">
           <h4 className="font-bold text-[#0074E4] text-lg mb-2">How do I verify my account to get a trusted badge?</h4>
-          <p className="text-sm text-gray-600 font-medium leading-relaxed">Navigate to <strong className="text-gray-900 bg-gray-100 px-1 rounded">Support & Verification &gt; Verification (KYC)</strong>. Upload your required documents. Our admin team usually approves KYC submissions within 24-48 hours.</p>
+          <p className="text-sm text-gray-600 font-medium leading-relaxed">Navigate to <strong className="text-gray-900 bg-gray-100 px-1 rounded">1. Profile & Setup &gt; Verification (KYC)</strong>. Upload your required documents. Our admin team usually approves KYC submissions within 24-48 hours.</p>
         </div>
         <div className="bg-white p-6 rounded-2xl border-l-4 border-l-[#0074E4] border border-y-gray-200 border-r-gray-200 shadow-sm hover:shadow-md transition-shadow">
           <h4 className="font-bold text-[#0074E4] text-lg mb-2">When do I receive my payouts?</h4>
-          <p className="text-sm text-gray-600 font-medium leading-relaxed">You can view your available balance in <strong className="text-gray-900 bg-gray-100 px-1 rounded">Finance & Accounting &gt; Wallet & Payouts</strong>. Payouts are processed every Tuesday and Friday directly to your registered bank account.</p>
+          <p className="text-sm text-gray-600 font-medium leading-relaxed">You can view your available balance in <strong className="text-gray-900 bg-gray-100 px-1 rounded">4. Finance & Earnings &gt; Wallet & Bank Payouts</strong>. Payouts are processed every Tuesday and Friday directly to your registered bank account.</p>
         </div>
         <div className="bg-white p-6 rounded-2xl border-l-4 border-l-[#0074E4] border border-y-gray-200 border-r-gray-200 shadow-sm hover:shadow-md transition-shadow">
           <h4 className="font-bold text-[#0074E4] text-lg mb-2">Can I sell wholesale (B2B) and retail at the same time?</h4>
-          <p className="text-sm text-gray-600 font-medium leading-relaxed">Yes! In <strong className="text-gray-900 bg-gray-100 px-1 rounded">Marketing & Growth &gt; B2B Setup</strong>, you can configure special wholesale pricing. Retail customers will see the standard MRP, while approved B2B Resellers will automatically see your wholesale rates when they log in.</p>
+          <p className="text-sm text-gray-600 font-medium leading-relaxed">Yes! In <strong className="text-gray-900 bg-gray-100 px-1 rounded">2. Your Catalog &gt; B2B / Wholesale Setup</strong>, you can configure special wholesale pricing. Retail customers will see the standard MRP, while approved B2B Resellers will automatically see your wholesale rates when they log in.</p>
         </div>
       </div>
     </div>
