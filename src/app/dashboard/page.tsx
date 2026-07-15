@@ -35,6 +35,7 @@ export default function DashboardPage() {
   const [isViewAsMode, setIsViewAsMode] = useState(false);
   const [isSellerMode, setIsSellerMode] = useState(false);
   const [storeSlug, setStoreSlug] = useState<string>("demo");
+  const [globalNotifications, setGlobalNotifications] = useState<any[]>([]);
   const [canSellWholesale, setCanSellWholesale] = useState(false);
   const router = useRouter();
 
@@ -98,6 +99,17 @@ export default function DashboardPage() {
               if (vendorDoc.exists()) {
                 setCanSellWholesale(vendorDoc.data().canSellWholesale || false);
               }
+            }
+
+            // Fetch Notifications
+            try {
+              const q = query(collection(db, "notifications"), where("userId", "==", user.uid));
+              const querySnapshot = await getDocs(q);
+              const fetchedNotifs = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+              fetchedNotifs.sort((a: any, b: any) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+              setGlobalNotifications(fetchedNotifs);
+            } catch (err) {
+              console.error("Failed to fetch global notifications", err);
             }
 
           } else {
@@ -258,6 +270,30 @@ export default function DashboardPage() {
       }}
       showDualRoleToggle={!isCustomer && !isSuperAdmin && !!displayRole}
     >
+      {globalNotifications.filter(n => !n.read).length > 0 && (
+        <div className="mb-6 space-y-3">
+          {globalNotifications.filter(n => !n.read).map(n => (
+            <div key={n.id} className="bg-green-50 border border-green-200 p-4 rounded-2xl flex items-start justify-between shadow-sm animate-in fade-in slide-in-from-top-4">
+              <div className="flex gap-3 items-start">
+                <div className="text-2xl">{n.title.includes('🎉') ? '🎉' : n.title.includes('🏠') ? '🏠' : '🔔'}</div>
+                <div>
+                  <h4 className="font-bold text-green-900 text-sm">{n.title}</h4>
+                  <p className="text-green-800 text-sm mt-1 leading-snug">{n.message}</p>
+                </div>
+              </div>
+              <button 
+                onClick={async () => {
+                  setGlobalNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
+                  await updateDoc(doc(db, "notifications", n.id), { read: true });
+                }}
+                className="text-green-600 hover:text-green-800 font-bold text-sm px-3 py-1 bg-green-100 hover:bg-green-200 rounded-lg transition-colors"
+              >
+                Mark Read
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
       {isViewAsMode && (
         <div className="bg-blue-600 text-white p-3 rounded-xl mb-6 flex justify-between items-center shadow-lg animate-in fade-in slide-in-from-top-4">
           <div className="flex items-center gap-2">
@@ -526,8 +562,30 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             </div>
             <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Notifications</h3>
-                <div className="text-sm text-gray-500">No new notifications.</div>
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center justify-between">
+                  Notifications
+                  {notifications.filter(n => !n.read).length > 0 && (
+                    <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      {notifications.filter(n => !n.read).length} New
+                    </span>
+                  )}
+                </h3>
+                <div className="space-y-3 max-h-[150px] overflow-y-auto pr-2">
+                  {notifications.length === 0 ? (
+                    <div className="text-sm text-gray-500">No new notifications.</div>
+                  ) : (
+                    notifications.map(n => (
+                      <div key={n.id} className={`p-3 rounded-xl border ${n.read ? 'bg-gray-50 border-gray-100' : 'bg-blue-50/50 border-blue-100'} transition-colors`}>
+                        <div className="font-bold text-gray-900 text-sm flex items-center gap-2">
+                          {!n.read && <div className="w-2 h-2 rounded-full bg-blue-500 shrink-0"></div>}
+                          {n.title}
+                        </div>
+                        <div className="text-xs text-gray-600 mt-1 line-clamp-2">{n.message}</div>
+                        {n.createdAt && <div className="text-[10px] text-gray-400 mt-2">{new Date(n.createdAt.toMillis?.() || Date.now()).toLocaleDateString()}</div>}
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           </div>

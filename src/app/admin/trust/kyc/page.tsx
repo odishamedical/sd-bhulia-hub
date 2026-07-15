@@ -3,7 +3,7 @@
 import { User } from "@/types";
 
 import React, { useState, useEffect } from "react";
-import { collection, query, where, getDocs, doc, updateDoc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, updateDoc, getDoc, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export default function KycResolutionDesk() {
@@ -107,6 +107,24 @@ export default function KycResolutionDesk() {
           ? { status: "on_hold", kycStatus: "field_verification", holdReason: "Field force will visit for verification." }
           : { status: "rejected", kycStatus: "rejected", rejectedAt: new Date().toISOString(), rejectionReason };
         await updateDoc(userRef, updates);
+
+        // Add Notification
+        const notificationTitle = action === "approve" ? "Application Approved! 🎉" 
+                                : action === "hold" ? "Field Verification Required 🏠" 
+                                : "Application Update ⚠️";
+        const notificationMessage = action === "approve" ? `Congratulations! Your application has been fully approved. You can now access all features in your hub.`
+                                  : action === "hold" ? `We have placed your application on hold. A member of our field force will visit your location to complete physical verification.`
+                                  : `There is an issue with your application: ${rejectionReason}. Please update your details and try again.`;
+
+        await addDoc(collection(db, "notifications"), {
+          userId: item.id,
+          title: notificationTitle,
+          message: notificationMessage,
+          read: false,
+          type: "account_status",
+          createdAt: serverTimestamp()
+        });
+
       } else if (item.type === "document_verification") {
         const docRef = doc(db, "kyc_verifications", item.id);
         const updates = action === "approve" 
