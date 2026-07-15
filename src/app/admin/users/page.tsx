@@ -1219,7 +1219,7 @@ export default function UserManagementPage() {
                       }
                     }} className="text-blue-500 hover:text-blue-700">Edit</button>
                   </div>
-                  <div className="text-sm font-bold text-gray-900 leading-relaxed">{selectedUserForDetails.address}</div>
+                  <div className="text-sm font-bold text-gray-900 leading-relaxed">{typeof selectedUserForDetails.address === 'object' ? JSON.stringify(selectedUserForDetails.address) : String(selectedUserForDetails.address)}</div>
                 </div>
                 {selectedUserForDetails.role === 'reseller' && (
                   <>
@@ -1241,7 +1241,7 @@ export default function UserManagementPage() {
                 )}
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Lifetime Volume</div>
-                  <div className="text-sm font-black text-green-600">₹{selectedUserForDetails.volume.toLocaleString()}</div>
+                  <div className="text-sm font-black text-green-600">₹{Number(selectedUserForDetails.volume || 0).toLocaleString()}</div>
                 </div>
                 <div className="mt-6 border-t border-gray-100 pt-4">
                   <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-3">SaaS Subscription</h4>
@@ -1268,7 +1268,7 @@ export default function UserManagementPage() {
                   View Public Profile
                 </button>
               )}
-              <button onClick={() => window.open(`https://api.whatsapp.com/send?phone=${selectedUserForDetails.whatsapp.replace(/[^0-9]/g,'')}`, '_blank')} className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all shadow-sm">
+              <button onClick={() => window.open(`https://api.whatsapp.com/send?phone=${String(selectedUserForDetails.whatsapp || "").replace(/[^0-9]/g,'')}`, '_blank')} className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-all shadow-sm">
                 Chat on WhatsApp
               </button>
               <div className="ml-auto flex gap-2">
