@@ -275,10 +275,17 @@ export default function AdminDashboardPage() {
                           <option value="true">True</option>
                           <option value="false">False</option>
                       </select>
+                  ) : typeof editedFields[key] === "object" && editedFields[key] !== null ? (
+                      <textarea 
+                          value={JSON.stringify(editedFields[key], null, 2)} 
+                          disabled
+                          className="w-full text-sm font-medium text-gray-900 border border-gray-200 rounded p-1 outline-none focus:border-blue-500 bg-gray-100 cursor-not-allowed font-mono text-xs"
+                          rows={4}
+                      />
                   ) : (
                       <input 
                           type="text" 
-                          value={String(editedFields[key])} 
+                          value={String(editedFields[key] || "")} 
                           onChange={(e) => setEditedFields({...editedFields, [key]: typeof editedFields[key] === 'number' ? Number(e.target.value) : e.target.value})}
                           className="w-full text-sm font-medium text-gray-900 border border-gray-200 rounded p-1 outline-none focus:border-blue-500"
                       />

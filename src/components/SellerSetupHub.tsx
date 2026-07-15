@@ -237,7 +237,22 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           slug: generatedSlug,
           title: storeName || personalName,
           status: "pending_approval",
-          isAutoApproved: false
+          isAutoApproved: false,
+          phone: phone,
+          whatsapp: phone,
+          email: email,
+          address: {
+            streetAddress,
+            state,
+            district,
+            block,
+            cityTownVillage: block,
+            pincode: pinCode
+          },
+          state,
+          district,
+          block,
+          country: "India"
         });
       }
       alert("Application submitted successfully! You will be notified once an Admin approves your account.");
