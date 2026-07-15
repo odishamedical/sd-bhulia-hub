@@ -826,7 +826,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   }
   
   const sellerProducts = sellerProductsRaw.filter(p => {
-    const matchesSearch = p.title?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = (p.title || "").toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || (p as any).status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -978,7 +978,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
       });
 
       // 2. Generate clean slug from store name
-      const slug = storeName?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || auth.currentUser.uid;
+      const slug = (storeName || "").toLowerCase().replace(/[^a-z0-9]+/g, '-') || auth.currentUser.uid;
       
       // 3. Update public storefront data in the correct collection
       const targetCollection = roleTitle === "Weaver Hub" ? "weavers" : "stores";
