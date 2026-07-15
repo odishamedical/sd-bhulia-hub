@@ -183,7 +183,7 @@ export default function DashboardPage() {
   } else if (actualRole === "weaver") {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
-      { id: "upload", label: "Inventory Catalog", icon: "📦", category: "Catalog & Inventory" },
+      { id: "products", label: "Inventory Catalog", icon: "📦", category: "Catalog & Inventory" },
       { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Catalog & Inventory" },
       { id: "orders", label: "Order Management", icon: "🚚", category: "Orders & Logistics" },
       { id: "personal", label: "Personal Profile", icon: "👤", category: "User Management" },
@@ -219,7 +219,7 @@ export default function DashboardPage() {
   } else if (actualRole === "weaver_staff" || actualRole === "store_staff") {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
-      { id: "upload", label: "Inventory Catalog", icon: "📦", category: "Catalog & Inventory" },
+      { id: "products", label: "Inventory Catalog", icon: "📦", category: "Catalog & Inventory" },
       { id: "orders", label: "Order Management", icon: "🚚", category: "Orders & Logistics" },
     ];
   } else if (actualRole === "reseller") {
@@ -1245,7 +1245,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   }
 
   // Security Sandbox: Staff cannot access sensitive tabs even if forced via state
-  if (isStaff && !["home", "upload"].includes(activeTab)) {
+  if (isStaff && !["home", "products"].includes(activeTab)) {
     return (
       <div className="bg-red-50 p-8 rounded-3xl text-center border border-red-200 mt-10 animate-in fade-in">
         <h2 className="text-xl font-bold text-red-900 mb-2">Access Denied (Staff Account)</h2>
