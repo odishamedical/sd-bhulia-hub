@@ -58,13 +58,14 @@ export default function UserManagementPage() {
 
   // Generate unified mock users from ecosystem data
   const users = useMemo(() => {
-    // Weavers
-    const wList = weavers.map((w, idx) => ({
+    try {
+      // Weavers
+      const wList = weavers.map((w, idx) => ({
       id: w.id,
       name: w.title || `Weaver ${idx}`,
       role: "weaver",
       phone: w.phoneNumber || "N/A",
-      state: w.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "Odisha",
+      state: (w.address?.split(",")?.[2] || "").split("-")?.[0]?.trim() || "Odisha",
       district: w.address?.split(",")?.[1]?.trim() || "Sambalpur",
       volume: 0, // Real data will be calculated from seller ledger
       purchasedProductIds: [] as any[],
@@ -86,7 +87,7 @@ export default function UserManagementPage() {
       name: s.title || `Store ${idx}`,
       role: "store",
       phone: s.phoneNumber || "N/A",
-      state: s.address?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "N/A",
+      state: (s.address?.split(",")?.[2] || "").split("-")?.[0]?.trim() || "N/A",
       district: s.address?.split(",")?.[1]?.trim() || "N/A",
       volume: 0, // Real data will be calculated from seller ledger
       purchasedProductIds: [] as any[],
@@ -108,7 +109,7 @@ export default function UserManagementPage() {
       name: name as string,
       role: "customer",
       phone: orders.find(o => o.customerName === name)?.customerPhone || "N/A",
-      state: orders.find(o => o.customerName === name)?.customerAddress?.split(",")?.[2]?.trim()?.split("-")?.[0]?.trim() || "N/A",
+      state: (orders.find(o => o.customerName === name)?.customerAddress?.split(",")?.[2] || "").split("-")?.[0]?.trim() || "N/A",
       district: orders.find(o => o.customerName === name)?.customerAddress?.split(",")?.[1]?.trim() || "N/A",
       country: "India",
       volume: orders.filter(o => o.customerName === name).reduce((acc, curr) => acc + (parseInt(curr.productPrice?.toString().replace(/[^0-9]/g, '') || "0")), 0), // Total spent
@@ -191,14 +192,19 @@ export default function UserManagementPage() {
         }
       }
     }
-    
-    return Array.from(uniqueUsersMap.values());
+      
+      return Array.from(uniqueUsersMap.values());
+    } catch (error) {
+      console.error("Error generating users list: ", error);
+      return [];
+    }
   }, [weavers, stores, orders, customers, authUsers, resellers]);
 
   // Apply Filters
   const filteredUsers = useMemo(() => {
-    return users.filter(u => {
-      const matchSearch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) || u.id.toLowerCase().includes(searchTerm.toLowerCase()) || u.phone.includes(searchTerm) || (u.email && u.email.toLowerCase().includes(searchTerm.toLowerCase()));
+    try {
+      return users.filter(u => {
+      const matchSearch = String(u.name || "").toLowerCase().includes(searchTerm.toLowerCase()) || String(u.id || "").toLowerCase().includes(searchTerm.toLowerCase()) || String(u.phone || "").includes(searchTerm) || (u.email && String(u.email || "").toLowerCase().includes(searchTerm.toLowerCase()));
       const matchRole = roleFilter === "all" || u.role === roleFilter;
       const matchState = stateFilter === "all" || u.state === stateFilter;
       const matchDistrict = districtFilter === "all" || u.district === districtFilter;
@@ -208,7 +214,11 @@ export default function UserManagementPage() {
       const matchVerification = verificationFilter === "all" || (verificationFilter === "pending" ? u.status === "pending" : u.status === verificationFilter);
 
       return matchSearch && matchRole && matchState && matchDistrict && matchVolume && matchProduct && matchSubStatus && matchVerification;
-    });
+      });
+    } catch (error) {
+      console.error("Error filtering users: ", error);
+      return [];
+    }
   }, [users, searchTerm, roleFilter, stateFilter, districtFilter, minVolume, productIdFilter, subStatusFilter, verificationFilter]);
 
   const allStates = Array.from(new Set(users.map(u => u.state))).sort();
