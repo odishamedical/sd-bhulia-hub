@@ -979,8 +979,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     setIsSaving(false);
   };
 
-  const handleSaveStore = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSaveStore = async (e?: React.FormEvent, isAutoSave = false) => {
+    if (e) e.preventDefault();
     if (!auth.currentUser) return;
     setIsSaving(true);
     try {
@@ -1046,7 +1046,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         })
       }, { merge: true });
 
-      alert("Professional Store updated successfully!");
+      if (!isAutoSave) alert("Professional Store updated successfully!");
     } catch (error) {
       console.error(error);
       alert("Failed to save store details.");
@@ -2050,6 +2050,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           <form className="space-y-8" onSubmit={(e) => {
             if (roleTitle === "Weaver Hub" && currentProfileStep < 3) {
               e.preventDefault();
+              handleSaveStore(undefined, true);
               setCurrentProfileStep(prev => prev + 1);
             } else {
               handleSaveStore(e);
@@ -2278,7 +2279,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
             <div className="pt-6 border-t border-gray-100 flex justify-end gap-4">
               {currentProfileStep > 1 && roleTitle === "Weaver Hub" && (
-                <button type="button" onClick={() => setCurrentProfileStep(prev => prev - 1)} className="px-6 py-3 rounded-xl font-bold text-gray-600 hover:bg-gray-100 transition-colors">
+                <button type="button" onClick={() => { handleSaveStore(undefined, true); setCurrentProfileStep(prev => prev - 1); }} className="px-6 py-3 rounded-xl font-bold text-gray-600 hover:bg-gray-100 transition-colors">
                   Previous
                 </button>
               )}
