@@ -2055,7 +2055,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
-                      <select value={district} onChange={e => setDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                      <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                         <option value="">Select Handloom District...</option>
                         {["Bargarh", "Subarnapur", "Sambalpur", "Boudh", "Nuapada", "Balangir", "Kalahandi"].map(d => (
                           <option key={d} value={d}>{d}</option>
@@ -2118,7 +2118,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
-                  {country === "India" && state === "Odisha" && district && ODISHA_DISTRICT_BLOCKS[district] ? (
+                  {((country === "India" && state === "Odisha") || roleTitle === "Weaver Hub") && district && ODISHA_DISTRICT_BLOCKS[district] ? (
                     <select value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                       <option value="">Select Block...</option>
                       {ODISHA_DISTRICT_BLOCKS[district].map(b => <option key={b} value={b}>{b}</option>)}

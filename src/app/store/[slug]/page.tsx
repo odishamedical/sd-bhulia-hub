@@ -59,13 +59,13 @@ export default function VendorDetailPage() {
     );
   }
 
-  if (!store) {
+  if (!store || store.status === "pending_approval" || store.status === "pending" || store.status === "rejected") {
     return (
       <div className="flex-1 min-h-screen flex items-center justify-center bg-[#051815] p-6">
         <div className="text-center py-16 bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl w-full max-w-2xl">
           <span className="text-5xl mb-4 block">🚫</span>
           <h2 className="text-3xl font-serif font-bold text-white mb-3">Shop Not Found</h2>
-          <p className="text-gray-300">This retail shop profile does not exist or has been removed.</p>
+          <p className="text-gray-300">This retail shop profile does not exist or is currently under review.</p>
         </div>
       </div>
     );
