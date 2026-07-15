@@ -20,11 +20,18 @@ export default function WeaverStorePage() {
 
   useEffect(() => {
     if (weaver) {
-      const addressParts = (weaver.address || "").split(",").map((s: string) => s.trim()).filter((s: string) => s !== "");
-      let extDistrict = addressParts.length >= 3 ? addressParts[addressParts.length - 3] : "Sambalpur";
+      let addressStr = "";
+      if (typeof weaver.address === "object" && weaver.address !== null) {
+        addressStr = `${weaver.address.streetAddress || ""}, ${weaver.address.cityTownVillage || ""}, ${weaver.address.district || ""}, ${weaver.address.state || ""}, India`;
+      } else {
+        addressStr = weaver.address || "";
+      }
+      
+      const addressParts = addressStr.split(",").map((s: string) => s.trim()).filter((s: string) => s !== "");
+      let extDistrict = addressParts.length >= 3 ? addressParts[addressParts.length - 3] : (weaver.district || "Sambalpur");
       if (extDistrict.toLowerCase() === "subarnapur" || extDistrict.toLowerCase() === "suvernpur") extDistrict = "Sonepur";
-      const extState = addressParts.length >= 2 ? addressParts[addressParts.length - 2].split(" ")[0].replace(/[^a-zA-Z]/g, '') : "Odisha";
-      const extCountry = addressParts.length >= 1 ? addressParts[addressParts.length - 1].replace(/[^a-zA-Z ]/g, '').trim() : "India";
+      const extState = addressParts.length >= 2 ? addressParts[addressParts.length - 2].split(" ")[0].replace(/[^a-zA-Z]/g, '') : (weaver.state || "Odisha");
+      const extCountry = addressParts.length >= 1 ? addressParts[addressParts.length - 1].replace(/[^a-zA-Z ]/g, '').trim() : (weaver.country || "India");
 
       setMappedProfile({
         name: weaver.title || "Master Weaver",
@@ -33,7 +40,7 @@ export default function WeaverStorePage() {
         state: weaver.state || extState,
         country: weaver.country || (extCountry === "India" || extCountry === "Odisha" ? "India" : extCountry),
         description: weaver.desc || "Odishan Master Weaver specializing in traditional handlooms.",
-        address: weaver.address || "Address not provided.",
+        address: addressStr || "Address not provided.",
         phone: weaver.phone || "N/A",
         whatsapp: weaver.whatsapp || "N/A",
         status: weaver.status,
