@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/types";
@@ -12,6 +12,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, role }: ProductCardProps) {
   const { addToCart } = useCart();
+  const [added, setAdded] = useState(false);
   const priceNum = typeof product.price === 'number' ? product.price : Number(String(product.price).replace(/[^0-9.]/g, '')) || 0;
   
   let finalPrice = priceNum;
@@ -70,17 +71,19 @@ export default function ProductCard({ product, role }: ProductCardProps) {
           </div>
         )}
 
-        {/* Hover Quick View / Add to Cart Overlay (PC Only) */}
+        {/* Hover Quick View / Add to Cart Overlay */}
         {!(product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0)) && (
-          <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-[#0A1021]/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300 hidden lg:flex flex-col gap-2 z-10">
+          <div className="absolute inset-x-0 bottom-0 p-2 lg:p-4 bg-gradient-to-t from-[#0A1021]/90 to-transparent translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-300 flex flex-col gap-2 z-10">
             <button 
               onClick={(e) => {
                 e.preventDefault();
                 addToCart(product);
+                setAdded(true);
+                setTimeout(() => setAdded(false), 2000);
               }}
-              className="w-full py-2 bg-white text-gray-900 text-xs font-bold uppercase tracking-wider rounded shadow-lg hover:bg-gray-100 transition-colors"
+              className={`w-full py-1.5 lg:py-2 text-[10px] lg:text-xs font-bold uppercase tracking-wider rounded shadow-lg transition-colors ${added ? 'bg-green-500 text-white' : 'bg-white text-gray-900 hover:bg-gray-100'}`}
             >
-              Quick Add
+              {added ? "Added!" : "Quick Add"}
             </button>
           </div>
         )}
