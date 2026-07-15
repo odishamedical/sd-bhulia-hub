@@ -2267,7 +2267,31 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Google Maps Pin URL (Optional)</label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Google Maps Pin URL (Optional)</label>
+                      <button type="button" onClick={(e) => {
+                        const btn = e.currentTarget;
+                        if (navigator.geolocation) {
+                          btn.innerText = "Locating...";
+                          navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                              const lat = position.coords.latitude;
+                              const lng = position.coords.longitude;
+                              setGooglePin(`https://www.google.com/maps?q=${lat},${lng}`);
+                              btn.innerText = "📍 Use Current Location";
+                            },
+                            (error) => {
+                              alert("Unable to retrieve your location. Please check browser permissions.");
+                              btn.innerText = "📍 Use Current Location";
+                            }
+                          );
+                        } else {
+                          alert("Geolocation is not supported by your browser");
+                        }
+                      }} className="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-600 px-2 py-1 rounded-md font-bold transition-colors border border-blue-200 shadow-sm whitespace-nowrap">
+                        📍 Use Current Location
+                      </button>
+                    </div>
                     <input type="text" placeholder="https://maps.app.goo.gl/..." value={googlePin} onChange={e => setGooglePin(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                   <div>
