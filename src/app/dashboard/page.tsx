@@ -182,39 +182,51 @@ export default function DashboardPage() {
     if (activeTab === "home") setActiveTab("overview");
   } else if (actualRole === "weaver") {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
-      { id: "products", label: "Inventory Catalog", icon: "📦", category: "Catalog & Inventory" },
-      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Catalog & Inventory" },
-      { id: "orders", label: "Order Management", icon: "🚚", category: "Orders & Logistics" },
-      { id: "personal", label: "Personal Profile", icon: "👤", category: "User Management" },
-      { id: "staff", label: "Staff Accounts", icon: "👥", category: "User Management" },
-      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "Support & Verification" },
-      { id: "messages", label: "Proxy Messages", icon: "💬", category: "Support & Verification" },
-      { id: "support", label: "Admin Support", icon: "🎧", category: "Support & Verification" },
-      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "Support & Verification" },
-      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Marketing & Growth" },
-      { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Marketing & Growth" },
-      { id: "wallet", label: "Wallet & Payouts", icon: "💰", category: "Finance & Accounting" },
-      { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Platform & System" },
-      { id: "security", label: "Security & Login", icon: "🔐", category: "Platform & System" },
+      { id: "home", label: "Dashboard Overview", icon: "📊", category: "1. Profile & Setup" },
+      { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
+      { id: "store_settings", label: "Setup Public Store", icon: "🏪", category: "1. Profile & Setup" },
+      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
+      { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "1. Profile & Setup" },
+      { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
+      
+      { id: "products", label: "Add your Sambalpuri Products", icon: "📦", category: "2. Your Catalog" },
+      { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "2. Your Catalog" },
+      
+      { id: "orders", label: "Manage Orders", icon: "🚚", category: "3. Orders & Deliveries" },
+      
+      { id: "wallet", label: "Wallet & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
+      
+      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
+      { id: "messages", label: "Customer Messages", icon: "💬", category: "5. Marketing & Comm" },
+      
+      { id: "help_guide", label: "Help & Support Guide", icon: "📘", category: "6. Help & Support" },
+      { id: "support", label: "Contact Admin Support", icon: "🎧", category: "6. Help & Support" },
+      
+      { id: "security", label: "Security & Login", icon: "🔐", category: "7. Security" },
     ];
   } else if (actualRole === "store" || actualRole === "wholesaler") {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
-      { id: "products", label: "Inventory Catalog", icon: "📦", category: "Catalog & Inventory" },
-      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Catalog & Inventory" },
-      { id: "orders", label: "Order Management", icon: "🚚", category: "Orders & Logistics" },
-      { id: "personal", label: "Personal Profile", icon: "👤", category: "User Management" },
-      { id: "staff", label: "Staff Accounts", icon: "👥", category: "User Management" },
-      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "Support & Verification" },
-      { id: "messages", label: "Proxy Messages", icon: "💬", category: "Support & Verification" },
-      { id: "support", label: "Admin Support", icon: "🎧", category: "Support & Verification" },
-      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "Support & Verification" },
-      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Marketing & Growth" },
-      { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "Marketing & Growth" },
-      { id: "finance", label: "Wallet & Payouts", icon: "💰", category: "Finance & Accounting" },
-      { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Platform & System" },
-      { id: "security", label: "Security & Login", icon: "🔐", category: "Platform & System" },
+      { id: "home", label: "Dashboard Overview", icon: "📊", category: "1. Profile & Setup" },
+      { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
+      { id: "store_settings", label: "Setup Public Store", icon: "🏪", category: "1. Profile & Setup" },
+      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
+      { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "1. Profile & Setup" },
+      { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
+      
+      { id: "products", label: "Add your Sambalpuri Products", icon: "📦", category: "2. Your Catalog" },
+      { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "2. Your Catalog" },
+      
+      { id: "orders", label: "Manage Orders", icon: "🚚", category: "3. Orders & Deliveries" },
+      
+      { id: "finance", label: "Wallet & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
+      
+      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
+      { id: "messages", label: "Customer Messages", icon: "💬", category: "5. Marketing & Comm" },
+      
+      { id: "help_guide", label: "Help & Support Guide", icon: "📘", category: "6. Help & Support" },
+      { id: "support", label: "Contact Admin Support", icon: "🎧", category: "6. Help & Support" },
+      
+      { id: "security", label: "Security & Password", icon: "🔐", category: "7. Security" },
     ];
   } else if (actualRole === "weaver_staff" || actualRole === "store_staff") {
     navItems = [
