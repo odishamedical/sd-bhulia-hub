@@ -6,7 +6,7 @@ import HelpGuideTab from "@/components/HelpGuideTab";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db, storage } from "@/lib/firebase";
-import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc, getDocs, query, where } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc, getDocs, query, where, deleteField } from "firebase/firestore";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { onAuthStateChanged } from "firebase/auth";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS, WEAVER_DISTRICTS } from "@/lib/locations";
@@ -324,6 +324,24 @@ export default function DashboardPage() {
               <br/>
               You will receive an email and WhatsApp notification the moment your account is approved and activated.
             </p>
+            
+            <button 
+              onClick={async () => {
+                if(confirm("Reset this application? You will need to apply again.")){
+                  if(auth.currentUser) {
+                    await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                      applicationStatus: deleteField(),
+                      status: "active",
+                      role: "customer"
+                    });
+                    window.location.reload();
+                  }
+                }
+              }}
+              className="mt-8 text-xs text-yellow-600/60 hover:text-yellow-800 underline transition-colors"
+            >
+              Reset Application (For Testing)
+            </button>
           </div>
         </div>
       ) : (
