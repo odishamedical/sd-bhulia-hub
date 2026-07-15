@@ -103,131 +103,83 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
         <div className="flex-1 min-w-0 flex flex-col gap-6">
           
           {/* Hero Section */}
-          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 flex flex-col lg:flex-row gap-8 shadow-xl">
-        
-        {/* Left: Image */}
-        <div className="lg:w-1/4 shrink-0">
-          <div className="relative w-full aspect-square rounded-2xl overflow-hidden border-2 border-[#C5A059]/50 shadow-lg bg-[#051815]">
-            <Image src={profile.image || "/bhulia-hero.png"} alt={profile.name} fill className="object-cover" unoptimized={true} />
-          </div>
-        </div>
-
-        {/* Center: Details */}
-        <div className="lg:w-1/2 flex flex-col border-b lg:border-b-0 lg:border-r border-[#C5A059]/20 pb-6 lg:pb-0 lg:pr-8">
-          
-          <h2 className="text-xl md:text-2xl font-sans font-bold text-white mb-1 mt-2">
-            {profile.listingType === "weaver" ? "Sambalpuri Master Weaver" : profile.listingType === "raw_material" ? "Sambalpuri Raw Material Supplier" : "Sambalpuri Handloom Store"}
-          </h2>
-          
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#C5A059] leading-tight mb-4">
-            {profile.name}
-          </h1>
-          
-          <div className="border border-white/20 rounded-xl p-4 mb-4">
-            <h3 className="text-xs text-white/60 mb-2 font-sans">Description:</h3>
-            <p className="text-sm text-white font-sans leading-relaxed">
-              {profile.status === "unclaimed" 
-                ? "This profile was collected from reliable source but Not verified. If you are the owner, please verify it."
-                : (profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms.")}
-            </p>
-          </div>
-
-          {profile.productsOffered && (
-            <div className="border border-white/20 rounded-xl p-4 mb-4">
-              <h3 className="text-xs text-white/60 mb-2 font-sans">Product Specialist:</h3>
-              <p className="text-sm text-white font-sans font-bold">
-                {profile.productsOffered}
-              </p>
-            </div>
-          )}
-
-          <div className="border border-white/20 rounded-xl p-4 mb-4">
-            <h3 className="text-xs text-white/60 mb-2 font-sans">Address:</h3>
-            <p className="text-sm text-white font-sans font-bold">
-              {profile.address || "Address not provided."}
-            </p>
-          </div>
-
-          {(profile.weaverExperience || profile.generations) && (
-            <div className="border border-[#C5A059]/40 bg-[#C5A059]/5 rounded-xl p-4 mb-4">
-              <h3 className="text-xs uppercase tracking-widest text-[#C5A059] mb-3 font-bold">Artisan Heritage</h3>
-              <div className="grid grid-cols-2 gap-4">
-                {profile.generations && (
-                  <div>
-                    <div className="text-[10px] text-white/50 uppercase">Legacy</div>
-                    <div className="text-sm text-white font-bold">{profile.generations}</div>
-                  </div>
-                )}
-                {profile.weaverExperience && (
-                  <div>
-                    <div className="text-[10px] text-white/50 uppercase">Experience</div>
-                    <div className="text-sm text-white font-bold">{profile.weaverExperience}</div>
-                  </div>
-                )}
-                {profile.scale && (
-                  <div className="col-span-2">
-                    <div className="text-[10px] text-white/50 uppercase">Scale of Operation</div>
-                    <div className="text-sm text-white font-bold">{profile.scale}</div>
-                  </div>
-                )}
+          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row gap-8 shadow-xl relative overflow-hidden">
+            {profile.status === "unclaimed" && (
+              <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1 rounded-bl-xl z-10">
+                Not Verified
+              </div>
+            )}
+            
+            {/* Left: Image */}
+            <div className="md:w-1/3 lg:w-1/4 shrink-0">
+              <div className="relative w-full aspect-square rounded-2xl overflow-hidden border-2 border-[#C5A059]/50 shadow-lg bg-[#051815]">
+                <Image src={profile.image || "/bhulia-hero.png"} alt={profile.name} fill className="object-cover" unoptimized={true} />
               </div>
             </div>
-          )}
 
-          {(profile.specialties?.length || profile.materials?.length) ? (
-            <div className="border border-white/20 rounded-xl p-4 mb-4">
-              <h3 className="text-xs uppercase tracking-widest text-[#C5A059] mb-3 font-bold">Craft Details</h3>
-              {profile.specialties && profile.specialties.length > 0 && (
-                <div className="mb-3">
-                  <div className="text-[10px] text-white/50 uppercase mb-1">Specialties</div>
-                  <div className="flex flex-wrap gap-2">
-                    {profile.specialties.map(s => (
-                      <span key={s} className="bg-white/10 text-white text-xs px-2 py-1 rounded-md">{s}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {profile.materials && profile.materials.length > 0 && (
-                <div>
-                  <div className="text-[10px] text-white/50 uppercase mb-1">Materials Used</div>
-                  <div className="flex flex-wrap gap-2">
-                    {profile.materials.map(m => (
-                      <span key={m} className="bg-[#C5A059]/20 text-[#C5A059] border border-[#C5A059]/30 text-xs px-2 py-1 rounded-md">{m}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
+            {/* Right: Details & Links */}
+            <div className="flex-1 flex flex-col justify-center">
+              <h2 className="text-lg md:text-xl font-sans font-bold text-white mb-1">
+                {profile.listingType === "weaver" ? "Sambalpuri Master Weaver" : profile.listingType === "raw_material" ? "Sambalpuri Raw Material Supplier" : "Sambalpuri Handloom Store"}
+              </h2>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-[#C5A059] leading-tight mb-4">
+                {profile.name}
+              </h1>
+
+              {/* Action Buttons Row */}
+              <div className="flex flex-wrap items-center gap-3 mt-2">
+                {profile.facebookUrl && (
+                  <a href={profile.facebookUrl} target="_blank" rel="noopener noreferrer" className="bg-[#C5A059] hover:bg-[#D4AF37] text-[#051815] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
+                    Fb Link
+                  </a>
+                )}
+                {profile.instagramUrl && (
+                  <a href={profile.instagramUrl} target="_blank" rel="noopener noreferrer" className="bg-[#C5A059] hover:bg-[#D4AF37] text-[#051815] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
+                    Insta Link
+                  </a>
+                )}
+                {profile.videoUrl && (
+                  <a href={profile.videoUrl} target="_blank" rel="noopener noreferrer" className="bg-[#C5A059] hover:bg-[#D4AF37] text-[#051815] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
+                    YouTube Link
+                  </a>
+                )}
+                
+                <a href={`tel:${profile.phone}`} className="bg-transparent border border-[#C5A059] hover:bg-[#C5A059]/10 text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
+                  Call
+                </a>
+                
+                <button onClick={() => {
+                  const msg = `Hello ${profile.name}, I found your profile on Bhulia.com. I am interested in your handlooms.`;
+                  window.open(`https://api.whatsapp.com/send?phone=${profile.whatsapp.replace(/[^0-9]/g,'')}&text=${encodeURIComponent(msg)}`, "_blank");
+                }} className="bg-transparent border border-[#C5A059] hover:bg-[#C5A059]/10 text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
+                  WhatsApp
+                </button>
+              </div>
+
+              {/* Address Row */}
+              <div className="mt-5 pt-5 border-t border-[#C5A059]/20 flex items-start gap-2">
+                <span className="text-white/60 font-bold">Address:</span>
+                <span className="text-white/90 font-semibold">{profile.address || "Address not provided."}</span>
+              </div>
             </div>
-          ) : null}
+          </div>
 
-        </div>
-
-        {/* Right: Contact & Address */}
-        <div className="lg:w-1/4 flex flex-col space-y-4">
-          
+          {/* Verification Call to action (if unclaimed) */}
           {profile.status === "unclaimed" && (
-            <div className="bg-red-900 border border-red-500 p-4 rounded-xl w-full text-center shadow-lg">
-              <h3 className="text-white font-bold text-sm mb-1">Not Verified by Bhulia.com</h3>
-              <p className="text-white/80 text-xs mb-3">This store is not yet verified. Are you the owner?</p>
-              <Link href={`/verify?id=${profile.googlePlaceId || ''}&type=${type}&name=${encodeURIComponent(profile.name)}`} className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase px-4 py-2 rounded-lg transition-colors shadow-sm w-full">
-                Verify your page
+            <div className="bg-blue-900/30 border border-blue-500/50 p-4 rounded-xl flex items-center justify-between gap-4">
+              <div>
+                <h3 className="text-white font-bold text-sm">Is this your store?</h3>
+                <p className="text-blue-200 text-xs mt-1">Claim and verify this profile to edit details and upload your products.</p>
+              </div>
+              <Link href={`/verify?id=${profile.googlePlaceId || ''}&type=${type}&name=${encodeURIComponent(profile.name)}`} className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase px-6 py-3 rounded-lg transition-colors shadow-sm shrink-0 whitespace-nowrap">
+                Verify Now
               </Link>
             </div>
           )}
 
-          {profile.googleRating ? (
-            <div className="flex items-center gap-3 bg-[#051815] p-3 rounded-xl border border-white/10">
-              <div className="flex text-[#D4AF37] text-sm">
-                <span>★</span>
-              </div>
-              <div className="text-xs font-bold text-gray-300">
-                <span className="text-white">{profile.googleRating}/5</span> ({profile.googleReviewsCount} Reviews)
-              </div>
-            </div>
-          ) : null}
-
+          {/* Middle Section: Full Width Map */}
           {(profile.address || profile.googlePlaceId) && (
-            <div className="w-full h-40 rounded-xl overflow-hidden border border-white/20 shadow-inner">
+            <div className="w-full h-48 sm:h-64 rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-xl bg-[#051815]">
               <iframe
                 width="100%"
                 height="100%"
@@ -240,80 +192,85 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
             </div>
           )}
 
-          <div className="pt-2 border-t border-[#C5A059]/20">
-            <h3 className="text-[10px] uppercase tracking-widest text-[#C5A059] font-bold mb-3">Contact Direct</h3>
+          {/* Artisan Heritage & Visual Showcase Side-by-Side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
-            <div className="grid grid-cols-2 gap-2">
-              <button onClick={() => {
-                const msg = `Hello ${profile.name}, I found your profile on Bhulia.com. I am interested in your handlooms.`;
-                window.open(`https://api.whatsapp.com/send?phone=${profile.whatsapp.replace(/[^0-9]/g,'')}&text=${encodeURIComponent(msg)}`, "_blank");
-              }} className="w-full flex flex-col items-center justify-center gap-1 py-3 bg-green-600/20 hover:bg-green-600/40 border border-green-500/50 text-green-400 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer text-center">
-                <span className="text-sm">💬</span>
-                <span>WhatsApp</span>
-              </button>
+            {/* Left: Artisan Heritage & Craft */}
+            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl flex flex-col h-full">
+              <h3 className="text-xl font-serif text-[#C5A059] font-bold tracking-wider mb-6">Artisan Heritage & Craft</h3>
               
-              <a href={`tel:${profile.phone}`} className="w-full flex flex-col items-center justify-center gap-1 py-3 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/50 text-blue-400 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors cursor-pointer text-center">
-                <span className="text-sm">📞</span>
-                <span>Call</span>
-              </a>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-8 gap-x-4 flex-1">
+                {profile.generations && (
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-3">
+                      <span className="text-[#C5A059] text-xl">👨‍👩‍👧‍👦</span>
+                    </div>
+                    <div className="text-sm text-white font-bold">{profile.generations}</div>
+                    <div className="text-[10px] text-white/60 uppercase font-semibold mt-1">Generations Legacy</div>
+                  </div>
+                )}
+                
+                {profile.weaverExperience && (
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-3">
+                      <span className="text-[#C5A059] text-xl">⏳</span>
+                    </div>
+                    <div className="text-sm text-white font-bold">{profile.weaverExperience}</div>
+                    <div className="text-[10px] text-white/60 uppercase font-semibold mt-1">Experience</div>
+                  </div>
+                )}
+
+                {profile.specialties && profile.specialties.length > 0 && (
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-3">
+                      <span className="text-[#C5A059] text-xl">🧵</span>
+                    </div>
+                    <div className="text-sm text-white font-bold line-clamp-2 leading-tight">{profile.specialties[0]}</div>
+                    <div className="text-[10px] text-white/60 uppercase font-semibold mt-1">Handwoven Craft</div>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {(profile.facebookUrl || profile.instagramUrl) && (
-              <div className="mt-4 pt-4 border-t border-white/10">
-                <h3 className="text-[10px] uppercase tracking-widest text-white/50 font-bold mb-3">Social Media</h3>
-                <div className="flex gap-2">
-                  {profile.facebookUrl && (
-                    <a href={profile.facebookUrl} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 bg-blue-800/30 hover:bg-blue-800/60 border border-blue-700/50 text-blue-300 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors text-center">
-                      Facebook
-                    </a>
-                  )}
-                  {profile.instagramUrl && (
-                    <a href={profile.instagramUrl} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 bg-pink-800/30 hover:bg-pink-800/60 border border-pink-700/50 text-pink-300 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors text-center">
-                      Instagram
-                    </a>
-                  )}
+            {/* Right: Visual Showcase */}
+            {profile.gallery && profile.gallery.length > 0 ? (
+              <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl flex flex-col h-full">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-serif text-[#C5A059] font-bold tracking-wider">Visual Showcase</h3>
+                  <span className="text-xs text-[#C5A059] uppercase font-bold tracking-wider cursor-pointer hover:underline">View Gallery →</span>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-3 flex-1">
+                  {profile.gallery.map((imgUrl, i) => (
+                    <div key={i} className="relative w-full h-full min-h-[120px] rounded-xl overflow-hidden border border-white/10 shadow-lg bg-[#051815]">
+                      <Image src={imgUrl} alt={`Showcase ${i + 1}`} fill className="object-cover hover:scale-105 transition-transform duration-500" unoptimized />
+                    </div>
+                  ))}
                 </div>
               </div>
+            ) : (
+              <div className="bg-[#0B2B26]/50 border border-white/10 rounded-3xl p-6 flex items-center justify-center h-full">
+                 <p className="text-white/40 italic text-sm">No photos uploaded yet.</p>
+              </div>
             )}
-          </div>
-        </div>
-
-        </div>
-        
-        <ShareWidget title={profile.name} />
-
-        {/* Media Showcase */}
-        {((profile.gallery && profile.gallery.length > 0) || profile.videoUrl) && (
-          <div className="space-y-6 pt-6 border-t border-[#C5A059]/20">
-            <div>
-              <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Visual Showcase</h3>
-              <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Behind the scenes with {profile.name}</p>
-            </div>
             
-            {profile.gallery && profile.gallery.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {profile.gallery.map((imgUrl, i) => (
-                  <div key={i} className="relative aspect-square rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-[#0B2B26]">
-                    <Image src={imgUrl} alt={`Workshop ${i + 1}`} fill className="object-cover hover:scale-105 transition-transform duration-700" unoptimized />
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {profile.videoUrl && (
-              <div className="mt-6">
-                <a href={profile.videoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-[#ff0000]/20 hover:bg-[#ff0000]/40 text-[#ff0000] border border-[#ff0000]/50 px-6 py-3 rounded-xl transition-colors font-bold text-sm">
-                  <span>▶</span>
-                  <span>Watch Video</span>
-                </a>
-              </div>
-            )}
           </div>
-        )}
+
+          {/* Bottom Section: Description */}
+          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl">
+             <h3 className="text-sm uppercase tracking-widest text-[#C5A059] font-bold mb-4">About the Weaver</h3>
+             <p className="text-sm md:text-base text-white/90 font-sans leading-relaxed">
+               {profile.status === "unclaimed" 
+                 ? "This profile was collected from a reliable source but is not yet verified. If you are the owner, please verify it to claim and update your information."
+                 : (profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms.")}
+             </p>
+          </div>
+
+          <ShareWidget title={profile.name} />
 
         {/* Product Grid Section */}
         <div className="space-y-6 pt-6 border-t border-[#C5A059]/20">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider">Product Catalog</h3>
             <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Authentic handlooms directly from {profile.name}</p>
