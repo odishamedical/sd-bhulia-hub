@@ -3,7 +3,7 @@
 import { User } from "@/types";
 
 import React, { useState, useEffect } from "react";
-import { collection, query, where, getDocs, doc, updateDoc, getDoc, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, updateDoc, getDoc, addDoc, serverTimestamp, deleteField } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export default function KycResolutionDesk() {
@@ -102,10 +102,10 @@ export default function KycResolutionDesk() {
       if (item.type === "user_approval") {
         const userRef = doc(db, "users", item.id);
         const updates = action === "approve" 
-          ? { status: "active", kycStatus: "verified", verifiedAt: new Date().toISOString() }
+          ? { status: "active", kycStatus: "verified", verifiedAt: new Date().toISOString(), applicationStatus: deleteField() }
           : action === "hold"
-          ? { status: "on_hold", kycStatus: "field_verification", holdReason: "Field force will visit for verification." }
-          : { status: "rejected", kycStatus: "rejected", rejectedAt: new Date().toISOString(), rejectionReason };
+          ? { status: "on_hold", kycStatus: "field_verification", holdReason: "Field force will visit for verification.", applicationStatus: deleteField() }
+          : { status: "rejected", kycStatus: "rejected", rejectedAt: new Date().toISOString(), rejectionReason, applicationStatus: deleteField() };
         await updateDoc(userRef, updates);
 
         // Add Notification

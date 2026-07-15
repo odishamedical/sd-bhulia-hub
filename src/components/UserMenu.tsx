@@ -80,21 +80,17 @@ export default function UserMenu() {
               </div>
             </button>
 
-            <button onClick={() => { 
-                setIsOpen(false); 
-                const role = localStorage.getItem("sd_current_user_role");
-                if (role === "super_admin") {
+            {typeof window !== 'undefined' && localStorage.getItem("sd_current_user_role") === "super_admin" && (
+              <button onClick={() => { 
+                  setIsOpen(false); 
                   router.push('/admin?tab=notifications'); 
-                } else {
-                  router.push('/dashboard');
-                }
-              }} className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-white/5 transition-all text-left group">
-              <div className="flex items-center gap-3">
-                <span className="text-lg">🔔</span>
-                <span className="text-xs font-bold text-gray-200 group-hover:text-[#C5A059] transition-colors">Notifications</span>
-              </div>
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-            </button>
+                }} className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-white/5 transition-all text-left group">
+                <div className="flex items-center gap-3">
+                  <span className="text-lg">🔔</span>
+                  <span className="text-xs font-bold text-gray-200 group-hover:text-[#C5A059] transition-colors">Notifications (Admin)</span>
+                </div>
+              </button>
+            )}
           </div>
 
           <div className="p-2 border-t border-[#2A344A]">
