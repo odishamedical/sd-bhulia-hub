@@ -870,6 +870,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [instagramUrl, setInstagramUrl] = useState("");
   const [currentProfileStep, setCurrentProfileStep] = useState(1);
   const [storeStatus, setStoreStatus] = useState("");
+  const [canSellWholesale, setCanSellWholesale] = useState(false);
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -922,6 +923,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         if (snap.exists()) {
           const data = snap.data();
           setStoreStatus(data.status || "");
+          setCanSellWholesale(data.canSellWholesale || false);
           if (roleTitle === "Weaver Hub") {
             setWeaverExperience(data.weaverExperience || "");
             setGenerations(data.generations || "");
