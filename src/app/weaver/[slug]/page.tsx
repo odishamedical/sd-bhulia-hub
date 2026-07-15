@@ -48,6 +48,8 @@ export default function WeaverStorePage() {
         googlePin: weaver.googlePin,
         gallery: weaver.gallery,
         videoUrl: weaver.videoUrl,
+        facebookUrl: weaver.facebookUrl,
+        instagramUrl: weaver.instagramUrl,
       });
 
       // Filter products belonging to this weaver

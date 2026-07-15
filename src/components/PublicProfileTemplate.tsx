@@ -36,6 +36,8 @@ export interface PublicProfileProps {
     googlePin?: string;
     gallery?: string[];
     videoUrl?: string;
+    facebookUrl?: string;
+    instagramUrl?: string;
   };
   products: Product[];
   allProducts?: Product[];
@@ -255,6 +257,24 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                 <span>Call</span>
               </a>
             </div>
+
+            {(profile.facebookUrl || profile.instagramUrl) && (
+              <div className="mt-4 pt-4 border-t border-white/10">
+                <h3 className="text-[10px] uppercase tracking-widest text-white/50 font-bold mb-3">Social Media</h3>
+                <div className="flex gap-2">
+                  {profile.facebookUrl && (
+                    <a href={profile.facebookUrl} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 bg-blue-800/30 hover:bg-blue-800/60 border border-blue-700/50 text-blue-300 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors text-center">
+                      Facebook
+                    </a>
+                  )}
+                  {profile.instagramUrl && (
+                    <a href={profile.instagramUrl} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 bg-pink-800/30 hover:bg-pink-800/60 border border-pink-700/50 text-pink-300 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-colors text-center">
+                      Instagram
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

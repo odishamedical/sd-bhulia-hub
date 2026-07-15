@@ -866,6 +866,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [gallery2, setGallery2] = useState("");
   const [gallery3, setGallery3] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  const [facebookUrl, setFacebookUrl] = useState("");
+  const [instagramUrl, setInstagramUrl] = useState("");
   const [currentProfileStep, setCurrentProfileStep] = useState(1);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -929,6 +931,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
             setGallery2(data.gallery?.[1] || "");
             setGallery3(data.gallery?.[2] || "");
             setVideoUrl(data.videoUrl || "");
+            setFacebookUrl(data.facebookUrl || "");
+            setInstagramUrl(data.instagramUrl || "");
           }
         }
       });
@@ -1036,7 +1040,9 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           scale,
           googlePin,
           gallery: [gallery1, gallery2, gallery3].filter(Boolean),
-          videoUrl
+          videoUrl,
+          facebookUrl,
+          instagramUrl
         })
       }, { merge: true });
 
@@ -2081,7 +2087,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Description</label>
-                    <input type="text" value={publicDesc} onChange={e => setPublicDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    <textarea value={publicDesc} onChange={e => setPublicDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none min-h-[120px]" required />
                   </div>
                   <div className="col-span-2">
                     <ImageUploader value={storeLogo} onChange={setStoreLogo} label="Store Logo / Profile Picture" aspectRatio="square" />
@@ -2257,6 +2263,14 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">YouTube Video URL (Optional)</label>
                     <input type="text" placeholder="https://youtube.com/watch?v=..." value={videoUrl} onChange={e => setVideoUrl(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Facebook URL (Optional)</label>
+                    <input type="text" placeholder="https://facebook.com/..." value={facebookUrl} onChange={e => setFacebookUrl(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Instagram URL (Optional)</label>
+                    <input type="text" placeholder="https://instagram.com/..." value={instagramUrl} onChange={e => setInstagramUrl(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                 </div>
               </div>
