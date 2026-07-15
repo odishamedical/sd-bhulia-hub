@@ -245,17 +245,17 @@ export default function DashboardPage() {
     ];
   } else if (actualRole === "reseller") {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
-      { id: "analytics", label: "Analytics", icon: "📈", category: "Dashboard & Reports" },
-      { id: "curation", label: "Store Curation", icon: "🛍️", category: "Catalog & Inventory" },
-      { id: "proxy", label: "Proxy Orders", icon: "🛒", category: "Orders & Logistics" },
-      { id: "profile", label: "Personal Profile", icon: "👤", category: "User Management" },
-      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "Support & Verification" },
-      { id: "support", label: "Admin Support", icon: "🎧", category: "Support & Verification" },
-      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "Support & Verification" },
-      { id: "links", label: "Marketing Links", icon: "🔗", category: "Marketing & Growth" },
-      { id: "wallet", label: "Wallet & Payouts", icon: "💰", category: "Finance & Accounting" },
-      { id: "security", label: "Security & Login", icon: "🔐", category: "Platform & System" },
+      { id: "home", label: "Dashboard Overview", icon: "📊", category: "1. Profile & Setup" },
+      { id: "profile", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
+      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
+      { id: "security", label: "Security & Login", icon: "🔐", category: "1. Profile & Setup" },
+      { id: "curation", label: "Curate Products", icon: "🛍️", category: "2. Build Your Storefront" },
+      { id: "links", label: "Share Marketing Links", icon: "🔗", category: "2. Build Your Storefront" },
+      { id: "proxy", label: "Place Proxy Orders", icon: "🛒", category: "3. Sales & Orders" },
+      { id: "analytics", label: "Sales Analytics", icon: "📈", category: "3. Sales & Orders" },
+      { id: "wallet", label: "Wallet & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
+      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "5. Help & Support" },
+      { id: "support", label: "Contact Admin Support", icon: "🎧", category: "5. Help & Support" },
     ];
   } else if (actualRole === "raw_material") {
     navItems = [

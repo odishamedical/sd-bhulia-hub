@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const CATEGORY_GUIDES = [
+const SELLER_CATEGORY_GUIDES = [
   {
     icon: "👤",
     title: "1. Profile & Setup",
@@ -81,6 +81,65 @@ const CATEGORY_GUIDES = [
   }
 ];
 
+const RESELLER_CATEGORY_GUIDES = [
+  {
+    icon: "👤",
+    title: "1. Profile & Setup",
+    description: "Your business identity.",
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Dashboard Overview:</strong> High-level view of your sales and performance.</li>
+        <li><strong>Personal Profile:</strong> Manage your name, contact info, and basic details.</li>
+        <li><strong>Verification (KYC):</strong> Upload documents to verify your identity before payouts.</li>
+        <li><strong>Security & Login:</strong> Update your login password and manage account safety.</li>
+      </ul>
+    )
+  },
+  {
+    icon: "🛍️",
+    title: "2. Build Your Storefront",
+    description: "Curate and market.",
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Curate Products:</strong> Browse the catalog and add products to your personal storefront.</li>
+        <li><strong>Share Marketing Links:</strong> Generate unique WhatsApp and social media links for your curated items.</li>
+      </ul>
+    )
+  },
+  {
+    icon: "🛒",
+    title: "3. Sales & Orders",
+    description: "Process offline sales.",
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Place Proxy Orders:</strong> Place orders directly on behalf of your offline or local customers.</li>
+        <li><strong>Sales Analytics:</strong> Track your performance, commissions, and top-selling products.</li>
+      </ul>
+    )
+  },
+  {
+    icon: "💰",
+    title: "4. Finance & Earnings",
+    description: "Track your money.",
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Wallet & Bank Payouts:</strong> Monitor your commissions and request withdrawals to your bank account.</li>
+      </ul>
+    )
+  },
+  {
+    icon: "🎧",
+    title: "5. Help & Support",
+    description: "Assistance when you need it.",
+    details: (
+      <ul className="list-disc pl-4 space-y-2">
+        <li><strong>Dashboard Guide & FAQ:</strong> Access this master guide anytime to learn how the dashboard works.</li>
+        <li><strong>Contact Admin Support:</strong> Reach out directly to our admin team for assistance.</li>
+      </ul>
+    )
+  }
+];
+
 export default function HelpGuideTab({ userRole }: { userRole: string }) {
   const [openCategory, setOpenCategory] = useState<number | null>(null);
 
@@ -126,7 +185,9 @@ export default function HelpGuideTab({ userRole }: { userRole: string }) {
         <span className="text-xl">🗺️</span> Understanding Your Menu
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-        {CATEGORY_GUIDES.map((cat, idx) => (
+        
+        {/* Dynamic guides based on role */}
+        {(userRole === 'reseller' ? RESELLER_CATEGORY_GUIDES : SELLER_CATEGORY_GUIDES).map((cat, idx) => (
           <div 
             key={idx} 
             className={`border rounded-2xl overflow-hidden transition-all duration-200 ${openCategory === idx ? 'border-blue-300 shadow-md bg-blue-50/30' : 'border-gray-200 hover:border-blue-200 hover:bg-gray-50'}`}
