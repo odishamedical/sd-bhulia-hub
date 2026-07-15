@@ -419,6 +419,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
 
   // Profile fields
   const [personalName, setPersonalName] = useState("");
@@ -451,6 +452,14 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           setStreetAddress(typeof data.address === "string" ? data.address : (data.address?.streetAddress || ""));
         }
       });
+      
+      // Fetch notifications for customer dashboard history
+      const q = query(collection(db, "notifications"), where("userId", "==", auth.currentUser.uid));
+      getDocs(q).then(qs => {
+        const notifs = qs.docs.map(d => ({ id: d.id, ...d.data() }));
+        notifs.sort((a: any, b: any) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+        setNotifications(notifs);
+      }).catch(err => console.error("Failed to fetch customer notifications", err));
     }
   }, [hasSkippedPopup]);
 
