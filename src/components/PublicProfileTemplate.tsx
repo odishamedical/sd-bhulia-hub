@@ -103,25 +103,26 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
         <div className="flex-1 min-w-0 flex flex-col gap-6">
           
           {/* Hero Section */}
-          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row gap-8 shadow-xl relative overflow-hidden">
+          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 flex flex-col gap-8 shadow-xl relative overflow-hidden">
             {profile.status === "unclaimed" && (
               <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1 rounded-bl-xl z-10">
                 Not Verified
               </div>
             )}
             
-            {/* Left: Image */}
-            <div className="md:w-1/3 lg:w-1/4 shrink-0">
+            {/* Top Row: Image + Details + Share */}
+            <div className="flex flex-col md:flex-row gap-8">
+              {/* Left: Image */}
+              <div className="md:w-1/3 lg:w-1/4 shrink-0">
               <div className="relative w-full aspect-square rounded-2xl overflow-hidden border-2 border-[#C5A059]/50 shadow-lg bg-[#051815]">
                 <Image src={profile.image || "/bhulia-hero.png"} alt={profile.name} fill className="object-cover" unoptimized={true} />
               </div>
             </div>
 
-            {/* Right Side Column (Details + Share above Address) */}
-            <div className="flex-1 flex flex-col justify-center">
+            {/* Right Side Column (Details + Share) */}
+            <div className="flex-1 flex flex-col md:flex-row gap-6 md:gap-10">
               
-              {/* Top Section: Title & Actions & Share */}
-              <div className="flex flex-col md:flex-row gap-6 md:gap-10 pb-6">
+
                 
                 {/* Details Section */}
                 <div className="flex-1 flex flex-col justify-center border-b md:border-b-0 md:border-r border-[#C5A059]/20 pb-6 md:pb-0 md:pr-6">
@@ -146,18 +147,8 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                   YouTube Link
                 </a>
                 
-                <a href={`tel:${profile.phone}`} className="bg-transparent border border-[#C5A059] hover:bg-[#C5A059]/10 text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
-                  Call
-                </a>
-                
-                <button onClick={() => {
-                  const msg = `Hello ${profile.name}, I found your profile on Bhulia.com. I am interested in your handlooms.`;
-                  window.open(`https://api.whatsapp.com/send?phone=${profile.whatsapp.replace(/[^0-9]/g,'')}&text=${encodeURIComponent(msg)}`, "_blank");
-                }} className="bg-transparent border border-[#C5A059] hover:bg-[#C5A059]/10 text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
-                  WhatsApp
-                </button>
               </div>
-              </div>
+            </div>
               
               {/* Share Widget Section (moved up next to Details) */}
               <div className="md:w-1/4 lg:w-64 shrink-0 flex flex-col justify-center">
@@ -169,12 +160,17 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                 />
               </div>
             </div>
+            </div>
 
-            {/* Bottom Section: Address Row (spans full width of right side) */}
-              <div className="mt-5 pt-5 border-t border-[#C5A059]/20">
-                <span className="text-white/60 font-bold block mb-3 uppercase tracking-widest text-[10px]">Location & Geography</span>
-                {profile.rawAddress && typeof profile.rawAddress === "object" ? (
-                  <div className="flex flex-wrap gap-2">
+            {/* Bottom Row: Address & Contact (spans full width of hero) */}
+            <div className="pt-5 border-t border-[#C5A059]/20">
+              <span className="text-white/60 font-bold block mb-3 uppercase tracking-widest text-[10px]">Location & Contact</span>
+              <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                
+                {/* Left: Address Badges */}
+                <div className="flex-1">
+                  {profile.rawAddress && typeof profile.rawAddress === "object" ? (
+                    <div className="flex flex-wrap gap-2">
                     {profile.rawAddress.streetAddress && (
                       <span className="bg-[#051815] border border-[#C5A059]/30 text-white/90 text-[11px] px-3 py-1.5 rounded-md shadow-sm">📍 {profile.rawAddress.streetAddress}</span>
                     )}
@@ -199,6 +195,20 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                     <span className="text-white/90 font-semibold">{profile.address || "Address not provided."}</span>
                   </div>
                 )}
+                </div>
+
+                {/* Right: Contact Buttons */}
+                <div className="flex items-center gap-3 shrink-0">
+                  <a href={`tel:${profile.phone}`} className="bg-transparent border border-[#C5A059] hover:bg-[#C5A059]/10 text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
+                    Call
+                  </a>
+                  <button onClick={() => {
+                    const msg = `Hello ${profile.name}, I found your profile on Bhulia.com. I am interested in your handlooms.`;
+                    window.open(`https://api.whatsapp.com/send?phone=${profile.whatsapp.replace(/[^0-9]/g,'')}&text=${encodeURIComponent(msg)}`, "_blank");
+                  }} className="bg-transparent border border-[#C5A059] hover:bg-[#C5A059]/10 text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
+                    WhatsApp
+                  </button>
+                </div>
               </div>
             </div>
           </div>
