@@ -78,16 +78,21 @@ export default function KycResolutionDesk() {
 
 
 
-  const handleAction = async (item: any, action: "approve" | "reject") => {
+  const handleAction = async (item: any, action: "approve" | "reject" | "hold") => {
     let rejectionReason = null;
     if (action === "reject") {
-        const reason = window.prompt("Please provide a rejection reason so the applicant knows what to fix:");
+        const reason = window.prompt("Please provide a rejection reason so the applicant knows what to fix (e.g. 'Bank account blurred'):");
         if (reason === null) return; // User cancelled
         if (!reason.trim()) {
             alert("A rejection reason is required.");
             return;
         }
         rejectionReason = reason;
+    }
+    
+    if (action === "hold") {
+        const confirmHold = window.confirm("Mark as 'Field Visit Required'? This will notify the user that an agent will visit them.");
+        if (!confirmHold) return;
     }
 
     setProcessingId(item.id);
@@ -96,6 +101,8 @@ export default function KycResolutionDesk() {
         const userRef = doc(db, "users", item.id);
         const updates = action === "approve" 
           ? { status: "active", kycStatus: "verified", verifiedAt: new Date().toISOString() }
+          : action === "hold"
+          ? { status: "on_hold", kycStatus: "field_verification", holdReason: "Field force will visit for verification." }
           : { status: "rejected", kycStatus: "rejected", rejectedAt: new Date().toISOString(), rejectionReason };
         await updateDoc(userRef, updates);
       } else if (item.type === "document_verification") {
@@ -339,25 +346,44 @@ export default function KycResolutionDesk() {
 
             </div>
             
-            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-6 flex justify-end gap-3 z-10 rounded-b-2xl">
-              <button 
-                onClick={() => {
-                  handleAction(selectedUser, "reject");
-                  setSelectedUser(null);
-                }}
-                className="px-6 py-2.5 border border-red-200 text-red-600 hover:bg-red-50 font-bold rounded-xl text-sm transition-colors"
-              >
-                Reject Application
-              </button>
-              <button 
-                onClick={() => {
-                  handleAction(selectedUser, "approve");
-                  setSelectedUser(null);
-                }}
-                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition-colors"
-              >
-                Approve Application
-              </button>
+            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-6 flex justify-between gap-3 z-10 rounded-b-2xl">
+              <div>
+                <button 
+                  onClick={() => alert("Edit functionality will open an editable form for this user. (Coming soon)")}
+                  className="px-6 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-200 font-bold rounded-xl text-sm transition-colors"
+                >
+                  Edit Details
+                </button>
+              </div>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => {
+                    handleAction(selectedUser, "reject");
+                    setSelectedUser(null);
+                  }}
+                  className="px-6 py-2.5 border border-red-200 text-red-600 hover:bg-red-50 font-bold rounded-xl text-sm transition-colors"
+                >
+                  Reject Application
+                </button>
+                <button 
+                  onClick={() => {
+                    handleAction(selectedUser, "hold");
+                    setSelectedUser(null);
+                  }}
+                  className="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-xl text-sm shadow-md transition-colors"
+                >
+                  Require Field Visit
+                </button>
+                <button 
+                  onClick={() => {
+                    handleAction(selectedUser, "approve");
+                    setSelectedUser(null);
+                  }}
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition-colors"
+                >
+                  Approve
+                </button>
+              </div>
             </div>
           </div>
         </div>

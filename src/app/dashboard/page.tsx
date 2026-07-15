@@ -309,7 +309,7 @@ export default function DashboardPage() {
 
       {activeTab === "seller_hub" ? (
         <SellerSetupHub userRole={actualRole} />
-      ) : isSellerMode && (userStatus === "pending" || userStatus === "pending_approval") ? (
+      ) : isSellerMode && (userStatus === "pending" || userStatus === "pending_approval" || userStatus === "on_hold") ? (
         <div className="p-4 md:p-8 mt-10 max-w-4xl mx-auto animate-in fade-in zoom-in-95 duration-300">
           <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-10 md:p-16 rounded-3xl border border-yellow-200/60 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
             <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
