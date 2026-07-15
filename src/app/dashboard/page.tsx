@@ -89,7 +89,7 @@ export default function DashboardPage() {
             // Calculate slug for public pages
             const data = userDoc.data();
             setUserStatus(data.status || data.applicationStatus || "active");
-            const slug = (data.storeName || data.name || "demo").toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            const slug = String(data.storeName || data.name || "demo").toLowerCase().replace(/[^a-z0-9]+/g, '-');
             setStoreSlug(slug);
 
             // Fetch wholesale permissions
@@ -835,7 +835,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   }
   
   const sellerProducts = sellerProductsRaw.filter(p => {
-    const matchesSearch = (p.title || "").toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = String(p.title || "").toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || (p as any).status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -987,7 +987,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
       });
 
       // 2. Generate clean slug from store name
-      const slug = (storeName || "").toLowerCase().replace(/[^a-z0-9]+/g, '-') || auth.currentUser.uid;
+      const slug = String(storeName || "").toLowerCase().replace(/[^a-z0-9]+/g, '-') || auth.currentUser.uid;
       
       // 3. Update public storefront data in the correct collection
       const targetCollection = roleTitle === "Weaver Hub" ? "weavers" : "stores";
@@ -1137,7 +1137,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
       const productData: any = {
         title: productName,
-        slug: productName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        slug: String(productName).toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         price: parsedPrice,
         mrp: parsedMrp,
         availableForRetail,
