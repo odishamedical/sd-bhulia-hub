@@ -811,29 +811,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [applicationStatus, setApplicationStatus] = useState<string>("approved");
   const isStaff = roleTitle.includes("Staff");
   
-  // Security Sandbox: Staff cannot access sensitive tabs even if forced via state
-  if (isStaff && !["home", "upload"].includes(activeTab)) {
-    return (
-      <div className="bg-red-50 p-8 rounded-3xl text-center border border-red-200">
-        <h2 className="text-xl font-bold text-red-900 mb-2">Access Denied (Staff Account)</h2>
-        <p className="text-red-700 font-medium">Your account permissions are restricted to "My Catalog" only.</p>
-      </div>
-    );
-  }
 
-  if (applicationStatus === "pending_approval") {
-    return (
-      <div className="bg-yellow-50 p-12 rounded-3xl text-center border border-yellow-200 mt-10">
-        <div className="text-6xl mb-6">⏳</div>
-        <h2 className="text-3xl font-black text-yellow-900 mb-4">Account Under Review</h2>
-        <p className="text-yellow-800 text-lg font-medium max-w-2xl mx-auto">
-          You have successfully joined as a {roleTitle.replace(' Hub', '')}. 
-          Your dashboard features will be unlocked as soon as an Admin approves your profile.
-        </p>
-      </div>
-    );
-  }
-  
+
   const sellerProducts = sellerProductsRaw.filter(p => {
     const matchesSearch = String(p.title || "").toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || (p as any).status === statusFilter;
@@ -1201,6 +1180,29 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
     setIsUploading(false);
   };
 
+  if (applicationStatus === "pending_approval") {
+    return (
+      <div className="bg-yellow-50 p-12 rounded-3xl text-center border border-yellow-200 mt-10 animate-in fade-in">
+        <div className="text-6xl mb-6">⏳</div>
+        <h2 className="text-3xl font-black text-yellow-900 mb-4">Account Under Review</h2>
+        <p className="text-yellow-800 text-lg font-medium max-w-2xl mx-auto">
+          You have successfully joined as a {roleTitle.replace(' Hub', '')}. 
+          Your dashboard features will be unlocked as soon as an Admin approves your profile.
+        </p>
+      </div>
+    );
+  }
+
+  // Security Sandbox: Staff cannot access sensitive tabs even if forced via state
+  if (isStaff && !["home", "upload"].includes(activeTab)) {
+    return (
+      <div className="bg-red-50 p-8 rounded-3xl text-center border border-red-200 mt-10 animate-in fade-in">
+        <h2 className="text-xl font-bold text-red-900 mb-2">Access Denied (Staff Account)</h2>
+        <p className="text-red-700 font-medium">Your account permissions are restricted to "My Catalog" only.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
@@ -1318,7 +1320,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                               (product as any).status === "rejected" ? "bg-red-50 text-red-700 border-red-200" :
                               "bg-yellow-50 text-yellow-700 border-yellow-200"
                             }`}>
-                              {((product as any).status || 'pending').replace('_approval', '').charAt(0).toUpperCase() + ((product as any).status || 'pending').replace('_approval', '').slice(1)}
+                              {String((product as any).status || 'pending').replace('_approval', '').charAt(0).toUpperCase() + String((product as any).status || 'pending').replace('_approval', '').slice(1)}
                             </span>
                             {(product as any).status === "rejected" && (product as any).rejectionReason && (
                               <div className="mt-1 text-[10px] text-red-600 font-medium bg-red-50 p-1 rounded">
