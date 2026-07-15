@@ -211,6 +211,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
 
       await setDoc(doc(db, "users", auth.currentUser.uid), {
         applicationStatus: "pending_approval",
+        status: "pending",
         role: desiredRole
       }, { merge: true });
 

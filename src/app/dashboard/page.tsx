@@ -29,6 +29,7 @@ import { uploadBase64ToStorage } from "@/lib/storageUtils";
 export default function DashboardPage() {
   const [role, setRole] = useState<string | null>(null);
   const [userName, setUserName] = useState<string>("");
+  const [userStatus, setUserStatus] = useState<string>("active");
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("home");
   const [isViewAsMode, setIsViewAsMode] = useState(false);
@@ -86,6 +87,7 @@ export default function DashboardPage() {
             
             // Calculate slug for public pages
             const data = userDoc.data();
+            setUserStatus(data.status || data.applicationStatus || "active");
             const slug = (data.storeName || data.name || "demo").toLowerCase().replace(/[^a-z0-9]+/g, '-');
             setStoreSlug(slug);
 
@@ -307,6 +309,23 @@ export default function DashboardPage() {
 
       {activeTab === "seller_hub" ? (
         <SellerSetupHub userRole={actualRole} />
+      ) : isSellerMode && (userStatus === "pending" || userStatus === "pending_approval") ? (
+        <div className="p-4 md:p-8 mt-10 max-w-4xl mx-auto animate-in fade-in zoom-in-95 duration-300">
+          <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-10 md:p-16 rounded-3xl border border-yellow-200/60 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
+              <div className="w-32 h-32 bg-yellow-400 rounded-full"></div>
+            </div>
+            <div className="text-7xl mb-6 animate-bounce relative z-10">⏳</div>
+            <h2 className="text-3xl md:text-4xl font-black text-yellow-900 mb-4 tracking-tight relative z-10">Application Under Review</h2>
+            <p className="text-yellow-800/80 font-medium text-lg max-w-2xl mx-auto leading-relaxed relative z-10">
+              You have successfully submitted your application. Our Administration team is currently reviewing your documents and store details to ensure everything is perfect.
+              <br/><br/>
+              <span className="bg-yellow-200/50 px-3 py-1 rounded-lg text-yellow-900 text-sm font-bold tracking-wide uppercase">Next Steps</span>
+              <br/>
+              You will receive an email and WhatsApp notification the moment your account is approved and activated.
+            </p>
+          </div>
+        </div>
       ) : (
         <>
           {actualRole === "customer" && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
