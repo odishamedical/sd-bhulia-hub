@@ -257,6 +257,18 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
     );
   }
 
+  if (userData?.status === "active" && (userData?.role === "weaver" || userData?.role === "store" || userData?.role === "reseller")) {
+    return (
+      <div className="bg-green-50 p-8 rounded-3xl border border-green-200 text-center animate-in fade-in">
+        <div className="text-5xl mb-4">✅</div>
+        <h2 className="text-2xl font-bold text-green-900 mb-2">Account Already Approved</h2>
+        <p className="text-green-700 font-medium">
+          Your application has already been approved and your account is active. You can manage your business from the dashboard tabs.
+        </p>
+      </div>
+    );
+  }
+
   if (userData?.applicationStatus === "pending_approval") {
     return (
       <div className="bg-yellow-50 p-8 rounded-3xl border border-yellow-200 text-center animate-in fade-in">

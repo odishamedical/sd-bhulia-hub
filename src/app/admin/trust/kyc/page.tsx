@@ -101,12 +101,28 @@ export default function KycResolutionDesk() {
     try {
       if (item.type === "user_approval") {
         const userRef = doc(db, "users", item.id);
-        const updates = action === "approve" 
+        const updates: any = action === "approve" 
           ? { status: "active", kycStatus: "verified", verifiedAt: new Date().toISOString(), applicationStatus: deleteField() }
           : action === "hold"
           ? { status: "on_hold", kycStatus: "field_verification", holdReason: "Field force will visit for verification.", applicationStatus: deleteField() }
           : { status: "rejected", kycStatus: "rejected", rejectedAt: new Date().toISOString(), rejectionReason, applicationStatus: deleteField() };
+        
+        if (action === "approve" && item.requestedRole) {
+          updates.role = item.requestedRole;
+        }
+
         await updateDoc(userRef, updates);
+
+        if (action === "approve" && item.requestedRole) {
+          const targetCollection = item.requestedRole === "weaver" ? "weavers" : item.requestedRole === "store" ? "stores" : item.requestedRole === "franchise" ? "franchises" : null;
+          if (targetCollection) {
+            const profileRef = doc(db, targetCollection, item.id);
+            const profileSnap = await getDoc(profileRef);
+            if (profileSnap.exists()) {
+              await updateDoc(profileRef, { status: "approved" });
+            }
+          }
+        }
 
         // Add Notification
         const notificationTitle = action === "approve" ? "Application Approved! 🎉" 

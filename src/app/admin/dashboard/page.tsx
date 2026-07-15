@@ -87,6 +87,21 @@ export default function AdminDashboardPage() {
 
     const res = await updateDocumentStatus(type, id, updates);
     if (res.success) {
+      if (type === "weavers" || type === "stores" || type === "franchises") {
+        const { deleteField } = await import("firebase/firestore");
+        const roleMapping: any = {
+          "weavers": "weaver",
+          "stores": "store",
+          "franchises": "reseller"
+        };
+        await updateDocumentStatus("users" as any, id, {
+          status: "active",
+          role: roleMapping[type],
+          kycStatus: "verified",
+          applicationStatus: deleteField()
+        });
+      }
+
       // -------------------------------------------------------------
       // PHASE 8: TRIGGER NOTIFICATION (WHATSAPP & EMAIL)
       // -------------------------------------------------------------
