@@ -2067,6 +2067,15 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                   <div className={`flex-1 h-1 mx-2 ${currentProfileStep >= 3 ? 'bg-[#0070F3]' : 'bg-gray-100'}`}></div>
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${currentProfileStep >= 3 ? 'bg-[#0070F3] text-white' : 'bg-gray-100 text-gray-400'}`}>3</div>
                 </div>
+                {(currentProfileStep < 3) ? (
+                  <button type="submit" className="ml-4 bg-gray-900 text-white px-6 py-2 rounded-xl text-sm font-bold hover:bg-black transition-colors shadow-sm">
+                    Save & Next 
+                  </button>
+                ) : (
+                  <button type="submit" disabled={isSaving} className="ml-4 bg-[#0070F3] text-white px-6 py-2 rounded-xl text-sm font-bold hover:bg-[#005BB5] transition-colors shadow-sm disabled:opacity-50">
+                    {isSaving ? "Saving..." : "Save Store Settings"}
+                  </button>
+                )}
               </div>
             )}
 
@@ -2286,7 +2295,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
               
               {(currentProfileStep < 3 && roleTitle === "Weaver Hub") ? (
                 <button type="submit" className="bg-gray-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">
-                  Next Step
+                  Save & Next
                 </button>
               ) : (
                 <button type="button" onClick={(e) => handleSaveStore(e as any)} disabled={isSaving} className="bg-[#0070F3] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors shadow-[0_4px_14px_0_rgb(0,112,243,0.39)] hover:shadow-[0_6px_20px_rgba(0,112,243,0.23)]">
