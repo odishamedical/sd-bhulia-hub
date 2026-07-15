@@ -272,26 +272,32 @@ export default function DashboardPage() {
     >
       {globalNotifications.filter(n => !n.read).length > 0 && (
         <div className="mb-6 space-y-3">
-          {globalNotifications.filter(n => !n.read).map(n => (
+          {globalNotifications.filter(n => !n.read).map(n => {
+            const titleStr = typeof n.title === 'string' ? n.title : "";
+            return (
             <div key={n.id} className="bg-green-50 border border-green-200 p-4 rounded-2xl flex items-start justify-between shadow-sm animate-in fade-in slide-in-from-top-4">
               <div className="flex gap-3 items-start">
-                <div className="text-2xl">{n.title?.includes('🎉') ? '🎉' : n.title?.includes('🏠') ? '🏠' : '🔔'}</div>
+                <div className="text-2xl">{titleStr.includes('🎉') ? '🎉' : titleStr.includes('🏠') ? '🏠' : '🔔'}</div>
                 <div>
-                  <h4 className="font-bold text-green-900 text-sm">{n.title || "New Notification"}</h4>
-                  <p className="text-green-800 text-sm mt-1 leading-snug">{n.message || ""}</p>
+                  <h4 className="font-bold text-green-900 text-sm">{titleStr || "New Notification"}</h4>
+                  <p className="text-green-800 text-sm mt-1 leading-snug">{typeof n.message === 'string' ? n.message : ""}</p>
                 </div>
               </div>
               <button 
                 onClick={async () => {
                   setGlobalNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
-                  await updateDoc(doc(db, "notifications", n.id), { read: true });
+                  try {
+                    await updateDoc(doc(db, "notifications", n.id), { read: true });
+                  } catch (e) {
+                    console.error("Failed to mark read", e);
+                  }
                 }}
                 className="text-green-600 hover:text-green-800 font-bold text-sm px-3 py-1 bg-green-100 hover:bg-green-200 rounded-lg transition-colors"
               >
                 Mark Read
               </button>
             </div>
-          ))}
+          )})}
         </div>
       )}
       {isViewAsMode && (
@@ -578,9 +584,9 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                       <div key={n.id} className={`p-3 rounded-xl border ${n.read ? 'bg-gray-50 border-gray-100' : 'bg-blue-50/50 border-blue-100'} transition-colors`}>
                         <div className="font-bold text-gray-900 text-sm flex items-center gap-2">
                           {!n.read && <div className="w-2 h-2 rounded-full bg-blue-500 shrink-0"></div>}
-                          {n.title || "New Notification"}
+                          {typeof n.title === 'string' ? n.title : "New Notification"}
                         </div>
-                        <div className="text-xs text-gray-600 mt-1 line-clamp-2">{n.message || ""}</div>
+                        <div className="text-xs text-gray-600 mt-1 line-clamp-2">{typeof n.message === 'string' ? n.message : ""}</div>
                         {n.createdAt && <div className="text-[10px] text-gray-400 mt-2">{new Date(n.createdAt.toMillis?.() || Date.now()).toLocaleDateString()}</div>}
                       </div>
                     ))
