@@ -26,6 +26,14 @@ export interface Weaver {
   address: string;
   tier: "Silver" | "Gold" | "Diamond" | "Master";
   status: "pending_approval" | "approved";
+  weaverExperience?: string;
+  generations?: string;
+  specialties?: string[];
+  materials?: string[];
+  scale?: string;
+  googlePin?: string;
+  gallery?: string[];
+  videoUrl?: string;
   layoutConfig?: {
     sidebarPosition: "Left" | "Right" | "Hidden";
     heroEnabled: boolean;

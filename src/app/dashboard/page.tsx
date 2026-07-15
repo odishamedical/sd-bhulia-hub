@@ -854,6 +854,20 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [kycType, setKycType] = useState("");
   const [kycId, setKycId] = useState("");
   const [kycDocumentUrl, setKycDocumentUrl] = useState("");
+  
+  // New Weaver Fields
+  const [weaverExperience, setWeaverExperience] = useState("");
+  const [generations, setGenerations] = useState("");
+  const [specialties, setSpecialties] = useState(""); // Comma separated for now
+  const [materials, setMaterials] = useState(""); // Comma separated for now
+  const [scale, setScale] = useState("");
+  const [googlePin, setGooglePin] = useState("");
+  const [gallery1, setGallery1] = useState("");
+  const [gallery2, setGallery2] = useState("");
+  const [gallery3, setGallery3] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
+  const [currentProfileStep, setCurrentProfileStep] = useState(1);
+
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -899,8 +913,27 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           setPincode(data.address?.pincode || data.pin || "");
         }
       });
+      
+      const targetCollection = roleTitle === "Weaver Hub" ? "weavers" : "stores";
+      getDoc(doc(db, targetCollection, auth.currentUser.uid)).then(snap => {
+        if (snap.exists()) {
+          const data = snap.data();
+          if (roleTitle === "Weaver Hub") {
+            setWeaverExperience(data.weaverExperience || "");
+            setGenerations(data.generations || "");
+            setSpecialties((data.specialties || []).join(", "));
+            setMaterials((data.materials || []).join(", "));
+            setScale(data.scale || "");
+            setGooglePin(data.googlePin || "");
+            setGallery1(data.gallery?.[0] || "");
+            setGallery2(data.gallery?.[1] || "");
+            setGallery3(data.gallery?.[2] || "");
+            setVideoUrl(data.videoUrl || "");
+          }
+        }
+      });
     }
-  }, []);
+  }, [roleTitle]);
 
   const handleSavePersonal = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -994,7 +1027,17 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           pincode
         },
         tier: "Silver", // Default
-        status: "approved" // Auto-approve for MVP
+        status: "approved", // Auto-approve for MVP
+        ...(roleTitle === "Weaver Hub" && {
+          weaverExperience,
+          generations,
+          specialties: specialties.split(",").map(s => s.trim()).filter(Boolean),
+          materials: materials.split(",").map(m => m.trim()).filter(Boolean),
+          scale,
+          googlePin,
+          gallery: [gallery1, gallery2, gallery3].filter(Boolean),
+          videoUrl
+        })
       }, { merge: true });
 
       alert("Professional Store updated successfully!");
@@ -1998,158 +2041,243 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
             <p className="text-blue-700 text-xs font-medium">This information will be displayed exactly as typed on your public storefront.</p>
           </div>
 
-          <form className="space-y-8" onSubmit={handleSaveStore}>
+          <form className="space-y-8" onSubmit={(e) => {
+            if (roleTitle === "Weaver Hub" && currentProfileStep < 3) {
+              e.preventDefault();
+              setCurrentProfileStep(prev => prev + 1);
+            } else {
+              handleSaveStore(e);
+            }
+          }}>
             
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-                <h3 className="text-lg font-bold text-gray-900">1. Store Details</h3>
-                <button type="button" onClick={() => {
-                  setStoreName(personalName);
-                  setPhone(bankAccount ? "9999999999" : ""); // Demo purpose copy
-                }} className="bg-[#0070F3] text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-[#005BB5] transition-colors shadow-sm whitespace-nowrap">
-                  Copy from Personal Profile
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Name / Professional Name</label>
-                  <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Description</label>
-                  <input type="text" value={publicDesc} onChange={e => setPublicDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
-                </div>
-                <div className="col-span-2">
-                  <ImageUploader value={storeLogo} onChange={setStoreLogo} label="Store Logo / Profile Picture" aspectRatio="square" />
+            {/* Step Indicators */}
+            {roleTitle === "Weaver Hub" && (
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex-1 flex items-center">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${currentProfileStep >= 1 ? 'bg-[#0070F3] text-white' : 'bg-gray-100 text-gray-400'}`}>1</div>
+                  <div className={`flex-1 h-1 mx-2 ${currentProfileStep >= 2 ? 'bg-[#0070F3]' : 'bg-gray-100'}`}></div>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${currentProfileStep >= 2 ? 'bg-[#0070F3] text-white' : 'bg-gray-100 text-gray-400'}`}>2</div>
+                  <div className={`flex-1 h-1 mx-2 ${currentProfileStep >= 3 ? 'bg-[#0070F3]' : 'bg-gray-100'}`}></div>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${currentProfileStep >= 3 ? 'bg-[#0070F3] text-white' : 'bg-gray-100 text-gray-400'}`}>3</div>
                 </div>
               </div>
-            </div>
+            )}
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">2. Public Contact Details</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Phone Number</label>
-                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+            {currentProfileStep === 1 && (
+              <div className="space-y-4 animate-in fade-in slide-in-from-right-4">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                  <h3 className="text-lg font-bold text-gray-900">1. {roleTitle === "Weaver Hub" ? "Weaver" : "Store"} Details & Location</h3>
+                  <button type="button" onClick={() => {
+                    setStoreName(personalName);
+                    setPhone(bankAccount ? "9999999999" : ""); // Demo purpose copy
+                  }} className="bg-[#0070F3] text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-[#005BB5] transition-colors shadow-sm whitespace-nowrap">
+                    Copy from Personal Profile
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public WhatsApp Number</label>
-                  <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Name / Professional Name</label>
+                    <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Description</label>
+                    <input type="text" value={publicDesc} onChange={e => setPublicDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  </div>
+                  <div className="col-span-2">
+                    <ImageUploader value={storeLogo} onChange={setStoreLogo} label="Store Logo / Profile Picture" aspectRatio="square" />
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">3. Location Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                {roleTitle === "Weaver Hub" ? (
-                  <>
-                    <div className="col-span-2">
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
-                      <input type="text" value="India" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-gray-500 cursor-not-allowed" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
-                      <input type="text" value="Odisha" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-gray-500 cursor-not-allowed" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
-                      <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
-                        <option value="">Select Handloom District...</option>
-                        {["Bargarh", "Subarnapur", "Sambalpur", "Boudh", "Nuapada", "Balangir", "Kalahandi"].map(d => (
-                          <option key={d} value={d}>{d}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="col-span-2">
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
-                      <select value={country} onChange={e => {
-                        setCountry(e.target.value);
-                        if (e.target.value === "International") {
-                          setState(""); setDistrict("");
-                        } else {
-                          setState("Odisha");
-                        }
-                      }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
-                        <option value="India">India</option>
-                        {roleTitle !== "Weaver Hub" && <option value="International">International</option>}
-                      </select>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-gray-100 pt-6 mb-6">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Phone Number</label>
+                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public WhatsApp Number</label>
+                    <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  </div>
+                </div>
 
-                    {country === "India" ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-gray-100 pt-6">
+                  {roleTitle === "Weaver Hub" ? (
+                    <>
+                      <div className="col-span-2">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+                        <input type="text" value="India" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-gray-500 cursor-not-allowed" />
+                      </div>
                       <div>
                         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
-                        <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
-                          <option value="">Select State...</option>
-                          {roleTitle === "Weaver Hub" ? (
-                            <option value="Odisha">Odisha</option>
-                          ) : (
-                            INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)
-                          )}
-                        </select>
+                        <input type="text" value="Odisha" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-gray-500 cursor-not-allowed" />
                       </div>
-                    ) : (
-                      <div>
-                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State / Province</label>
-                        <input type="text" value={state} onChange={e => setState(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
-                      </div>
-                    )}
-
-                    {country === "India" && state === "Odisha" ? (
                       <div>
                         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
                         <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
-                          <option value="">Select District...</option>
-                          {(roleTitle === "Weaver Hub" ? WEAVER_DISTRICTS : ODISHA_DISTRICTS).map(d => <option key={d} value={d}>{d}</option>)}
+                          <option value="">Select Handloom District...</option>
+                          {["Bargarh", "Subarnapur", "Sambalpur", "Boudh", "Nuapada", "Balangir", "Kalahandi"].map(d => (
+                            <option key={d} value={d}>{d}</option>
+                          ))}
                         </select>
                       </div>
-                    ) : (
-                      <div>
-                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">City / District</label>
-                        <input type="text" value={district} onChange={e => setDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
-                      </div>
-                    )}
-                  </>
-                )}
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
-                  {((country === "India" && state === "Odisha") || roleTitle === "Weaver Hub") && district && ODISHA_DISTRICT_BLOCKS[district] ? (
-                    <select value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
-                      <option value="">Select Block...</option>
-                      {ODISHA_DISTRICT_BLOCKS[district].map(b => <option key={b} value={b}>{b}</option>)}
-                    </select>
+                    </>
                   ) : (
-                    <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    <>
+                      <div className="col-span-2">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+                        <select value={country} onChange={e => {
+                          setCountry(e.target.value);
+                          if (e.target.value === "International") {
+                            setState(""); setDistrict("");
+                          } else {
+                            setState("Odisha");
+                          }
+                        }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
+                          <option value="India">India</option>
+                          {roleTitle !== "Weaver Hub" && <option value="International">International</option>}
+                        </select>
+                      </div>
+
+                      {country === "India" ? (
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
+                          <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
+                            <option value="">Select State...</option>
+                            {roleTitle === "Weaver Hub" ? (
+                              <option value="Odisha">Odisha</option>
+                            ) : (
+                              INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)
+                            )}
+                          </select>
+                        </div>
+                      ) : (
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State / Province</label>
+                          <input type="text" value={state} onChange={e => setState(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                        </div>
+                      )}
+
+                      {country === "India" && state === "Odisha" ? (
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
+                          <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                            <option value="">Select District...</option>
+                            {(roleTitle === "Weaver Hub" ? WEAVER_DISTRICTS : ODISHA_DISTRICTS).map(d => <option key={d} value={d}>{d}</option>)}
+                          </select>
+                        </div>
+                      ) : (
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">City / District</label>
+                          <input type="text" value={district} onChange={e => setDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                        </div>
+                      )}
+                    </>
                   )}
+
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
+                    {((country === "India" && state === "Odisha") || roleTitle === "Weaver Hub") && district && ODISHA_DISTRICT_BLOCKS[district] ? (
+                      <select value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                        <option value="">Select Block...</option>
+                        {ODISHA_DISTRICT_BLOCKS[district].map(b => <option key={b} value={b}>{b}</option>)}
+                      </select>
+                    ) : (
+                      <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town / Village / City</label>
+                    <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town / Village / City</label>
-                  <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+
+                <div className="mb-4 mt-6">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street Address (House No, Landmark)</label>
+                  <textarea required value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none min-h-[80px]" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN / ZIP Code</label>
+                    <input type="text" value={pincode} onChange={e => setPincode(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  </div>
                 </div>
               </div>
+            )}
 
-              <div className="mb-4">
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street Address (House No, Landmark)</label>
-                <textarea required value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none min-h-[80px]" />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN / ZIP Code</label>
-                  <input type="text" value={pincode} onChange={e => setPincode(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+            {currentProfileStep === 2 && roleTitle === "Weaver Hub" && (
+              <div className="space-y-4 animate-in fade-in slide-in-from-right-4">
+                <div className="border-b border-gray-100 pb-2">
+                  <h3 className="text-lg font-bold text-gray-900">2. Craft & Heritage</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Years of Experience</label>
+                    <input type="text" placeholder="e.g. 15 Years" value={weaverExperience} onChange={e => setWeaverExperience(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Generations in Weaving</label>
+                    <input type="text" placeholder="e.g. 3rd Generation" value={generations} onChange={e => setGenerations(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Specialties (Comma Separated)</label>
+                    <input type="text" placeholder="e.g. Sambalpuri, Bomkai, Ikat" value={specialties} onChange={e => setSpecialties(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Materials Used (Comma Separated)</label>
+                    <input type="text" placeholder="e.g. Cotton, Tussar Silk" value={materials} onChange={e => setMaterials(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Scale of Operation</label>
+                    <input type="text" placeholder="e.g. 2 Handlooms, Small Workshop" value={scale} onChange={e => setScale(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            <div className="pt-6 border-t border-gray-100 flex justify-end">
-              <button type="submit" disabled={isSaving} className="bg-[#0070F3] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors shadow-[0_4px_14px_0_rgb(229,113,56,0.39)] hover:shadow-[0_6px_20px_rgba(229,113,56,0.23)]">
-                {isSaving ? "Saving..." : "Save Store Settings"}
-              </button>
+            {currentProfileStep === 3 && roleTitle === "Weaver Hub" && (
+              <div className="space-y-4 animate-in fade-in slide-in-from-right-4">
+                <div className="border-b border-gray-100 pb-2">
+                  <h3 className="text-lg font-bold text-gray-900">3. Visual Showcase</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="col-span-3">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Workshop Gallery (Up to 3 photos)</label>
+                  </div>
+                  <ImageUploader value={gallery1} onChange={setGallery1} label="Photo 1" aspectRatio="square" />
+                  <ImageUploader value={gallery2} onChange={setGallery2} label="Photo 2" aspectRatio="square" />
+                  <ImageUploader value={gallery3} onChange={setGallery3} label="Photo 3" aspectRatio="square" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Google Maps Pin URL (Optional)</label>
+                    <input type="text" placeholder="https://maps.app.goo.gl/..." value={googlePin} onChange={e => setGooglePin(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">YouTube Video URL (Optional)</label>
+                    <input type="text" placeholder="https://youtube.com/watch?v=..." value={videoUrl} onChange={e => setVideoUrl(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="pt-6 border-t border-gray-100 flex justify-end gap-4">
+              {currentProfileStep > 1 && roleTitle === "Weaver Hub" && (
+                <button type="button" onClick={() => setCurrentProfileStep(prev => prev - 1)} className="px-6 py-3 rounded-xl font-bold text-gray-600 hover:bg-gray-100 transition-colors">
+                  Previous
+                </button>
+              )}
+              
+              {(currentProfileStep < 3 && roleTitle === "Weaver Hub") ? (
+                <button type="submit" className="bg-gray-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">
+                  Next Step
+                </button>
+              ) : (
+                <button type="button" onClick={(e) => handleSaveStore(e as any)} disabled={isSaving} className="bg-[#0070F3] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors shadow-[0_4px_14px_0_rgb(0,112,243,0.39)] hover:shadow-[0_6px_20px_rgba(0,112,243,0.23)]">
+                  {isSaving ? "Saving..." : "Save Store Settings"}
+                </button>
+              )}
             </div>
           </form>
         </div>

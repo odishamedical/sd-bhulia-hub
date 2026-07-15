@@ -40,6 +40,14 @@ export default function WeaverStorePage() {
         googlePlaceId: weaver.googlePlaceId,
         googleRating: weaver.googleRating,
         googleReviewsCount: weaver.googleReviewsCount,
+        weaverExperience: weaver.weaverExperience,
+        generations: weaver.generations,
+        specialties: weaver.specialties,
+        materials: weaver.materials,
+        scale: weaver.scale,
+        googlePin: weaver.googlePin,
+        gallery: weaver.gallery,
+        videoUrl: weaver.videoUrl,
       });
 
       // Filter products belonging to this weaver

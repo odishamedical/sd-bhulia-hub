@@ -28,6 +28,14 @@ export interface PublicProfileProps {
     googleReviewsCount?: number;
     listingType?: string;
     productsOffered?: string;
+    weaverExperience?: string;
+    generations?: string;
+    specialties?: string[];
+    materials?: string[];
+    scale?: string;
+    googlePin?: string;
+    gallery?: string[];
+    videoUrl?: string;
   };
   products: Product[];
   allProducts?: Product[];
@@ -138,6 +146,58 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
             </p>
           </div>
 
+          {(profile.weaverExperience || profile.generations) && (
+            <div className="border border-[#C5A059]/40 bg-[#C5A059]/5 rounded-xl p-4 mb-4">
+              <h3 className="text-xs uppercase tracking-widest text-[#C5A059] mb-3 font-bold">Artisan Heritage</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {profile.generations && (
+                  <div>
+                    <div className="text-[10px] text-white/50 uppercase">Legacy</div>
+                    <div className="text-sm text-white font-bold">{profile.generations}</div>
+                  </div>
+                )}
+                {profile.weaverExperience && (
+                  <div>
+                    <div className="text-[10px] text-white/50 uppercase">Experience</div>
+                    <div className="text-sm text-white font-bold">{profile.weaverExperience}</div>
+                  </div>
+                )}
+                {profile.scale && (
+                  <div className="col-span-2">
+                    <div className="text-[10px] text-white/50 uppercase">Scale of Operation</div>
+                    <div className="text-sm text-white font-bold">{profile.scale}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {(profile.specialties?.length || profile.materials?.length) ? (
+            <div className="border border-white/20 rounded-xl p-4 mb-4">
+              <h3 className="text-xs uppercase tracking-widest text-[#C5A059] mb-3 font-bold">Craft Details</h3>
+              {profile.specialties && profile.specialties.length > 0 && (
+                <div className="mb-3">
+                  <div className="text-[10px] text-white/50 uppercase mb-1">Specialties</div>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.specialties.map(s => (
+                      <span key={s} className="bg-white/10 text-white text-xs px-2 py-1 rounded-md">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {profile.materials && profile.materials.length > 0 && (
+                <div>
+                  <div className="text-[10px] text-white/50 uppercase mb-1">Materials Used</div>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.materials.map(m => (
+                      <span key={m} className="bg-[#C5A059]/20 text-[#C5A059] border border-[#C5A059]/30 text-xs px-2 py-1 rounded-md">{m}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : null}
+
         </div>
 
         {/* Right: Contact & Address */}
@@ -201,6 +261,35 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
         </div>
         
         <ShareWidget title={profile.name} />
+
+        {/* Media Showcase */}
+        {((profile.gallery && profile.gallery.length > 0) || profile.videoUrl) && (
+          <div className="space-y-6 pt-6 border-t border-[#C5A059]/20">
+            <div>
+              <h3 className="text-xl md:text-3xl font-serif text-[#C5A059] font-bold tracking-wider mb-1">Visual Showcase</h3>
+              <p className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest font-semibold">Behind the scenes with {profile.name}</p>
+            </div>
+            
+            {profile.gallery && profile.gallery.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {profile.gallery.map((imgUrl, i) => (
+                  <div key={i} className="relative aspect-square rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-[#0B2B26]">
+                    <Image src={imgUrl} alt={`Workshop ${i + 1}`} fill className="object-cover hover:scale-105 transition-transform duration-700" unoptimized />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {profile.videoUrl && (
+              <div className="mt-6">
+                <a href={profile.videoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-[#ff0000]/20 hover:bg-[#ff0000]/40 text-[#ff0000] border border-[#ff0000]/50 px-6 py-3 rounded-xl transition-colors font-bold text-sm">
+                  <span>▶</span>
+                  <span>Watch Video</span>
+                </a>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Product Grid Section */}
         <div className="space-y-6 pt-6 border-t border-[#C5A059]/20">
