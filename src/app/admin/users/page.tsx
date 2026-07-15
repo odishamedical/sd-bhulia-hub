@@ -65,8 +65,8 @@ export default function UserManagementPage() {
       name: w.title || `Weaver ${idx}`,
       role: "weaver",
       phone: w.phoneNumber || "N/A",
-      state: (w.address?.split(",")?.[2] || "").split("-")?.[0]?.trim() || "Odisha",
-      district: w.address?.split(",")?.[1]?.trim() || "Sambalpur",
+      state: (String(w.address || "").split(",")?.[2] || "").split("-")?.[0]?.trim() || "Odisha",
+      district: String(w.address || "").split(",")?.[1]?.trim() || "Sambalpur",
       volume: 0, // Real data will be calculated from seller ledger
       purchasedProductIds: [] as any[],
       subStatus: w.subscription?.status || "free_trial",
@@ -87,8 +87,8 @@ export default function UserManagementPage() {
       name: s.title || `Store ${idx}`,
       role: "store",
       phone: s.phoneNumber || "N/A",
-      state: (s.address?.split(",")?.[2] || "").split("-")?.[0]?.trim() || "N/A",
-      district: s.address?.split(",")?.[1]?.trim() || "N/A",
+      state: (String(s.address || "").split(",")?.[2] || "").split("-")?.[0]?.trim() || "N/A",
+      district: String(s.address || "").split(",")?.[1]?.trim() || "N/A",
       volume: 0, // Real data will be calculated from seller ledger
       purchasedProductIds: [] as any[],
       subStatus: s.subscription?.status || "free_trial",
@@ -109,8 +109,8 @@ export default function UserManagementPage() {
       name: name as string,
       role: "customer",
       phone: orders.find(o => o.customerName === name)?.customerPhone || "N/A",
-      state: (orders.find(o => o.customerName === name)?.customerAddress?.split(",")?.[2] || "").split("-")?.[0]?.trim() || "N/A",
-      district: orders.find(o => o.customerName === name)?.customerAddress?.split(",")?.[1]?.trim() || "N/A",
+      state: (String(orders.find(o => o.customerName === name)?.customerAddress || "").split(",")?.[2] || "").split("-")?.[0]?.trim() || "N/A",
+      district: String(orders.find(o => o.customerName === name)?.customerAddress || "").split(",")?.[1]?.trim() || "N/A",
       country: "India",
       volume: orders.filter(o => o.customerName === name).reduce((acc, curr) => acc + (parseInt(curr.productPrice?.toString().replace(/[^0-9]/g, '') || "0")), 0), // Total spent
       purchasedProductIds: orders.filter(o => o.customerName === name).map(o => o.productId).filter(Boolean),
