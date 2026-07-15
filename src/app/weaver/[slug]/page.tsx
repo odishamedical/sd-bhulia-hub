@@ -41,6 +41,7 @@ export default function WeaverStorePage() {
         country: weaver.country || (extCountry === "India" || extCountry === "Odisha" ? "India" : extCountry),
         description: weaver.desc || "Odishan Master Weaver specializing in traditional handlooms.",
         address: addressStr || "Address not provided.",
+        rawAddress: typeof weaver.address === "object" ? weaver.address : null,
         phone: weaver.phone || "N/A",
         whatsapp: weaver.whatsapp || "N/A",
         status: weaver.status,

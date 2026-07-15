@@ -42,6 +42,7 @@ export default function UserManagementPage() {
   const [newUserCountry, setNewUserCountry] = useState("India");
   const [newUserState, setNewUserState] = useState("");
   const [newUserDistrict, setNewUserDistrict] = useState("");
+  const [newUserBlock, setNewUserBlock] = useState("");
   const [newUserAddress, setNewUserAddress] = useState("");
   const [newUserPin, setNewUserPin] = useState("");
   const [allowDirectContact, setAllowDirectContact] = useState(false);
@@ -350,7 +351,14 @@ export default function UserManagementPage() {
           badge: "Odishan Master Weaver",
           phone: newUserPhone || "N/A",
           whatsapp: newUserWhatsapp || "N/A",
-          address: `${newUserAddress}, ${newUserDistrict}, ${newUserState} - ${newUserPin}`,
+          address: {
+            streetAddress: newUserAddress,
+            block: newUserBlock,
+            district: newUserDistrict,
+            state: newUserState,
+            country: newUserCountry,
+            pincode: newUserPin
+          } as any,
           tier: "Silver",
           status: "approved",
           layoutConfig: {
@@ -371,7 +379,14 @@ export default function UserManagementPage() {
           badge: "Verified Store",
           phone: newUserPhone || "N/A",
           whatsapp: newUserWhatsapp || "N/A",
-          address: `${newUserAddress}, ${newUserDistrict}, ${newUserState} - ${newUserPin}`,
+          address: {
+            streetAddress: newUserAddress,
+            block: newUserBlock,
+            district: newUserDistrict,
+            state: newUserState,
+            country: newUserCountry,
+            pincode: newUserPin
+          } as any,
           tier: "Silver",
           status: "approved",
           productLimit: parseInt(newSubLimit),
@@ -860,6 +875,20 @@ export default function UserManagementPage() {
                     </select>
                   ) : (
                     <input type="text" value={newUserDistrict} onChange={e => setNewUserDistrict(e.target.value)} placeholder="e.g. Mumbai, New York" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                  )}
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-gray-500 mb-1.5 block">Block / Tehsil</label>
+                  {newUserRole === 'weaver' ? (
+                    <select value={newUserBlock} onChange={e => setNewUserBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                      <option value="">Select Block (Optional)</option>
+                      {["Attabira", "Bargarh", "Barpali", "Bhatli", "Bheden", "Bijepur", "Gaisilet", "Jharbandh", "Padampur", "Paikmal", "Rajborasamar", "Sohela", "Binika", "Birmaharajpur", "Dunguripali", "Sonepur", "Tarabha", "Ullunda"].map(b => (
+                        <option key={b} value={b}>{b}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input type="text" value={newUserBlock} onChange={e => setNewUserBlock(e.target.value)} placeholder="e.g. Andheri, Manhattan" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   )}
                 </div>
 

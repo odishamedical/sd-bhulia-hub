@@ -153,9 +153,34 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
               </div>
 
               {/* Address Row */}
-              <div className="mt-5 pt-5 border-t border-[#C5A059]/20 flex items-start gap-2">
-                <span className="text-white/60 font-bold">Address:</span>
-                <span className="text-white/90 font-semibold">{profile.address || "Address not provided."}</span>
+              <div className="mt-5 pt-5 border-t border-[#C5A059]/20">
+                <span className="text-white/60 font-bold block mb-3 uppercase tracking-widest text-[10px]">Location & Geography</span>
+                {profile.rawAddress && typeof profile.rawAddress === "object" ? (
+                  <div className="flex flex-wrap gap-2">
+                    {profile.rawAddress.streetAddress && (
+                      <span className="bg-[#051815] border border-[#C5A059]/30 text-white/90 text-[11px] px-3 py-1.5 rounded-md shadow-sm">📍 {profile.rawAddress.streetAddress}</span>
+                    )}
+                    {profile.rawAddress.block && (
+                      <span className="bg-[#051815] border border-[#C5A059]/30 text-white/90 text-[11px] px-3 py-1.5 rounded-md shadow-sm">🏢 Block: {profile.rawAddress.block}</span>
+                    )}
+                    {profile.rawAddress.district && (
+                      <span className="bg-[#051815] border border-[#C5A059]/30 text-white/90 text-[11px] px-3 py-1.5 rounded-md shadow-sm">🌆 Dist: {profile.rawAddress.district}</span>
+                    )}
+                    {profile.rawAddress.state && (
+                      <span className="bg-[#051815] border border-[#C5A059]/30 text-white/90 text-[11px] px-3 py-1.5 rounded-md shadow-sm">🗺️ {profile.rawAddress.state}</span>
+                    )}
+                    {profile.rawAddress.pincode && (
+                      <span className="bg-[#051815] border border-[#C5A059]/30 text-white/90 text-[11px] px-3 py-1.5 rounded-md shadow-sm">📮 PIN: {profile.rawAddress.pincode}</span>
+                    )}
+                    {profile.rawAddress.country && (
+                      <span className="bg-[#051815] border border-[#C5A059]/30 text-white/90 text-[11px] px-3 py-1.5 rounded-md shadow-sm">🌍 {profile.rawAddress.country}</span>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex items-start gap-2">
+                    <span className="text-white/90 font-semibold">{profile.address || "Address not provided."}</span>
+                  </div>
+                )}
               </div>
             </div>
 

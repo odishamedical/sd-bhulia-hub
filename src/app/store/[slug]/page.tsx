@@ -20,11 +20,18 @@ export default function VendorDetailPage() {
 
   useEffect(() => {
     if (store) {
-      const addressParts = (store.address || "").split(",").map((s: string) => s.trim()).filter((s: string) => s !== "");
-      let extDistrict = addressParts.length >= 3 ? addressParts[addressParts.length - 3] : "Sambalpur";
+      let addressStr = "";
+      if (typeof store.address === "object" && store.address !== null) {
+        addressStr = `${store.address.streetAddress || ""}, ${store.address.cityTownVillage || ""}, ${store.address.district || ""}, ${store.address.state || ""}, India`;
+      } else {
+        addressStr = store.address || "";
+      }
+
+      const addressParts = addressStr.split(",").map((s: string) => s.trim()).filter((s: string) => s !== "");
+      let extDistrict = addressParts.length >= 3 ? addressParts[addressParts.length - 3] : (store.district || "Sambalpur");
       if (extDistrict.toLowerCase() === "subarnapur" || extDistrict.toLowerCase() === "suvernpur") extDistrict = "Sonepur";
-      const extState = addressParts.length >= 2 ? addressParts[addressParts.length - 2].split(" ")[0].replace(/[^a-zA-Z]/g, '') : "Odisha";
-      const extCountry = addressParts.length >= 1 ? addressParts[addressParts.length - 1].replace(/[^a-zA-Z ]/g, '').trim() : "India";
+      const extState = addressParts.length >= 2 ? addressParts[addressParts.length - 2].split(" ")[0].replace(/[^a-zA-Z]/g, '') : (store.state || "Odisha");
+      const extCountry = addressParts.length >= 1 ? addressParts[addressParts.length - 1].replace(/[^a-zA-Z ]/g, '').trim() : (store.country || "India");
 
       setMappedProfile({
         name: store.title || "Retail Shop",
@@ -33,7 +40,8 @@ export default function VendorDetailPage() {
         state: store.state || extState,
         country: store.country || (extCountry === "India" || extCountry === "Odisha" ? "India" : extCountry),
         description: store.desc || "Verified Retail Shop for Authentic Handlooms.",
-        address: store.address || "Address not provided.",
+        address: addressStr || "Address not provided.",
+        rawAddress: typeof store.address === "object" ? store.address : null,
         phone: store.phone || "N/A",
         whatsapp: store.whatsapp || "N/A",
         status: store.status,
