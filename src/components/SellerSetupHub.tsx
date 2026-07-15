@@ -126,7 +126,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
   const steps = [
     { id: 1, title: "Profile", icon: "👤", isReady: !!(personalName && phone && whatsapp) },
     { id: 2, title: "Address", icon: "📍", isReady: !!(streetAddress && district && state && pincode) },
-    { id: 3, title: "KYC", icon: "🛡️", isReady: !!(kycType && kycId && kycDocumentUrl) },
+    { id: 3, title: "KYC", icon: "🛡️", isReady: !!(kycType && kycId && kycDocumentUrl && ((desiredRole === 'b2b' || desiredRole === 'raw_material') ? gstNumber : true)) },
     { id: 4, title: "Bank", icon: "🏦", isReady: !!(bankHolder && bankName && bankAccount && bankIfsc) },
   ];
 
@@ -434,6 +434,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
               Your documents are stored securely and are only used to verify your identity for direct payouts and fraud prevention.
             </div>
             
+            {(desiredRole === "b2b" || desiredRole === "raw_material") && (
+              <div className="bg-red-50 border border-red-200 p-4 rounded-xl text-xs text-red-800 font-medium mb-4 flex items-start gap-2">
+                <span className="text-lg">⚠️</span>
+                <span><strong>B2B Requirement:</strong> As a {desiredRole === 'b2b' ? 'Wholesaler' : 'Supplier'}, a valid GST Number is <strong>MANDATORY</strong> to verify your business.</span>
+              </div>
+            )}
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document Type</label>
@@ -465,7 +472,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">GST Number (Optional)</label>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">GST Number {desiredRole === 'b2b' || desiredRole === 'raw_material' ? '(MANDATORY)' : '(Optional)'}</label>
               <input type="text" value={gstNumber} onChange={e => setGstNumber(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none uppercase" placeholder="e.g. 21AAAAA1234A1Z1" />
             </div>
           </div>

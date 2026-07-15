@@ -18,7 +18,7 @@ export const uploadBase64ToStorage = async (base64Str: string | null, folder: st
     
     return await getDownloadURL(storageRef);
   } catch (e) {
-    console.error("Storage upload failed, falling back to base64:", e);
-    return base64Str;
+    console.error("Storage upload failed:", e);
+    throw e; // Throw so that the calling function can catch and show the alert
   }
 };
