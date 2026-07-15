@@ -11,6 +11,7 @@ export default function KycResolutionDesk() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
 
   async function fetchPendingKyc() {
     setIsLoading(true);
@@ -242,6 +243,12 @@ export default function KycResolutionDesk() {
                       ) : (
                         <div className="flex items-center justify-end gap-2">
                           <button 
+                            onClick={() => setSelectedUser(user)}
+                            className="px-4 py-2 border border-gray-200 text-gray-700 hover:bg-gray-50 font-bold rounded-lg text-xs transition-colors"
+                          >
+                            View Details
+                          </button>
+                          <button 
                             onClick={() => handleAction(user, "reject")}
                             className="px-4 py-2 border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 font-bold rounded-lg text-xs transition-colors"
                           >
@@ -263,6 +270,98 @@ export default function KycResolutionDesk() {
           </div>
         )}
       </div>
+
+      {/* User Details Modal */}
+      {selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex justify-between items-center z-10">
+              <h2 className="text-xl font-bold text-gray-900">Application Details</h2>
+              <button onClick={() => setSelectedUser(null)} className="text-gray-400 hover:text-gray-600 font-bold text-2xl leading-none">&times;</button>
+            </div>
+            
+            <div className="p-6 space-y-8">
+              {/* Profile */}
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 border-b pb-2">Profile Info</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div><span className="text-gray-500 block text-xs">Role / Type</span><span className="font-semibold capitalize">{selectedUser.role}</span></div>
+                  <div><span className="text-gray-500 block text-xs">Name</span><span className="font-semibold">{selectedUser.personalName || selectedUser.displayName || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">Store / Brand</span><span className="font-semibold">{selectedUser.storeName || selectedUser.businessName || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">Phone</span><span className="font-semibold">{selectedUser.phone || selectedUser.whatsapp || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">Email</span><span className="font-semibold">{selectedUser.email || 'N/A'}</span></div>
+                </div>
+              </div>
+
+              {/* Address */}
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 border-b pb-2">Address</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div><span className="text-gray-500 block text-xs">Street / Village</span><span className="font-semibold">{selectedUser.address?.streetAddress || selectedUser.address?.cityTownVillage || selectedUser.village || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">Block / City</span><span className="font-semibold">{selectedUser.address?.block || selectedUser.block || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">District</span><span className="font-semibold">{selectedUser.address?.district || selectedUser.district || selectedUser.cluster || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">State & PIN</span><span className="font-semibold">{selectedUser.address?.state || selectedUser.state || 'N/A'} - {selectedUser.address?.pincode || selectedUser.pin || ''}</span></div>
+                </div>
+              </div>
+
+              {/* KYC */}
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 border-b pb-2">KYC Documents</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                  <div><span className="text-gray-500 block text-xs">Document Type</span><span className="font-semibold">{selectedUser.kycType || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">Document ID</span><span className="font-semibold">{selectedUser.kycId || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">GST Number</span><span className="font-semibold">{selectedUser.gst || selectedUser.gstNumber || 'N/A'}</span></div>
+                </div>
+                {selectedUser.kycDocumentUrl ? (
+                  <div className="border rounded-lg overflow-hidden bg-gray-50 p-2">
+                    {selectedUser.kycDocumentUrl.startsWith('data:image') || selectedUser.kycDocumentUrl.includes('firebasestorage') ? (
+                      <img src={selectedUser.kycDocumentUrl} alt="KYC Document" className="w-full h-auto max-h-[400px] object-contain rounded" />
+                    ) : (
+                      <a href={selectedUser.kycDocumentUrl} target="_blank" className="text-blue-600 underline font-semibold block text-center py-8">Open Document in New Tab ↗</a>
+                    )}
+                  </div>
+                ) : (
+                  <div className="bg-red-50 text-red-600 p-4 rounded text-sm text-center font-bold">No Document Uploaded</div>
+                )}
+              </div>
+
+              {/* Bank */}
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 border-b pb-2">Bank Details</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div><span className="text-gray-500 block text-xs">Account Name</span><span className="font-semibold">{selectedUser.bankHolder || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">Bank Name</span><span className="font-semibold">{selectedUser.bankName || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">Account Number</span><span className="font-semibold font-mono">{selectedUser.bankAccount || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">IFSC Code</span><span className="font-semibold font-mono">{selectedUser.bankIfsc || 'N/A'}</span></div>
+                  <div><span className="text-gray-500 block text-xs">UPI ID</span><span className="font-semibold">{selectedUser.bankUpi || 'N/A'}</span></div>
+                </div>
+              </div>
+
+            </div>
+            
+            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-6 flex justify-end gap-3 z-10 rounded-b-2xl">
+              <button 
+                onClick={() => {
+                  handleAction(selectedUser, "reject");
+                  setSelectedUser(null);
+                }}
+                className="px-6 py-2.5 border border-red-200 text-red-600 hover:bg-red-50 font-bold rounded-xl text-sm transition-colors"
+              >
+                Reject Application
+              </button>
+              <button 
+                onClick={() => {
+                  handleAction(selectedUser, "approve");
+                  setSelectedUser(null);
+                }}
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-md transition-colors"
+              >
+                Approve Application
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
