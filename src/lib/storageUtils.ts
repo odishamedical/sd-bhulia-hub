@@ -9,7 +9,13 @@ export const uploadBase64ToStorage = async (base64Str: string | null, folder: st
   try {
     const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.jpg`;
     const storageRef = ref(storage, `${folder}/${fileName}`);
-    await uploadString(storageRef, base64Str, 'data_url');
+    
+    // Add timeout promise to prevent hanging
+    const uploadPromise = uploadString(storageRef, base64Str, 'data_url');
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Upload timeout")), 15000));
+    
+    await Promise.race([uploadPromise, timeoutPromise]);
+    
     return await getDownloadURL(storageRef);
   } catch (e) {
     console.error("Storage upload failed", e);

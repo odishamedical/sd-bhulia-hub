@@ -184,7 +184,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         updates.handloomExperience = handloomExperience;
       }
 
-      await updateDoc(doc(db, "users", auth.currentUser.uid), updates);
+      await setDoc(doc(db, "users", auth.currentUser.uid), updates, { merge: true });
       
       if (!isFinalStep) {
         setCurrentStep(prev => prev + 1);
@@ -209,10 +209,10 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
     try {
       await handleNextStep(); // Save final step data
 
-      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+      await setDoc(doc(db, "users", auth.currentUser.uid), {
         applicationStatus: "pending_approval",
         role: desiredRole
-      });
+      }, { merge: true });
 
       let generatedSlug = "303";
       try {
