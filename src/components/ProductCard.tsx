@@ -1,7 +1,9 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/types";
+import { useCart } from "@/context/CartContext";
 
 interface ProductCardProps {
   product: any;
@@ -9,6 +11,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, role }: ProductCardProps) {
+  const { addToCart } = useCart();
   const priceNum = typeof product.price === 'number' ? product.price : Number(String(product.price).replace(/[^0-9.]/g, '')) || 0;
   
   let finalPrice = priceNum;
@@ -41,12 +44,14 @@ export default function ProductCard({ product, role }: ProductCardProps) {
       
       {/* Aspect Ratio 9:16 Image Container */}
       <div className="relative w-full pt-[177.77%] bg-[#0A1021] overflow-hidden">
-        <Image
-          src={product.img || product.image || product.images?.[0] || "/bhulia-hero.png"}
-          alt={product.title}
-          fill
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+        <Link href={`/product/${product.id}`} className="absolute inset-0 z-0">
+          <Image
+            src={product.img || product.image || product.images?.[0] || "/bhulia-hero.png"}
+            alt={product.title}
+            fill
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        </Link>
         
         {/* Verification Badge */}
         {product.isGiVerified && (
@@ -71,7 +76,7 @@ export default function ProductCard({ product, role }: ProductCardProps) {
             <button 
               onClick={(e) => {
                 e.preventDefault();
-                window.dispatchEvent(new CustomEvent('sd_add_to_cart', { detail: product }));
+                addToCart(product);
               }}
               className="w-full py-2 bg-white text-gray-900 text-xs font-bold uppercase tracking-wider rounded shadow-lg hover:bg-gray-100 transition-colors"
             >
@@ -85,9 +90,11 @@ export default function ProductCard({ product, role }: ProductCardProps) {
       <div className="p-4 flex flex-col flex-1 justify-between bg-[#0B2B26]/30">
         <div>
           <div className="flex justify-between items-start gap-2 mb-1">
-            <h3 className="text-sm md:text-base font-bold text-gray-100 leading-tight line-clamp-2 font-serif group-hover:text-[#C5A059] transition-colors">
-              {product.title}
-            </h3>
+            <Link href={`/product/${product.id}`} className="hover:text-[#C5A059] transition-colors">
+              <h3 className="text-sm md:text-base font-bold text-gray-100 leading-tight line-clamp-2 font-serif transition-colors">
+                {product.title}
+              </h3>
+            </Link>
           </div>
           
           <div className="flex items-center gap-1.5 mb-3">
