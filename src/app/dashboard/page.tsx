@@ -865,7 +865,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [gallery1, setGallery1] = useState("");
   const [gallery2, setGallery2] = useState("");
   const [gallery3, setGallery3] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
+  const [googlePlaceId, setGooglePlaceId] = useState("");
   const [facebookUrl, setFacebookUrl] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
   const [currentProfileStep, setCurrentProfileStep] = useState(1);
@@ -930,7 +930,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
             setGallery1(data.gallery?.[0] || "");
             setGallery2(data.gallery?.[1] || "");
             setGallery3(data.gallery?.[2] || "");
-            setVideoUrl(data.videoUrl || "");
+            setGooglePlaceId(data.googlePlaceId || "");
             setFacebookUrl(data.facebookUrl || "");
             setInstagramUrl(data.instagramUrl || "");
           }
@@ -1040,7 +1040,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           scale,
           googlePin,
           gallery: [gallery1, gallery2, gallery3].filter(Boolean),
-          videoUrl,
+          googlePlaceId,
           facebookUrl,
           instagramUrl
         })
@@ -2262,8 +2262,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                     <input type="text" placeholder="https://maps.app.goo.gl/..." value={googlePin} onChange={e => setGooglePin(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">YouTube Video URL (Optional)</label>
-                    <input type="text" placeholder="https://youtube.com/watch?v=..." value={videoUrl} onChange={e => setVideoUrl(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Google Place ID (Optional)</label>
+                    <input type="text" placeholder="ChIJ..." value={googlePlaceId} onChange={e => setGooglePlaceId(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Facebook URL (Optional)</label>

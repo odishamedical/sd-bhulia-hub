@@ -48,17 +48,17 @@ export default function ImageUploader({
   const sizeGuidelines = {
     square: {
       label: "Portrait / Square Profile (1:1 Ratio)",
-      desc: "Recommended: 500 x 500 pixels. Max 5MB.",
+      desc: "Recommended: 500 x 500 pixels. Max 20MB.",
       class: "aspect-square max-w-[240px]",
     },
     portrait: {
       label: "Tall Portrait (9:16 Ratio)",
-      desc: "Recommended: 900 x 1600 pixels (for Product listings). Max 5MB.",
+      desc: "Recommended: 900 x 1600 pixels (for Product listings). Max 20MB.",
       class: "aspect-[9/16] max-w-[220px]",
     },
     landscape: {
       label: "Widescreen / Landscape (16:9 or 5:2 Ratio)",
-      desc: "Recommended: 1200 x 500 pixels (for Hero banners). Max 5MB.",
+      desc: "Recommended: 1200 x 500 pixels (for Hero banners). Max 20MB.",
       class: "aspect-[5/2] w-full",
     }
   }[aspectRatio];
@@ -129,8 +129,8 @@ export default function ImageUploader({
   };
 
   const loadFileAndProcess = (file: File) => {
-    if (file.size > 5 * 1024 * 1024) {
-      alert("File is too large. Please upload an image under 5MB.");
+    if (file.size > 20 * 1024 * 1024) {
+      alert("File is too large. Please upload an image under 20MB.");
       return;
     }
     
