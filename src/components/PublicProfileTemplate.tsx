@@ -117,8 +117,8 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
               </div>
             </div>
 
-            {/* Right: Details & Links */}
-            <div className="flex-1 flex flex-col justify-center">
+            {/* Center: Details */}
+            <div className="flex-1 flex flex-col justify-center border-b md:border-b-0 md:border-r border-[#C5A059]/20 pb-6 md:pb-0 md:pr-6">
               <h2 className="text-lg md:text-xl font-sans font-bold text-white mb-1">
                 {profile.listingType === "weaver" ? "Sambalpuri Master Weaver" : profile.listingType === "raw_material" ? "Sambalpuri Raw Material Supplier" : "Sambalpuri Handloom Store"}
               </h2>
@@ -128,21 +128,17 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
 
               {/* Action Buttons Row */}
               <div className="flex flex-wrap items-center gap-3 mt-2">
-                {profile.facebookUrl && (
-                  <a href={profile.facebookUrl} target="_blank" rel="noopener noreferrer" className="bg-[#C5A059] hover:bg-[#D4AF37] text-[#051815] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
-                    Fb Link
-                  </a>
-                )}
-                {profile.instagramUrl && (
-                  <a href={profile.instagramUrl} target="_blank" rel="noopener noreferrer" className="bg-[#C5A059] hover:bg-[#D4AF37] text-[#051815] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
-                    Insta Link
-                  </a>
-                )}
-                {profile.videoUrl && (
-                  <a href={profile.videoUrl} target="_blank" rel="noopener noreferrer" className="bg-[#C5A059] hover:bg-[#D4AF37] text-[#051815] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
-                    YouTube Link
-                  </a>
-                )}
+                <a href={profile.facebookUrl || "https://facebook.com/bhuliacom"} target="_blank" rel="noopener noreferrer" className="bg-[#C5A059] hover:bg-[#D4AF37] text-[#051815] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
+                  Fb Link
+                </a>
+                
+                <a href={profile.instagramUrl || "https://instagram.com/bhuliacom"} target="_blank" rel="noopener noreferrer" className="bg-[#C5A059] hover:bg-[#D4AF37] text-[#051815] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
+                  Insta Link
+                </a>
+                
+                <a href={profile.videoUrl || "https://youtube.com/@bhuliacom"} target="_blank" rel="noopener noreferrer" className="bg-[#C5A059] hover:bg-[#D4AF37] text-[#051815] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
+                  YouTube Link
+                </a>
                 
                 <a href={`tel:${profile.phone}`} className="bg-transparent border border-[#C5A059] hover:bg-[#C5A059]/10 text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow-sm">
                   Call
@@ -161,6 +157,16 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                 <span className="text-white/60 font-bold">Address:</span>
                 <span className="text-white/90 font-semibold">{profile.address || "Address not provided."}</span>
               </div>
+            </div>
+
+            {/* Right: Share Widget */}
+            <div className="md:w-1/4 lg:w-64 shrink-0 flex flex-col justify-center">
+              <ShareWidget 
+                title={profile.name} 
+                layout="vertical" 
+                className="!bg-transparent !border-0 !shadow-none !p-0" 
+                shareTextOverride="Promote original Sambalpuri Saree. Share this link to your network and support our weavers!"
+              />
             </div>
           </div>
 
@@ -265,8 +271,6 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                  : (profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms.")}
              </p>
           </div>
-
-          <ShareWidget title={profile.name} />
 
         {/* Product Grid Section */}
         <div className="space-y-6 pt-6 border-t border-[#C5A059]/20">
