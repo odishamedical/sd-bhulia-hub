@@ -3,9 +3,9 @@
 import { useState } from "react";
 import SaaSUpgraderModal from "@/components/SaaSUpgraderModal";
 
-export default function PricingTab({ isPublicPage = false }: { isPublicPage?: boolean }) {
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
-  const [role, setRole] = useState<"weaver" | "shop">("weaver");
+export default function PricingTab({ isPublicPage = false, userRole = "weaver" }: { isPublicPage?: boolean, userRole?: "weaver" | "shop" }) {
+  // We don't need billing cycle toggle anymore because we show both monthly and yearly cards!
+  const [role, setRole] = useState<"weaver" | "shop">(userRole);
   
   // Upgrader Modal State
   const [isUpgraderOpen, setIsUpgraderOpen] = useState(false);
@@ -15,6 +15,14 @@ export default function PricingTab({ isPublicPage = false }: { isPublicPage?: bo
     setSelectedPlanId(planId);
     setIsUpgraderOpen(true);
   };
+
+  const getProFeatures = () => [
+    { label: "0% Platform Commission", highlight: true },
+    { label: "Unlimited Product Uploads" },
+    { label: "Automated Shiprocket AWB", highlight: true },
+    { label: "Enable B2B Wholesale Pricing" },
+    { label: "Reseller Affiliate Network Access", highlight: true }
+  ];
 
   return (
     <div className={`relative overflow-hidden font-sans ${isPublicPage ? 'min-h-screen bg-[#051815] text-white py-20 px-4' : 'bg-[#051815] text-white rounded-3xl p-8 shadow-xl border border-[#C5A059]/20'}`}>
@@ -29,7 +37,7 @@ export default function PricingTab({ isPublicPage = false }: { isPublicPage?: bo
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-[#C5A059]/20 to-transparent blur-[120px] rounded-full pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-[600px] h-[400px] bg-gradient-to-t from-blue-900/20 to-transparent blur-[120px] rounded-full pointer-events-none"></div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10">
         
         {/* Header */}
         <div className="text-center mb-16 animate-in slide-in-from-bottom-8 duration-700">
@@ -46,43 +54,28 @@ export default function PricingTab({ isPublicPage = false }: { isPublicPage?: bo
           </p>
         </div>
 
-        {/* Toggles */}
-        <div className="flex flex-col items-center gap-8 mb-16 animate-in slide-in-from-bottom-10 duration-700 delay-150">
-          
-          {/* Role Toggle */}
-          <div className="bg-[#0A221E] p-1.5 rounded-2xl flex border border-[#C5A059]/20 shadow-xl">
-            <button 
-              onClick={() => setRole("weaver")}
-              className={`px-8 py-3 rounded-xl text-sm font-black tracking-widest uppercase transition-all duration-300 ${role === "weaver" ? "bg-gradient-to-r from-[#C5A059] to-yellow-600 text-black shadow-lg shadow-[#C5A059]/20" : "text-slate-400 hover:text-white"}`}
-            >
-              For Weavers
-            </button>
-            <button 
-              onClick={() => setRole("shop")}
-              className={`px-8 py-3 rounded-xl text-sm font-black tracking-widest uppercase transition-all duration-300 ${role === "shop" ? "bg-gradient-to-r from-[#C5A059] to-yellow-600 text-black shadow-lg shadow-[#C5A059]/20" : "text-slate-400 hover:text-white"}`}
-            >
-              For Shops
-            </button>
-          </div>
-
-          {/* Billing Cycle Toggle */}
-          <div className="flex items-center gap-4">
-            <span className={`text-sm font-bold ${billingCycle === "monthly" ? "text-white" : "text-slate-500"}`}>Monthly</span>
-            <button 
-              onClick={() => setBillingCycle(prev => prev === "monthly" ? "yearly" : "monthly")}
-              className="w-14 h-8 bg-[#0A221E] rounded-full p-1 relative border border-[#C5A059]/30 transition-colors"
-            >
-              <div className={`w-6 h-6 bg-[#C5A059] rounded-full transition-transform duration-300 shadow-md ${billingCycle === "yearly" ? "translate-x-6" : "translate-x-0"}`}></div>
-            </button>
-            <div className="flex items-center gap-2">
-              <span className={`text-sm font-bold ${billingCycle === "yearly" ? "text-white" : "text-slate-500"}`}>Yearly</span>
-              <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-[10px] font-black rounded-full uppercase tracking-wider">Save 16%</span>
+        {/* Role Toggle ONLY on Public Page */}
+        {isPublicPage && (
+          <div className="flex justify-center mb-16 animate-in slide-in-from-bottom-10 duration-700 delay-150">
+            <div className="bg-[#0A221E] p-1.5 rounded-2xl flex border border-[#C5A059]/20 shadow-xl">
+              <button 
+                onClick={() => setRole("weaver")}
+                className={`px-8 py-3 rounded-xl text-sm font-black tracking-widest uppercase transition-all duration-300 ${role === "weaver" ? "bg-gradient-to-r from-[#C5A059] to-yellow-600 text-black shadow-lg shadow-[#C5A059]/20" : "text-slate-400 hover:text-white"}`}
+              >
+                For Weavers
+              </button>
+              <button 
+                onClick={() => setRole("shop")}
+                className={`px-8 py-3 rounded-xl text-sm font-black tracking-widest uppercase transition-all duration-300 ${role === "shop" ? "bg-gradient-to-r from-[#C5A059] to-yellow-600 text-black shadow-lg shadow-[#C5A059]/20" : "text-slate-400 hover:text-white"}`}
+              >
+                For Shops
+              </button>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto animate-in slide-in-from-bottom-12 duration-700 delay-300">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto animate-in slide-in-from-bottom-12 duration-700 delay-300">
           
           {/* Free Tier */}
           <div className="bg-[#0A221E]/60 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 flex flex-col hover:border-slate-500 transition-colors">
@@ -112,59 +105,62 @@ export default function PricingTab({ isPublicPage = false }: { isPublicPage?: bo
               </li>
             </ul>
             {isPublicPage && (
-              <a href="/register-weaver" className="w-full block text-center py-4 rounded-xl border border-slate-600 text-slate-300 font-bold hover:bg-slate-800 transition-colors">
+              <a href={role === "weaver" ? "/register-weaver" : "/register-shop"} className="w-full block text-center py-4 rounded-xl border border-slate-600 text-slate-300 font-bold hover:bg-slate-800 transition-colors mt-auto">
                 Get Started for Free
               </a>
             )}
           </div>
 
-          {/* Pro Tier */}
-          <div className="bg-gradient-to-b from-[#132A25] to-[#0A221E] border border-[#C5A059] rounded-3xl p-8 flex flex-col relative shadow-[0_0_40px_rgba(197,160,89,0.15)] transform md:-translate-y-4">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-[#C5A059] to-yellow-500 text-black px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">
-              Most Popular
+          {/* Pro Monthly Tier */}
+          <div className="bg-[#0A221E]/60 backdrop-blur-xl border border-[#C5A059]/40 rounded-3xl p-8 flex flex-col relative hover:border-[#C5A059] transition-colors">
+            <div className="mb-8">
+              <h3 className="text-2xl font-black text-[#C5A059] mb-2">{role === "weaver" ? "Weaver Pro" : "Shop Pro"}</h3>
+              <p className="text-slate-300 text-sm">Monthly billing, cancel anytime.</p>
+            </div>
+            <div className="mb-8 flex items-end gap-1">
+              <span className="text-5xl font-black text-white">₹{role === "weaver" ? "999" : "1,099"}</span>
+              <span className="text-slate-400 font-medium pb-1">/mo</span>
+            </div>
+            <ul className="space-y-4 mb-8 flex-1">
+              {getProFeatures().map((f, i) => (
+                <li key={i} className={`flex items-center gap-3 text-sm ${f.highlight ? 'text-slate-200 font-medium' : 'text-slate-300'}`}>
+                  <span className="text-[#C5A059] font-bold">✓</span> <span className={f.highlight ? "text-white font-bold" : ""}>{f.label}</span>
+                </li>
+              ))}
+            </ul>
+            <button 
+              onClick={() => handleUpgrade(`${role}-monthly`)}
+              className="w-full py-4 rounded-xl border border-[#C5A059] text-[#C5A059] font-black hover:bg-[#C5A059] hover:text-black transition-all mt-auto"
+            >
+              Subscribe Monthly
+            </button>
+          </div>
+
+          {/* Pro Yearly Tier */}
+          <div className="bg-gradient-to-b from-[#132A25] to-[#0A221E] border-2 border-[#C5A059] rounded-3xl p-8 flex flex-col relative shadow-[0_0_40px_rgba(197,160,89,0.2)] transform md:-translate-y-4">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-[#C5A059] to-yellow-500 text-black px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest shadow-lg flex items-center gap-2">
+              Most Popular <span className="bg-black/20 px-2 py-0.5 rounded-full text-[10px]">SAVE 16%</span>
             </div>
             <div className="mb-8">
               <h3 className="text-2xl font-black text-[#C5A059] mb-2">{role === "weaver" ? "Weaver Pro" : "Shop Pro"}</h3>
-              <p className="text-slate-300 text-sm">Unlock wholesale and automated logistics.</p>
+              <p className="text-slate-300 text-sm">Yearly billing for maximum savings.</p>
             </div>
             <div className="mb-8 flex items-end gap-1">
-              {role === "weaver" ? (
-                <>
-                  <span className="text-5xl font-black text-white">₹{billingCycle === "monthly" ? "999" : "9,999"}</span>
-                  <span className="text-slate-400 font-medium pb-1">/{billingCycle === "monthly" ? "mo" : "yr"}</span>
-                </>
-              ) : (
-                <>
-                  <span className="text-5xl font-black text-white">₹{billingCycle === "monthly" ? "1,099" : "10,999"}</span>
-                  <span className="text-slate-400 font-medium pb-1">/{billingCycle === "monthly" ? "mo" : "yr"}</span>
-                </>
-              )}
+              <span className="text-5xl font-black text-white">₹{role === "weaver" ? "9,999" : "10,999"}</span>
+              <span className="text-slate-400 font-medium pb-1">/yr</span>
             </div>
             <ul className="space-y-4 mb-8 flex-1">
-              <li className="flex items-center gap-3 text-slate-200 text-sm font-medium">
-                <span className="text-[#C5A059] font-bold">✓</span> <strong className="text-white">0% Platform Commission</strong>
-              </li>
-              <li className="flex items-center gap-3 text-slate-200 text-sm">
-                <span className="text-[#C5A059] font-bold">✓</span> Unlimited Product Uploads
-              </li>
-              <li className="flex items-center gap-3 text-slate-200 text-sm">
-                <span className="text-[#C5A059] font-bold">✓</span> <strong className="text-white">Automated Shiprocket AWB</strong>
-              </li>
-              <li className="flex items-center gap-3 text-slate-200 text-sm">
-                <span className="text-[#C5A059] font-bold">✓</span> Enable B2B Wholesale Pricing
-              </li>
-              <li className="flex items-center gap-3 text-slate-200 text-sm">
-                <span className="text-[#C5A059] font-bold">✓</span> Reseller Affiliate Network Access
-              </li>
+              {getProFeatures().map((f, i) => (
+                <li key={i} className={`flex items-center gap-3 text-sm ${f.highlight ? 'text-slate-200 font-medium' : 'text-slate-300'}`}>
+                  <span className="text-[#C5A059] font-bold">✓</span> <span className={f.highlight ? "text-white font-bold" : ""}>{f.label}</span>
+                </li>
+              ))}
             </ul>
             <button 
-              onClick={() => {
-                const planStr = `${role}-${billingCycle}`; // e.g. weaver-monthly
-                handleUpgrade(planStr);
-              }}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-[#996515] to-[#C5A059] text-black font-black hover:brightness-110 transition-all shadow-[0_0_20px_rgba(197,160,89,0.4)]"
+              onClick={() => handleUpgrade(`${role}-yearly`)}
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-[#996515] to-[#C5A059] text-black font-black hover:brightness-110 transition-all shadow-[0_0_20px_rgba(197,160,89,0.4)] mt-auto"
             >
-              Upgrade to Pro
+              Subscribe Yearly
             </button>
           </div>
 

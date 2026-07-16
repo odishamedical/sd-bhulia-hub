@@ -1383,7 +1383,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
       {activeTab === "pricing" && (
         <div className="animate-in fade-in slide-in-from-bottom-4">
-          <PricingTab isPublicPage={false} />
+          <PricingTab isPublicPage={false} userRole={userData?.role === 'shop' ? 'shop' : 'weaver'} />
         </div>
       )}
 
