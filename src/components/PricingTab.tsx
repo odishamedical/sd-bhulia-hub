@@ -17,9 +17,9 @@ export default function PricingTab({ isPublicPage = false, userRole = "weaver" }
   };
 
   const getProFeatures = () => [
-    { label: "0% Platform Commission", highlight: true },
+    { label: "Priority Seller Commission Rate", highlight: true },
     { label: "Unlimited Product Uploads" },
-    { label: "Automated Shiprocket AWB", highlight: true },
+    { label: "Automated Shipping Gateway AWB", highlight: true },
     { label: "Enable B2B Wholesale Pricing" },
     { label: "Reseller Affiliate Network Access", highlight: true }
   ];
@@ -98,7 +98,7 @@ export default function PricingTab({ isPublicPage = false, userRole = "weaver" }
                 <span className="text-green-400">✓</span> Basic Analytics
               </li>
               <li className="flex items-center gap-3 text-slate-500 text-sm">
-                <span className="text-slate-600">✕</span> 10% Platform Commission
+                <span className="text-slate-600">✕</span> Standard Platform Commission
               </li>
               <li className="flex items-center gap-3 text-slate-500 text-sm">
                 <span className="text-slate-600">✕</span> Manual Shipping
@@ -171,7 +171,7 @@ export default function PricingTab({ isPublicPage = false, userRole = "weaver" }
           <h2 className="text-3xl font-serif font-black text-center text-white mb-12">Frequently Asked Questions</h2>
           <div className="space-y-6">
             {[
-              { q: "How does the Shiprocket integration work?", a: "With the Pro plan, you simply click 'Generate AWB' on your dashboard when an order comes in. Our system automatically talks to Shiprocket, creates a waybill, and provides you with the shipping label to print." },
+              { q: "How does the Shipping Gateway integration work?", a: "With the Pro plan, you simply click 'Generate AWB' on your dashboard when an order comes in. Our system automatically talks to the shipping gateway, creates a waybill, and provides you with the shipping label to print." },
               { q: "What is B2B Wholesale pricing?", a: "Pro members can set custom bulk pricing. Shops and Resellers across India can buy your inventory in bulk directly through the platform at your discounted rates." },
               { q: "Can I cancel anytime?", a: "Yes. Our monthly subscriptions can be cancelled at any time from your billing dashboard without any penalty." }
             ].map((faq, i) => (

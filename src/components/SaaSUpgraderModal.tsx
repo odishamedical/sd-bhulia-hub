@@ -90,7 +90,7 @@ export default function SaaSUpgraderModal({ isOpen, onClose, defaultPlan = "weav
         <div className="text-center mb-6">
           <div className="text-5xl mb-4">🚀</div>
           <h2 className="text-3xl font-black text-gray-900 tracking-tight">Upgrade to Pro</h2>
-          <p className="text-gray-500 mt-2 font-medium">Unlock unlimited products, wholesale (B2B) features, and priority Shiprocket logistics.</p>
+          <p className="text-gray-500 mt-2 font-medium">Unlock unlimited products, wholesale (B2B) features, and priority shipping gateway logistics.</p>
         </div>
 
         <div className="space-y-4 mb-8">
@@ -104,7 +104,7 @@ export default function SaaSUpgraderModal({ isOpen, onClose, defaultPlan = "weav
           </div>
           <div className="flex items-center gap-3">
             <span className="text-green-500 text-xl font-bold">✓</span>
-            <span className="text-gray-700 font-medium">Automated Shiprocket Waybills</span>
+            <span className="text-gray-700 font-medium">Automated Shipping Gateway Waybills</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-green-500 text-xl font-bold">✓</span>
