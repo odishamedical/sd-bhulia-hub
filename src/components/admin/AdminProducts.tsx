@@ -17,9 +17,10 @@ export default function AdminProducts() {
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
 
   const filteredProducts = products.filter(p => {
-    const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          (p.storeName && p.storeName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-                          p.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = !searchQuery || 
+                          String(p.title || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (p.storeName && String(p.storeName).toLowerCase().includes(searchQuery.toLowerCase())) ||
+                          String(p.id || "").toLowerCase().includes(searchQuery.toLowerCase());
     
     const productStatus = p.status || "pending";
     let matchesStatus = true;

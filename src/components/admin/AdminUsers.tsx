@@ -229,16 +229,16 @@ export default function UserManagementPage() {
     return users.filter(user => {
       // 1. Search Term
       const matchesSearch = !searchTerm || 
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        user.phone.includes(searchTerm) ||
-        user.id.toLowerCase().includes(searchTerm.toLowerCase());
+        String(user.name || "").toLowerCase().includes(searchTerm.toLowerCase()) || 
+        String(user.phone || "").includes(searchTerm) ||
+        String(user.id || "").toLowerCase().includes(searchTerm.toLowerCase());
 
       // 2. Role Filter
       const matchesRole = roleFilter === "all" || user.role === roleFilter;
 
       // 3. State & District
-      const matchesState = stateFilter === "all" || user.state.toLowerCase() === stateFilter.toLowerCase();
-      const matchesDistrict = districtFilter === "all" || user.district.toLowerCase() === districtFilter.toLowerCase();
+      const matchesState = stateFilter === "all" || String(user.state || "").toLowerCase() === stateFilter.toLowerCase();
+      const matchesDistrict = districtFilter === "all" || String(user.district || "").toLowerCase() === districtFilter.toLowerCase();
 
       // 4. Sub Status Filter (SaaS)
       const matchesSubStatus = subStatusFilter === "all" || (user.subStatus === subStatusFilter);
@@ -247,7 +247,7 @@ export default function UserManagementPage() {
       const matchesVolume = !minVolume || user.volume >= parseInt(minVolume);
 
       // 6. Product ID Purchase Filter
-      const matchesProduct = !productIdFilter || user.purchasedProductIds.includes(productIdFilter);
+      const matchesProduct = !productIdFilter || (user.purchasedProductIds || []).includes(productIdFilter);
       
       // 7. Verification Filter
       let matchesVerification = true;
