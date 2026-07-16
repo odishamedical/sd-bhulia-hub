@@ -198,6 +198,7 @@ export default function DashboardPage() {
       { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
       { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "1. Profile & Setup" },
       { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
+      { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
       
       { id: "products", label: "Add your Sambalpuri Products", icon: "📦", category: "2. Your Catalog" },
       { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "2. Your Catalog" },
@@ -222,6 +223,7 @@ export default function DashboardPage() {
       { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
       { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "1. Profile & Setup" },
       { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
+      { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
       
       { id: "products", label: "Add your Sambalpuri Products", icon: "📦", category: "2. Your Catalog" },
       { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "2. Your Catalog" },
