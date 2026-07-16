@@ -1354,10 +1354,10 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
               </p>
             </div>
             <button 
-              onClick={() => setIsUpgraderOpen(true)}
+              onClick={() => window.location.href = "/pricing"}
               className="relative z-10 shrink-0 bg-white text-blue-900 px-8 py-3 rounded-xl font-black shadow-lg hover:bg-gray-50 transition-colors transform hover:-translate-y-1"
             >
-              Upgrade Now (₹999)
+              View Pricing Plans
             </button>
           </div>
 
