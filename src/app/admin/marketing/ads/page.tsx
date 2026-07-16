@@ -12,8 +12,10 @@ export default function AdsPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [editingCampaignId, setEditingCampaignId] = useState<string | null>(null);
 
   // Form State
+
   const [title, setTitle] = useState("");
   const [type, setType] = useState<"image" | "adsense" | "youtube">("image");
   const [placement, setPlacement] = useState<AdCampaign["placement"]>("homepage_middle");
@@ -88,6 +90,25 @@ export default function AdsPage() {
     }
   };
 
+  const handleEdit = (campaign: AdCampaign) => {
+    setEditingCampaignId(campaign.id || null);
+    setTitle(campaign.title);
+    setType(campaign.type);
+    setPlacement(campaign.placement);
+    setTargetAudience(campaign.targetAudience);
+    setTargetSpecificIdsStr(campaign.targetSpecificIds.join(", "));
+    setTargetCategory(campaign.targetCategory || "all");
+    setTargetMaterial(campaign.targetMaterial || "all");
+    setTargetDesign(campaign.targetDesign || "all");
+    setLinkUrl(campaign.linkUrl || "");
+    setHtmlCode(campaign.type === "adsense" ? campaign.content : "");
+    setImageUrl(campaign.type === "image" ? campaign.content : "");
+    setYoutubeUrl(campaign.type === "youtube" ? campaign.content : "");
+    setLayoutSize(campaign.layoutSize || "full");
+    setImpressionLimitStr(campaign.impressionLimit ? campaign.impressionLimit.toString() : "");
+    setIsModalOpen(true);
+  };
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUploading(true);
@@ -118,43 +139,62 @@ export default function AdsPage() {
         }
       }
 
-      const newId = doc(collection(db, "ad_campaigns")).id;
-      
       const idsArray = targetSpecificIdsStr.split(",").map(id => id.trim()).filter(id => id);
 
-      const campaign: AdCampaign = {
-        title,
-        type,
-        content: contentValue,
-        linkUrl: type === "image" ? linkUrl : "",
-        placement,
-        layoutSize,
-        targetAudience,
-        targetSpecificIds: idsArray.length > 0 ? idsArray : ["all"],
-        targetCategory: targetAudience === "products" ? targetCategory : "all",
-        targetMaterial: targetAudience === "products" ? targetMaterial : "all",
-        targetDesign: targetAudience === "products" ? targetDesign : "all",
-        status: "active",
-        impressions: 0,
-        impressionLimit: impressionLimitStr ? parseInt(impressionLimitStr) : undefined,
-        clicks: 0,
-        createdAt: serverTimestamp(),
-      };
+      if (editingCampaignId) {
+        const campaignUpdate = {
+          title,
+          type,
+          content: contentValue,
+          linkUrl: type === "image" ? linkUrl : "",
+          placement,
+          layoutSize,
+          targetAudience,
+          targetSpecificIds: idsArray.length > 0 ? idsArray : ["all"],
+          targetCategory: targetAudience === "products" ? targetCategory : "all",
+          targetMaterial: targetAudience === "products" ? targetMaterial : "all",
+          targetDesign: targetAudience === "products" ? targetDesign : "all",
+          impressionLimit: impressionLimitStr ? parseInt(impressionLimitStr) : null,
+        };
+        await updateDoc(doc(db, "ad_campaigns", editingCampaignId), campaignUpdate);
+        setCampaigns(prev => prev.map(c => c.id === editingCampaignId ? { ...c, ...campaignUpdate } : c));
+      } else {
+        const newId = doc(collection(db, "ad_campaigns")).id;
+        const campaign: AdCampaign = {
+          title,
+          type,
+          content: contentValue,
+          linkUrl: type === "image" ? linkUrl : "",
+          placement,
+          layoutSize,
+          targetAudience,
+          targetSpecificIds: idsArray.length > 0 ? idsArray : ["all"],
+          targetCategory: targetAudience === "products" ? targetCategory : "all",
+          targetMaterial: targetAudience === "products" ? targetMaterial : "all",
+          targetDesign: targetAudience === "products" ? targetDesign : "all",
+          status: "active",
+          impressions: 0,
+          impressionLimit: impressionLimitStr ? parseInt(impressionLimitStr) : undefined,
+          clicks: 0,
+          createdAt: serverTimestamp(),
+        };
 
-      await setDoc(doc(db, "ad_campaigns", newId), campaign);
+        await setDoc(doc(db, "ad_campaigns", newId), campaign);
+        setCampaigns([{ id: newId, ...campaign }, ...campaigns]);
+      }
       
-      setCampaigns([{ id: newId, ...campaign }, ...campaigns]);
       setIsModalOpen(false);
       resetForm();
     } catch (error) {
       console.error(error);
-      alert("Error creating campaign.");
+      alert(editingCampaignId ? "Error updating campaign." : "Error creating campaign.");
     }
     
     setIsUploading(false);
   };
 
   const resetForm = () => {
+    setEditingCampaignId(null);
     setTitle("");
     setType("image");
     setPlacement("homepage_middle");
@@ -240,6 +280,7 @@ export default function AdsPage() {
                         <span className="text-gray-400 text-xs ml-1">({ctr}%)</span>
                       </td>
                       <td className="py-4 px-4 text-right">
+                        <button onClick={() => handleEdit(banner)} className="text-blue-500 hover:text-blue-700 font-bold text-xs p-2 mr-2">Edit</button>
                         <button onClick={() => handleDelete(banner.id as string)} className="text-red-500 hover:text-red-700 font-bold text-xs p-2">Delete</button>
                       </td>
                     </tr>
@@ -256,7 +297,7 @@ export default function AdsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white/90 backdrop-blur">
-              <h2 className="text-xl font-bold text-gray-900">Create New Campaign</h2>
+              <h2 className="text-xl font-bold text-gray-900">{editingCampaignId ? "Edit Campaign" : "Create New Campaign"}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">✕</button>
             </div>
             
@@ -423,7 +464,7 @@ export default function AdsPage() {
               <div className="pt-4 flex justify-end gap-3 border-t border-gray-100">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 text-gray-600 font-bold text-sm hover:bg-gray-100 rounded-xl">Cancel</button>
                 <button type="submit" disabled={isUploading} className="px-5 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 disabled:opacity-50">
-                  {isUploading ? "Creating..." : "Launch Campaign"}
+                  {isUploading ? (editingCampaignId ? "Updating..." : "Creating...") : (editingCampaignId ? "Update Campaign" : "Launch Campaign")}
                 </button>
               </div>
 
