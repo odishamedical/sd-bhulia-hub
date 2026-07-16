@@ -24,6 +24,7 @@ import DashboardLayout, { NavItem } from "@/components/DashboardLayout";
 import ImageUploader from "@/components/ImageUploader";
 import SellerSetupHub from "@/components/SellerSetupHub";
 import SaaSUpgraderModal from "@/components/SaaSUpgraderModal";
+import PricingTab from "@/components/PricingTab";
 
 import { uploadBase64ToStorage } from "@/lib/storageUtils";
 
@@ -1377,6 +1378,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
             <div className="text-3xl font-black text-gray-900">{sellerOrders.length}</div>
           </div>
         </div>
+        </div>
+      )}
+
+      {activeTab === "pricing" && (
+        <div className="animate-in fade-in slide-in-from-bottom-4">
+          <PricingTab isPublicPage={false} />
         </div>
       )}
 
