@@ -10,6 +10,8 @@ import AdminUsers from "@/components/admin/AdminUsers";
 import AdminKyc from "@/components/admin/AdminKyc";
 import AdminAds from "@/components/admin/AdminAds";
 import AdminHelp from "@/components/admin/AdminHelp";
+import AdminProducts from "@/components/admin/AdminProducts";
+import AdminOrders from "@/components/admin/AdminOrders";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -124,6 +126,10 @@ export default function AdminSPA() {
         return <AdminUsers />;
       case "kyc":
         return <AdminKyc />;
+      case "products":
+        return <AdminProducts />;
+      case "orders":
+        return <AdminOrders />;
       case "ads":
         return <AdminAds />;
       case "help":
