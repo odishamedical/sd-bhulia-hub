@@ -38,7 +38,6 @@ export default function DashboardPage() {
   const [storeSlug, setStoreSlug] = useState<string>("demo");
   const [globalNotifications, setGlobalNotifications] = useState<any[]>([]);
   const [canSellWholesale, setCanSellWholesale] = useState(false);
-  const [isUpgraderOpen, setIsUpgraderOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -897,6 +896,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [currentProfileStep, setCurrentProfileStep] = useState(1);
   const [storeStatus, setStoreStatus] = useState("");
   const [canSellWholesale, setCanSellWholesale] = useState(false);
+  const [isUpgraderOpen, setIsUpgraderOpen] = useState(false);
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -1331,7 +1331,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      <SaaSUpgraderModal isOpen={isUpgraderOpen} onClose={() => setIsUpgraderOpen(false)} />
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">{roleTitle}</h1>
@@ -1340,7 +1341,27 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
       </header>
 
       {activeTab === "home" && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in">
+        <div className="space-y-6 animate-in fade-in">
+          {/* UPGRADE BANNER */}
+          <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-3xl p-8 shadow-xl text-white flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
+              <div className="w-48 h-48 bg-white rounded-full"></div>
+            </div>
+            <div className="relative z-10">
+              <h2 className="text-2xl font-black text-white mb-2">🚀 Upgrade to Pro Seller</h2>
+              <p className="text-blue-200 font-medium max-w-xl text-sm leading-relaxed">
+                Unlock automated Shiprocket logistics, B2B wholesale selling, and unlimited product uploads. Supercharge your business today!
+              </p>
+            </div>
+            <button 
+              onClick={() => setIsUpgraderOpen(true)}
+              className="relative z-10 shrink-0 bg-white text-blue-900 px-8 py-3 rounded-xl font-black shadow-lg hover:bg-gray-50 transition-colors transform hover:-translate-y-1"
+            >
+              Upgrade Now (₹999)
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Inventory</h3>
             <div className="text-3xl font-black text-gray-900">{sellerProducts.length}</div>
@@ -1353,6 +1374,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Orders</h3>
             <div className="text-3xl font-black text-gray-900">{sellerOrders.length}</div>
           </div>
+        </div>
         </div>
       )}
 
