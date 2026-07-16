@@ -12,6 +12,7 @@ import AdminAds from "@/components/admin/AdminAds";
 import AdminHelp from "@/components/admin/AdminHelp";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminOrders from "@/components/admin/AdminOrders";
+import AdminSettings from "@/components/admin/AdminSettings";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -84,6 +85,7 @@ const SIDEBAR_CATEGORIES = [
     icon: "⚙️",
     subLinks: [
       { name: "Visual Page Builder", id: "cms" },
+      { name: "Platform Settings", id: "settings" },
       { name: "Global Audit Log", id: "audit" },
       { name: "Staff Delegation", id: "staff" }
     ]
@@ -134,6 +136,10 @@ export default function AdminSPA() {
         return <AdminAds />;
       case "help":
         return <AdminHelp />;
+      case "subscriptions":
+        return <div className="p-8 text-gray-500">SaaS Subscriptions module coming soon.</div>;
+      case "settings":
+        return <AdminSettings />;
       default:
         return (
           <div className="flex items-center justify-center h-[60vh]">

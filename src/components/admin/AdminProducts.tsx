@@ -366,6 +366,16 @@ export default function AdminProducts() {
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, stockQuantity: parseInt(e.target.value) || 0})}
                       />
                     </div>
+                    <div>
+                      <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Platform Commission (%)</label>
+                      <input 
+                        type="number"
+                        placeholder="Default"
+                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        value={selectedProductForDetails.platformCommissionRate ?? ""}
+                        onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, platformCommissionRate: e.target.value === "" ? null : parseFloat(e.target.value)})}
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Stock Status</label>
@@ -505,6 +515,7 @@ export default function AdminProducts() {
                       time: selectedProductForDetails.time,
                       yarnType: selectedProductForDetails.yarnType,
                       cluster: selectedProductForDetails.cluster,
+                      platformCommissionRate: selectedProductForDetails.platformCommissionRate,
                       village: selectedProductForDetails.village,
                       description: selectedProductForDetails.description
                     });

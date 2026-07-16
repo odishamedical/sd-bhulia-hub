@@ -33,6 +33,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Invalid payment signature" }, { status: 400 });
     }
 
+    // --- TIER 1: FETCH GLOBAL COMMISSION SETTING ---
+    let globalCommissionRate = 5; // Default fallback
+    try {
+      const settingsSnap = await getDoc(doc(db, "settings", "platform"));
+      if (settingsSnap.exists() && settingsSnap.data().globalCommissionRate !== undefined) {
+        globalCommissionRate = settingsSnap.data().globalCommissionRate;
+      }
+    } catch (err) {
+      console.error("Failed to load global commission rate:", err);
+    }
+
     // --- SECURE BACKEND CART SPLITTING & INVENTORY DEDUCTION ---
     const groupedBySeller: Record<string, typeof cart> = {};
     cart.forEach((item: any) => {
@@ -45,22 +56,45 @@ export async function POST(request: Request) {
     
     for (const sellerId of Object.keys(groupedBySeller)) {
       const sellerItems = groupedBySeller[sellerId];
+      // --- TIER 2: FETCH USER COMMISSION SETTING ---
+      let sellerCommissionRate: number | null = null;
+      if (sellerId !== "bhulia-hub") {
+        try {
+          const sellerSnap = await getDoc(doc(db, "users", sellerId));
+          if (sellerSnap.exists() && sellerSnap.data().commissionRate !== undefined) {
+             sellerCommissionRate = sellerSnap.data().commissionRate;
+          }
+        } catch(err) {
+          console.error("Failed to load seller commission rate:", err);
+        }
+      }
       
       let subTotal = 0;
       let shippingTotal = 0;
       let totalCommission = 0;
+      let platformShare = 0;
 
       sellerItems.forEach((item: any) => {
         const priceNum = parseInt(item.price.replace(/[^0-9]/g, ""));
-        subTotal += priceNum * item.cartQuantity;
+        const itemSubTotal = priceNum * item.cartQuantity;
+        subTotal += itemSubTotal;
         shippingTotal += (item.shippingCharge || 0);
         
+        // --- TIER 3: PRODUCT OVERRIDE CASCADE ---
+        let effectiveRate = globalCommissionRate;
+        if (item.platformCommissionRate !== undefined && item.platformCommissionRate !== null) {
+           effectiveRate = item.platformCommissionRate; // Product level overrides all
+        } else if (sellerCommissionRate !== null) {
+           effectiveRate = sellerCommissionRate; // User level overrides global
+        }
+        
+        platformShare += itemSubTotal * (effectiveRate / 100);
+        
         if (referralId && item.allowResellerMargin && item.resellerMarginPercentage) {
-           totalCommission += (priceNum * item.cartQuantity) * (item.resellerMarginPercentage / 100);
+           totalCommission += itemSubTotal * (item.resellerMarginPercentage / 100);
         }
       });
 
-      const platformShare = subTotal * 0.05; // 5% platform fee
       const vendorPayout = subTotal - totalCommission - platformShare;
 
       const subOrder = {
