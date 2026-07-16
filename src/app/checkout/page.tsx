@@ -121,7 +121,7 @@ export default function CheckoutPage() {
     setValidatingCoupon(false);
   };
 
-  const handleSimulatePayment = async (e: React.FormEvent) => {
+  const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cart.length === 0) return alert("Your cart is empty!");
     
@@ -139,13 +139,6 @@ export default function CheckoutPage() {
       const data = await res.json();
       
       if (!data.success) throw new Error(data.error);
-
-      // If missing keys, backend falls back to Mock Mode automatically
-      if (data.isMockMode) {
-         console.log("Running in Mock Mode");
-         await verifyPaymentOnBackend(data.orderId, "mock_payment", "mock_signature", true);
-         return;
-      }
 
       // 2. Open Razorpay Modal
       const options = {
@@ -282,7 +275,7 @@ export default function CheckoutPage() {
           {/* Checkout Form */}
         <div className="lg:col-span-7 bg-[#0B2B26] border border-[#C5A059]/30 rounded-3xl p-6 sm:p-10 shadow-2xl">
           <h2 className="text-2xl font-serif font-black text-[#C5A059] mb-6">Shipping Details</h2>
-          <form id="checkout-form" onSubmit={handleSimulatePayment} className="space-y-6">
+          <form id="checkout-form" onSubmit={handlePayment} className="space-y-6">
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
@@ -451,7 +444,7 @@ export default function CheckoutPage() {
                   Processing Payment...
                 </>
               ) : (
-                "Simulate Payment (Sandbox)"
+                "Pay Securely with Razorpay"
               )}
             </button>
             <p className="text-center text-[9px] text-gray-500 mt-4 uppercase tracking-widest">

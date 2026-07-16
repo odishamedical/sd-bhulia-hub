@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-export default function SaaSUpgraderModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
+export default function SaaSUpgraderModal({ isOpen, onClose, defaultPlan = "weaver-monthly" }: { isOpen: boolean, onClose: () => void, defaultPlan?: string }) {
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
@@ -24,7 +24,7 @@ export default function SaaSUpgraderModal({ isOpen, onClose }: { isOpen: boolean
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          planId: "plan_MonthlyPro", // You will replace this with your actual Razorpay Plan ID
+          planId: defaultPlan,
           customerId: auth.currentUser.uid,
         })
       });
@@ -32,18 +32,6 @@ export default function SaaSUpgraderModal({ isOpen, onClose }: { isOpen: boolean
 
       if (!data.success) {
         throw new Error(data.error || "Failed to initialize checkout");
-      }
-
-      // If Mock Mode
-      if (data.isMockMode) {
-        await updateDoc(doc(db, "users", auth.currentUser.uid), {
-          subscriptionStatus: "active",
-          subscriptionId: data.subscriptionId,
-        });
-        alert("Mock Upgrade Successful! You are now a Pro member.");
-        onClose();
-        window.location.reload();
-        return;
       }
 
       // 2. Load Razorpay Script if not loaded
@@ -102,7 +90,7 @@ export default function SaaSUpgraderModal({ isOpen, onClose }: { isOpen: boolean
         <div className="text-center mb-6">
           <div className="text-5xl mb-4">🚀</div>
           <h2 className="text-3xl font-black text-gray-900 tracking-tight">Upgrade to Pro</h2>
-          <p className="text-gray-500 mt-2 font-medium">Unlock unlimited products, wholesale (B2B) features, and priority Shiprocket logistics for just ₹999/month.</p>
+          <p className="text-gray-500 mt-2 font-medium">Unlock unlimited products, wholesale (B2B) features, and priority Shiprocket logistics.</p>
         </div>
 
         <div className="space-y-4 mb-8">
@@ -129,9 +117,9 @@ export default function SaaSUpgraderModal({ isOpen, onClose }: { isOpen: boolean
           disabled={loading}
           className="w-full py-4 bg-gradient-to-r from-[#0070F3] to-blue-600 text-white font-black text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
         >
-          {loading ? "Processing..." : "Subscribe for ₹999 / mo"}
+          {loading ? "Processing..." : `Subscribe to ${defaultPlan.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')}`}
         </button>
-        <p className="text-center text-xs text-gray-400 mt-4 font-medium">Securely powered by Razorpay. Auto-deducted monthly. Cancel anytime.</p>
+        <p className="text-center text-xs text-gray-400 mt-4 font-medium">Securely powered by Razorpay. Cancel anytime.</p>
       </div>
     </div>
   );

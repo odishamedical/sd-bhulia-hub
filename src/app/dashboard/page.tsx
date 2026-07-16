@@ -1752,26 +1752,54 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                           onClick={async () => {
                             if (!confirm("Confirm dispatch? This will check Admin Routing rules and generate an AWB with the assigned partner.")) return;
                             try {
-                              // 1. Fetch Logistics Settings
-                              const logSettingsSnap = await getDoc(doc(db, "admin_settings", "logistics"));
-                              let assignedPartner = "shiprocket"; // Default
-                              if (logSettingsSnap.exists()) {
-                                const rules = logSettingsSnap.data().routingRules || [];
-                                const match = rules.find((r: any) => r.storeId === (order.sellerId || "default"));
-                                if (match) assignedPartner = match.provider;
-                              }
-
-                              const mockAwb = `TRACK-${assignedPartner.toUpperCase()}-${Math.floor(Math.random() * 1000000)}`;
+                              const res = await fetch("/api/shipping/create-order", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                  orderDetails: {
+                                    order_id: order.id,
+                                    order_date: new Date().toISOString(),
+                                    pickup_location: "Primary",
+                                    billing_customer_name: order.customerInfo?.fullName || "Customer",
+                                    billing_last_name: "",
+                                    billing_address: order.customerInfo?.streetAddress || "Address",
+                                    billing_address_2: order.customerInfo?.cityTownVillage || "",
+                                    billing_city: order.customerInfo?.cityTownVillage || "City",
+                                    billing_pincode: order.customerInfo?.pincode || "751001",
+                                    billing_state: order.customerInfo?.state || "Odisha",
+                                    billing_country: "India",
+                                    billing_email: order.customerInfo?.email || "dummy@example.com",
+                                    billing_phone: order.customerInfo?.phone || "0000000000",
+                                    shipping_is_billing: true,
+                                    order_items: order.items?.map((i: any) => ({
+                                      name: i.name || "Item",
+                                      sku: i.id || "SKU",
+                                      units: i.cartQuantity || 1,
+                                      selling_price: parseInt((i.price || "0").replace(/[^0-9]/g, "")),
+                                    })) || [],
+                                    payment_method: "Prepaid",
+                                    sub_total: order.subTotal || 0,
+                                    length: 10,
+                                    breadth: 10,
+                                    height: 10,
+                                    weight: 0.5,
+                                  }
+                                })
+                              });
+                              
+                              const data = await res.json();
+                              if (!data.success) throw new Error(data.error);
 
                               await updateDoc(doc(db, "orders", order.id), {
-                                logisticsStatus: "Dispatched via Hub",
-                                assignedLogisticsPartner: assignedPartner,
-                                trackingNumber: mockAwb,
+                                logisticsStatus: "Dispatched via Shiprocket",
+                                assignedLogisticsPartner: "Shiprocket",
+                                trackingNumber: data.awbCode || "PENDING_AWB",
+                                shipmentId: data.shipmentId,
                                 awbGenerated: true
                               });
-                              alert(`AWB Generated Successfully! Partner: ${assignedPartner.toUpperCase()}. Tracking ID: ${mockAwb}`);
-                            } catch (e) {
-                              alert("Failed to generate AWB.");
+                              alert(`AWB Generated Successfully! Tracking ID: ${data.awbCode || "Pending"}`);
+                            } catch (e: any) {
+                              alert("Failed to generate AWB: " + e.message);
                             }
                           }}
                           className="px-4 py-2 bg-green-50 text-green-700 hover:bg-green-100 transition-colors rounded-lg text-xs font-bold border border-green-200"
@@ -1779,7 +1807,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                           Generate AWB
                         </button>
                       )}
-                      {(order.logisticsStatus === "Dispatched via Hub") && (
+                      {(order.logisticsStatus === "Dispatched via Shiprocket" || order.logisticsStatus === "Dispatched via Hub") && (
                         <div className="flex flex-col">
                           <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{order.assignedLogisticsPartner || 'Shiprocket'}</span>
                           <span className="text-xs font-mono text-gray-900 font-bold">{order.trackingNumber || 'AWB-PENDING'}</span>

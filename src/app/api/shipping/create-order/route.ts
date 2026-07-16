@@ -10,13 +10,11 @@ export async function POST(request: Request) {
     const password = process.env.SHIPROCKET_PASSWORD;
 
     if (!email || !password) {
-      console.warn("Missing Shiprocket Keys. Returning Mock AWB.");
-      return NextResponse.json({
-        success: true,
-        isMockMode: true,
-        awbCode: "MOCK_AWB_" + Math.random().toString(36).substring(7).toUpperCase(),
-        shipmentId: "MOCK_SHIPMENT_" + Date.now(),
-      });
+      console.error("Missing Shiprocket Keys.");
+      return NextResponse.json(
+        { success: false, error: "Shiprocket credentials missing. Contact Administrator." },
+        { status: 500 }
+      );
     }
 
     // 1. Authenticate with Shiprocket

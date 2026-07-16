@@ -18,21 +18,19 @@ export async function POST(request: Request) {
       referralId
     } = body;
 
-    // Verify Signature if not in mock mode
-    if (!isMockMode) {
-      if (!process.env.RAZORPAY_KEY_SECRET) {
-        throw new Error("Missing Razorpay Secret Key for verification.");
-      }
-      
-      const text = `${razorpay_order_id}|${razorpay_payment_id}`;
-      const generated_signature = crypto
-        .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-        .update(text)
-        .digest('hex');
+    // Verify Signature
+    if (!process.env.RAZORPAY_KEY_SECRET) {
+      throw new Error("Missing Razorpay Secret Key for verification.");
+    }
+    
+    const text = `${razorpay_order_id}|${razorpay_payment_id}`;
+    const generated_signature = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+      .update(text)
+      .digest('hex');
 
-      if (generated_signature !== razorpay_signature) {
-        return NextResponse.json({ success: false, error: "Invalid payment signature" }, { status: 400 });
-      }
+    if (generated_signature !== razorpay_signature) {
+      return NextResponse.json({ success: false, error: "Invalid payment signature" }, { status: 400 });
     }
 
     // --- SECURE BACKEND CART SPLITTING & INVENTORY DEDUCTION ---
@@ -78,7 +76,7 @@ export async function POST(request: Request) {
         platformShare: platformShare,
         vendorPayout: vendorPayout,
         status: "processing", // pending_dispatch
-        paymentStatus: isMockMode ? "paid_mock" : "paid_escrow",
+        paymentStatus: "paid_escrow",
         paymentGatewayId: razorpay_payment_id || null,
         razorpayOrderId: razorpay_order_id || null,
         referralId: referralId,
