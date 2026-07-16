@@ -179,7 +179,7 @@ export default function AdminDashboardPage() {
 
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-          <PremiumMetricCard title="Total Catalog Value" value={<>₹{totalCatalogValue.toLocaleString()}</>} index={0} />
+          <PremiumMetricCard title="Total Catalog Value" value={<>{productsLoading ? "..." : `₹${totalCatalogValue.toLocaleString()}`}</>} index={0} />
           <PremiumMetricCard title="Live Products" value={<>{productsLoading ? "..." : products.length}</>} index={1} />
           <PremiumMetricCard title="Verified Weavers" value={<>{weaversLoading ? "..." : weavers.length}</>} index={2} />
           <PremiumMetricCard title="Retail Stores" value={<>{storesLoading ? "..." : stores.length}</>} index={3} />
