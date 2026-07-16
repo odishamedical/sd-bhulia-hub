@@ -1201,18 +1201,30 @@ export default function UserManagementPage() {
                 </div>
                 <div className="mt-6 border-t border-gray-100 pt-4">
                   <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-3">KYC & Verification</h4>
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-gray-700">Aadhaar Card</span>
-                      <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">Pending</span>
+                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 space-y-4">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-500 block text-[10px] uppercase font-bold tracking-widest">Document Type</span>
+                        <span className="font-semibold text-gray-900">{selectedUserForDetails.kycType || 'N/A'}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 block text-[10px] uppercase font-bold tracking-widest">Document ID</span>
+                        <span className="font-semibold text-gray-900">{selectedUserForDetails.kycId || 'N/A'}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-gray-700">GSTIN</span>
-                      <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded">Verified</span>
-                    </div>
-                    <button onClick={() => {
-                      alert('KYC Document Review module is opening... (Requires backend verification pipeline).');
-                    }} className="w-full mt-3 bg-blue-50 text-blue-600 font-bold text-xs py-2 rounded-lg hover:bg-blue-100 transition-colors">Review Documents</button>
+                    
+                    {selectedUserForDetails.kycDocumentUrl ? (
+                      <div className="border rounded-lg overflow-hidden bg-white p-2">
+                        {selectedUserForDetails.kycDocumentUrl.startsWith('data:image') || selectedUserForDetails.kycDocumentUrl.includes('firebasestorage') ? (
+                          <img src={selectedUserForDetails.kycDocumentUrl} alt="KYC Document" className="w-full h-auto max-h-[250px] object-contain rounded" />
+                        ) : (
+                          <a href={selectedUserForDetails.kycDocumentUrl} target="_blank" className="text-blue-600 underline font-semibold block text-center py-4">Open Document ↗</a>
+                        )}
+                        <a href={selectedUserForDetails.kycDocumentUrl} target="_blank" className="block text-center text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-2 hover:text-blue-500">View Full Size</a>
+                      </div>
+                    ) : (
+                      <div className="bg-red-50 text-red-600 p-3 rounded text-xs text-center font-bold">No Document Uploaded</div>
+                    )}
                   </div>
                 </div>
               </div>
