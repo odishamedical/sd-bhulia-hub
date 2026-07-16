@@ -377,7 +377,6 @@ export default function AdminProducts() {
                         <option value="false">Out of Stock</option>
                       </select>
                     </div>
-                  </div>
                 </div>
               </div>
 
