@@ -263,6 +263,9 @@ export default function UserManagementPage() {
     });
   }, [users, searchTerm, roleFilter, stateFilter, districtFilter, subStatusFilter, minVolume, productIdFilter, verificationFilter]);
 
+  const allStates = Array.from(new Set(users.map(u => u.state))).sort();
+  const allDistricts = Array.from(new Set(users.map(u => u.district))).sort();
+
   const toggleSelectAll = () => {
     if (selectedUserIds.length === filteredUsers.length) {
       setSelectedUserIds([]);
