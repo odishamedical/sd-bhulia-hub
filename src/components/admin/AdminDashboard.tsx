@@ -18,6 +18,8 @@ export default function AdminDashboardPage() {
   const { resellers: franchises, loading: franchisesLoading } = useResellers();
   const { orders } = useOrders(); // Removed ordersLoading since it's unused
 
+  const isLoading = productsLoading || weaversLoading || storesLoading || franchisesLoading;
+
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editedFields, setEditedFields] = useState<any>({});
@@ -204,33 +206,43 @@ export default function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody className="text-sm divide-y divide-gray-50">
-                {pendingList.map(item => (
-                  <tr key={item.id} className="group hover:bg-gray-50 transition-colors">
-                    <td className="py-4 px-4">
-                      <div className="font-bold text-gray-900">{item.title}</div>
-                      <div className="text-xs text-gray-500 mt-0.5">ID: {item.id}</div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className="px-3 py-1 bg-gray-100 border border-gray-200 text-gray-700 rounded-full text-[10px] font-bold uppercase tracking-wider">{item.type}</span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className="text-orange-500 font-bold text-xs flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
-                        Pending Review
-                      </span>
-                    </td>
-                    <td className="py-4 px-4 text-right">
-                      <button onClick={() => handleInspect(item)} className="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-black hover:shadow-lg hover:shadow-gray-900/20 transition-all">Review & Approve</button>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={4} className="py-12">
+                      <div className="flex flex-col items-center justify-center space-y-4">
+                        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                        <p className="text-gray-500 font-bold text-sm">Syncing with Ecosystem Database...</p>
+                      </div>
                     </td>
                   </tr>
-                ))}
-                {pendingList.length === 0 && (
+                ) : pendingList.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="py-16 text-center text-gray-500 font-medium">
                       <div className="text-4xl mb-3">✅</div>
                       All caught up! No pending items in the queue.
                     </td>
                   </tr>
+                ) : (
+                  pendingList.map(item => (
+                    <tr key={item.id} className="group hover:bg-gray-50 transition-colors">
+                      <td className="py-4 px-4">
+                        <div className="font-bold text-gray-900">{item.title}</div>
+                        <div className="text-xs text-gray-500 mt-0.5">ID: {item.id}</div>
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className="px-3 py-1 bg-gray-100 border border-gray-200 text-gray-700 rounded-full text-[10px] font-bold uppercase tracking-wider">{item.type}</span>
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className="text-orange-500 font-bold text-xs flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+                          Pending Review
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-right">
+                        <button onClick={() => handleInspect(item)} className="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-black hover:shadow-lg hover:shadow-gray-900/20 transition-all">Review & Approve</button>
+                      </td>
+                    </tr>
+                  ))
                 )}
               </tbody>
             </table>
