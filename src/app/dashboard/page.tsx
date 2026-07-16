@@ -2047,8 +2047,27 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
               </div>
             </div>
 
+            <div className="pt-6 border-t border-gray-100 flex justify-end">
+              <button type="submit" disabled={isSaving} className="bg-[#0070F3] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors shadow-sm">
+                {isSaving ? "Saving..." : "Save Personal Profile"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {activeTab === "verification" && (
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Verification (KYC)</h2>
+          
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-8">
+            <h3 className="text-blue-800 font-bold text-sm mb-1">Earn the Bhulia Verified Badge</h3>
+            <p className="text-blue-700 text-xs font-medium">Submitting your KYC documents allows us to verify your identity and unlock payouts. This information is strictly confidential.</p>
+          </div>
+
+          <form className="space-y-6" onSubmit={handleSavePersonal}>
             <div className="space-y-4">
-              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">3. KYC Documents</h3>
+              <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">KYC Documents</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">KYC Document Type</label>
@@ -2074,7 +2093,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
             <div className="pt-6 border-t border-gray-100 flex justify-end">
               <button type="submit" disabled={isSaving} className="bg-[#0070F3] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors shadow-sm">
-                {isSaving ? "Saving..." : "Save Personal Profile"}
+                {isSaving ? "Saving..." : "Submit KYC Documents"}
               </button>
             </div>
           </form>
