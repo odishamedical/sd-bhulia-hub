@@ -37,9 +37,7 @@ const SIDEBAR_CATEGORIES = [
     title: "3. Catalog & Commerce",
     icon: "🛍️",
     subLinks: [
-      { name: "Product Catalog", id: "products" },
-      { name: "Live Inventory DB", id: "products-live" },
-      { name: "Bhulia.com Audit", id: "products-audit" }
+      { name: "Product Catalog", id: "products" }
     ]
   },
   {
