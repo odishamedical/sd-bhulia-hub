@@ -80,6 +80,9 @@ export default function UserManagementPage() {
       isAutoApproved: w.isAutoApproved,
       maxProductsAllowed: w.subscription?.uploadLimit,
       status: w.status || "approved",
+      kycType: authUsers.find(u => u.id === w.id)?.kycType || null,
+      kycId: authUsers.find(u => u.id === w.id)?.kycId || null,
+      kycDocumentUrl: authUsers.find(u => u.id === w.id)?.kycDocumentUrl || null,
     }));
 
     // Retail Stores
@@ -102,6 +105,9 @@ export default function UserManagementPage() {
       isAutoApproved: s.isAutoApproved,
       maxProductsAllowed: s.productLimit,
       status: s.status || "approved",
+      kycType: authUsers.find(u => u.id === s.id)?.kycType || null,
+      kycId: authUsers.find(u => u.id === s.id)?.kycId || null,
+      kycDocumentUrl: authUsers.find(u => u.id === s.id)?.kycDocumentUrl || null,
     }));
 
     // Extract Customers from Orders (Mocking legacy customers from purchases)
@@ -138,6 +144,9 @@ export default function UserManagementPage() {
       email: c.email || authUsers.find(u => u.id === c.id || u.id === c.userId)?.email || "N/A",
       referralId: `SDC-${c.id.substring(0,6).toUpperCase()}`,
       status: c.status || "approved",
+      kycType: authUsers.find(u => u.id === c.id || u.id === c.userId)?.kycType || null,
+      kycId: authUsers.find(u => u.id === c.id || u.id === c.userId)?.kycId || null,
+      kycDocumentUrl: authUsers.find(u => u.id === c.id || u.id === c.userId)?.kycDocumentUrl || null,
     }));
 
     // General Identity Provider Users (e.g. Gmail login)
@@ -156,6 +165,9 @@ export default function UserManagementPage() {
       email: u.email || "N/A",
       referralId: `SDU-${u.id.substring(0,6).toUpperCase()}`,
       status: "approved",
+      kycType: u.kycType || null,
+      kycId: u.kycId || null,
+      kycDocumentUrl: u.kycDocumentUrl || null,
     }));
 
     // Resellers (Marketing Agents)
@@ -176,6 +188,9 @@ export default function UserManagementPage() {
       tier: r.tier || "Bronze",
       commissionRate: r.commissionRate || 10,
       status: r.status || "approved",
+      kycType: authUsers.find(u => u.id === r.id || u.id === (r as any).userId)?.kycType || null,
+      kycId: authUsers.find(u => u.id === r.id || u.id === (r as any).userId)?.kycId || null,
+      kycDocumentUrl: authUsers.find(u => u.id === r.id || u.id === (r as any).userId)?.kycDocumentUrl || null,
     }));
 
     // Deduplicate logic: prioritize higher roles over generic 'user' to prevent the exact same person from appearing 3 times
