@@ -9,18 +9,29 @@ import AdminDashboard from "@/components/admin/AdminDashboard";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminKyc from "@/components/admin/AdminKyc";
 import AdminAds from "@/components/admin/AdminAds";
+import AdminHelp from "@/components/admin/AdminHelp";
 
 const SIDEBAR_CATEGORIES = [
   {
-    title: "Dashboard & Reports",
+    title: "1. Overview & Insights",
     icon: "📊",
     id: "dashboard",
     subLinks: [
-      { name: "Global Overview", id: "dashboard" }
+      { name: "Global Dashboard", id: "dashboard" }
     ]
   },
   {
-    title: "Catalog & Inventory",
+    title: "2. User Identity & CRM",
+    icon: "👥",
+    badgeId: "kyc",
+    subLinks: [
+      { name: "User Directory", id: "users" },
+      { name: "Verification Queue", id: "kyc" },
+      { name: "Ecosystem Guidelines", id: "guide" }
+    ]
+  },
+  {
+    title: "3. Catalog & Commerce",
     icon: "🛍️",
     subLinks: [
       { name: "Product Catalog", id: "products" },
@@ -29,71 +40,58 @@ const SIDEBAR_CATEGORIES = [
     ]
   },
   {
-    title: "Orders & Logistics",
+    title: "4. Orders & Fulfillment",
     icon: "📦",
     badgeId: "orders",
     subLinks: [
       { name: "All Orders", id: "orders" },
       { name: "Active Dispatch", id: "logistics-dispatch" },
-      { name: "Carrier Sync & Tracking", id: "logistics-tracking" },
       { name: "Returns & B2B", id: "orders-returns" }
     ]
   },
   {
-    title: "User Management",
-    icon: "👥",
-    subLinks: [
-      { name: "User CRM & Directory", id: "users" }
-    ]
-  },
-  {
-    title: "Support & Verification",
-    icon: "🛡️",
-    badgeId: "kyc",
-    subLinks: [
-      { name: "Verification Queue", id: "kyc" },
-      { name: "Customer Tickets", id: "tickets" },
-      { name: "Disputes", id: "disputes" },
-      { name: "Fraud Analysis", id: "fraud" },
-      { name: "Ecosystem Guidelines", id: "guide" }
-    ]
-  },
-  {
-    title: "Marketing & Growth",
-    icon: "📢",
-    subLinks: [
-      { name: "Global Ads & Banners", id: "ads" },
-      { name: "Coupons & Offers", id: "coupons" },
-      { name: "WhatsApp & Email Push", id: "push" },
-      { name: "Google Places Importer", id: "importer" },
-      { name: "Imported Listings DB", id: "imported" },
-      { name: "SEO & Campaigns", id: "seo" }
-    ]
-  },
-  {
-    title: "Finance & Accounting",
+    title: "5. Finance & Revenue",
     icon: "💰",
     subLinks: [
-      { name: "Seller & Weaver Payouts", id: "payouts" },
+      { name: "Seller Payouts", id: "payouts" },
       { name: "Reseller Commissions", id: "commissions" },
-      { name: "Platform Revenue Report", id: "revenue" },
       { name: "SaaS Subscriptions", id: "subscriptions" },
-      { name: "Ad Invoices & Billing", id: "billing" },
-      { name: "Tax & GST Compliance", id: "tax" }
+      { name: "Tax & Compliance", id: "tax" }
     ]
   },
   {
-    title: "Platform & System",
+    title: "6. Growth & Engagement",
+    icon: "📢",
+    subLinks: [
+      { name: "Global Ads", id: "ads" },
+      { name: "Coupons & Offers", id: "coupons" },
+      { name: "Google Importer", id: "importer" }
+    ]
+  },
+  {
+    title: "7. Support & Disputes",
+    icon: "🛡️",
+    subLinks: [
+      { name: "Customer Tickets", id: "tickets" },
+      { name: "Disputes", id: "disputes" },
+      { name: "Fraud Analysis", id: "fraud" }
+    ]
+  },
+  {
+    title: "8. Platform Settings",
     icon: "⚙️",
     subLinks: [
-      { name: "Global Audit Log", id: "audit" },
       { name: "Visual Page Builder", id: "cms" },
-      { name: "Active Routes Manager", id: "routes" },
-      { name: "Global Settings", id: "settings" },
-      { name: "Global Style Guide", id: "style-guide" },
-      { name: "Operations & Protocols", id: "protocols" },
-      { name: "Staff & Delegation", id: "staff" },
-      { name: "API & Webhooks", id: "webhooks" }
+      { name: "Global Audit Log", id: "audit" },
+      { name: "Staff Delegation", id: "staff" }
+    ]
+  },
+  {
+    title: "9. Help & Documentation",
+    icon: "📖",
+    id: "help",
+    subLinks: [
+      { name: "System Guide", id: "help" }
     ]
   }
 ];
@@ -101,7 +99,7 @@ const SIDEBAR_CATEGORIES = [
 export default function AdminSPA() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [expandedCategory, setExpandedCategory] = useState<string | null>("Dashboard & Reports");
+  const [expandedCategory, setExpandedCategory] = useState<string | null>("1. Overview & Insights");
   const [activeTab, setActiveTab] = useState("dashboard");
   const pendingCounts = usePendingCounts();
 
@@ -128,6 +126,8 @@ export default function AdminSPA() {
         return <AdminKyc />;
       case "ads":
         return <AdminAds />;
+      case "help":
+        return <AdminHelp />;
       default:
         return (
           <div className="flex items-center justify-center h-[60vh]">

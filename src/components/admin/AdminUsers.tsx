@@ -68,7 +68,7 @@ export default function UserManagementPage() {
       phone: w.phoneNumber || "N/A",
       state: (String(w.address || "").split(",")?.[2] || "").split("-")?.[0]?.trim() || "Odisha",
       district: String(w.address || "").split(",")?.[1]?.trim() || "Sambalpur",
-      volume: 0, // Real data will be calculated from seller ledger
+      volume: orders.filter(o => o.sellerId === w.id).reduce((acc, curr) => acc + (parseInt(curr.productPrice?.toString().replace(/[^0-9]/g, '') || "0")), 0),
       purchasedProductIds: [] as any[],
       subStatus: w.subscription?.status || "free_trial",
       whatsapp: w.whatsapp || "N/A",
@@ -93,7 +93,7 @@ export default function UserManagementPage() {
       phone: s.phoneNumber || "N/A",
       state: (String(s.address || "").split(",")?.[2] || "").split("-")?.[0]?.trim() || "N/A",
       district: String(s.address || "").split(",")?.[1]?.trim() || "N/A",
-      volume: 0, // Real data will be calculated from seller ledger
+      volume: orders.filter(o => o.sellerId === s.id).reduce((acc, curr) => acc + (parseInt(curr.productPrice?.toString().replace(/[^0-9]/g, '') || "0")), 0),
       purchasedProductIds: [] as any[],
       subStatus: s.subscription?.status || "free_trial",
       whatsapp: s.whatsapp || "N/A",
@@ -137,7 +137,7 @@ export default function UserManagementPage() {
       state: c.state || "N/A",
       district: c.district || "N/A",
       country: c.country || "India",
-      volume: 0,
+      volume: orders.filter(o => o.customerId === c.id || o.customerName === c.name).reduce((acc, curr) => acc + (parseInt(curr.productPrice?.toString().replace(/[^0-9]/g, '') || "0")), 0),
       purchasedProductIds: [] as any[],
       whatsapp: c.whatsapp || "N/A",
       address: c.address || "N/A",
@@ -158,7 +158,7 @@ export default function UserManagementPage() {
       state: "N/A",
       district: "N/A",
       country: "N/A",
-      volume: 0,
+      volume: orders.filter(o => o.customerId === u.id || o.customerName === u.name).reduce((acc, curr) => acc + (parseInt(curr.productPrice?.toString().replace(/[^0-9]/g, '') || "0")), 0),
       purchasedProductIds: [] as any[],
       whatsapp: "N/A",
       address: "N/A",
@@ -179,7 +179,7 @@ export default function UserManagementPage() {
       state: r.state || "N/A",
       district: r.district || "N/A",
       country: r.country || "India",
-      volume: 0,
+      volume: orders.filter(o => o.resellerId === r.id).reduce((acc, curr) => acc + (parseInt(curr.productPrice?.toString().replace(/[^0-9]/g, '') || "0")), 0),
       purchasedProductIds: [] as any[],
       whatsapp: r.whatsapp || "N/A",
       address: r.address || "N/A",
@@ -1306,10 +1306,9 @@ export default function UserManagementPage() {
                       <span className="text-xs font-bold text-blue-900">Current Plan</span>
                       <span className="text-xs font-black text-blue-700 uppercase">{selectedUserForDetails.subStatus || "Free Trial"}</span>
                     </div>
-                    <div className="text-[10px] text-blue-600 font-medium">Expires: Dec 31, 2026</div>
-                    <button onClick={() => {
-                      alert('SaaS Subscription management is handled via Razorpay Subscriptions module. This will be unlocked when payment gateways are verified.');
-                    }} className="w-full mt-3 bg-white text-blue-600 font-bold text-xs py-2 rounded-lg border border-blue-200 hover:bg-blue-600 hover:text-white transition-colors">Manage Subscription</button>
+                    {selectedUserForDetails.subStatus && selectedUserForDetails.subStatus !== "free_trial" && (
+                      <div className="text-[10px] text-blue-600 font-medium">Managed via Razorpay integration</div>
+                    )}
                   </div>
                 </div>
               </div>
