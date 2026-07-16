@@ -28,6 +28,7 @@ export default function UserManagementPage() {
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [selectedUserForDetails, setSelectedUserForDetails] = useState<any>(null);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   
   const [newUserRole, setNewUserRole] = useState("customer");
   const [newUserDuration, setNewUserDuration] = useState("permanent");
@@ -225,34 +226,92 @@ export default function UserManagementPage() {
 
   // Apply Filters
   const filteredUsers = useMemo(() => {
-    try {
-      return users.filter(u => {
-      const matchSearch = String(u.name || "").toLowerCase().includes(searchTerm.toLowerCase()) || String(u.id || "").toLowerCase().includes(searchTerm.toLowerCase()) || String(u.phone || "").includes(searchTerm) || (u.email && String(u.email || "").toLowerCase().includes(searchTerm.toLowerCase()));
-      const matchRole = roleFilter === "all" || u.role === roleFilter;
-      const matchState = stateFilter === "all" || u.state === stateFilter;
-      const matchDistrict = districtFilter === "all" || u.district === districtFilter;
-      const matchVolume = minVolume === "" || u.volume >= parseInt(minVolume);
-      const matchProduct = productIdFilter === "" || u.purchasedProductIds.includes(productIdFilter);
-      const matchSubStatus = subStatusFilter === "all" || u.subStatus === subStatusFilter;
-      const matchVerification = verificationFilter === "all" || (verificationFilter === "pending" ? u.status === "pending" : u.status === verificationFilter);
+    return users.filter(user => {
+      // 1. Search Term
+      const matchesSearch = !searchTerm || 
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        user.phone.includes(searchTerm) ||
+        user.id.toLowerCase().includes(searchTerm.toLowerCase());
 
-      return matchSearch && matchRole && matchState && matchDistrict && matchVolume && matchProduct && matchSubStatus && matchVerification;
-      });
-    } catch (error: any) {
-      console.error("Error filtering users: ", error);
-      return [{
-        id: "ERROR",
-        name: error?.message || String(error),
-        role: "user",
-        phone: error?.stack?.substring(0, 50) || "N/A",
-        state: "N/A", district: "N/A", country: "N/A", volume: 0, purchasedProductIds: [],
-        whatsapp: "N/A", address: "N/A", email: "N/A", referralId: "N/A", status: "error"
-      }];
+      // 2. Role Filter
+      const matchesRole = roleFilter === "all" || user.role === roleFilter;
+
+      // 3. State & District
+      const matchesState = stateFilter === "all" || user.state.toLowerCase() === stateFilter.toLowerCase();
+      const matchesDistrict = districtFilter === "all" || user.district.toLowerCase() === districtFilter.toLowerCase();
+
+      // 4. Sub Status Filter (SaaS)
+      const matchesSubStatus = subStatusFilter === "all" || (user.subStatus === subStatusFilter);
+
+      // 5. Volume Filter
+      const matchesVolume = !minVolume || user.volume >= parseInt(minVolume);
+
+      // 6. Product ID Purchase Filter
+      const matchesProduct = !productIdFilter || user.purchasedProductIds.includes(productIdFilter);
+      
+      // 7. Verification Filter
+      let matchesVerification = true;
+      if (verificationFilter === "verified") {
+        matchesVerification = !!user.kycId && user.status === "approved";
+      } else if (verificationFilter === "pending") {
+        matchesVerification = !!user.kycId && user.status === "pending_approval";
+      } else if (verificationFilter === "unverified") {
+        matchesVerification = !user.kycId;
+      }
+
+      return matchesSearch && matchesRole && matchesState && matchesDistrict && matchesSubStatus && matchesVolume && matchesProduct && matchesVerification;
+    });
+  }, [users, searchTerm, roleFilter, stateFilter, districtFilter, subStatusFilter, minVolume, productIdFilter, verificationFilter]);
+
+  const toggleSelectAll = () => {
+    if (selectedUserIds.length === filteredUsers.length) {
+      setSelectedUserIds([]);
+    } else {
+      setSelectedUserIds(filteredUsers.map((u: any) => u.id));
     }
-  }, [users, searchTerm, roleFilter, stateFilter, districtFilter, minVolume, productIdFilter, subStatusFilter, verificationFilter]);
+  };
 
-  const allStates = Array.from(new Set(users.map(u => u.state))).sort();
-  const allDistricts = Array.from(new Set(users.map(u => u.district))).sort();
+  const toggleSelect = (id: string) => {
+    setSelectedUserIds(prev => 
+      prev.includes(id) ? prev.filter(uId => uId !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkAction = async (action: string) => {
+    if (selectedUserIds.length === 0) return;
+    
+    if (action === "delete") {
+      if (confirm(`Are you sure you want to completely DELETE ${selectedUserIds.length} user accounts? This cannot be undone.`)) {
+        for (const id of selectedUserIds) {
+           const u = users.find(x => x.id === id);
+           if (u) await deleteUserRecord(u.role, id);
+        }
+        setSelectedUserIds([]);
+        alert("Users deleted successfully.");
+      }
+    } else if (action === "suspend") {
+      if (confirm(`Suspend and block ${selectedUserIds.length} users?`)) {
+        for (const id of selectedUserIds) {
+           const u = users.find(x => x.id === id);
+           if (u) await suspendUserRecord(u.role, id);
+        }
+        setSelectedUserIds([]);
+        alert("Users suspended successfully.");
+      }
+    } else if (action === "approve") {
+      if (confirm(`Approve ${selectedUserIds.length} users?`)) {
+        for (const id of selectedUserIds) {
+           const u = users.find(x => x.id === id);
+           if (u) {
+              const colName = u.role === "weaver" ? "weavers" : u.role === "store" ? "stores" : u.role === "reseller" ? "resellers" : "customers";
+              await updateDocumentStatus(colName, id, { status: "approved" });
+           }
+        }
+        setSelectedUserIds([]);
+        alert("Users approved successfully.");
+      }
+    }
+  };
 
   const handleExportCSV = () => {
     setIsExporting(true);
@@ -642,7 +701,7 @@ export default function UserManagementPage() {
         )}
 
         {/* Main Data Grid */}
-        <div className="flex-1 bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden flex flex-col">
+        <div className="flex-1 bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden flex flex-col pb-24">
           <div className="p-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between gap-4">
             <div className="relative w-full max-w-xl">
               <input 
@@ -663,6 +722,9 @@ export default function UserManagementPage() {
             <table className="w-full text-left border-collapse relative">
               <thead className="sticky top-0 bg-white shadow-sm z-10">
                 <tr className="text-[10px] uppercase tracking-widest text-gray-500 border-b border-gray-100">
+                  <th className="py-4 px-6 font-bold w-12">
+                    <input type="checkbox" className="w-4 h-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={filteredUsers.length > 0 && selectedUserIds.length === filteredUsers.length} onChange={toggleSelectAll} />
+                  </th>
                   <th className="py-4 px-6 font-bold">User Identity</th>
                   <th className="py-4 px-6 font-bold">Role</th>
                   <th className="py-4 px-6 font-bold">Location</th>
@@ -673,6 +735,9 @@ export default function UserManagementPage() {
               <tbody className="text-sm divide-y divide-gray-50">
                 {filteredUsers.map((user, idx) => (
                   <tr key={`${user.id}-${user.role}-${idx}`} className="group hover:bg-blue-50/40 transition-colors border-b border-gray-50">
+                    <td className="py-4 px-6">
+                      <input type="checkbox" className="w-4 h-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={selectedUserIds.includes(user.id)} onChange={() => toggleSelect(user.id)} />
+                    </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm ${
@@ -1362,6 +1427,20 @@ export default function UserManagementPage() {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* BULK ACTION TOOLBAR */}
+      {selectedUserIds.length > 0 && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-4 rounded-full shadow-2xl flex items-center gap-6 z-50 animate-in slide-in-from-bottom-8 border border-gray-800">
+           <div className="font-bold border-r border-gray-700 pr-6 text-sm">
+             {selectedUserIds.length} Users Selected
+           </div>
+           <div className="flex gap-3">
+             <button onClick={() => handleBulkAction("approve")} className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded-xl text-sm font-bold transition-all shadow-sm">Approve All</button>
+             <button onClick={() => handleBulkAction("suspend")} className="px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-xl text-sm font-bold transition-all shadow-sm">Suspend All</button>
+             <button onClick={() => handleBulkAction("delete")} className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-xl text-sm font-bold transition-all shadow-sm">Delete All</button>
+           </div>
         </div>
       )}
     </div>
