@@ -321,66 +321,66 @@ export default function AdminProducts() {
                 </div>
                 <div className="flex-1 space-y-4">
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Title</label>
+                    <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Title</label>
                     <input 
                       type="text"
-                      className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                      className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                       value={selectedProductForDetails.title || ""}
                       onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, title: e.target.value})}
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Selling Price (₹)</label>
+                      <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Selling Price (₹)</label>
                       <input 
                         type="text"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.price || ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, price: e.target.value})}
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">MRP (₹)</label>
+                      <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">MRP (₹)</label>
                       <input 
                         type="text"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.mrp || ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, mrp: e.target.value})}
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Reseller Price (₹)</label>
+                      <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Reseller Price (₹)</label>
                       <input 
                         type="text"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.resellerPrice || ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, resellerPrice: e.target.value})}
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Stock Quantity</label>
+                      <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Stock Quantity</label>
                       <input 
                         type="number"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.stockQuantity || 1}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, stockQuantity: parseInt(e.target.value) || 0})}
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Platform Commission (%)</label>
+                      <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Platform Commission (%)</label>
                       <input 
                         type="number"
                         placeholder="Default"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.platformCommissionRate ?? ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, platformCommissionRate: e.target.value === "" ? null : parseFloat(e.target.value)})}
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Stock Status</label>
+                    <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Stock Status</label>
                       <select
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all cursor-pointer"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all cursor-pointer"
                         value={selectedProductForDetails.inStock ? "true" : "false"}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, inStock: e.target.value === "true"})}
                       >
@@ -398,37 +398,37 @@ export default function AdminProducts() {
                  <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-4">Taxonomy & Materials</h3>
                  <div className="grid grid-cols-2 gap-4">
                    <div>
-                     <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Category</label>
+                     <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Category</label>
                      <input 
                         type="text"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.category || ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, category: e.target.value})}
                       />
                    </div>
                    <div>
-                     <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Weave</label>
+                     <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Weave</label>
                      <input 
                         type="text"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.weave || ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, weave: e.target.value})}
                       />
                    </div>
                    <div>
-                     <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Material</label>
+                     <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Material</label>
                      <input 
                         type="text"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.material || ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, material: e.target.value})}
                       />
                    </div>
                    <div>
-                     <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Thread Count</label>
+                     <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Thread Count</label>
                      <input 
                         type="text"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.threadCount || ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, threadCount: e.target.value})}
                       />
@@ -438,37 +438,37 @@ export default function AdminProducts() {
                  <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-4 mt-8">Origin & Logistics</h3>
                  <div className="grid grid-cols-2 gap-4">
                    <div>
-                     <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Weaving Duration (Time)</label>
+                     <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Weaving Duration (Time)</label>
                      <input 
                         type="text"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.time || ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, time: e.target.value})}
                       />
                    </div>
                    <div>
-                     <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Yarn Type</label>
+                     <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Yarn Type</label>
                      <input 
                         type="text"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.yarnType || ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, yarnType: e.target.value})}
                       />
                    </div>
                    <div>
-                     <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Cluster</label>
+                     <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Cluster</label>
                      <input 
                         type="text"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.cluster || ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, cluster: e.target.value})}
                       />
                    </div>
                    <div>
-                     <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Village</label>
+                     <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Village</label>
                      <input 
                         type="text"
-                        className="w-full border-2 border-gray-100 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-2 font-bold text-gray-900 focus:border-blue-500 outline-none text-sm transition-all"
                         value={selectedProductForDetails.village || ""}
                         onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, village: e.target.value})}
                       />
@@ -481,10 +481,10 @@ export default function AdminProducts() {
               {/* Description */}
               <div>
                  <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-4">Content</h3>
-                 <label className="block text-[10px] uppercase font-bold text-gray-500 mb-1 tracking-widest">Full Description</label>
+                 <label className="block text-xs uppercase font-bold text-gray-700 mb-1 tracking-widest">Full Description</label>
                  <textarea 
                     rows={6}
-                    className="w-full border-2 border-gray-100 rounded-xl px-4 py-3 font-medium text-gray-900 focus:border-blue-500 outline-none text-sm transition-all resize-none"
+                    className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 font-medium text-gray-900 focus:border-blue-500 outline-none text-sm transition-all resize-none"
                     value={selectedProductForDetails.description || ""}
                     onChange={(e) => setSelectedProductForDetails({...selectedProductForDetails, description: e.target.value})}
                   />
