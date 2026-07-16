@@ -714,9 +714,27 @@ export default function UserManagementPage() {
                         <div className="font-bold text-gray-400 text-sm">₹0</div>
                       )}
                     </td>
-                    <td className="py-4 px-6 text-right">
-                      <button onClick={() => setSelectedUserForDetails(user)} className="p-2 bg-white border border-gray-200 text-gray-500 rounded-full hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm group-hover:shadow-md">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                    <td className="py-4 px-6 text-right space-x-2">
+                      <button onClick={() => setSelectedUserForDetails(user)} className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-blue-600 hover:text-white transition-all">
+                        View CRM
+                      </button>
+                      <button onClick={() => {
+                        setSelectedUserForDetails(user);
+                        setTimeout(() => {
+                           const el = document.getElementById('suspend-btn');
+                           if (el) el.click();
+                        }, 100);
+                      }} className="px-3 py-1.5 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-orange-600 hover:text-white transition-all">
+                        Suspend
+                      </button>
+                      <button onClick={() => {
+                        setSelectedUserForDetails(user);
+                        setTimeout(() => {
+                           const el = document.getElementById('delete-btn');
+                           if (el) el.click();
+                        }, 100);
+                      }} className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-red-600 hover:text-white transition-all">
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -1335,10 +1353,10 @@ export default function UserManagementPage() {
                 }} className="px-5 py-2.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-xl text-sm font-bold hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                   View Dashboard As User
                 </button>
-                <button onClick={handleSuspendUser} className="px-5 py-2.5 bg-orange-50 text-orange-600 border border-orange-100 rounded-xl text-sm font-bold hover:bg-orange-600 hover:text-white transition-all shadow-sm">
+                <button id="suspend-btn" onClick={handleSuspendUser} className="px-5 py-2.5 bg-orange-50 text-orange-600 border border-orange-100 rounded-xl text-sm font-bold hover:bg-orange-600 hover:text-white transition-all shadow-sm">
                   Suspend & Block
                 </button>
-                <button onClick={handleDeleteUser} className="px-5 py-2.5 bg-red-50 text-red-600 border border-red-100 rounded-xl text-sm font-bold hover:bg-red-600 hover:text-white transition-all shadow-sm">
+                <button id="delete-btn" onClick={handleDeleteUser} className="px-5 py-2.5 bg-red-50 text-red-600 border border-red-100 rounded-xl text-sm font-bold hover:bg-red-600 hover:text-white transition-all shadow-sm">
                   Delete Account
                 </button>
               </div>

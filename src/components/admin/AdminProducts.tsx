@@ -153,31 +153,34 @@ export default function AdminProducts() {
                         <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-0.5">{product.sellerType || "system"}</div>
                       </td>
                       <td className="px-6 py-4 text-right space-x-2">
-                        {product.status === "pending_approval" ? (
-                          <>
-                            <button 
-                              onClick={() => handleApprove(product.id)}
-                              className="px-4 py-2 bg-green-50 text-green-700 rounded-xl text-xs font-bold hover:bg-green-100 transition-all border border-green-100"
-                            >
-                              Approve
-                            </button>
-                            <button 
-                              onClick={() => setRejectingProduct(product)}
-                              className="px-4 py-2 bg-orange-50 text-orange-700 rounded-xl text-xs font-bold hover:bg-orange-100 transition-all border border-orange-100"
-                            >
-                              Reject
-                            </button>
-                          </>
-                        ) : (
-                          <span className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                            product.status === "approved" ? "bg-green-50 text-green-700 border border-green-100" :
-                            product.status === "rejected" ? "bg-red-50 text-red-700 border border-red-100" :
-                            "bg-gray-50 text-gray-700 border border-gray-200"
-                          }`}>
-                            {product.status}
-                          </span>
-                        )}
-                        
+                        <select
+                          value={product.status || "pending_approval"}
+                          onChange={async (e) => {
+                            if (e.target.value === "rejected") {
+                                setRejectingProduct(product);
+                            } else {
+                                await updateDocumentStatus("products", product.id, { status: e.target.value, rejectionReason: "" });
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider border outline-none cursor-pointer ${
+                            product.status === "approved" ? "bg-green-50 text-green-700 border-green-200" :
+                            product.status === "rejected" ? "bg-red-50 text-red-700 border-red-200" :
+                            "bg-amber-50 text-amber-700 border-amber-200"
+                          }`}
+                        >
+                            <option value="approved">LIVE (APPROVED)</option>
+                            <option value="pending_approval">PENDING QC</option>
+                            <option value="rejected">REJECTED</option>
+                        </select>
+                        <a 
+                          href={`/product/${product.slug || product.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-2 text-blue-500 hover:text-blue-700 font-bold transition-all inline-block"
+                          title="View Live Product"
+                        >
+                           <svg className="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        </a>
                         <button 
                           onClick={() => handleDelete(product.id, product.title)}
                           className="px-3 py-2 text-red-400 hover:text-red-600 font-bold transition-all"
