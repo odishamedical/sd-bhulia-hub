@@ -67,15 +67,18 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    // Map photoUrls using the API key
+    // Map photoUrls using the API key (up to 4 photos)
     if (data.places) {
       data.places = data.places.map((place: any) => {
-        let photoUrl = null;
+        const photoUrls: string[] = [];
         if (place.photos && place.photos.length > 0) {
-          const photoName = place.photos[0].name;
-          photoUrl = `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=800&maxWidthPx=800&key=${apiKey}`;
+          const maxPhotos = Math.min(place.photos.length, 4);
+          for (let i = 0; i < maxPhotos; i++) {
+            const photoName = place.photos[i].name;
+            photoUrls.push(`https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=800&maxWidthPx=800&key=${apiKey}`);
+          }
         }
-        return { ...place, photoUrl };
+        return { ...place, photoUrls };
       });
     }
 
