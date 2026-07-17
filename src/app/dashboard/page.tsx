@@ -851,6 +851,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   // Personal Profile State
   const [personalName, setPersonalName] = useState("");
   const [personalCountry, setPersonalCountry] = useState("India");
+  const [customPersonalCountry, setCustomPersonalCountry] = useState("");
   const [personalState, setPersonalState] = useState("Odisha");
   const [personalDistrict, setPersonalDistrict] = useState("");
   const [personalBlock, setPersonalBlock] = useState("");
@@ -913,7 +914,13 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           setStaffMembers(data.staffMembers || []);
           // Personal
           setPersonalName(data.personalName || data.name || "");
-          setPersonalCountry(data.personalCountry || "India");
+          if (data.personalCountry && data.personalCountry !== "India" && data.personalCountry !== "International") {
+            setPersonalCountry("International");
+            setCustomPersonalCountry(data.personalCountry);
+          } else {
+            setPersonalCountry(data.personalCountry || "India");
+            setCustomPersonalCountry("");
+          }
           setPersonalState(data.personalState || "Odisha");
           setPersonalDistrict(data.personalDistrict || "");
           setPersonalBlock(data.personalBlock || "");
@@ -991,7 +998,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         personalName,
-        personalCountry,
+        personalCountry: personalCountry === "International" && customPersonalCountry ? customPersonalCountry : personalCountry,
         personalState,
         personalDistrict,
         personalBlock,
@@ -2030,6 +2037,9 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                       <option value="India">India</option>
                       {roleTitle !== "Weaver Hub" && <option value="International">International</option>}
                     </select>
+                    {personalCountry === "International" && roleTitle !== "Weaver Hub" && (
+                      <input type="text" value={customPersonalCountry} onChange={e => setCustomPersonalCountry(e.target.value)} placeholder="Enter Country Name (e.g. USA, UK)" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none mt-2" required />
+                    )}
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
