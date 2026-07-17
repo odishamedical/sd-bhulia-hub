@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { auth, db } from "@/lib/firebase";
-import { doc, getDoc, updateDoc, setDoc, runTransaction } from "firebase/firestore";
+import { doc, getDoc, updateDoc, setDoc, runTransaction, serverTimestamp } from "firebase/firestore";
 import ImageUploader from "@/components/ImageUploader";
 import { uploadBase64ToStorage } from "@/lib/storageUtils";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS, WEAVER_DISTRICTS } from "@/lib/locations";
@@ -215,7 +215,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
       await setDoc(doc(db, "users", auth.currentUser.uid), {
         applicationStatus: "pending_approval",
         status: "pending",
-        role: desiredRole
+        role: desiredRole,
+        applicationDate: serverTimestamp()
       }, { merge: true });
 
       let generatedSlug = "303";
@@ -241,6 +242,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           title: storeName || personalName,
           status: "pending_approval",
           isAutoApproved: false,
+          applicationDate: serverTimestamp(),
           phone: phone,
           whatsapp: phone,
           email: email,

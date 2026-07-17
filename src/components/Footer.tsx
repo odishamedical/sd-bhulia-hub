@@ -133,7 +133,6 @@ export default function Footer() {
               <li><Link href="/directory" className="hover:text-[#C5A059] transition-colors">Our Weaver Network</Link></li>
               <li><Link href="/verify" className="hover:text-[#C5A059] transition-colors">Verify Bhulia.com Certificate</Link></li>
               <li><Link href="/p/live-silk-rates" className="hover:text-[#C5A059] transition-colors">Live Silk & Yarn Rates</Link></li>
-              <li><Link href="/p/sd-digital-services" className="hover:text-[#C5A059] transition-colors">SD Digital Services</Link></li>
             </ul>
           </div>
 

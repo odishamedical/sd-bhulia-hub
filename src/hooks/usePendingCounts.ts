@@ -3,6 +3,8 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export interface PendingCounts {
+  kycBase?: number;
+  kycClaims?: number;
   kyc: number;
   products: number;
   orders: number;
@@ -14,7 +16,8 @@ export interface PendingCounts {
 
 export function usePendingCounts() {
   const [counts, setCounts] = useState<PendingCounts>({
-    kyc: 0,
+    kycBase: 0,
+    kycClaims: 0,
     products: 0,
     orders: 0,
     finance: 0,
@@ -24,10 +27,15 @@ export function usePendingCounts() {
   });
 
   useEffect(() => {
-    // 1. KYC (Pending Weavers/Resellers/Shops)
+    // 1. KYC (Pending Weavers/Resellers/Shops & Claims)
     const qKyc = query(collection(db, "users"), where("status", "==", "pending"));
     const unsubKyc = onSnapshot(qKyc, (snapshot) => {
-      setCounts(prev => ({ ...prev, kyc: snapshot.size }));
+      setCounts(prev => ({ ...prev, kycBase: snapshot.size }));
+    });
+
+    const qClaims = query(collection(db, "verification_requests"), where("status", "==", "pending"));
+    const unsubClaims = onSnapshot(qClaims, (snapshot) => {
+      setCounts(prev => ({ ...prev, kycClaims: snapshot.size }));
     });
 
     // 2. Products (Pending Bhulia.com Verification)
@@ -62,6 +70,7 @@ export function usePendingCounts() {
 
     return () => {
       unsubKyc();
+      unsubClaims();
       unsubProducts();
       unsubOrders();
       unsubFinance();
@@ -71,7 +80,8 @@ export function usePendingCounts() {
   }, []);
 
   // Calculate total dynamically on render
-  const total = counts.kyc + counts.products + counts.orders + counts.finance + counts.logistics + counts.support;
+  const kyc = (counts.kycBase || 0) + (counts.kycClaims || 0);
+  const total = kyc + counts.products + counts.orders + counts.finance + counts.logistics + counts.support;
   
-  return { ...counts, total };
+  return { ...counts, kyc, total };
 }

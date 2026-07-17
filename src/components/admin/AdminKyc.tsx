@@ -35,6 +35,13 @@ export default function KycResolutionDesk() {
         users.push({ id: docSnap.id, ...docSnap.data(), type: "document_verification" });
       });
 
+      const q3 = query(collection(db, "verification_requests"), where("status", "==", "pending"));
+      const snap3 = await getDocs(q3);
+
+      snap3.forEach((docSnap) => {
+        users.push({ id: docSnap.id, ...docSnap.data(), type: "listing_claim" });
+      });
+
       setPendingUsers(users);
 
       // Fetch pending stores
@@ -178,6 +185,41 @@ export default function KycResolutionDesk() {
                 await updateDoc(userRef, { identityVerified: true, isVerified: true });
             }
         }
+      } else if (item.type === "listing_claim") {
+        const claimRef = doc(db, "verification_requests", item.id);
+        const updates = action === "approve" 
+          ? { status: "approved", verifiedAt: new Date().toISOString() }
+          : { status: "rejected", rejectedAt: new Date().toISOString(), rejectionReason };
+        await updateDoc(claimRef, updates);
+
+        if (action === "approve") {
+          // 1. Update the user role
+          if (item.ownerId) {
+            const userRef = doc(db, "users", item.ownerId);
+            await updateDoc(userRef, { role: item.role || "store", status: "active" });
+            
+            // Notify user
+            await addDoc(collection(db, "notifications"), {
+              userId: item.ownerId,
+              title: "Business Claim Approved! 🎉",
+              message: `Congratulations! Your claim for ${item.businessName} has been approved. You now have access to your seller dashboard.`,
+              read: false,
+              type: "account_status",
+              createdAt: serverTimestamp()
+            });
+          }
+
+          // 2. Update the target listing if they claimed an existing one, or create new if not?
+          // If targetProfileId exists, we update the ownerId of that profile
+          if (item.targetProfileId) {
+            const targetCollection = item.role === "weaver" ? "weavers" : "stores";
+            const profileRef = doc(db, targetCollection, item.targetProfileId);
+            const profileSnap = await getDoc(profileRef);
+            if (profileSnap.exists()) {
+              await updateDoc(profileRef, { ownerId: item.ownerId, status: "approved", isVerified: true });
+            }
+          }
+        }
       }
       
       // Remove from list optimistically
@@ -270,6 +312,7 @@ export default function KycResolutionDesk() {
                   <th className="px-6 py-4">{activeTab === "users" ? "Applicant Profile" : "Store Details"}</th>
                   <th className="px-6 py-4">{activeTab === "users" ? "Entity Type" : "Location"}</th>
                   <th className="px-6 py-4">Details</th>
+                  <th className="px-6 py-4">Applied On</th>
                   <th className="px-6 py-4 text-right">Resolution Actions</th>
                 </tr>
               </thead>
@@ -326,6 +369,12 @@ export default function KycResolutionDesk() {
                              </div>
                            )}
                         </div>
+                      ) : item.type === "listing_claim" ? (
+                        <div>
+                          <p className="text-sm font-bold text-purple-600 uppercase mb-1">LISTING CLAIM</p>
+                          <p><span className="font-semibold">Business:</span> {item.businessName}</p>
+                          <p><span className="font-semibold">Target ID:</span> {item.targetProfileId || "New Listing"}</p>
+                        </div>
                       ) : item.role === "weaver" ? (
                         <div>
                           <p className="text-sm font-bold text-gray-900 uppercase mb-1">NEW ACCOUNT</p>
@@ -339,11 +388,16 @@ export default function KycResolutionDesk() {
                           <p><span className="font-semibold">GST:</span> {item.gstNumber || "N/A"}</p>
                         </div>
                       ) : (
-                        <p className="text-gray-400 italic">No extra metadata provided.</p>
+                        <div>
+                          <p className="text-sm font-bold text-gray-900 uppercase mb-1">OTHER UPDATE</p>
+                        </div>
                       )}
                     </td>
-                    <td className="px-6 py-5 align-middle">
-                      <div className="flex flex-col items-end gap-2">
+                    <td className="px-6 py-5 text-xs text-gray-500 font-mono">
+                      {item.applicationDate?.toDate ? item.applicationDate.toDate().toLocaleString() : item.createdAt?.toDate ? item.createdAt.toDate().toLocaleString() : "N/A"}
+                    </td>
+                    <td className="px-6 py-5 align-top text-right">
+                      <div className="flex flex-col sm:flex-row justify-end gap-2">
                         {processingId === item.id ? (
                           <div className="text-blue-500 font-bold animate-pulse text-xs uppercase tracking-widest">Processing...</div>
                         ) : (
@@ -413,6 +467,7 @@ export default function KycResolutionDesk() {
                       <div><span className="text-gray-500 block text-xs">Store / Brand</span><span className="font-semibold">{selectedUser.storeName || selectedUser.businessName || 'N/A'}</span></div>
                       <div><span className="text-gray-500 block text-xs">Phone</span><span className="font-semibold">{selectedUser.phone || selectedUser.whatsapp || 'N/A'}</span></div>
                       <div><span className="text-gray-500 block text-xs">Email</span><span className="font-semibold">{selectedUser.email || 'N/A'}</span></div>
+                      <div><span className="text-gray-500 block text-xs">Applied On</span><span className="font-semibold">{selectedUser.applicationDate?.toDate ? selectedUser.applicationDate.toDate().toLocaleString() : 'N/A'}</span></div>
                     </div>
                   </div>
 
