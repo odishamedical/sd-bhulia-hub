@@ -22,6 +22,7 @@ export default function UserManagementPage() {
   const [subStatusFilter, setSubStatusFilter] = useState("all");
   const [minVolume, setMinVolume] = useState("");
   const [productIdFilter, setProductIdFilter] = useState("");
+  const [sourceFilter, setSourceFilter] = useState("all");
   const [showFilters, setShowFilters] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
@@ -84,6 +85,7 @@ export default function UserManagementPage() {
       kycType: authUsers.find(u => u.id === w.id)?.kycType || null,
       kycId: authUsers.find(u => u.id === w.id)?.kycId || null,
       kycDocumentUrl: authUsers.find(u => u.id === w.id)?.kycDocumentUrl || null,
+      source: w.source || "organic",
     }));
 
     // Retail Stores
@@ -109,6 +111,7 @@ export default function UserManagementPage() {
       kycType: authUsers.find(u => u.id === s.id)?.kycType || null,
       kycId: authUsers.find(u => u.id === s.id)?.kycId || null,
       kycDocumentUrl: authUsers.find(u => u.id === s.id)?.kycDocumentUrl || null,
+      source: s.source || "organic",
     }));
 
     // Extract Customers from Orders (Mocking legacy customers from purchases)
@@ -127,6 +130,7 @@ export default function UserManagementPage() {
       email: "N/A",
       referralId: `SDC-${String(`order_cust_${idx}`).substring(0,6).toUpperCase()}`,
       status: "approved",
+      source: "organic",
     }));
 
     // Explicitly Registered Customers (May not have purchased yet)
@@ -148,6 +152,7 @@ export default function UserManagementPage() {
       kycType: authUsers.find(u => u.id === c.id || u.id === c.userId)?.kycType || null,
       kycId: authUsers.find(u => u.id === c.id || u.id === c.userId)?.kycId || null,
       kycDocumentUrl: authUsers.find(u => u.id === c.id || u.id === c.userId)?.kycDocumentUrl || null,
+      source: c.source || "organic",
     }));
 
     // General Identity Provider Users (e.g. Gmail login)
@@ -169,6 +174,7 @@ export default function UserManagementPage() {
       kycType: u.kycType || null,
       kycId: u.kycId || null,
       kycDocumentUrl: u.kycDocumentUrl || null,
+      source: "organic",
     }));
 
     // Resellers (Marketing Agents)
@@ -192,6 +198,7 @@ export default function UserManagementPage() {
       kycType: authUsers.find(u => u.id === r.id || u.id === (r as any).userId)?.kycType || null,
       kycId: authUsers.find(u => u.id === r.id || u.id === (r as any).userId)?.kycId || null,
       kycDocumentUrl: authUsers.find(u => u.id === r.id || u.id === (r as any).userId)?.kycDocumentUrl || null,
+      source: r.source || "organic",
     }));
 
     // Deduplicate logic: prioritize higher roles over generic 'user' to prevent the exact same person from appearing 3 times
@@ -219,7 +226,7 @@ export default function UserManagementPage() {
         role: "user",
         phone: error?.stack?.substring(0, 50) || "N/A",
         state: "N/A", district: "N/A", country: "N/A", volume: 0, purchasedProductIds: [],
-        whatsapp: "N/A", address: "N/A", email: "N/A", referralId: "N/A", status: "error"
+        whatsapp: "N/A", address: "N/A", email: "N/A", referralId: "N/A", status: "error", source: "organic"
       }];
     }
   }, [weavers, stores, orders, customers, authUsers, resellers]);
@@ -258,10 +265,13 @@ export default function UserManagementPage() {
       } else if (verificationFilter === "unverified") {
         matchesVerification = !user.kycId;
       }
+      
+      // 8. Source Filter (Google CRM)
+      const matchesSource = sourceFilter === "all" || (user.source === sourceFilter);
 
-      return matchesSearch && matchesRole && matchesState && matchesDistrict && matchesSubStatus && matchesVolume && matchesProduct && matchesVerification;
+      return matchesSearch && matchesRole && matchesState && matchesDistrict && matchesSubStatus && matchesVolume && matchesProduct && matchesVerification && matchesSource;
     });
-  }, [users, searchTerm, roleFilter, stateFilter, districtFilter, subStatusFilter, minVolume, productIdFilter, verificationFilter]);
+  }, [users, searchTerm, roleFilter, stateFilter, districtFilter, subStatusFilter, minVolume, productIdFilter, verificationFilter, sourceFilter]);
 
   const allStates = Array.from(new Set(users.map(u => u.state))).sort();
   const allDistricts = Array.from(new Set(users.map(u => u.district))).sort();
@@ -665,13 +675,33 @@ export default function UserManagementPage() {
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Subscription Status</label>
-                  <select value={subStatusFilter} onChange={e => setSubStatusFilter(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
-                    <option value="all">All Subscriptions</option>
-                    <option value="active">Active (Paid)</option>
-                    <option value="free_trial">Free Trial</option>
-                    <option value="expired">Expired / Expiring Soon</option>
+                  <select
+                    value={subStatusFilter}
+                    onChange={(e) => setSubStatusFilter(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-blue-500 outline-none transition-all text-gray-700 font-medium"
+                  >
+                    <option value="all">Any SaaS Plan</option>
+                    <option value="free_trial">Free Tier</option>
+                    <option value="active">Premium Tier</option>
+                    <option value="suspended">Suspended / Banned</option>
                   </select>
                 </div>
+                
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                  </div>
+                  <select
+                    value={sourceFilter}
+                    onChange={(e) => setSourceFilter(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-blue-500 outline-none transition-all text-gray-700 font-medium"
+                  >
+                    <option value="all">All Data Sources</option>
+                    <option value="organic">Organic Users</option>
+                    <option value="google_places">Google Data CRM (Imported)</option>
+                  </select>
+                </div>
+                
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Verification Status</label>
                   <select value={verificationFilter} onChange={e => setVerificationFilter(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
