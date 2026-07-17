@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useStores } from "@/lib/db-hooks";
+import { useWeavers, useStores, useWholesalers, useSuppliers } from "@/lib/db-hooks";
 import { db } from "@/lib/firebase";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 
 export default function AdminGoogleCRM() {
   const { weavers, loading: wLoading } = useWeavers(500);
   const { stores, loading: sLoading } = useStores(500);
-  const loading = wLoading || sLoading;
+  const { wholesalers, loading: whLoading } = useWholesalers(500);
+  const { suppliers, loading: suLoading } = useSuppliers(500);
+  const loading = wLoading || sLoading || whLoading || suLoading;
   const [searchTerm, setSearchTerm] = useState("");
   const [stateFilter, setStateFilter] = useState("all");
   const [districtFilter, setDistrictFilter] = useState("all");
@@ -41,8 +43,34 @@ export default function AdminGoogleCRM() {
       rating: s.rating || "N/A",
     }));
 
-    return [...wList, ...sList];
-  }, [weavers, stores]);
+    const bList = wholesalers.filter(b => b.source === "google_places").map(b => ({
+      id: b.id,
+      name: b.title,
+      role: "wholesaler",
+      phone: b.phoneNumber || "N/A",
+      state: String(b.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || b.state || "N/A",
+      district: String(b.address || "").split(",")?.[1]?.trim() || b.district || "N/A",
+      address: b.address,
+      status: b.status || "approved",
+      website: b.website || "N/A",
+      rating: b.rating || "N/A",
+    }));
+
+    const suList = suppliers.filter(su => su.source === "google_places").map(su => ({
+      id: su.id,
+      name: su.title,
+      role: "supplier",
+      phone: su.phoneNumber || "N/A",
+      state: String(su.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || su.state || "N/A",
+      district: String(su.address || "").split(",")?.[1]?.trim() || su.district || "N/A",
+      address: su.address,
+      status: su.status || "approved",
+      website: su.website || "N/A",
+      rating: su.rating || "N/A",
+    }));
+
+    return [...wList, ...sList, ...bList, ...suList];
+  }, [weavers, stores, wholesalers, suppliers]);
 
   const filteredLeads = useMemo(() => {
     return crmLeads.filter(lead => {
@@ -100,9 +128,11 @@ export default function AdminGoogleCRM() {
           />
         </div>
         <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)} className="bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-sm font-medium outline-none">
-          <option value="all">All Roles</option>
-          <option value="weaver">Weavers</option>
-          <option value="store">Stores</option>
+          <option value="all">All Categories</option>
+          <option value="weaver">Master Weavers</option>
+          <option value="store">Retail Stores</option>
+          <option value="wholesaler">B2B Wholesalers</option>
+          <option value="supplier">Raw Material Suppliers</option>
         </select>
         <select value={stateFilter} onChange={e => setStateFilter(e.target.value)} className="bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-sm font-medium outline-none">
           <option value="all">All States</option>

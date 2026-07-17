@@ -22,6 +22,7 @@ export default function AdminImporter() {
   const [district, setDistrict] = useState("");
   const [block, setBlock] = useState("");
   const [pincode, setPincode] = useState("");
+  const [targetCategory, setTargetCategory] = useState<"weaver" | "store" | "wholesaler" | "supplier">("store");
   const [keyword, setKeyword] = useState("");
   
   const [loading, setLoading] = useState(false);
@@ -112,7 +113,7 @@ export default function AdminImporter() {
     }
   };
 
-  const importToDirectory = async (place: PlaceResult, type: "weaver" | "store") => {
+  const importToDirectory = async (place: PlaceResult) => {
     if (!district) {
       alert("Please select a District first so the imported profile gets structured properly.");
       return;
@@ -120,7 +121,10 @@ export default function AdminImporter() {
     
     setImporting(place.place_id);
     try {
-      const collectionName = type === "weaver" ? "weavers" : "stores";
+      let collectionName = "stores";
+      if (targetCategory === "weaver") collectionName = "weavers";
+      else if (targetCategory === "wholesaler") collectionName = "wholesalers";
+      else if (targetCategory === "supplier") collectionName = "suppliers";
       
       const img = place.photoUrls && place.photoUrls.length > 0 ? place.photoUrls[0] : "";
       const gallery = place.photoUrls && place.photoUrls.length > 1 ? place.photoUrls.slice(1, 4) : [];
@@ -151,7 +155,7 @@ export default function AdminImporter() {
       };
 
       await addDoc(collection(db, collectionName), newDoc);
-      alert(`${place.name} has been successfully imported to ${type}s directory!`);
+      alert(`${place.name} has been successfully imported to the ${targetCategory} directory!`);
       
       setResults(prev => prev.filter(p => p.place_id !== place.place_id));
     } catch (error) {
@@ -243,6 +247,19 @@ export default function AdminImporter() {
                 className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none text-gray-800"
               />
             </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Target Category *</label>
+              <select 
+                value={targetCategory}
+                onChange={(e) => setTargetCategory(e.target.value as any)}
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none text-gray-800 font-bold bg-blue-50"
+              >
+                <option value="store">Retail Store (Shop)</option>
+                <option value="weaver">Master Weaver</option>
+                <option value="wholesaler">B2B Wholesaler</option>
+                <option value="supplier">Raw Material Supplier</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex gap-4 items-end mt-2">
@@ -315,18 +332,11 @@ export default function AdminImporter() {
 
               <div className="flex flex-col gap-2 min-w-[200px] shrink-0 justify-center">
                 <button 
-                  onClick={() => importToDirectory(place, "weaver")}
+                  onClick={() => importToDirectory(place)}
                   disabled={importing === place.place_id}
-                  className="w-full py-2 bg-[#051815] text-[#C5A059] font-bold text-xs uppercase tracking-wider rounded border border-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021] transition-colors"
+                  className="w-full py-3 bg-[#051815] text-[#C5A059] font-bold text-xs uppercase tracking-wider rounded border border-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A1021] transition-colors"
                 >
-                  {importing === place.place_id ? "Importing..." : "Import as Weaver"}
-                </button>
-                <button 
-                  onClick={() => importToDirectory(place, "store")}
-                  disabled={importing === place.place_id}
-                  className="w-full py-2 bg-white text-gray-800 font-bold text-xs uppercase tracking-wider rounded border border-gray-300 hover:bg-gray-100 transition-colors"
-                >
-                  {importing === place.place_id ? "Importing..." : "Import as Store"}
+                  {importing === place.place_id ? "Importing..." : `Import as ${targetCategory}`}
                 </button>
               </div>
 

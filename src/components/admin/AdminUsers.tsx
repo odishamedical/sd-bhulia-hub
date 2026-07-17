@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, useResellers, addWeaver, addStore, addCustomer, addReseller, deleteUserRecord, suspendUserRecord, convertUserRole, updateDocumentStatus } from "@/lib/db-hooks";
+import { useWeavers, useStores, useOrders, useCustomers, useAuthUsers, useResellers, useWholesalers, useSuppliers, addWeaver, addStore, addCustomer, addReseller, deleteUserRecord, suspendUserRecord, convertUserRole, updateDocumentStatus } from "@/lib/db-hooks";
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { firebaseConfig, db } from "@/lib/firebase";
@@ -14,6 +14,8 @@ export default function UserManagementPage() {
   const { customers } = useCustomers(200);
   const { authUsers } = useAuthUsers();
   const { resellers } = useResellers(200);
+  const { wholesalers } = useWholesalers(200);
+  const { suppliers } = useSuppliers(200);
   
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -114,6 +116,58 @@ export default function UserManagementPage() {
       source: s.source || "organic",
     }));
 
+    // B2B Wholesalers
+    const b2bList = wholesalers.map((b, idx) => ({
+      id: b.id,
+      name: b.title || b.name || `Wholesaler ${idx}`,
+      role: "wholesaler",
+      phone: b.phoneNumber || b.phone || "N/A",
+      state: b.state || "N/A",
+      district: b.district || "N/A",
+      volume: 0,
+      purchasedProductIds: [] as any[],
+      subStatus: b.subscription?.status || "free_trial",
+      whatsapp: b.whatsapp || "N/A",
+      address: b.address || "N/A",
+      email: authUsers.find(u => u.id === b.id)?.email || "N/A",
+      country: b.country || "India",
+      referralId: `SDB-${b.id.substring(0,6).toUpperCase()}`,
+      slug: b.slug,
+      isAutoApproved: b.isAutoApproved,
+      maxProductsAllowed: b.productLimit,
+      status: b.status || "approved",
+      kycType: authUsers.find(u => u.id === b.id)?.kycType || null,
+      kycId: authUsers.find(u => u.id === b.id)?.kycId || null,
+      kycDocumentUrl: authUsers.find(u => u.id === b.id)?.kycDocumentUrl || null,
+      source: b.source || "organic",
+    }));
+
+    // Raw Material Suppliers
+    const supplierList = suppliers.map((s, idx) => ({
+      id: s.id,
+      name: s.title || s.name || `Supplier ${idx}`,
+      role: "supplier",
+      phone: s.phoneNumber || s.phone || "N/A",
+      state: s.state || "N/A",
+      district: s.district || "N/A",
+      volume: 0,
+      purchasedProductIds: [] as any[],
+      subStatus: s.subscription?.status || "free_trial",
+      whatsapp: s.whatsapp || "N/A",
+      address: s.address || "N/A",
+      email: authUsers.find(u => u.id === s.id)?.email || "N/A",
+      country: s.country || "India",
+      referralId: `SDSU-${s.id.substring(0,6).toUpperCase()}`,
+      slug: s.slug,
+      isAutoApproved: s.isAutoApproved,
+      maxProductsAllowed: s.productLimit,
+      status: s.status || "approved",
+      kycType: authUsers.find(u => u.id === s.id)?.kycType || null,
+      kycId: authUsers.find(u => u.id === s.id)?.kycId || null,
+      kycDocumentUrl: authUsers.find(u => u.id === s.id)?.kycDocumentUrl || null,
+      source: s.source || "organic",
+    }));
+
     // Extract Customers from Orders (Mocking legacy customers from purchases)
     const cList = Array.from(new Set(orders.map(o => o.customerName))).filter(Boolean).map((name, idx) => ({
       id: `order_cust_${idx}`,
@@ -178,7 +232,7 @@ export default function UserManagementPage() {
     }));
 
     // Resellers (Marketing Agents)
-    const resellersList = resellers.map((r) => ({
+    const rList = resellers.map((r) => ({
       id: r.id,
       name: r.name || "Unknown Reseller",
       role: "reseller",
@@ -201,8 +255,7 @@ export default function UserManagementPage() {
       source: r.source || "organic",
     }));
 
-    // Deduplicate logic: prioritize higher roles over generic 'user' to prevent the exact same person from appearing 3 times
-    const allCombined = [...wList, ...sList, ...resellersList, ...registeredCustomersList, ...cList, ...identityUsersList];
+    const allCombined = [...wList, ...sList, ...b2bList, ...supplierList, ...registeredCustomersList, ...cList, ...identityUsersList, ...rList];
     const uniqueUsersMap = new Map();
     
     for (const u of allCombined) {
@@ -217,7 +270,7 @@ export default function UserManagementPage() {
       }
     }
       
-      return Array.from(uniqueUsersMap.values());
+    return Array.from(uniqueUsersMap.values());
     } catch (error: any) {
       console.error("Error generating users list: ", error);
       return [{
@@ -229,7 +282,7 @@ export default function UserManagementPage() {
         whatsapp: "N/A", address: "N/A", email: "N/A", referralId: "N/A", status: "error", source: "organic"
       }];
     }
-  }, [weavers, stores, orders, customers, authUsers, resellers]);
+  }, [weavers, stores, wholesalers, suppliers, orders, customers, authUsers, resellers]);
 
   // Apply Filters
   const filteredUsers = useMemo(() => {

@@ -233,7 +233,11 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         generatedSlug = (303 + Math.floor(Math.random() * 9000)).toString();
       }
       
-      const collectionName = desiredRole === "weaver" ? "weavers" : (desiredRole === "store" || desiredRole === "b2b" || desiredRole === "raw_material") ? "stores" : "resellers";
+      let collectionName = "stores";
+      if (desiredRole === "weaver") collectionName = "weavers";
+      else if (desiredRole === "b2b") collectionName = "wholesalers";
+      else if (desiredRole === "raw_material") collectionName = "suppliers";
+      else if (desiredRole === "reseller") collectionName = "resellers";
       const docRef = doc(db, collectionName, auth.currentUser.uid);
       const snap = await getDoc(docRef);
       if (!snap.exists()) {
