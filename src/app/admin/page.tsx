@@ -23,6 +23,7 @@ import AdminTax from "@/components/admin/AdminTax";
 import AdminTickets from "@/components/admin/AdminTickets";
 import AdminFraud from "@/components/admin/AdminFraud";
 import AdminAudit from "@/components/admin/AdminAudit";
+import AdminGoogleCRM from "@/components/admin/AdminGoogleCRM";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -76,7 +77,8 @@ const SIDEBAR_CATEGORIES = [
     subLinks: [
       { name: "Global Ads", id: "ads" },
       { name: "Coupons & Offers", id: "coupons" },
-      { name: "Google Importer", id: "importer" }
+      { name: "Google Importer", id: "importer" },
+      { name: "Google Data CRM", id: "google-crm" }
     ]
   },
   {
@@ -154,6 +156,8 @@ export default function AdminSPA() {
         return <AdminCoupons />;
       case "importer":
         return <AdminImporter />;
+      case "google-crm":
+        return <AdminGoogleCRM />;
       case "cms":
         return <AdminPageBuilder />;
       case "help":
