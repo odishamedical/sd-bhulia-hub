@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage } from "@/lib/firebase";
 
 export default function AdminPageBuilder() {
   const [widgets, setWidgets] = useState<any[]>([]);
@@ -10,6 +11,29 @@ export default function AdminPageBuilder() {
   const [saving, setSaving] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [uploadingImage, setUploadingImage] = useState<{ [key: string]: boolean }>({});
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, widgetIndex: number, bannerIndex: number) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    const uploadId = `${widgetIndex}-${bannerIndex}`;
+    
+    setUploadingImage(prev => ({ ...prev, [uploadId]: true }));
+    try {
+      const storageRef = ref(storage, `banners/${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      
+      const newWidgets = [...widgets];
+      newWidgets[widgetIndex].data.banners[bannerIndex].imgUrl = downloadURL;
+      setWidgets(newWidgets);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert("Failed to upload image");
+    } finally {
+      setUploadingImage(prev => ({ ...prev, [uploadId]: false }));
+    }
+  };
 
   useEffect(() => {
     async function loadLayout() {
@@ -242,26 +266,61 @@ export default function AdminPageBuilder() {
                   )}
 
                   {widget.type === "HeroSlider" && (
-                    <div>
-                      <p className="text-sm text-gray-500 mb-4">Hero Sliders can have multiple banners. (Image upload requires URL for now in Phase 1)</p>
+                    <div className="space-y-4">
+                      <p className="text-sm text-gray-500 mb-4">Hero Sliders can have multiple banners. You can upload an image directly from your computer.</p>
                       {widget.data.banners?.map((banner: any, bIdx: number) => (
                         <div key={bIdx} className="bg-white p-4 border border-gray-200 rounded mb-4">
-                          <div className="flex justify-between items-center mb-2">
-                            <h4 className="font-bold text-gray-800 text-sm">Banner {bIdx + 1}</h4>
+                          <div className="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
+                            <h4 className="font-bold text-[#C5A059] text-sm">Banner {bIdx + 1}</h4>
                             <button 
                               onClick={() => {
                                 const newWidgets = [...widgets];
                                 newWidgets[index].data.banners.splice(bIdx, 1);
                                 setWidgets(newWidgets);
                               }}
-                              className="text-red-500 text-xs font-bold"
+                              className="text-red-500 text-xs font-bold hover:underline"
                             >
                               Remove Banner
                             </button>
                           </div>
-                          <div className="grid grid-cols-2 gap-4">
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Image Section */}
+                            <div className="col-span-1 md:col-span-2 bg-gray-50 p-4 border border-gray-200 rounded flex items-center gap-4">
+                              {banner.imgUrl ? (
+                                <img src={banner.imgUrl} alt="Preview" className="w-24 h-16 object-cover rounded border border-gray-300 shadow-sm" />
+                              ) : (
+                                <div className="w-24 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-400">No Image</div>
+                              )}
+                              <div className="flex-1">
+                                <label className="block text-xs font-bold text-gray-700 mb-1">Upload New Banner Image</label>
+                                <input 
+                                  type="file" 
+                                  accept="image/*"
+                                  onChange={(e) => handleImageUpload(e, index, bIdx)}
+                                  disabled={uploadingImage[`${index}-${bIdx}`]}
+                                  className="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#C5A059] file:text-white hover:file:bg-[#996515] transition-colors"
+                                />
+                                {uploadingImage[`${index}-${bIdx}`] && <span className="text-xs text-blue-600 ml-2 font-bold animate-pulse">Uploading...</span>}
+                              </div>
+                            </div>
+
+                            {/* Text Fields */}
                             <div>
-                              <label className="block text-xs font-bold text-gray-700 mb-1">Title</label>
+                              <label className="block text-xs font-bold text-gray-700 mb-1">Top Badge Text</label>
+                              <input 
+                                type="text" 
+                                value={banner.badge || ""} 
+                                onChange={(e) => {
+                                  const newWidgets = [...widgets];
+                                  newWidgets[index].data.banners[bIdx].badge = e.target.value;
+                                  setWidgets(newWidgets);
+                                }}
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-gray-800 text-sm focus:border-[#C5A059] focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-bold text-gray-700 mb-1">Main Title</label>
                               <input 
                                 type="text" 
                                 value={banner.title || ""} 
@@ -270,20 +329,49 @@ export default function AdminPageBuilder() {
                                   newWidgets[index].data.banners[bIdx].title = e.target.value;
                                   setWidgets(newWidgets);
                                 }}
-                                className="w-full border border-gray-300 rounded px-2 py-1 text-gray-800 text-sm"
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-gray-800 text-sm focus:border-[#C5A059] focus:outline-none"
                               />
                             </div>
                             <div>
-                              <label className="block text-xs font-bold text-gray-700 mb-1">Image URL</label>
+                              <label className="block text-xs font-bold text-gray-700 mb-1">Subtitle</label>
                               <input 
                                 type="text" 
-                                value={banner.imgUrl || ""} 
+                                value={banner.subtitle || ""} 
                                 onChange={(e) => {
                                   const newWidgets = [...widgets];
-                                  newWidgets[index].data.banners[bIdx].imgUrl = e.target.value;
+                                  newWidgets[index].data.banners[bIdx].subtitle = e.target.value;
                                   setWidgets(newWidgets);
                                 }}
-                                className="w-full border border-gray-300 rounded px-2 py-1 text-gray-800 text-sm"
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-gray-800 text-sm focus:border-[#C5A059] focus:outline-none"
+                              />
+                            </div>
+                            
+                            {/* Button Fields */}
+                            <div>
+                              <label className="block text-xs font-bold text-gray-700 mb-1">Button Text</label>
+                              <input 
+                                type="text" 
+                                value={banner.btnText || ""} 
+                                onChange={(e) => {
+                                  const newWidgets = [...widgets];
+                                  newWidgets[index].data.banners[bIdx].btnText = e.target.value;
+                                  setWidgets(newWidgets);
+                                }}
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-gray-800 text-sm focus:border-[#C5A059] focus:outline-none"
+                              />
+                            </div>
+                            <div className="md:col-span-2">
+                              <label className="block text-xs font-bold text-gray-700 mb-1">Button Link URL</label>
+                              <input 
+                                type="text" 
+                                value={banner.btnLink || ""} 
+                                onChange={(e) => {
+                                  const newWidgets = [...widgets];
+                                  newWidgets[index].data.banners[bIdx].btnLink = e.target.value;
+                                  setWidgets(newWidgets);
+                                }}
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-gray-800 text-sm focus:border-[#C5A059] focus:outline-none"
+                                placeholder="/search?category=Silk"
                               />
                             </div>
                           </div>
