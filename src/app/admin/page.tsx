@@ -18,6 +18,8 @@ import AdminImporter from "@/components/admin/AdminImporter";
 import AdminCoupons from "@/components/admin/AdminCoupons";
 import AdminLogistics from "@/components/admin/AdminLogistics";
 import AdminReturns from "@/components/admin/AdminReturns";
+import AdminPayouts from "@/components/admin/AdminPayouts";
+import AdminTax from "@/components/admin/AdminTax";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -139,6 +141,10 @@ export default function AdminSPA() {
         return <AdminLogistics />;
       case "orders-returns":
         return <AdminReturns />;
+      case "finance-payouts":
+        return <AdminPayouts />;
+      case "finance-tax":
+        return <AdminTax />;
       case "ads":
         return <AdminAds />;
       case "coupons":
