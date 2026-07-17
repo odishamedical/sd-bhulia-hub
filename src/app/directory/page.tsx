@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useStores, useWeavers, useProducts } from "@/lib/db-hooks";
+import { useStores, useWeavers, useProducts, useWholesalers, useSuppliers } from "@/lib/db-hooks";
 import { ODISHA_DISTRICTS } from "@/lib/locations";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -14,6 +14,8 @@ import ProductCard from "@/components/ProductCard";
 function DirectoryContent() {
   const { stores, loading: storesLoading } = useStores(50);
   const { weavers, loading: weaversLoading } = useWeavers(50);
+  const { wholesalers, loading: wholesalersLoading } = useWholesalers(50);
+  const { suppliers, loading: suppliersLoading } = useSuppliers(50);
 
   const [selectedRole, setSelectedRole] = useState<string>("all");
   const searchParams = useSearchParams();
@@ -41,9 +43,11 @@ function DirectoryContent() {
   const combinedDirectory = useMemo(() => {
     const vList = stores.map(v => ({ ...v, role: "store", displayType: "Retail Shop" }));
     const wList = weavers.map(w => ({ ...w, role: "weaver", displayType: "Master Weaver" }));
-    const all = [...vList, ...wList].filter(item => item.status === "approved" || item.status === "unclaimed");
+    const b2bList = wholesalers.map(b => ({ ...b, role: "wholesaler", displayType: "B2B Wholesaler" }));
+    const sList = suppliers.map(s => ({ ...s, role: "raw_material", displayType: "Raw Material Supplier" }));
+    const all = [...vList, ...wList, ...b2bList, ...sList].filter(item => item.status === "approved" || item.status === "unclaimed");
     return all.sort(() => Math.random() - 0.5);
-  }, [stores, weavers]);
+  }, [stores, weavers, wholesalers, suppliers]);
 
   const districts = useMemo(() => {
     const dSet = new Set<string>();

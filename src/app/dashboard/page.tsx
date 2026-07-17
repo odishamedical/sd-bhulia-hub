@@ -263,18 +263,17 @@ export default function DashboardPage() {
     ];
   } else if (actualRole === "raw_material") {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
-      { id: "inventory", label: "Inventory Catalog", icon: "📦", category: "Catalog & Inventory" },
-      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "Catalog & Inventory" },
-      { id: "orders", label: "Order Management", icon: "🚚", category: "Orders & Logistics" },
-      { id: "personal", label: "Personal Profile", icon: "👤", category: "User Management" },
-      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "Support & Verification" },
-      { id: "support", label: "Admin Support", icon: "🎧", category: "Support & Verification" },
-      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "Support & Verification" },
-      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Marketing & Growth" },
-      { id: "wallet", label: "Wallet & Payouts", icon: "💰", category: "Finance & Accounting" },
-      { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "Platform & System" },
-      { id: "security", label: "Security & Login", icon: "🔐", category: "Platform & System" },
+      { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
+      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "1. Profile & Setup" },
+      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
+      { id: "security", label: "Security & Login", icon: "🔐", category: "1. Profile & Setup" },
+      { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "1. Profile & Setup" },
+      { id: "inventory", label: "Inventory Catalog", icon: "📦", category: "2. Your Catalog" },
+      { id: "orders", label: "Order Management", icon: "🚚", category: "3. Orders & Deliveries" },
+      { id: "wallet", label: "Wallet & Payouts", icon: "💰", category: "4. Finance & Earnings" },
+      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
+      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "6. Help & Support" },
+      { id: "support", label: "Admin Support", icon: "🎧", category: "6. Help & Support" },
     ];
   }
 

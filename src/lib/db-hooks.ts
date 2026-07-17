@@ -383,6 +383,58 @@ export function useStores(limitCount: number = 200) {
   return { stores, loading };
 }
 
+export function useWholesalers(limitCount: number = 200) {
+  const [wholesalers, setWholesalers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let q = query(collection(db, "wholesalers"));
+    if (limitCount) q = query(collection(db, "wholesalers"), limit(limitCount));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data: any[] = [];
+      snapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+      });
+      setWholesalers(data);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching wholesalers: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [limitCount]);
+
+  return { wholesalers, loading };
+}
+
+export function useSuppliers(limitCount: number = 200) {
+  const [suppliers, setSuppliers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let q = query(collection(db, "suppliers"));
+    if (limitCount) q = query(collection(db, "suppliers"), limit(limitCount));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data: any[] = [];
+      snapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+      });
+      setSuppliers(data);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching suppliers: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [limitCount]);
+
+  return { suppliers, loading };
+}
+
 
 export function useOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
