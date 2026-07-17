@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
+import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
 
 interface PlaceResult {
   place_id: string;
@@ -18,6 +18,7 @@ interface PlaceResult {
 }
 
 export default function AdminImporter() {
+  const [state, setState] = useState("Odisha");
   const [district, setDistrict] = useState("");
   const [block, setBlock] = useState("");
   const [pincode, setPincode] = useState("");
@@ -28,7 +29,13 @@ export default function AdminImporter() {
   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
   const [importing, setImporting] = useState<string | null>(null);
 
-  const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setState(e.target.value);
+    setDistrict("");
+    setBlock("");
+  };
+
+  const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     setDistrict(e.target.value);
     setBlock(""); // reset block when district changes
   };
@@ -42,7 +49,7 @@ export default function AdminImporter() {
     let queryParts = [keyword.trim()];
     if (block) queryParts.push(block);
     if (district) queryParts.push(district);
-    queryParts.push("Odisha");
+    if (state) queryParts.push(state);
     if (pincode) queryParts.push(pincode);
     
     const finalQuery = queryParts.filter(Boolean).join(", ");
@@ -123,7 +130,7 @@ export default function AdminImporter() {
         title: place.name,
         slug: place.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Date.now().toString().slice(-4),
         address: place.formatted_address,
-        state: "Odisha",
+        state: state,
         district: district,
         block: block || "",
         pincode: pincode || "",
@@ -167,37 +174,64 @@ export default function AdminImporter() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">State</label>
-              <select disabled className="w-full px-3 py-2 bg-gray-100 rounded-lg border border-gray-300 text-gray-600">
-                <option>Odisha</option>
+              <select 
+                value={state}
+                onChange={handleStateChange}
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none text-gray-800"
+              >
+                {INDIAN_STATES.map(s => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
               </select>
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">District *</label>
-              <select 
-                required
-                value={district} 
-                onChange={handleDistrictChange}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none text-gray-800"
-              >
-                <option value="">Select District</option>
-                {ODISHA_DISTRICTS.map(d => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
-              </select>
+              {state === "Odisha" ? (
+                <select 
+                  required
+                  value={district} 
+                  onChange={handleDistrictChange}
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none text-gray-800"
+                >
+                  <option value="">Select District</option>
+                  {ODISHA_DISTRICTS.map(d => (
+                    <option key={d} value={d}>{d}</option>
+                  ))}
+                </select>
+              ) : (
+                <input 
+                  type="text"
+                  required
+                  value={district}
+                  onChange={handleDistrictChange}
+                  placeholder="Enter District"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none text-gray-800"
+                />
+              )}
             </div>
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Block</label>
-              <select 
-                value={block} 
-                onChange={(e) => setBlock(e.target.value)}
-                disabled={!district}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none text-gray-800 disabled:bg-gray-50"
-              >
-                <option value="">Any Block</option>
-                {district && ODISHA_DISTRICT_BLOCKS[district]?.map(b => (
-                  <option key={b} value={b}>{b}</option>
-                ))}
-              </select>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Block / City</label>
+              {state === "Odisha" ? (
+                <select 
+                  value={block} 
+                  onChange={(e) => setBlock(e.target.value)}
+                  disabled={!district}
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none text-gray-800 disabled:bg-gray-50"
+                >
+                  <option value="">Any Block</option>
+                  {district && ODISHA_DISTRICT_BLOCKS[district]?.map(b => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
+              ) : (
+                <input 
+                  type="text"
+                  value={block}
+                  onChange={(e) => setBlock(e.target.value)}
+                  placeholder="Enter Block / City"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none text-gray-800"
+                />
+              )}
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Pincode</label>
