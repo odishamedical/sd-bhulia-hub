@@ -18,8 +18,30 @@ export default function AdminPageBuilder() {
         if (docSnap.exists()) {
           setWidgets(docSnap.data().widgets || []);
         } else {
-          // Initialize with empty if not found
-          setWidgets([]);
+          // Pre-populate with the current layout so the admin has a starting point
+          setWidgets([
+            {
+              type: "HeroSlider",
+              data: {
+                banners: [
+                  { badge: "Bhulia.com Verified Heritage", title: "The Silk Masterpieces", subtitle: "Authentic Double Ikat Pata", imgUrl: "/hero_silk.jpg", btnText: "Discover the Collection", btnLink: "/search?category=Pure Silk Pata" },
+                  { badge: "Empowering Artisans directly", title: "Everyday Luxury", subtitle: "Direct from Pit Looms", imgUrl: "/hero_loom.jpg", btnText: "Explore Cotton", btnLink: "/search?category=Cotton" }
+                ]
+              }
+            },
+            { type: "ArtisanCircles" },
+            { type: "BannerSlot", data: { id: "homepage_middle" } },
+            {
+              type: "ProductCarousel",
+              data: { title: "The Vault", filterType: "trending", itemLimit: 6 }
+            },
+            { type: "HeritageStory" },
+            {
+              type: "DirectoryGrid",
+              data: { title: "Ecosystem Directory", subtitle: "Discover our network of verified partners", role: "weaver", itemLimit: 8 }
+            },
+            { type: "BannerSlot", data: { id: "content_bottom" } }
+          ]);
         }
       } catch (e) {
         console.error("Error loading layout:", e);
