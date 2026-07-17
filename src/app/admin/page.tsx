@@ -16,6 +16,8 @@ import AdminSettings from "@/components/admin/AdminSettings";
 import AdminPageBuilder from "@/components/admin/AdminPageBuilder";
 import AdminImporter from "@/components/admin/AdminImporter";
 import AdminCoupons from "@/components/admin/AdminCoupons";
+import AdminLogistics from "@/components/admin/AdminLogistics";
+import AdminReturns from "@/components/admin/AdminReturns";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -133,6 +135,10 @@ export default function AdminSPA() {
         return <AdminProducts />;
       case "orders":
         return <AdminOrders />;
+      case "logistics-dispatch":
+        return <AdminLogistics />;
+      case "orders-returns":
+        return <AdminReturns />;
       case "ads":
         return <AdminAds />;
       case "coupons":
