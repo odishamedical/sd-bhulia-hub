@@ -710,19 +710,40 @@ export default function AdminPageBuilder() {
                           />
                         </div>
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-700 mb-1">Side Image URL</label>
-                        <input 
-                          type="text" 
-                          value={widget.data.imgUrl || ""} 
-                          onChange={(e) => {
-                            const newWidgets = [...widgets];
-                            newWidgets[index].data.imgUrl = e.target.value;
-                            setWidgets(newWidgets);
-                          }}
-                          className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
-                          placeholder="/bhulia-hero.png"
-                        />
+                      <div className="bg-gray-50 p-4 border border-gray-200 rounded flex flex-col sm:flex-row items-center gap-4">
+                        {widget.data.imgUrl ? (
+                          <img src={widget.data.imgUrl} alt="Preview" className="w-24 h-24 object-cover rounded shadow border border-gray-300" />
+                        ) : (
+                          <div className="w-24 h-24 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-400">No Image</div>
+                        )}
+                        <div className="flex-1 w-full">
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Side Image (Upload)</label>
+                          <input 
+                            type="file"
+                            accept="image/*"
+                            onChange={async (e) => {
+                              if (!e.target.files || e.target.files.length === 0) return;
+                              const file = e.target.files[0];
+                              const uploadId = `heritage-${index}`;
+                              setUploadingImage(prev => ({ ...prev, [uploadId]: true }));
+                              try {
+                                const storageRef = ref(storage, `heritage/${Date.now()}_${file.name}`);
+                                await uploadBytes(storageRef, file);
+                                const downloadURL = await getDownloadURL(storageRef);
+                                const newWidgets = [...widgets];
+                                newWidgets[index].data.imgUrl = downloadURL;
+                                setWidgets(newWidgets);
+                              } catch (error) {
+                                console.error("Error uploading image:", error);
+                              } finally {
+                                setUploadingImage(prev => ({ ...prev, [uploadId]: false }));
+                              }
+                            }}
+                            disabled={uploadingImage[`heritage-${index}`]}
+                            className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#C5A059] file:text-white hover:file:bg-[#996515]"
+                          />
+                          {uploadingImage[`heritage-${index}`] && <p className="text-xs text-blue-600 mt-2 font-bold animate-pulse">Uploading...</p>}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -733,7 +754,7 @@ export default function AdminPageBuilder() {
                       {widget.data.circles?.map((circle: any, cIdx: number) => (
                         <div key={cIdx} className="flex items-center gap-4 bg-gray-50 p-2 rounded border border-gray-200">
                           <img src={circle.img || "/bhulia-hero.png"} alt="circle" className="w-10 h-10 rounded-full object-cover border border-gray-300" />
-                          <div className="flex-1 grid grid-cols-3 gap-2">
+                          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <input 
                               type="text" 
                               value={circle.title || ""} 
@@ -742,7 +763,7 @@ export default function AdminPageBuilder() {
                                 newWidgets[index].data.circles[cIdx].title = e.target.value;
                                 setWidgets(newWidgets);
                               }}
-                              className="col-span-1 border border-gray-300 rounded px-2 py-1 text-sm"
+                              className="col-span-1 border border-gray-300 rounded px-2 py-1.5 text-sm"
                               placeholder="Title"
                             />
                             <input 
@@ -753,20 +774,36 @@ export default function AdminPageBuilder() {
                                 newWidgets[index].data.circles[cIdx].link = e.target.value;
                                 setWidgets(newWidgets);
                               }}
-                              className="col-span-1 border border-gray-300 rounded px-2 py-1 text-sm"
-                              placeholder="Link"
+                              className="col-span-1 border border-gray-300 rounded px-2 py-1.5 text-sm"
+                              placeholder="Link URL"
                             />
-                            <input 
-                              type="text" 
-                              value={circle.img || ""} 
-                              onChange={(e) => {
-                                const newWidgets = [...widgets];
-                                newWidgets[index].data.circles[cIdx].img = e.target.value;
-                                setWidgets(newWidgets);
-                              }}
-                              className="col-span-1 border border-gray-300 rounded px-2 py-1 text-sm"
-                              placeholder="Image URL"
-                            />
+                            <div className="col-span-1 sm:col-span-2">
+                              <input 
+                                type="file"
+                                accept="image/*"
+                                onChange={async (e) => {
+                                  if (!e.target.files || e.target.files.length === 0) return;
+                                  const file = e.target.files[0];
+                                  const uploadId = `circle-${index}-${cIdx}`;
+                                  setUploadingImage(prev => ({ ...prev, [uploadId]: true }));
+                                  try {
+                                    const storageRef = ref(storage, `circles/${Date.now()}_${file.name}`);
+                                    await uploadBytes(storageRef, file);
+                                    const downloadURL = await getDownloadURL(storageRef);
+                                    const newWidgets = [...widgets];
+                                    newWidgets[index].data.circles[cIdx].img = downloadURL;
+                                    setWidgets(newWidgets);
+                                  } catch (error) {
+                                    console.error("Error uploading image:", error);
+                                  } finally {
+                                    setUploadingImage(prev => ({ ...prev, [uploadId]: false }));
+                                  }
+                                }}
+                                disabled={uploadingImage[`circle-${index}-${cIdx}`]}
+                                className="w-full text-xs text-gray-600 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:font-bold file:bg-[#051815] file:text-[#C5A059]"
+                              />
+                              {uploadingImage[`circle-${index}-${cIdx}`] && <span className="text-xs text-blue-600 font-bold ml-2 animate-pulse">Uploading...</span>}
+                            </div>
                           </div>
                           <button onClick={() => {
                             const newWidgets = [...widgets];
