@@ -31,31 +31,41 @@ export default function AdminImporter() {
     // For now, we simulate a response to demonstrate the UI flow.
     
     try {
-      // MOCK DATA RESPONSE
-      setTimeout(() => {
-        setResults([
-          {
-            place_id: "ChIJ123456789",
-            name: `${query} Premium Handloom`,
-            formatted_address: "123 Weaver Street, Bargarh, Odisha, India",
-            rating: 4.8,
-            user_ratings_total: 124,
-            international_phone_number: "+91 98765 43210",
-          },
-          {
-            place_id: "ChIJ987654321",
-            name: `${query} Textiles & Sarees`,
-            formatted_address: "45 Market Road, Sambalpur, Odisha, India",
-            rating: 4.2,
-            user_ratings_total: 56,
-          }
-        ]);
-        setLoading(false);
-      }, 1000);
+      const response = await fetch("/api/places", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch from API");
+      }
+
+      const data = await response.json();
+      
+      if (data.places) {
+        // Map the backend structure to our frontend interface
+        const mappedResults: PlaceResult[] = data.places.map((p: any) => ({
+          place_id: p.id,
+          name: p.displayName?.text || "Unknown Name",
+          formatted_address: p.formattedAddress || "",
+          rating: p.rating,
+          user_ratings_total: p.userRatingCount,
+          international_phone_number: p.nationalPhoneNumber,
+          website: p.websiteUri,
+        }));
+        
+        setResults(mappedResults);
+      } else {
+        setResults([]);
+      }
       
     } catch (error) {
       console.error("Error fetching places:", error);
-      alert("Failed to search places.");
+      alert("Failed to search places. Make sure your GOOGLE_MAPS_API_KEY is configured.");
+    } finally {
       setLoading(false);
     }
   };
