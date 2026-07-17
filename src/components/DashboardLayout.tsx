@@ -159,6 +159,24 @@ export default function DashboardLayout({
               </div>
             </div>
 
+            {/* Mobile Dual Role Toggle */}
+            {showDualRoleToggle && (
+              <div className="md:hidden flex items-center gap-1 bg-[#0052A3] rounded-full p-1 border border-white/10 shadow-inner mb-6">
+                <button 
+                  onClick={() => isSellerMode && onSellerModeToggle?.()}
+                  className={`flex-1 text-[10px] font-bold uppercase py-2 rounded-full transition-all text-center ${!isSellerMode ? 'bg-white text-blue-900 shadow-sm' : 'text-blue-200 hover:text-white'}`}
+                >
+                  🛍️ Buyer Mode
+                </button>
+                <button 
+                  onClick={() => !isSellerMode && onSellerModeToggle?.()}
+                  className={`flex-1 text-[10px] font-bold uppercase py-2 rounded-full transition-all text-center ${isSellerMode ? 'bg-gradient-to-r from-[#C5A059] to-[#996515] text-white shadow-sm' : 'text-blue-200 hover:text-white'}`}
+                >
+                  💼 Seller Mode
+                </button>
+              </div>
+            )}
+
             {/* Navigation */}
             <nav className="flex-1 overflow-y-auto custom-scrollbar pr-2">
               {Object.entries(
