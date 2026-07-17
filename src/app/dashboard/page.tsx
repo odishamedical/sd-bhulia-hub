@@ -872,6 +872,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [country, setCountry] = useState("India");
+  const [customCountry, setCustomCountry] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
   const [district, setDistrict] = useState("");
   const [block, setBlock] = useState("");
@@ -936,7 +937,13 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           setStoreLogo(data.storeLogo || "");
           setPhone(data.phone || "");
           setWhatsapp(data.whatsapp || "");
-          setCountry(data.country || "India");
+          if (data.country && data.country !== "India" && data.country !== "International") {
+            setCountry("International");
+            setCustomCountry(data.country);
+          } else {
+            setCountry(data.country || "India");
+            setCustomCountry("");
+          }
           setStreetAddress(typeof data.address === "string" ? data.address : (data.address?.streetAddress || ""));
           setDistrict(data.address?.district || data.district || "");
           setBlock(data.address?.block || data.block || "");
@@ -1023,7 +1030,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         storeLogo,
         phone,
         whatsapp,
-        country,
+        country: country === "International" && customCountry ? customCountry : country,
         address: {
           state,
           district,
@@ -1049,7 +1056,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         img: storeLogo,
         phone,
         whatsapp,
-        country,
+        country: country === "International" && customCountry ? customCountry : country,
         state,
         district,
         block,
@@ -2358,6 +2365,9 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                           <option value="India">India</option>
                           {roleTitle !== "Weaver Hub" && <option value="International">International</option>}
                         </select>
+                        {country === "International" && roleTitle !== "Weaver Hub" && (
+                          <input type="text" value={customCountry} onChange={e => setCustomCountry(e.target.value)} placeholder="Enter Country Name (e.g. USA, UK)" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none mt-2" required />
+                        )}
                       </div>
 
                       {country === "India" ? (
