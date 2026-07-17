@@ -14,6 +14,8 @@ import DirectoryGridWidget from "@/components/widgets/DirectoryGridWidget";
 import FeaturedProductWidget from "@/components/widgets/FeaturedProductWidget";
 import CategoryGridWidget from "@/components/widgets/CategoryGridWidget";
 import RichTextWidget from "@/components/widgets/RichTextWidget";
+import ArtisanCirclesWidget from "@/components/widgets/ArtisanCirclesWidget";
+import HeritageStoryWidget from "@/components/widgets/HeritageStoryWidget";
 
 export default function HomeDraftV2() {
   const [widgets, setWidgets] = useState<any[]>([]);
@@ -61,16 +63,6 @@ export default function HomeDraftV2() {
     loadLayout();
   }, []);
 
-  const storyCircles = [
-    { title: "Pure Silk Pata", img: "/bhulia-hero.png", link: "/search?category=Pure Silk Pata" },
-    { title: "Cotton Daily", img: "/bhulia-hero.png", link: "/search?category=Cotton Classics" },
-    { title: "Bomkai", img: "/bhulia-hero.png", link: "/search?design=Bomkai" },
-    { title: "Pasapalli", img: "/bhulia-hero.png", link: "/search?category=Pasapalli" },
-    { title: "Master Weavers", img: "/bhulia-hero.png", link: "#ecosystem" },
-    { title: "Bridal Collection", img: "/bhulia-hero.png", link: "/search?category=Bridal" },
-    { title: "Corporate Gifts", img: "/bhulia-hero.png", link: "/search?category=Gifts" },
-  ];
-
   if (loading) {
      return (
        <div className="min-h-screen bg-[#051815] flex items-center justify-center">
@@ -116,47 +108,11 @@ export default function HomeDraftV2() {
           }
 
           if (widget.type === "ArtisanCircles") {
-            return (
-              <section key={`widget-${idx}`} className="w-full">
-                <div className="flex overflow-x-auto gap-6 sm:gap-12 pb-4 scrollbar-hide snap-x justify-start sm:justify-center px-4">
-                  {storyCircles.map((circle, i) => (
-                    <Link key={i} href={circle.link} className="flex flex-col items-center gap-3 shrink-0 snap-center group cursor-pointer">
-                      <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-[#C5A059]/40 group-hover:border-[#C5A059] group-hover:scale-105 transition-all shadow-lg p-1">
-                        <div className="relative w-full h-full rounded-full overflow-hidden">
-                          <Image src={circle.img} alt={circle.title} fill className="object-cover" />
-                        </div>
-                      </div>
-                      <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-300 group-hover:text-[#C5A059] transition-colors whitespace-nowrap">
-                        {circle.title}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            );
+            return <ArtisanCirclesWidget key={`widget-${idx}`} data={widget.data || {}} />;
           }
 
           if (widget.type === "HeritageStory") {
-            return (
-              <section key={`widget-${idx}`} className="relative w-full rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-2xl flex flex-col md:flex-row items-stretch bg-[#0A2520]">
-                <div className="w-full md:w-1/2 relative h-[300px] md:h-auto">
-                  <Image src="/bhulia-hero.png" alt="Heritage" fill className="object-cover" />
-                  <div className="absolute inset-0 bg-black/30"></div>
-                </div>
-                <div className="w-full md:w-1/2 p-8 sm:p-16 flex flex-col justify-center text-center md:text-left">
-                  <span className="text-[#C5A059] text-xs font-bold uppercase tracking-[0.2em] mb-4">Our Promise</span>
-                  <h3 className="text-3xl md:text-5xl font-serif font-bold text-white mb-6 leading-tight">Discover 100% Authentic Sambalpuri Handloom Sarees at Bhulia.com</h3>
-                  <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-8">
-                    Each piece carries the Bhulia Verified Seal, connecting you directly to real weavers. By choosing us, you help preserve Odisha's 800-year heritage while supporting artisans at fair prices.
-                  </p>
-                  <div>
-                    <Link href="/directory" className="inline-block px-8 py-3 bg-[#051815] border border-[#C5A059] text-[#C5A059] font-bold text-xs uppercase tracking-widest hover:bg-[#C5A059] hover:text-[#0A1021] transition-all">
-                      Learn About Our Process
-                    </Link>
-                  </div>
-                </div>
-              </section>
-            );
+            return <HeritageStoryWidget key={`widget-${idx}`} data={widget.data || {}} />;
           }
 
           return null;

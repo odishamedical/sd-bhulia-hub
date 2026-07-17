@@ -111,6 +111,15 @@ export default function AdminPageBuilder() {
       ]};
     } else if (type === "RichText") {
       newWidget.data = { title: "Our Story", content: "<p>Write something beautiful here...</p>" };
+    } else if (type === "ArtisanCircles") {
+      newWidget.data = { circles: [
+        { title: "Sarees", link: "/search", img: "/bhulia-hero.png" },
+        { title: "Gifts", link: "/search", img: "/bhulia-hero.png" }
+      ] };
+    } else if (type === "HeritageStory") {
+      newWidget.data = { badge: "Our Promise", title: "Handloom Legacy", content: "Write your heritage story.", btnText: "Learn More", btnLink: "/directory", imgUrl: "/bhulia-hero.png" };
+    } else if (type === "BannerSlot") {
+      newWidget.data = { id: "custom_slot" };
     }
     
     setWidgets([...widgets, newWidget]);
@@ -625,6 +634,171 @@ export default function AdminPageBuilder() {
                         </button>
                       </div>
                     </div>
+                  {widget.type === "HeritageStory" && (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Badge</label>
+                          <input 
+                            type="text" 
+                            value={widget.data.badge || ""} 
+                            onChange={(e) => {
+                              const newWidgets = [...widgets];
+                              newWidgets[index].data.badge = e.target.value;
+                              setWidgets(newWidgets);
+                            }}
+                            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                            placeholder="Our Promise"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Title</label>
+                          <input 
+                            type="text" 
+                            value={widget.data.title || ""} 
+                            onChange={(e) => {
+                              const newWidgets = [...widgets];
+                              newWidgets[index].data.title = e.target.value;
+                              setWidgets(newWidgets);
+                            }}
+                            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                            placeholder="Main Heading"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Content (Paragraph)</label>
+                        <textarea 
+                          value={widget.data.content || ""} 
+                          onChange={(e) => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.content = e.target.value;
+                            setWidgets(newWidgets);
+                          }}
+                          rows={4}
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800 text-sm"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Button Text</label>
+                          <input 
+                            type="text" 
+                            value={widget.data.btnText || ""} 
+                            onChange={(e) => {
+                              const newWidgets = [...widgets];
+                              newWidgets[index].data.btnText = e.target.value;
+                              setWidgets(newWidgets);
+                            }}
+                            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Button Link</label>
+                          <input 
+                            type="text" 
+                            value={widget.data.btnLink || ""} 
+                            onChange={(e) => {
+                              const newWidgets = [...widgets];
+                              newWidgets[index].data.btnLink = e.target.value;
+                              setWidgets(newWidgets);
+                            }}
+                            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Side Image URL</label>
+                        <input 
+                          type="text" 
+                          value={widget.data.imgUrl || ""} 
+                          onChange={(e) => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.imgUrl = e.target.value;
+                            setWidgets(newWidgets);
+                          }}
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                          placeholder="/bhulia-hero.png"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {widget.type === "ArtisanCircles" && (
+                    <div className="space-y-4">
+                      <p className="text-sm text-gray-500">Configure the top navigation circles.</p>
+                      {widget.data.circles?.map((circle: any, cIdx: number) => (
+                        <div key={cIdx} className="flex items-center gap-4 bg-gray-50 p-2 rounded border border-gray-200">
+                          <img src={circle.img || "/bhulia-hero.png"} alt="circle" className="w-10 h-10 rounded-full object-cover border border-gray-300" />
+                          <div className="flex-1 grid grid-cols-3 gap-2">
+                            <input 
+                              type="text" 
+                              value={circle.title || ""} 
+                              onChange={(e) => {
+                                const newWidgets = [...widgets];
+                                newWidgets[index].data.circles[cIdx].title = e.target.value;
+                                setWidgets(newWidgets);
+                              }}
+                              className="col-span-1 border border-gray-300 rounded px-2 py-1 text-sm"
+                              placeholder="Title"
+                            />
+                            <input 
+                              type="text" 
+                              value={circle.link || ""} 
+                              onChange={(e) => {
+                                const newWidgets = [...widgets];
+                                newWidgets[index].data.circles[cIdx].link = e.target.value;
+                                setWidgets(newWidgets);
+                              }}
+                              className="col-span-1 border border-gray-300 rounded px-2 py-1 text-sm"
+                              placeholder="Link"
+                            />
+                            <input 
+                              type="text" 
+                              value={circle.img || ""} 
+                              onChange={(e) => {
+                                const newWidgets = [...widgets];
+                                newWidgets[index].data.circles[cIdx].img = e.target.value;
+                                setWidgets(newWidgets);
+                              }}
+                              className="col-span-1 border border-gray-300 rounded px-2 py-1 text-sm"
+                              placeholder="Image URL"
+                            />
+                          </div>
+                          <button onClick={() => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.circles.splice(cIdx, 1);
+                            setWidgets(newWidgets);
+                          }} className="text-red-500 font-bold hover:underline">X</button>
+                        </div>
+                      ))}
+                      <button onClick={() => {
+                        const newWidgets = [...widgets];
+                        if (!newWidgets[index].data.circles) newWidgets[index].data.circles = [];
+                        newWidgets[index].data.circles.push({ title: "New", link: "/", img: "/bhulia-hero.png" });
+                        setWidgets(newWidgets);
+                      }} className="bg-gray-200 text-gray-800 px-4 py-2 text-sm rounded font-bold hover:bg-gray-300">+ Add Circle</button>
+                    </div>
+                  )}
+
+                  {widget.type === "BannerSlot" && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Ad Banner Slot ID</label>
+                        <input 
+                          type="text" 
+                          value={widget.data.id || ""} 
+                          onChange={(e) => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.id = e.target.value;
+                            setWidgets(newWidgets);
+                          }}
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                          placeholder="e.g. content_bottom"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">This will render an ad from the global active promotions matching this slot ID.</p>
+                      </div>
+                    </div>
                   )}
 
                 </div>
@@ -671,6 +845,18 @@ export default function AdminPageBuilder() {
                 <button onClick={() => addWidget("RichText")} className="p-4 border border-gray-200 rounded hover:border-[#C5A059] hover:bg-[#FFF8E7] text-left group transition-colors">
                   <div className="font-bold text-gray-800 group-hover:text-[#C5A059] mb-1">Rich Text & HTML</div>
                   <div className="text-xs text-gray-500">Add SEO paragraphs or embed code snippets.</div>
+                </button>
+                <button onClick={() => addWidget("ArtisanCircles")} className="p-4 border border-gray-200 rounded hover:border-[#C5A059] hover:bg-[#FFF8E7] text-left group transition-colors">
+                  <div className="font-bold text-gray-800 group-hover:text-[#C5A059] mb-1">Artisan Circles</div>
+                  <div className="text-xs text-gray-500">Row of circular navigation icons.</div>
+                </button>
+                <button onClick={() => addWidget("HeritageStory")} className="p-4 border border-gray-200 rounded hover:border-[#C5A059] hover:bg-[#FFF8E7] text-left group transition-colors">
+                  <div className="font-bold text-gray-800 group-hover:text-[#C5A059] mb-1">Heritage Story</div>
+                  <div className="text-xs text-gray-500">Large split image & text block for branding.</div>
+                </button>
+                <button onClick={() => addWidget("BannerSlot")} className="p-4 border border-gray-200 rounded hover:border-[#C5A059] hover:bg-[#FFF8E7] text-left group transition-colors">
+                  <div className="font-bold text-gray-800 group-hover:text-[#C5A059] mb-1">Global Banner Ad</div>
+                  <div className="text-xs text-gray-500">Injects a promotional banner ad slot.</div>
                 </button>
               </div>
             </div>
