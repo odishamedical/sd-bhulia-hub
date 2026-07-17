@@ -11,6 +11,9 @@ import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 import HeroSliderWidget from "@/components/widgets/HeroSliderWidget";
 import ProductCarouselWidget from "@/components/widgets/ProductCarouselWidget";
 import DirectoryGridWidget from "@/components/widgets/DirectoryGridWidget";
+import FeaturedProductWidget from "@/components/widgets/FeaturedProductWidget";
+import CategoryGridWidget from "@/components/widgets/CategoryGridWidget";
+import RichTextWidget from "@/components/widgets/RichTextWidget";
 
 export default function HomeDraftV2() {
   const [widgets, setWidgets] = useState<any[]>([]);
@@ -94,6 +97,18 @@ export default function HomeDraftV2() {
           
           if (widget.type === "DirectoryGrid") {
             return <DirectoryGridWidget key={`widget-${idx}`} data={widget.data} />;
+          }
+
+          if (widget.type === "FeaturedProduct") {
+            return <FeaturedProductWidget key={`widget-${idx}`} data={widget.data} userRole={userRole} />;
+          }
+
+          if (widget.type === "CategoryGrid") {
+            return <CategoryGridWidget key={`widget-${idx}`} data={widget.data} />;
+          }
+
+          if (widget.type === "RichText") {
+            return <RichTextWidget key={`widget-${idx}`} data={widget.data} />;
           }
 
           if (widget.type === "BannerSlot") {

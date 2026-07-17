@@ -102,6 +102,15 @@ export default function AdminPageBuilder() {
       newWidget.data = { title: "New Carousel", filterType: "trending", itemLimit: 6 };
     } else if (type === "DirectoryGrid") {
       newWidget.data = { title: "Directory", subtitle: "Meet our partners", role: "weaver", itemLimit: 4 };
+    } else if (type === "FeaturedProduct") {
+      newWidget.data = { title: "Featured Product", subtitle: "Spotlight", productId: "", btnText: "Shop Now", badgeText: "Top Pick" };
+    } else if (type === "CategoryGrid") {
+      newWidget.data = { title: "Shop by Category", subtitle: "Explore our collections", categories: [
+        { title: "Pure Silk Pata", imgUrl: "", link: "/search?category=Pure Silk Pata" },
+        { title: "Cotton Daily", imgUrl: "", link: "/search?category=Cotton" }
+      ]};
+    } else if (type === "RichText") {
+      newWidget.data = { title: "Our Story", content: "<p>Write something beautiful here...</p>" };
     }
     
     setWidgets([...widgets, newWidget]);
@@ -388,6 +397,232 @@ export default function AdminPageBuilder() {
                         + Add Another Banner
                       </button>
                     </div>
+                  {widget.type === "RichText" && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Heading</label>
+                        <input 
+                          type="text" 
+                          value={widget.data.title || ""} 
+                          onChange={(e) => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.title = e.target.value;
+                            setWidgets(newWidgets);
+                          }}
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Content (HTML)</label>
+                        <textarea 
+                          value={widget.data.content || ""} 
+                          onChange={(e) => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.content = e.target.value;
+                            setWidgets(newWidgets);
+                          }}
+                          rows={6}
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800 font-mono text-sm"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {widget.type === "FeaturedProduct" && (
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Main Title (Optional override)</label>
+                        <input 
+                          type="text" 
+                          value={widget.data.title || ""} 
+                          onChange={(e) => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.title = e.target.value;
+                            setWidgets(newWidgets);
+                          }}
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Subtitle</label>
+                        <input 
+                          type="text" 
+                          value={widget.data.subtitle || ""} 
+                          onChange={(e) => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.subtitle = e.target.value;
+                            setWidgets(newWidgets);
+                          }}
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Product ID (Leave blank to use first active offer)</label>
+                        <input 
+                          type="text" 
+                          value={widget.data.productId || ""} 
+                          onChange={(e) => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.productId = e.target.value;
+                            setWidgets(newWidgets);
+                          }}
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Badge Text</label>
+                        <input 
+                          type="text" 
+                          value={widget.data.badgeText || ""} 
+                          onChange={(e) => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.badgeText = e.target.value;
+                            setWidgets(newWidgets);
+                          }}
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">Button Text</label>
+                        <input 
+                          type="text" 
+                          value={widget.data.btnText || ""} 
+                          onChange={(e) => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.btnText = e.target.value;
+                            setWidgets(newWidgets);
+                          }}
+                          className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {widget.type === "CategoryGrid" && (
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Section Title</label>
+                          <input 
+                            type="text" 
+                            value={widget.data.title || ""} 
+                            onChange={(e) => {
+                              const newWidgets = [...widgets];
+                              newWidgets[index].data.title = e.target.value;
+                              setWidgets(newWidgets);
+                            }}
+                            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Subtitle</label>
+                          <input 
+                            type="text" 
+                            value={widget.data.subtitle || ""} 
+                            onChange={(e) => {
+                              const newWidgets = [...widgets];
+                              newWidgets[index].data.subtitle = e.target.value;
+                              setWidgets(newWidgets);
+                            }}
+                            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-800"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-2">Categories</label>
+                        {widget.data.categories?.map((cat: any, cIdx: number) => (
+                          <div key={cIdx} className="bg-white p-4 border border-gray-200 rounded mb-4">
+                            <div className="flex justify-between items-center mb-2">
+                              <h4 className="font-bold text-[#C5A059] text-sm">Category {cIdx + 1}</h4>
+                              <button 
+                                onClick={() => {
+                                  const newWidgets = [...widgets];
+                                  newWidgets[index].data.categories.splice(cIdx, 1);
+                                  setWidgets(newWidgets);
+                                }}
+                                className="text-red-500 text-xs font-bold hover:underline"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="col-span-1 md:col-span-2 bg-gray-50 p-4 border border-gray-200 rounded flex items-center gap-4">
+                                {cat.imgUrl ? (
+                                  <img src={cat.imgUrl} alt="Preview" className="w-16 h-16 object-cover rounded border border-gray-300 shadow-sm" />
+                                ) : (
+                                  <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-400">Img</div>
+                                )}
+                                <div className="flex-1">
+                                  <label className="block text-xs font-bold text-gray-700 mb-1">Upload Image</label>
+                                  <input 
+                                    type="file" 
+                                    accept="image/*"
+                                    onChange={async (e) => {
+                                      if (!e.target.files || e.target.files.length === 0) return;
+                                      const file = e.target.files[0];
+                                      const uploadId = `cat-${index}-${cIdx}`;
+                                      setUploadingImage(prev => ({ ...prev, [uploadId]: true }));
+                                      try {
+                                        const storageRef = ref(storage, `categories/${Date.now()}_${file.name}`);
+                                        await uploadBytes(storageRef, file);
+                                        const downloadURL = await getDownloadURL(storageRef);
+                                        const newWidgets = [...widgets];
+                                        newWidgets[index].data.categories[cIdx].imgUrl = downloadURL;
+                                        setWidgets(newWidgets);
+                                      } catch (error) {
+                                        console.error("Error uploading image:", error);
+                                      } finally {
+                                        setUploadingImage(prev => ({ ...prev, [uploadId]: false }));
+                                      }
+                                    }}
+                                    disabled={uploadingImage[`cat-${index}-${cIdx}`]}
+                                    className="text-sm text-gray-600 file:mr-4 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#C5A059] file:text-white"
+                                  />
+                                  {uploadingImage[`cat-${index}-${cIdx}`] && <span className="text-xs text-blue-600 ml-2 font-bold animate-pulse">Uploading...</span>}
+                                </div>
+                              </div>
+                              <div>
+                                <label className="block text-xs font-bold text-gray-700 mb-1">Title</label>
+                                <input 
+                                  type="text" 
+                                  value={cat.title || ""} 
+                                  onChange={(e) => {
+                                    const newWidgets = [...widgets];
+                                    newWidgets[index].data.categories[cIdx].title = e.target.value;
+                                    setWidgets(newWidgets);
+                                  }}
+                                  className="w-full border border-gray-300 rounded px-2 py-1.5 text-gray-800 text-sm focus:border-[#C5A059] focus:outline-none"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-bold text-gray-700 mb-1">Link URL</label>
+                                <input 
+                                  type="text" 
+                                  value={cat.link || ""} 
+                                  onChange={(e) => {
+                                    const newWidgets = [...widgets];
+                                    newWidgets[index].data.categories[cIdx].link = e.target.value;
+                                    setWidgets(newWidgets);
+                                  }}
+                                  className="w-full border border-gray-300 rounded px-2 py-1.5 text-gray-800 text-sm focus:border-[#C5A059] focus:outline-none"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        <button 
+                          onClick={() => {
+                            const newWidgets = [...widgets];
+                            newWidgets[index].data.categories.push({ title: "New Category", imgUrl: "", link: "/" });
+                            setWidgets(newWidgets);
+                          }}
+                          className="text-sm bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 font-semibold"
+                        >
+                          + Add Category
+                        </button>
+                      </div>
+                    </div>
                   )}
 
                 </div>
@@ -410,7 +645,7 @@ export default function AdminPageBuilder() {
               <div className="p-4 border-b border-gray-200 bg-gray-50">
                 <h3 className="font-bold text-gray-800">Select Widget Type</h3>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-2 p-4">
                 <button onClick={() => addWidget("HeroSlider")} className="p-4 border border-gray-200 rounded hover:border-[#C5A059] hover:bg-[#FFF8E7] text-left group transition-colors">
                   <div className="font-bold text-gray-800 group-hover:text-[#C5A059] mb-1">Hero Slider</div>
                   <div className="text-xs text-gray-500">Large sliding banners at the top of the page.</div>
@@ -422,6 +657,18 @@ export default function AdminPageBuilder() {
                 <button onClick={() => addWidget("DirectoryGrid")} className="p-4 border border-gray-200 rounded hover:border-[#C5A059] hover:bg-[#FFF8E7] text-left group transition-colors">
                   <div className="font-bold text-gray-800 group-hover:text-[#C5A059] mb-1">Directory Grid</div>
                   <div className="text-xs text-gray-500">Showcase a grid of verified partners.</div>
+                </button>
+                <button onClick={() => addWidget("FeaturedProduct")} className="p-4 border border-gray-200 rounded hover:border-[#C5A059] hover:bg-[#FFF8E7] text-left group transition-colors">
+                  <div className="font-bold text-gray-800 group-hover:text-[#C5A059] mb-1">Featured Product</div>
+                  <div className="text-xs text-gray-500">Highlight a single product to drive conversions.</div>
+                </button>
+                <button onClick={() => addWidget("CategoryGrid")} className="p-4 border border-gray-200 rounded hover:border-[#C5A059] hover:bg-[#FFF8E7] text-left group transition-colors">
+                  <div className="font-bold text-gray-800 group-hover:text-[#C5A059] mb-1">Category Grid</div>
+                  <div className="text-xs text-gray-500">Visual navigation for different product lines.</div>
+                </button>
+                <button onClick={() => addWidget("RichText")} className="p-4 border border-gray-200 rounded hover:border-[#C5A059] hover:bg-[#FFF8E7] text-left group transition-colors">
+                  <div className="font-bold text-gray-800 group-hover:text-[#C5A059] mb-1">Rich Text & HTML</div>
+                  <div className="text-xs text-gray-500">Add SEO paragraphs or embed code snippets.</div>
                 </button>
               </div>
             </div>
