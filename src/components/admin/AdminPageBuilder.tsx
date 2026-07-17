@@ -397,6 +397,8 @@ export default function AdminPageBuilder() {
                         + Add Another Banner
                       </button>
                     </div>
+                  )}
+
                   {widget.type === "RichText" && (
                     <div className="space-y-4">
                       <div>
