@@ -120,7 +120,7 @@ export default function DeveloperHubPage() {
         
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-white border-b border-gray-200 text-gray-500 uppercase tracking-wider font-bold text-[10px]">
+            <thead className="bg-white border-b border-gray-200 text-slate-800 uppercase tracking-wider font-bold text-[10px]">
               <tr>
                 <th className="px-6 py-4">Key Name</th>
                 <th className="px-6 py-4">Token Prefix</th>
@@ -156,7 +156,7 @@ export default function DeveloperHubPage() {
         
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-white border-b border-gray-200 text-gray-500 uppercase tracking-wider font-bold text-[10px]">
+            <thead className="bg-white border-b border-gray-200 text-slate-800 uppercase tracking-wider font-bold text-[10px]">
               <tr>
                 <th className="px-6 py-4">Endpoint URL</th>
                 <th className="px-6 py-4">Listening Events</th>

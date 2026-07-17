@@ -108,7 +108,7 @@ export default function TaxReportingPage() {
                 type="date" 
                 value={dateRange.start}
                 onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 outline-none" 
+                className="w-full px-4 py-3 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl text-sm focus:bg-white focus:border-blue-500 outline-none" 
               />
             </div>
             <div>
@@ -117,7 +117,7 @@ export default function TaxReportingPage() {
                 type="date" 
                 value={dateRange.end}
                 onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 outline-none" 
+                className="w-full px-4 py-3 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl text-sm focus:bg-white focus:border-blue-500 outline-none" 
               />
             </div>
           </div>

@@ -184,7 +184,7 @@ export default function PayoutVaultPage() {
                     </td>
                     <td className="px-6 py-5 align-top">
                       <p className="text-lg font-bold text-emerald-600">₹ {Number(hold.amount).toLocaleString()}</p>
-                      <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Holding in Payout</p>
+                      <p className="text-[10px] text-slate-800 uppercase tracking-widest font-bold mt-1">Holding in Payout</p>
                     </td>
                     <td className="px-6 py-5 align-top text-xs">
                       <div className="flex flex-col gap-2">

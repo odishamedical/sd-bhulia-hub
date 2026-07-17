@@ -94,11 +94,11 @@ export default function AuditLogPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="p-5 text-xs font-black text-gray-500 uppercase tracking-widest w-48">Timestamp</th>
-                <th className="p-5 text-xs font-black text-gray-500 uppercase tracking-widest">Actor & Role</th>
-                <th className="p-5 text-xs font-black text-gray-500 uppercase tracking-widest">Action</th>
-                <th className="p-5 text-xs font-black text-gray-500 uppercase tracking-widest">Target Object</th>
-                <th className="p-5 text-xs font-black text-gray-500 uppercase tracking-widest text-right">IP / Status</th>
+                <th className="p-5 text-xs font-black text-slate-800 uppercase tracking-widest w-48">Timestamp</th>
+                <th className="p-5 text-xs font-black text-slate-800 uppercase tracking-widest">Actor & Role</th>
+                <th className="p-5 text-xs font-black text-slate-800 uppercase tracking-widest">Action</th>
+                <th className="p-5 text-xs font-black text-slate-800 uppercase tracking-widest">Target Object</th>
+                <th className="p-5 text-xs font-black text-slate-800 uppercase tracking-widest text-right">IP / Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">

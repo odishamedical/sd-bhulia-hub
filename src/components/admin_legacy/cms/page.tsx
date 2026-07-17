@@ -360,11 +360,11 @@ export default function CMSAdminPage() {
             <form onSubmit={handleCreateTemplate} className="space-y-6">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Template Name</label>
-                <input required value={newTitle} onChange={e => setNewTitle(e.target.value)} type="text" className="w-full bg-gray-50 border border-gray-200 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all placeholder:text-slate-400" placeholder="e.g. Master Weaver Luxury Layout" />
+                <input required value={newTitle} onChange={e => setNewTitle(e.target.value)} type="text" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all placeholder:text-slate-400" placeholder="e.g. Master Weaver Luxury Layout" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Target Audience (Type)</label>
-                <select value={newType} onChange={e => setNewType(e.target.value as PageType)} className="w-full bg-gray-50 border border-gray-200 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all cursor-pointer">
+                <select value={newType} onChange={e => setNewType(e.target.value as PageType)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all cursor-pointer">
                   <option value="homepage">Homepage / Main Site Route</option>
                   <option value="weaver">Master Weaver Profile</option>
                   <option value="store">Retail Store / Store Page</option>

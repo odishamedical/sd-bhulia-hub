@@ -195,7 +195,7 @@ export default function AdminProducts() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="font-bold text-blue-600">{product.storeName || "Unknown"}</div>
-                        <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-0.5">{product.sellerType || "system"}</div>
+                        <div className="text-[10px] text-slate-800 uppercase tracking-widest font-bold mt-0.5">{product.sellerType || "system"}</div>
                       </td>
                       <td className="px-6 py-4 text-right space-x-2">
                         <select

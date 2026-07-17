@@ -50,11 +50,11 @@ export default function SEOPage() {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Title Tag</label>
-                  <input type="text" defaultValue={item.title} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                  <input type="text" defaultValue={item.title} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Meta Description</label>
-                  <textarea defaultValue={item.description} rows={2} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none resize-none" />
+                  <textarea defaultValue={item.description} rows={2} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none resize-none" />
                 </div>
               </div>
             </div>

@@ -547,11 +547,11 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             <p className="text-sm text-gray-500 mb-6">Please provide your contact details to ensure smooth order deliveries and communication.</p>
             <form onSubmit={handleSavePhonePopup} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number *</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Phone Number *</label>
                 <input type="text" required value={phone} onChange={e => setPhone(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:border-[#0070F3] outline-none" placeholder="+91" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Number</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">WhatsApp Number</label>
                 <input type="text" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:border-[#0070F3] outline-none" placeholder="+91" />
               </div>
               <div className="flex gap-3 pt-4">
@@ -718,20 +718,20 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <form onSubmit={handleSaveProfile} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name *</label>
-                <input type="text" required value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Full Name *</label>
+                <input type="text" required value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Email Address</label>
                 <input type="email" className="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50 text-gray-500 cursor-not-allowed" value={auth.currentUser?.email || ""} disabled />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number *</label>
-                <input type="text" required value={phone} onChange={e => setPhone(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Phone Number *</label>
+                <input type="text" required value={phone} onChange={e => setPhone(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Number</label>
-                <input type="text" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">WhatsApp Number</label>
+                <input type="text" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
               </div>
             </div>
 
@@ -739,11 +739,11 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
               <h3 className="font-bold text-gray-900 mb-4">Location & Address</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Country</label>
                   <input type="text" required value={country} onChange={e => setCountry(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none" placeholder="India" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State / Province *</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">State / Province *</label>
                   {country.toLowerCase() === "india" || country === "" ? (
                     <select required value={state} onChange={e => setState(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none">
                       <option value="">Select State</option>
@@ -754,7 +754,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District *</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">District *</label>
                   {state === "Odisha" ? (
                     <select required value={district} onChange={e => setDistrict(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none">
                       <option value="">Select District</option>
@@ -768,7 +768,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block / Tehsil</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Block / Tehsil</label>
                   {state === "Odisha" && district && ODISHA_DISTRICT_BLOCKS[district as keyof typeof ODISHA_DISTRICT_BLOCKS] ? (
                     <select value={block} onChange={e => setBlock(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none">
                       <option value="">Select Block</option>
@@ -779,18 +779,18 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town/Village</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Town/Village</label>
                   <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code *</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">PIN Code *</label>
                   <input type="text" required value={pincode} onChange={e => setPincode(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:ring-2 focus:ring-[#0070F3] outline-none" />
                 </div>
               </div>
               
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Complete Address (House No, Street, Landmark) *</label>
-                <textarea required value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={3} placeholder="Enter your full address including house/flat number, street name, and any landmarks..."></textarea>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Complete Address (House No, Street, Landmark) *</label>
+                <textarea required value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={3} placeholder="Enter your full address including house/flat number, street name, and any landmarks..."></textarea>
               </div>
             </div>
 
@@ -1536,11 +1536,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   {uploadStep === 1 && (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in slide-in-from-right-4 fade-in">
       <div className="md:col-span-2">
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Name</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Product Name</label>
         <input type="text" value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
       </div>
       <div>
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Category</label>
         <input list="categoryList" value={productCategory} onChange={e => setProductCategory(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="Select or type category..." required />
         <datalist id="categoryList">
           <option value="Saree" />
@@ -1552,23 +1552,23 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         </datalist>
       </div>
       <div>
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Original Weaver Name</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Original Weaver Name</label>
         <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
       </div>
       <div>
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Retail Selling Price (₹)</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Retail Selling Price (₹)</label>
         <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required placeholder="e.g. 34500" />
       </div>
       <div>
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Retail MRP (₹)</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Retail MRP (₹)</label>
         <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required placeholder="e.g. 42000" />
       </div>
       <div className="md:col-span-2">
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Short Description</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Short Description</label>
         <textarea value={productDesc} onChange={e => setProductDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required rows={2} />
       </div>
       <div className="md:col-span-2">
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Long Artisan Story Description</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Long Artisan Story Description</label>
         <textarea value={productLongDesc} onChange={e => setProductLongDesc(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required rows={4} />
       </div>
     </div>
@@ -1577,7 +1577,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   {uploadStep === 2 && (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in slide-in-from-right-4 fade-in">
       <div>
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Material</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Product Material</label>
         <input list="materialList" value={material} onChange={e => setMaterial(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="Select or type material..." required />
         <datalist id="materialList">
           <option value="Pure Cotton" />
@@ -1587,7 +1587,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         </datalist>
       </div>
       <div>
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Product Design</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Product Design</label>
         <input list="designList" value={design} onChange={e => setDesign(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="Select or type design..." required />
         <datalist id="designList">
           <option value="Sambalpuri Ikat (Bandha)" />
@@ -1599,22 +1599,22 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         </datalist>
       </div>
       <div>
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Color Palette</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Color Palette</label>
         <input type="text" value={colorUse} onChange={e => setColorUse(e.target.value)} placeholder="e.g. Royal Blue & Gold" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
       </div>
       <div>
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Length</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Length</label>
         <input type="text" value={length} onChange={e => setLength(e.target.value)} placeholder="e.g. 6.2 Meters" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
       </div>
       <div>
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Blouse Status</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Blouse Status</label>
         <select value={hasBlouse ? "true" : "false"} onChange={e => setHasBlouse(e.target.value === "true")} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all">
           <option value="true">With Blouse Piece</option>
           <option value="false">Without Blouse Piece</option>
         </select>
       </div>
       <div>
-        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Stock Quantity</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Total Stock Quantity</label>
         <input type="number" min="1" value={stockQuantity} onChange={e => setStockQuantity(Number(e.target.value))} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
       </div>
     </div>
@@ -1853,11 +1853,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         <div className="space-y-6 animate-in fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pending Payouts</div>
+              <div className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Pending Payouts</div>
               <div className="text-3xl font-black text-gray-900">₹0</div>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Payouts</div>
+              <div className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Total Payouts</div>
               <div className="text-3xl font-black text-green-600">₹0</div>
             </div>
           </div>
@@ -1866,24 +1866,24 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
             <form className="space-y-6" onSubmit={e => { e.preventDefault(); alert("Bank details saved securely."); }}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Holder Name</label>
-                  <input type="text" placeholder="As per bank records" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Account Holder Name</label>
+                  <input type="text" placeholder="As per bank records" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Bank Name</label>
-                  <input type="text" placeholder="e.g. State Bank of India" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Bank Name</label>
+                  <input type="text" placeholder="e.g. State Bank of India" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Number</label>
-                  <input type="text" placeholder="Account Number" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Account Number</label>
+                  <input type="text" placeholder="Account Number" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">IFSC Code</label>
-                  <input type="text" placeholder="e.g. SBIN0001234" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono uppercase" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">IFSC Code</label>
+                  <input type="text" placeholder="e.g. SBIN0001234" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono uppercase" required />
                 </div>
                 <div className="col-span-1 md:col-span-2">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">UPI Details (Optional)</label>
-                  <input type="text" placeholder="yourname@upi" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono" />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">UPI Details (Optional)</label>
+                  <input type="text" placeholder="yourname@upi" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono" />
                 </div>
               </div>
               <div className="flex justify-end mt-4">
@@ -1962,7 +1962,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                   value={staffEmailInput}
                   onChange={(e) => setStaffEmailInput(e.target.value)}
                   placeholder="Assistant's Email Address" 
-                  className="flex-1 border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none" 
+                  className="flex-1 border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none" 
                 />
                 <button 
                   onClick={async () => {
@@ -2019,32 +2019,32 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
               <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">1. Personal Identity</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name (As per Bank/Aadhaar)</label>
-                  <input type="text" value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Full Name (As per Bank/Aadhaar)</label>
+                  <input type="text" value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Date of Birth</label>
-                  <input type="date" value={personalDob} onChange={e => setPersonalDob(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Date of Birth</label>
+                  <input type="date" value={personalDob} onChange={e => setPersonalDob(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
                 <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Country</label>
                     <select value={personalCountry} onChange={e => {
                       setPersonalCountry(e.target.value);
                       if (e.target.value !== "India") { setPersonalState(""); setPersonalDistrict(""); }
                       else { setPersonalState("Odisha"); }
-                    }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
+                    }} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
                       <option value="India">India</option>
                       {roleTitle !== "Weaver Hub" && <option value="International">International</option>}
                     </select>
                     {personalCountry === "International" && roleTitle !== "Weaver Hub" && (
-                      <input type="text" value={customPersonalCountry} onChange={e => setCustomPersonalCountry(e.target.value)} placeholder="Enter Country Name (e.g. USA, UK)" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none mt-2" required />
+                      <input type="text" value={customPersonalCountry} onChange={e => setCustomPersonalCountry(e.target.value)} placeholder="Enter Country Name (e.g. USA, UK)" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none mt-2" required />
                     )}
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">State</label>
                     {personalCountry === "India" ? (
-                      <select value={personalState} onChange={e => { setPersonalState(e.target.value); setPersonalDistrict(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
+                      <select value={personalState} onChange={e => { setPersonalState(e.target.value); setPersonalDistrict(""); }} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
                         <option value="">Select State...</option>
                         {roleTitle === "Weaver Hub" ? (
                           <option value="Odisha">Odisha</option>
@@ -2053,47 +2053,47 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                         )}
                       </select>
                     ) : (
-                      <input type="text" value={personalState} onChange={e => setPersonalState(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                      <input type="text" value={personalState} onChange={e => setPersonalState(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                     )}
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">District</label>
                     {personalCountry === "India" && personalState === "Odisha" ? (
-                      <select value={personalDistrict} onChange={e => { setPersonalDistrict(e.target.value); setPersonalBlock(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                      <select value={personalDistrict} onChange={e => { setPersonalDistrict(e.target.value); setPersonalBlock(""); }} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                         <option value="">Select District...</option>
                         {(roleTitle === "Weaver Hub" ? WEAVER_DISTRICTS : ODISHA_DISTRICTS).map(d => <option key={d} value={d}>{d}</option>)}
                       </select>
                     ) : (
-                      <input type="text" value={personalDistrict} onChange={e => setPersonalDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                      <input type="text" value={personalDistrict} onChange={e => setPersonalDistrict(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                     )}
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Block</label>
                     {personalCountry === "India" && personalState === "Odisha" && personalDistrict && ODISHA_DISTRICT_BLOCKS[personalDistrict] ? (
-                      <select value={personalBlock} onChange={e => setPersonalBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                      <select value={personalBlock} onChange={e => setPersonalBlock(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                         <option value="">Select Block...</option>
                         {ODISHA_DISTRICT_BLOCKS[personalDistrict].map(b => <option key={b} value={b}>{b}</option>)}
                       </select>
                     ) : (
-                      <input type="text" value={personalBlock} onChange={e => setPersonalBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                      <input type="text" value={personalBlock} onChange={e => setPersonalBlock(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                     )}
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town / Village</label>
-                    <input type="text" value={personalTownVillage} onChange={e => setPersonalTownVillage(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Town / Village</label>
+                    <input type="text" value={personalTownVillage} onChange={e => setPersonalTownVillage(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
-                    <input type="text" value={personalPin} onChange={e => setPersonalPin(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">PIN Code</label>
+                    <input type="text" value={personalPin} onChange={e => setPersonalPin(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                   </div>
                   <div className="col-span-2">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street Address</label>
-                    <textarea value={personalAddress} onChange={e => setPersonalAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required rows={2} />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Street Address</label>
+                    <textarea value={personalAddress} onChange={e => setPersonalAddress(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required rows={2} />
                   </div>
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Years of Experience / Established Year</label>
-                  <input type="text" value={personalExperience} onChange={e => setPersonalExperience(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Years of Experience / Established Year</label>
+                  <input type="text" value={personalExperience} onChange={e => setPersonalExperience(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
               </div>
             </div>
@@ -2102,24 +2102,24 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
               <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">2. Bank Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Holder Name</label>
-                  <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Account Holder Name</label>
+                  <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Bank Name</label>
-                  <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Bank Name</label>
+                  <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Number</label>
-                  <input type="text" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-mono" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Account Number</label>
+                  <input type="text" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-mono" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">IFSC Code</label>
-                  <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-mono uppercase" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">IFSC Code</label>
+                  <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-mono uppercase" required />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">UPI ID (Optional)</label>
-                  <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-mono" />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">UPI ID (Optional)</label>
+                  <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-mono" />
                 </div>
               </div>
             </div>
@@ -2147,8 +2147,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
               <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">KYC Documents</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">KYC Document Type</label>
-                  <select value={kycType} onChange={e => setKycType(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">KYC Document Type</label>
+                  <select value={kycType} onChange={e => setKycType(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                     <option value="">Select Document Type...</option>
                     <option value="gst">GST Registration Number</option>
                     <option value="udyam">Aadhaar Udyam Number</option>
@@ -2156,12 +2156,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                   </select>
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document ID / Number</label>
-                  <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Document ID / Number</label>
+                  <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload KYC Document (Photo/PDF)</label>
-                  <div className="bg-gray-50 border border-gray-200 border-dashed rounded-xl p-6">
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Upload KYC Document (Photo/PDF)</label>
+                  <div className="bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 border-dashed rounded-xl p-6">
                     <ImageUploader folder="kyc_docs" onUpload={url => setKycDocumentUrl(url)} currentImage={kycDocumentUrl} />
                   </div>
                 </div>
@@ -2244,7 +2244,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
             </div>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 text-center">
+          <div className="bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-2xl p-6 text-center">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400 mx-auto mb-3"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             <h4 className="text-lg font-bold text-gray-900 mb-1">Your B2B Status is Pending</h4>
             <p className="text-sm text-gray-500 max-w-md mx-auto">Once the Admin approves your request, you will be able to configure your global wholesale terms here.</p>
@@ -2316,12 +2316,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Store Name / Professional Name</label>
-                    <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Store Name / Professional Name</label>
+                    <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Description</label>
-                    <textarea value={publicDesc} onChange={e => setPublicDesc(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none min-h-[120px]" required />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Public Description</label>
+                    <textarea value={publicDesc} onChange={e => setPublicDesc(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none min-h-[120px]" required />
                   </div>
                   <div className="col-span-2">
                     <ImageUploader value={storeLogo} onChange={setStoreLogo} label="Store Logo / Profile Picture" aspectRatio="square" />
@@ -2330,12 +2330,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-gray-100 pt-6 mb-6">
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public Phone Number</label>
-                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Public Phone Number</label>
+                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Public WhatsApp Number</label>
-                    <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Public WhatsApp Number</label>
+                    <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                   </div>
                 </div>
 
@@ -2343,16 +2343,16 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                   {roleTitle === "Weaver Hub" ? (
                     <>
                       <div className="col-span-2">
-                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+                        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Country</label>
                         <input type="text" value="India" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-gray-500 cursor-not-allowed" />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
+                        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">State</label>
                         <input type="text" value="Odisha" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-gray-500 cursor-not-allowed" />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
-                        <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">District</label>
+                        <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                           <option value="">Select Handloom District...</option>
                           {WEAVER_DISTRICTS.map(d => (
                             <option key={d} value={d}>{d}</option>
@@ -2363,7 +2363,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                   ) : (
                     <>
                       <div className="col-span-2">
-                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+                        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Country</label>
                         <select value={country} onChange={e => {
                           setCountry(e.target.value);
                           if (e.target.value === "International") {
@@ -2371,19 +2371,19 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                           } else {
                             setState("Odisha");
                           }
-                        }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
+                        }} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
                           <option value="India">India</option>
                           {roleTitle !== "Weaver Hub" && <option value="International">International</option>}
                         </select>
                         {country === "International" && roleTitle !== "Weaver Hub" && (
-                          <input type="text" value={customCountry} onChange={e => setCustomCountry(e.target.value)} placeholder="Enter Country Name (e.g. USA, UK)" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none mt-2" required />
+                          <input type="text" value={customCountry} onChange={e => setCustomCountry(e.target.value)} placeholder="Enter Country Name (e.g. USA, UK)" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none mt-2" required />
                         )}
                       </div>
 
                       {country === "India" ? (
                         <div>
-                          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
-                          <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
+                          <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">State</label>
+                          <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); }} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none disabled:bg-gray-200 disabled:text-gray-500" required disabled={roleTitle === "Weaver Hub"}>
                             <option value="">Select State...</option>
                             {roleTitle === "Weaver Hub" ? (
                               <option value="Odisha">Odisha</option>
@@ -2394,54 +2394,54 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                         </div>
                       ) : (
                         <div>
-                          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State / Province</label>
-                          <input type="text" value={state} onChange={e => setState(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                          <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">State / Province</label>
+                          <input type="text" value={state} onChange={e => setState(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                         </div>
                       )}
 
                       {country === "India" && state === "Odisha" ? (
                         <div>
-                          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
-                          <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                          <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">District</label>
+                          <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                             <option value="">Select District...</option>
                             {(roleTitle === "Weaver Hub" ? WEAVER_DISTRICTS : ODISHA_DISTRICTS).map(d => <option key={d} value={d}>{d}</option>)}
                           </select>
                         </div>
                       ) : (
                         <div>
-                          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">City / District</label>
-                          <input type="text" value={district} onChange={e => setDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                          <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">City / District</label>
+                          <input type="text" value={district} onChange={e => setDistrict(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                         </div>
                       )}
                     </>
                   )}
 
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Block</label>
                     {((country === "India" && state === "Odisha") || roleTitle === "Weaver Hub") && district && ODISHA_DISTRICT_BLOCKS[district] ? (
-                      <select value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
+                      <select value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required>
                         <option value="">Select Block...</option>
                         {ODISHA_DISTRICT_BLOCKS[district].map(b => <option key={b} value={b}>{b}</option>)}
                       </select>
                     ) : (
-                      <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                      <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                     )}
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town / Village / City</label>
-                    <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Town / Village / City</label>
+                    <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                   </div>
                 </div>
 
                 <div className="mb-4 mt-6">
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street Address (House No, Landmark)</label>
-                  <textarea required value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none min-h-[80px]" />
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Street Address (House No, Landmark)</label>
+                  <textarea required value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none min-h-[80px]" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN / ZIP Code</label>
-                    <input type="text" value={pincode} onChange={e => setPincode(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">PIN / ZIP Code</label>
+                    <input type="text" value={pincode} onChange={e => setPincode(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
                   </div>
                 </div>
               </div>
@@ -2454,24 +2454,24 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Years of Experience</label>
-                    <input type="text" placeholder="e.g. 15 Years" value={weaverExperience} onChange={e => setWeaverExperience(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Years of Experience</label>
+                    <input type="text" placeholder="e.g. 15 Years" value={weaverExperience} onChange={e => setWeaverExperience(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Generations in Weaving</label>
-                    <input type="text" placeholder="e.g. 3rd Generation" value={generations} onChange={e => setGenerations(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Generations in Weaving</label>
+                    <input type="text" placeholder="e.g. 3rd Generation" value={generations} onChange={e => setGenerations(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Specialties (Comma Separated)</label>
-                    <input type="text" placeholder="e.g. Sambalpuri, Bomkai, Ikat" value={specialties} onChange={e => setSpecialties(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Specialties (Comma Separated)</label>
+                    <input type="text" placeholder="e.g. Sambalpuri, Bomkai, Ikat" value={specialties} onChange={e => setSpecialties(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Materials Used (Comma Separated)</label>
-                    <input type="text" placeholder="e.g. Cotton, Tussar Silk" value={materials} onChange={e => setMaterials(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Materials Used (Comma Separated)</label>
+                    <input type="text" placeholder="e.g. Cotton, Tussar Silk" value={materials} onChange={e => setMaterials(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                   <div className="col-span-2">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Scale of Operation</label>
-                    <input type="text" placeholder="e.g. 2 Handlooms, Small Workshop" value={scale} onChange={e => setScale(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Scale of Operation</label>
+                    <input type="text" placeholder="e.g. 2 Handlooms, Small Workshop" value={scale} onChange={e => setScale(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                 </div>
               </div>
@@ -2485,7 +2485,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="col-span-3">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Workshop Gallery (Up to 3 photos)</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Workshop Gallery (Up to 3 photos)</label>
                   </div>
                   <ImageUploader value={gallery1} onChange={setGallery1} label="Photo 1" aspectRatio="square" />
                   <ImageUploader value={gallery2} onChange={setGallery2} label="Photo 2" aspectRatio="square" />
@@ -2495,7 +2495,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Google Maps Pin URL (Optional)</label>
+                      <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider">Google Maps Pin URL (Optional)</label>
                       <button type="button" onClick={(e) => {
                         const btn = e.currentTarget;
                         if (navigator.geolocation) {
@@ -2519,19 +2519,19 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                         📍 Use Current Location
                       </button>
                     </div>
-                    <input type="text" placeholder="https://maps.app.goo.gl/..." value={googlePin} onChange={e => setGooglePin(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    <input type="text" placeholder="https://maps.app.goo.gl/..." value={googlePin} onChange={e => setGooglePin(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Google Place ID (Optional)</label>
-                    <input type="text" placeholder="ChIJ..." value={googlePlaceId} onChange={e => setGooglePlaceId(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Google Place ID (Optional)</label>
+                    <input type="text" placeholder="ChIJ..." value={googlePlaceId} onChange={e => setGooglePlaceId(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Facebook URL (Optional)</label>
-                    <input type="text" placeholder="https://facebook.com/..." value={facebookUrl} onChange={e => setFacebookUrl(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Facebook URL (Optional)</label>
+                    <input type="text" placeholder="https://facebook.com/..." value={facebookUrl} onChange={e => setFacebookUrl(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Instagram URL (Optional)</label>
-                    <input type="text" placeholder="https://instagram.com/..." value={instagramUrl} onChange={e => setInstagramUrl(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Instagram URL (Optional)</label>
+                    <input type="text" placeholder="https://instagram.com/..." value={instagramUrl} onChange={e => setInstagramUrl(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
                   </div>
                 </div>
               </div>
@@ -2819,25 +2819,25 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <form className="space-y-6" onSubmit={handleProxyOrder}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Customer Full Name</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Customer Full Name</label>
                 <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Customer WhatsApp/Phone</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Customer WhatsApp/Phone</label>
                 <input type="tel" value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
               </div>
             </div>
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Shipping Address</label>
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Shipping Address</label>
               <textarea rows={3} value={address} onChange={e => setAddress(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required></textarea>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">PIN Code</label>
                 <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Payment Method</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Payment Method</label>
                 <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required>
                   <option value="">Select Method</option>
                   <option value="UPI">Send UPI Link to Customer</option>
@@ -2957,11 +2957,11 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <h2 className="text-xl font-bold text-gray-900 mb-6">Store Analytics</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
             <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 text-center">
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Views</p>
+              <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Total Views</p>
               <p className="text-3xl font-black text-gray-900">0</p>
             </div>
             <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 text-center">
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Conversion Rate</p>
+              <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Conversion Rate</p>
               <p className="text-3xl font-black text-gray-900">0.0%</p>
             </div>
             <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-center">
@@ -3007,16 +3007,16 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <h2 className="text-xl font-bold text-gray-900 mb-6">Profile Settings</h2>
           <div className="space-y-5">
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name</label>
-              <input type="text" className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" defaultValue="Reseller User" />
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Full Name</label>
+              <input type="text" className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" defaultValue="Reseller User" />
             </div>
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Email Address</label>
               <input type="email" className="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50 text-gray-500 cursor-not-allowed" disabled />
             </div>
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Shipping/Billing Address</label>
-              <textarea className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={3}></textarea>
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Shipping/Billing Address</label>
+              <textarea className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" rows={3}></textarea>
             </div>
             <button className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm mt-4">Save Changes</button>
           </div>
@@ -3129,7 +3129,7 @@ function GoogleImporterTab() {
           onChange={e => setQuery(e.target.value)} 
           onKeyDown={e => e.key === 'Enter' && handleSearch()}
           placeholder="e.g. Sambalpuri Saree Shops in Bhubaneswar" 
-          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-900 focus:border-[#0070F3] outline-none"
+          className="flex-1 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-4 text-gray-900 focus:border-[#0070F3] outline-none"
         />
         <button 
           onClick={() => handleSearch()} 
@@ -3476,7 +3476,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
                       <div className="text-xs text-gray-500">{order.customerAddress}</div>
                     </td>
                     <td className="py-4">
-                      <select value={order.logisticsStatus || (order as any).status || "Pending QC"} onChange={(e) => updateOrderStatus(order.id, "logisticsStatus", e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#0070F3]">
+                      <select value={order.logisticsStatus || (order as any).status || "Pending QC"} onChange={(e) => updateOrderStatus(order.id, "logisticsStatus", e.target.value)} className="bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#0070F3]">
                         <option value="placed">Placed (Pending QC)</option>
                         <option value="QC Passed">QC Passed</option>
                         <option value="Pending Weaver Handover">Pending Weaver Handover</option>
@@ -3514,13 +3514,13 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
                     <td className="py-4 font-mono text-xs text-gray-500">{order.orderId || order.id}</td>
                     <td className="py-4">
                       <div className="font-bold text-[#0070F3]">{order.productPrice || "TBD"}</div>
-                      <div className="text-xs font-bold text-gray-500 uppercase">{order.paymentMode || "Online"}</div>
+                      <div className="text-xs font-bold text-slate-800 uppercase">{order.paymentMode || "Online"}</div>
                       {(order.referralId || order.proxyBuyerId || (order as any).resellerId) && (
                         <div className="mt-1 text-[10px] font-bold text-[#C5A059] bg-[#C5A059]/10 px-1.5 py-0.5 rounded inline-block">Has Reseller Margin</div>
                       )}
                     </td>
                     <td className="py-4">
-                      <select value={order.paymentStatus || (order as any).status || "Payout Locked"} onChange={(e) => updateOrderStatus(order.id, "paymentStatus", e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#0070F3]">
+                      <select value={order.paymentStatus || (order as any).status || "Payout Locked"} onChange={(e) => updateOrderStatus(order.id, "paymentStatus", e.target.value)} className="bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#0070F3]">
                         <option value="Payout Locked">Payout Locked</option>
                         <option value="placed">Placed (Cash)</option>
                         <option value="Payout Pending (Weaver)">Payout Pending (Weaver)</option>
@@ -3749,7 +3749,7 @@ function SecurityTab() {
           <p className="text-sm text-blue-700 mt-1">You currently log in using Google. Set a password below to enable Email/Password login as a backup.</p>
         </div>
       ) : (
-        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 mb-6">
+        <div className="bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-2xl p-5 mb-6">
           <h3 className="font-bold text-gray-900 flex items-center gap-2"><span>🔑</span> Email & Password Account</h3>
           <p className="text-sm text-gray-600 mt-1">Change your password below to keep your account secure.</p>
         </div>
@@ -3757,12 +3757,12 @@ function SecurityTab() {
 
       <form onSubmit={handleUpdateSecurity} className="space-y-5">
         <div>
-          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">New Password</label>
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="••••••••" />
+          <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">New Password</label>
+          <input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="••••••••" />
         </div>
         <div>
-          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Confirm Password</label>
-          <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="••••••••" />
+          <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Confirm Password</label>
+          <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="••••••••" />
         </div>
         <button disabled={loading} type="submit" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm disabled:opacity-50">
           {loading ? "Saving..." : isGoogleUser ? "Add Password Login" : "Update Password"}
@@ -3903,18 +3903,18 @@ function MarketingTab() {
             <h3 className="text-xl font-bold text-gray-900 mb-6">Create New Coupon</h3>
             <form onSubmit={handleCreateCoupon} className="space-y-5">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Coupon Code</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-widest mb-2">Coupon Code</label>
                 <input type="text" value={code} onChange={e => setCode(e.target.value.toUpperCase())} required placeholder="e.g. FESTIVAL20" className="w-full border border-gray-300 rounded-xl p-3 font-mono font-bold uppercase" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Discount Type</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-widest mb-2">Discount Type</label>
                 <select value={discountType} onChange={e => setDiscountType(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 font-bold">
                   <option value="percentage">Percentage (%)</option>
                   <option value="fixed">Fixed Amount (₹)</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Discount Value</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-widest mb-2">Discount Value</label>
                 <input type="number" value={discountValue} onChange={e => setDiscountValue(e.target.value)} required placeholder="e.g. 20" className="w-full border border-gray-300 rounded-xl p-3 font-bold" />
               </div>
               <div className="flex gap-3 pt-4">

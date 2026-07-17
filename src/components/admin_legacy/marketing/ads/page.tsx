@@ -308,13 +308,13 @@ export default function AdsPage() {
                 
                 <div>
                   <label className="block text-xs font-bold text-gray-700 mb-1">Campaign Title</label>
-                  <input type="text" required value={title} onChange={e => setTitle(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" placeholder="e.g. Diwali Silk Promo" />
+                  <input type="text" required value={title} onChange={e => setTitle(e.target.value)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm" placeholder="e.g. Diwali Silk Promo" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-1">Ad Type</label>
-                    <select value={type} onChange={e => setType(e.target.value as any)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    <select value={type} onChange={e => setType(e.target.value as any)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm">
                       <option value="image">Image Banner</option>
                       <option value="youtube">YouTube Video</option>
                       <option value="adsense">AdSense / Custom HTML</option>
@@ -322,7 +322,7 @@ export default function AdsPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-1">Placement Slot</label>
-                    <select value={placement} onChange={e => setPlacement(e.target.value as any)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    <select value={placement} onChange={e => setPlacement(e.target.value as any)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm">
                       <option value="homepage_top">Homepage Top</option>
                       <option value="homepage_middle">Homepage Middle</option>
                       <option value="sidebar">Sidebar</option>
@@ -335,7 +335,7 @@ export default function AdsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-1">Banner Layout Size</label>
-                    <select value={layoutSize} onChange={e => setLayoutSize(e.target.value as any)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    <select value={layoutSize} onChange={e => setLayoutSize(e.target.value as any)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm">
                       <option value="full">Full Width (100%)</option>
                       <option value="half">Half Width (50%)</option>
                       <option value="third">One Third (33%)</option>
@@ -344,7 +344,7 @@ export default function AdsPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-1">Impression Limit (Optional)</label>
-                    <input type="number" value={impressionLimitStr} onChange={e => setImpressionLimitStr(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" placeholder="e.g. 10000" />
+                    <input type="number" value={impressionLimitStr} onChange={e => setImpressionLimitStr(e.target.value)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm" placeholder="e.g. 10000" />
                     <p className="text-[10px] text-gray-500 mt-1">Campaign auto-pauses when views hit this limit. Leave empty for unlimited.</p>
                   </div>
                 </div>
@@ -356,7 +356,7 @@ export default function AdsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-1">Target Audience</label>
-                    <select value={targetAudience} onChange={e => setTargetAudience(e.target.value as any)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    <select value={targetAudience} onChange={e => setTargetAudience(e.target.value as any)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm">
                       <option value="global">Global (Everywhere)</option>
                       <option value="weavers">Weaver Profiles</option>
                       <option value="shops">Shop Profiles</option>
@@ -366,14 +366,14 @@ export default function AdsPage() {
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-1">Specific Target IDs (Comma separated)</label>
                     {targetAudience === "weavers" || targetAudience === "shops" ? (
-                      <select value={targetSpecificIdsStr} onChange={e => setTargetSpecificIdsStr(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                      <select value={targetSpecificIdsStr} onChange={e => setTargetSpecificIdsStr(e.target.value)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm">
                         <option value="all">All {targetAudience === "weavers" ? "Weavers" : "Shops"}</option>
                         {(targetAudience === "weavers" ? weaversList : shopsList).map(t => (
                           <option key={t.slug} value={t.slug}>{t.name} ({t.slug})</option>
                         ))}
                       </select>
                     ) : (
-                      <input type="text" value={targetSpecificIdsStr} onChange={e => setTargetSpecificIdsStr(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-mono" placeholder="e.g. all, prod-123" />
+                      <input type="text" value={targetSpecificIdsStr} onChange={e => setTargetSpecificIdsStr(e.target.value)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm font-mono" placeholder="e.g. all, prod-123" />
                     )}
                     <p className="text-[10px] text-gray-500 mt-1">Use "all" to target everything in the audience category, or provide slugs/IDs.</p>
                   </div>
@@ -383,7 +383,7 @@ export default function AdsPage() {
                   <div className="grid grid-cols-3 gap-4 pt-2">
                     <div>
                       <label className="block text-xs font-bold text-gray-700 mb-1">Category</label>
-                      <select value={targetCategory} onChange={e => setTargetCategory(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                      <select value={targetCategory} onChange={e => setTargetCategory(e.target.value)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm">
                         <option value="all">All Categories</option>
                         <option value="Sambalpuri Silk">Sambalpuri Silk</option>
                         <option value="Sambalpuri Cotton">Sambalpuri Cotton</option>
@@ -394,7 +394,7 @@ export default function AdsPage() {
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-700 mb-1">Material</label>
-                      <select value={targetMaterial} onChange={e => setTargetMaterial(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                      <select value={targetMaterial} onChange={e => setTargetMaterial(e.target.value)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm">
                         <option value="all">All Materials</option>
                         <option value="Pure Silk">Pure Silk</option>
                         <option value="Pure Cotton">Pure Cotton</option>
@@ -404,7 +404,7 @@ export default function AdsPage() {
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-700 mb-1">Design</label>
-                      <select value={targetDesign} onChange={e => setTargetDesign(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                      <select value={targetDesign} onChange={e => setTargetDesign(e.target.value)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm">
                         <option value="all">All Designs</option>
                         <option value="Ikat">Ikat</option>
                         <option value="Bandha">Bandha</option>
@@ -444,19 +444,19 @@ export default function AdsPage() {
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-700 mb-1">Click Destination URL</label>
-                      <input type="url" value={linkUrl} onChange={e => setLinkUrl(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" placeholder="https://..." />
+                      <input type="url" value={linkUrl} onChange={e => setLinkUrl(e.target.value)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm" placeholder="https://..." />
                     </div>
                   </>
                 ) : type === "youtube" ? (
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-1">YouTube Video Link</label>
-                    <input type="url" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" placeholder="e.g. https://www.youtube.com/watch?v=..." required />
+                    <input type="url" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm" placeholder="e.g. https://www.youtube.com/watch?v=..." required />
                     <p className="text-[10px] text-gray-500 mt-1">Paste a standard YouTube link or Shorts link. It will automatically be transformed into an embedded ad player.</p>
                   </div>
                 ) : (
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-1">HTML / AdSense Code</label>
-                    <textarea value={htmlCode} onChange={e => setHtmlCode(e.target.value)} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-mono h-32" placeholder="<script async src='...'></script>..." />
+                    <textarea value={htmlCode} onChange={e => setHtmlCode(e.target.value)} className="w-full px-4 py-2 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-lg text-sm font-mono h-32" placeholder="<script async src='...'></script>..." />
                   </div>
                 )}
               </div>

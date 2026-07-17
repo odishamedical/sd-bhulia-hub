@@ -635,7 +635,7 @@ export default function UserManagementPage() {
                 Role Filter
               </h3>
               <div className="space-y-2">
-                <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+                <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
                   {['all', 'user', 'customer', 'reseller', 'weaver', 'store', 'wholesaler', 'supplier', 'staff'].map(role => (
                     <option key={role} value={role}>{role === 'all' ? 'Entire Ecosystem' : role === 'user' ? 'General Users' : role.charAt(0).toUpperCase() + role.slice(1) + 's'}</option>
                   ))}
@@ -651,21 +651,21 @@ export default function UserManagementPage() {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">State / Region</label>
-                  <select value={stateFilter} onChange={e => setStateFilter(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+                  <select value={stateFilter} onChange={e => setStateFilter(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
                     <option value="all">All States (Pan-India)</option>
                     {allStates.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">District</label>
-                  <select value={districtFilter} onChange={e => setDistrictFilter(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+                  <select value={districtFilter} onChange={e => setDistrictFilter(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
                     <option value="all">All Districts</option>
                     {allDistricts.map(d => <option key={d} value={d}>{d}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Subscription Status</label>
-                  <select value={subStatusFilter} onChange={e => setSubStatusFilter(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+                  <select value={subStatusFilter} onChange={e => setSubStatusFilter(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
                     <option value="all">All Subscriptions</option>
                     <option value="active">Active (Paid)</option>
                     <option value="free_trial">Free Trial</option>
@@ -674,7 +674,7 @@ export default function UserManagementPage() {
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Verification Status</label>
-                  <select value={verificationFilter} onChange={e => setVerificationFilter(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+                  <select value={verificationFilter} onChange={e => setVerificationFilter(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
                     <option value="all">All Statuses</option>
                     <option value="approved">Approved & Active</option>
                     <option value="pending">Pending Verification</option>
@@ -692,11 +692,11 @@ export default function UserManagementPage() {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Min. Purchase/Sales Vol (₹)</label>
-                  <input type="number" placeholder="e.g. 50000" value={minVolume} onChange={e => setMinVolume(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                  <input type="number" placeholder="e.g. 50000" value={minVolume} onChange={e => setMinVolume(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Purchased Product ID</label>
-                  <input type="text" placeholder="e.g. PRD-8273" value={productIdFilter} onChange={e => setProductIdFilter(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none font-mono" />
+                  <input type="text" placeholder="e.g. PRD-8273" value={productIdFilter} onChange={e => setProductIdFilter(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none font-mono" />
                 </div>
               </div>
             </div>
@@ -843,7 +843,7 @@ export default function UserManagementPage() {
               value={broadcastMessage}
               onChange={e => setBroadcastMessage(e.target.value)}
               placeholder="Enter your message here..."
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none resize-none mb-6"
+              className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-4 text-sm font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none resize-none mb-6"
             ></textarea>
           </div>
         </div>
@@ -875,7 +875,7 @@ export default function UserManagementPage() {
                           setNewUserState("Odisha");
                           setNewUserDistrict("");
                         }
-                      }} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                      }} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
                       <option value="customer">Retail Customer</option>
                       <option value="reseller">Reseller (Marketing Agent)</option>
                       <option value="weaver">Sambalpuri Weaver</option>
@@ -886,29 +886,29 @@ export default function UserManagementPage() {
                   </div>
                   <div>
                     <label className="text-xs font-bold text-gray-500 mb-1.5 block">Full Name / Entity Name</label>
-                    <input type="text" value={newUserName} onChange={e => setNewUserName(e.target.value)} placeholder="Name" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                    <input type="text" value={newUserName} onChange={e => setNewUserName(e.target.value)} placeholder="Name" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-bold text-gray-500 mb-1.5 block">Email Address (Used for Login)</label>
-                    <input type="email" value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} placeholder="Email" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                    <input type="email" value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} placeholder="Email" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   </div>
                   <div>
                     <label className="text-xs font-bold text-gray-500 mb-1.5 block">Password</label>
-                    <input type="text" value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} placeholder="Temporary Password" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                    <input type="text" value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} placeholder="Temporary Password" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-bold text-gray-500 mb-1.5 block">Phone Number</label>
-                    <input type="tel" value={newUserPhone} onChange={e => setNewUserPhone(e.target.value)} placeholder="+91" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                    <input type="tel" value={newUserPhone} onChange={e => setNewUserPhone(e.target.value)} placeholder="+91" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   </div>
                   <div>
                     <label className="text-xs font-bold text-gray-500 mb-1.5 block">WhatsApp Number</label>
-                    <input type="tel" value={newUserWhatsapp} onChange={e => setNewUserWhatsapp(e.target.value)} placeholder="+91" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                    <input type="tel" value={newUserWhatsapp} onChange={e => setNewUserWhatsapp(e.target.value)} placeholder="+91" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   </div>
                 </div>
 
@@ -952,7 +952,7 @@ export default function UserManagementPage() {
                     {newUserRole === 'weaver' ? (
                       <input type="text" value="India" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-sm font-medium outline-none opacity-60" />
                     ) : (
-                      <input type="text" value={newUserCountry} onChange={e => setNewUserCountry(e.target.value)} placeholder="e.g. India, USA" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                      <input type="text" value={newUserCountry} onChange={e => setNewUserCountry(e.target.value)} placeholder="e.g. India, USA" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                     )}
                   </div>
                   <div>
@@ -960,7 +960,7 @@ export default function UserManagementPage() {
                     {newUserRole === 'weaver' ? (
                       <input type="text" value="Odisha" disabled className="w-full bg-gray-100 border border-gray-200 rounded-xl p-3 text-sm font-medium outline-none opacity-60" />
                     ) : (
-                      <input type="text" value={newUserState} onChange={e => setNewUserState(e.target.value)} placeholder="e.g. Maharashtra, California" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                      <input type="text" value={newUserState} onChange={e => setNewUserState(e.target.value)} placeholder="e.g. Maharashtra, California" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                     )}
                   </div>
                 </div>
@@ -968,39 +968,39 @@ export default function UserManagementPage() {
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">District / City</label>
                   {newUserRole === 'weaver' ? (
-                    <select value={newUserDistrict} onChange={e => setNewUserDistrict(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                    <select value={newUserDistrict} onChange={e => setNewUserDistrict(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
                       <option value="">Select District</option>
                       {["Bargarh", "Sonepur", "Sambalpur", "Bolangir", "Nuapada", "Boudh", "Jharsuguda"].map(d => (
                         <option key={d} value={d}>{d} (Bhulia.com-Approved)</option>
                       ))}
                     </select>
                   ) : (
-                    <input type="text" value={newUserDistrict} onChange={e => setNewUserDistrict(e.target.value)} placeholder="e.g. Mumbai, New York" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                    <input type="text" value={newUserDistrict} onChange={e => setNewUserDistrict(e.target.value)} placeholder="e.g. Mumbai, New York" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   )}
                 </div>
 
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Block / Tehsil</label>
                   {newUserRole === 'weaver' ? (
-                    <select value={newUserBlock} onChange={e => setNewUserBlock(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                    <select value={newUserBlock} onChange={e => setNewUserBlock(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
                       <option value="">Select Block (Optional)</option>
                       {["Attabira", "Bargarh", "Barpali", "Bhatli", "Bheden", "Bijepur", "Gaisilet", "Jharbandh", "Padampur", "Paikmal", "Rajborasamar", "Sohela", "Binika", "Birmaharajpur", "Dunguripali", "Sonepur", "Tarabha", "Ullunda"].map(b => (
                         <option key={b} value={b}>{b}</option>
                       ))}
                     </select>
                   ) : (
-                    <input type="text" value={newUserBlock} onChange={e => setNewUserBlock(e.target.value)} placeholder="e.g. Andheri, Manhattan" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                    <input type="text" value={newUserBlock} onChange={e => setNewUserBlock(e.target.value)} placeholder="e.g. Andheri, Manhattan" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   )}
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-2">
                     <label className="text-xs font-bold text-gray-500 mb-1.5 block">Complete Address</label>
-                    <input type="text" value={newUserAddress} onChange={e => setNewUserAddress(e.target.value)} placeholder="Street, landmark..." className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                    <input type="text" value={newUserAddress} onChange={e => setNewUserAddress(e.target.value)} placeholder="Street, landmark..." className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   </div>
                   <div>
                     <label className="text-xs font-bold text-gray-500 mb-1.5 block">PIN Code</label>
-                    <input type="text" value={newUserPin} onChange={e => setNewUserPin(e.target.value)} placeholder="PIN" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                    <input type="text" value={newUserPin} onChange={e => setNewUserPin(e.target.value)} placeholder="PIN" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   </div>
                 </div>
 
@@ -1010,7 +1010,7 @@ export default function UserManagementPage() {
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
                       <label className="text-xs font-bold text-gray-500 mb-1.5 block">Subscription Status</label>
-                      <select value={newSubStatus} onChange={e => setNewSubStatus(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                      <select value={newSubStatus} onChange={e => setNewSubStatus(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
                         <option value="free_trial">Free Trial / Promotion</option>
                         <option value="active">Active (Paid)</option>
                         <option value="expired">Expired / Locked</option>
@@ -1018,7 +1018,7 @@ export default function UserManagementPage() {
                     </div>
                     <div>
                       <label className="text-xs font-bold text-gray-500 mb-1.5 block">Duration (Months)</label>
-                      <select value={newSubDuration} onChange={e => setNewSubDuration(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                      <select value={newSubDuration} onChange={e => setNewSubDuration(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
                         <option value="1">1 Month</option>
                         <option value="3">3 Months</option>
                         <option value="12">12 Months (1 Year)</option>
@@ -1030,7 +1030,7 @@ export default function UserManagementPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-xs font-bold text-gray-500 mb-1.5 block">Product Upload Limit</label>
-                      <select value={newSubLimit} onChange={e => setNewSubLimit(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                      <select value={newSubLimit} onChange={e => setNewSubLimit(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
                         <option value="0">0 (Locked - View Only)</option>
                         <option value="10">10 (Trial Limit)</option>
                         <option value="20">20 Products</option>
@@ -1040,7 +1040,7 @@ export default function UserManagementPage() {
                     </div>
                     <div>
                       <label className="text-xs font-bold text-gray-500 mb-1.5 block">Commission Rate (%)</label>
-                      <select value={newSubCommission} onChange={e => setNewSubCommission(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
+                      <select value={newSubCommission} onChange={e => setNewSubCommission(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none">
                         <option value="0">0% (Zero Commission)</option>
                         <option value="5">5% (Premium Standard)</option>
                         <option value="10">10%</option>
@@ -1321,7 +1321,7 @@ export default function UserManagementPage() {
                         ) : (
                           <a href={selectedUserForDetails.kycDocumentUrl} target="_blank" className="text-blue-600 underline font-semibold block text-center py-4">Open Document ↗</a>
                         )}
-                        <a href={selectedUserForDetails.kycDocumentUrl} target="_blank" className="block text-center text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-2 hover:text-blue-500">View Full Size</a>
+                        <a href={selectedUserForDetails.kycDocumentUrl} target="_blank" className="block text-center text-[10px] font-bold text-slate-800 uppercase tracking-widest mt-2 hover:text-blue-500">View Full Size</a>
                       </div>
                     ) : (
                       <div className="bg-red-50 text-red-600 p-3 rounded text-xs text-center font-bold">No Document Uploaded</div>

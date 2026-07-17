@@ -124,7 +124,7 @@ export default function MarketingDashboardPage() {
                   type="text" 
                   value={bannerText}
                   onChange={(e) => setBannerText(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 outline-none" 
+                  className="w-full px-4 py-3 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl text-sm focus:bg-white focus:border-blue-500 outline-none" 
                 />
               </div>
               <div>
@@ -210,7 +210,7 @@ export default function MarketingDashboardPage() {
               
               <div className="border border-gray-200 rounded-xl overflow-hidden">
                 <table className="w-full text-left text-sm font-mono">
-                  <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase tracking-wider font-bold text-[10px] font-sans">
+                  <thead className="bg-gray-50 border-b border-gray-200 text-slate-800 uppercase tracking-wider font-bold text-[10px] font-sans">
                     <tr>
                       <th className="px-6 py-3">Old Path (Source)</th>
                       <th className="px-6 py-3">New Path (Destination)</th>

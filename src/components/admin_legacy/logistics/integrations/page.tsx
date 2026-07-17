@@ -93,35 +93,35 @@ export default function LogisticsIntegrationsPage() {
         
         <div className="space-y-6">
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Shiprocket API Token</label>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-widest mb-2">Shiprocket API Token</label>
             <input 
               type="password" 
               value={shiprocketKey}
               onChange={(e) => setShiprocketKey(e.target.value)}
               placeholder="Paste Shiprocket API token here"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 font-mono text-sm"
+              className="w-full px-4 py-3 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 font-mono text-sm"
             />
           </div>
           
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">ClickPost API Key</label>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-widest mb-2">ClickPost API Key</label>
             <input 
               type="password" 
               value={clickpostKey}
               onChange={(e) => setClickpostKey(e.target.value)}
               placeholder="Paste ClickPost API key here"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 font-mono text-sm"
+              className="w-full px-4 py-3 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 font-mono text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Eshopbox API Token</label>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-widest mb-2">Eshopbox API Token</label>
             <input 
               type="password" 
               value={eshopboxKey}
               onChange={(e) => setEshopboxKey(e.target.value)}
               placeholder="Paste Eshopbox API token here"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 font-mono text-sm"
+              className="w-full px-4 py-3 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 font-mono text-sm"
             />
           </div>
         </div>
@@ -136,7 +136,7 @@ export default function LogisticsIntegrationsPage() {
 
         <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 mb-6 flex items-end gap-4">
           <div className="flex-1">
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Store/Weaver ID</label>
+            <label className="block text-[10px] font-bold text-slate-800 uppercase tracking-widest mb-1">Store/Weaver ID</label>
             <input 
               type="text" 
               value={newVendorId}
@@ -146,7 +146,7 @@ export default function LogisticsIntegrationsPage() {
             />
           </div>
           <div className="flex-1">
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Assign Partner</label>
+            <label className="block text-[10px] font-bold text-slate-800 uppercase tracking-widest mb-1">Assign Partner</label>
             <select 
               value={newProvider}
               onChange={(e) => setNewProvider(e.target.value)}

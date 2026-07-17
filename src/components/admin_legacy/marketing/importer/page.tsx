@@ -127,7 +127,7 @@ export default function GooglePlacesImporterPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 bg-gray-50 p-6 rounded-2xl border border-gray-100">
           <div className="lg:col-span-3 mb-2">
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Business Type / Search Query</label>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Business Type / Search Query</label>
             <input 
               type="text" 
               value={businessType} 
@@ -150,7 +150,7 @@ export default function GooglePlacesImporterPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Country</label>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Country</label>
             <select value={country} onChange={e => {
               setCountry(e.target.value);
               if (e.target.value !== "India") {
@@ -163,7 +163,7 @@ export default function GooglePlacesImporterPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">State</label>
             {country === "India" ? (
               <select value={state} onChange={e => { setState(e.target.value); setDistrict(""); setBlock(""); }} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
                 <option value="Odisha">Odisha</option>
@@ -175,7 +175,7 @@ export default function GooglePlacesImporterPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">District</label>
             {country === "India" && state === "Odisha" ? (
               <select value={district} onChange={e => { setDistrict(e.target.value); setBlock(""); }} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
                 <option value="">Select District...</option>
@@ -187,7 +187,7 @@ export default function GooglePlacesImporterPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block</label>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Block</label>
             {country === "India" && state === "Odisha" && district && ODISHA_DISTRICT_BLOCKS[district] ? (
               <select value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
                 <option value="">Select Block...</option>
@@ -199,12 +199,12 @@ export default function GooglePlacesImporterPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Town / Village</label>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Town / Village</label>
             <input type="text" value={townVillage} onChange={e => setTownVillage(e.target.value)} placeholder="e.g. Bheden" className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN / ZIP Code</label>
+            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">PIN / ZIP Code</label>
             <input type="text" value={pin} onChange={e => setPin(e.target.value)} placeholder="e.g. 768038" className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
           </div>
           

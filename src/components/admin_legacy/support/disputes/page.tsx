@@ -87,7 +87,7 @@ export default function DisputesPage() {
                   </div>
                   <div className="space-y-3 mb-6">
                     <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Buyer Complaint ({dispute.buyer})</div>
+                      <div className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1">Buyer Complaint ({dispute.buyer})</div>
                       <p className="text-sm font-medium text-gray-900">{dispute.buyerEvidence}</p>
                     </div>
                     <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">

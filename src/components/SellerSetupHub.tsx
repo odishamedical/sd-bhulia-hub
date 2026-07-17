@@ -342,11 +342,11 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Profile & Role</h3>
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">I want to apply as:</label>
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">I want to apply as:</label>
               <select 
                 value={desiredRole} 
                 onChange={(e) => setDesiredRole(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none transition-all bg-white font-medium"
+                className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none transition-all bg-white font-medium"
               >
                 <option value="weaver">Master Weaver (Produce & Sell)</option>
                 <option value="store">Store / Shop (Aggregator)</option>
@@ -357,20 +357,20 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Legal Name</label>
-                <input type="text" value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="e.g. Ramesh Meher" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Full Legal Name</label>
+                <input type="text" value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="e.g. Ramesh Meher" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Brand / Store Name</label>
-                <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="e.g. Meher Handlooms" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Brand / Store Name</label>
+                <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="e.g. Meher Handlooms" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number</label>
-                <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="+91" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Phone Number</label>
+                <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="+91" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Number</label>
-                <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="+91" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">WhatsApp Number</label>
+                <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="+91" />
               </div>
             </div>
           </div>
@@ -389,18 +389,18 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
             )}
 
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Street / Local Address</label>
-              <input type="text" value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="House/Shop no., Street" />
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Street / Local Address</label>
+              <input type="text" value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="House/Shop no., Street" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">State</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">State</label>
                 <select 
                   value={state} 
                   onChange={e => setState(e.target.value)}
                   disabled={desiredRole === "weaver"}
-                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white disabled:bg-gray-100"
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white disabled:bg-gray-100"
                 >
                   <option value="">Select State</option>
                   {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
@@ -408,12 +408,12 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
               </div>
               
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">District</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">District</label>
                 {state === "Odisha" ? (
                   <select 
                     value={district} 
                     onChange={e => handleDistrictChange(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white"
+                    className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
                   >
                     <option value="">Select District</option>
                     {(desiredRole === "weaver" ? WEAVER_DISTRICTS : ODISHA_DISTRICTS).map(d => (
@@ -421,19 +421,19 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                     ))}
                   </select>
                 ) : (
-                  <input type="text" value={district} onChange={e => handleDistrictChange(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="Enter District" />
+                  <input type="text" value={district} onChange={e => handleDistrictChange(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="Enter District" />
                 )}
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div className="md:col-span-2">
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Block / City</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Block / City</label>
                 {state === "Odisha" && district && ODISHA_DISTRICT_BLOCKS[district] ? (
                   <select 
                     value={block} 
                     onChange={e => setBlock(e.target.value)}
-                    className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white"
+                    className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
                   >
                     <option value="">Select Block</option>
                     {ODISHA_DISTRICT_BLOCKS[district].map(b => (
@@ -441,18 +441,18 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                     ))}
                   </select>
                 ) : (
-                  <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="Enter Block/City" />
+                  <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="Enter Block/City" />
                 )}
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">PIN Code</label>
-                <input type="text" value={pincode} onChange={e => setPincode(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="XXXXXX" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">PIN Code</label>
+                <input type="text" value={pincode} onChange={e => setPincode(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="XXXXXX" />
               </div>
             </div>
             
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Village / Town (Local Name)</label>
-              <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Village / Town (Local Name)</label>
+              <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" />
             </div>
           </div>
         )}
@@ -474,11 +474,11 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document Type</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Document Type</label>
                 <select 
                   value={kycType} 
                   onChange={e => setKycType(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white"
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
                 >
                   <option value="">Select Document</option>
                   <option value="Aadhar">Aadhar Card</option>
@@ -487,13 +487,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Document ID Number</label>
-                <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none uppercase" placeholder="e.g. 1234 5678 9012" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Document ID Number</label>
+                <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none uppercase" placeholder="e.g. 1234 5678 9012" />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload Clear Photo</label>
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Upload Clear Photo</label>
               <ImageUploader 
                 value={kycDocumentUrl} 
                 onChange={setKycDocumentUrl}
@@ -503,8 +503,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">GST Number {desiredRole === 'b2b' || desiredRole === 'raw_material' ? '(MANDATORY)' : '(Optional)'}</label>
-              <input type="text" value={gstNumber} onChange={e => setGstNumber(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none uppercase" placeholder="e.g. 21AAAAA1234A1Z1" />
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">GST Number {desiredRole === 'b2b' || desiredRole === 'raw_material' ? '(MANDATORY)' : '(Optional)'}</label>
+              <input type="text" value={gstNumber} onChange={e => setGstNumber(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none uppercase" placeholder="e.g. 21AAAAA1234A1Z1" />
             </div>
           </div>
         )}
@@ -518,35 +518,35 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
             </div>
             
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Holder Name (must match KYC)</label>
-              <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Account Holder Name (must match KYC)</label>
+              <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Account Number</label>
-                <input type="password" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="XXXX XXXX XXXX" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Account Number</label>
+                <input type="password" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="XXXX XXXX XXXX" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Re-Enter Account Number</label>
-                <input type="text" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Re-Enter Account Number</label>
+                <input type="text" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Bank Name</label>
-                <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="e.g. State Bank of India" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Bank Name</label>
+                <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="e.g. State Bank of India" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">IFSC Code</label>
-                <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none uppercase" placeholder="SBIN000XXXX" />
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">IFSC Code</label>
+                <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none uppercase" placeholder="SBIN000XXXX" />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">UPI ID (Optional but recommended)</label>
-              <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" placeholder="yourphone@ybl" />
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">UPI ID (Optional but recommended)</label>
+              <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="yourphone@ybl" />
             </div>
           </div>
         )}
@@ -561,11 +561,11 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Social Media Followers</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Total Social Media Followers</label>
                 <select 
                   value={followerCount} 
                   onChange={e => setFollowerCount(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white"
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
                 >
                   <option value="">Select Range</option>
                   <option value="under_1k">Under 1,000</option>
@@ -575,11 +575,11 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">WhatsApp Group/Community Size</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">WhatsApp Group/Community Size</label>
                 <select 
                   value={whatsappGroupSize} 
                   onChange={e => setWhatsappGroupSize(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none bg-white"
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
                 >
                   <option value="">Select Size</option>
                   <option value="no_group">No Group Yet</option>
@@ -592,34 +592,34 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Facebook Page URL</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Facebook Page URL</label>
                 <input 
                   type="url"
                   value={facebookUrl} 
                   onChange={e => setFacebookUrl(e.target.value)} 
-                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" 
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" 
                   placeholder="https://facebook.com/..."
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Instagram URL</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Instagram URL</label>
                 <input 
                   type="url"
                   value={instagramUrl} 
                   onChange={e => setInstagramUrl(e.target.value)} 
-                  className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" 
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" 
                   placeholder="https://instagram.com/..."
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Previous Experience selling Handlooms?</label>
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Previous Experience selling Handlooms?</label>
               <textarea 
                 value={handloomExperience} 
                 onChange={e => setHandloomExperience(e.target.value)} 
                 rows={2}
-                className="w-full border border-gray-300 rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-[#0070F3] outline-none" 
+                className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" 
                 placeholder="Briefly describe if you have sold Sambalpuri handlooms before, or your primary expected customers."
               ></textarea>
             </div>

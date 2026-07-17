@@ -89,15 +89,15 @@ export default function WebhooksPage() {
             <div className="space-y-4 mb-6">
               <div>
                 <label className="text-xs font-bold text-gray-500 mb-1.5 block">Integration Name</label>
-                <input type="text" placeholder="e.g. ERP Inventory Sync" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
+                <input type="text" placeholder="e.g. ERP Inventory Sync" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
               </div>
               <div>
                 <label className="text-xs font-bold text-gray-500 mb-1.5 block">Payload URL</label>
-                <input type="url" placeholder="https://" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none font-mono" />
+                <input type="url" placeholder="https://" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none font-mono" />
               </div>
               <div>
                 <label className="text-xs font-bold text-gray-500 mb-1.5 block">Secret (For HMAC Signature)</label>
-                <input type="password" placeholder="Leave blank to generate automatically" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none font-mono" />
+                <input type="password" placeholder="Leave blank to generate automatically" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none font-mono" />
               </div>
             </div>
 

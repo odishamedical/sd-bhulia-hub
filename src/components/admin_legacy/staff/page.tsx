@@ -329,7 +329,7 @@ export default function StaffDelegationPage() {
                       <select 
                           value={selectedUserId}
                           onChange={(e) => setSelectedUserId(e.target.value)}
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all mb-6"
+                          className="w-full px-4 py-3 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all mb-6"
                       >
                           <option value="">-- Choose a User --</option>
                           {allUsers.map(u => (
@@ -341,15 +341,15 @@ export default function StaffDelegationPage() {
                   <div className="space-y-4 mb-6">
                       <div>
                           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Email Address *</label>
-                          <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="employee@bhulia.com" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none" />
+                          <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="employee@bhulia.com" className="w-full px-4 py-3 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl focus:bg-white focus:border-blue-500 outline-none" />
                       </div>
                       <div>
                           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Full Name (Optional)</label>
-                          <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. John Doe" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none" />
+                          <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. John Doe" className="w-full px-4 py-3 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl focus:bg-white focus:border-blue-500 outline-none" />
                       </div>
                       <div>
                           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Address / Branch (Optional)</label>
-                          <input type="text" value={newAddress} onChange={(e) => setNewAddress(e.target.value)} placeholder="e.g. Bargarh Hub" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none" />
+                          <input type="text" value={newAddress} onChange={(e) => setNewAddress(e.target.value)} placeholder="e.g. Bargarh Hub" className="w-full px-4 py-3 bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl focus:bg-white focus:border-blue-500 outline-none" />
                       </div>
                   </div>
               )}

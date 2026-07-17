@@ -34,7 +34,7 @@ export default function StyleGuide() {
             </div>
           </div>
           <div className="space-y-2">
-            <div className="h-20 rounded-xl bg-gray-50 border border-gray-200 shadow-inner flex items-end p-3">
+            <div className="h-20 rounded-xl bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 shadow-inner flex items-end p-3">
               <span className="text-slate-500 font-mono text-xs font-bold">bg-gray-50</span>
             </div>
             <div>
@@ -178,24 +178,24 @@ export default function StyleGuide() {
               <input 
                 type="text" 
                 placeholder="Click to see focus state..." 
-                className="w-full bg-gray-50 border border-gray-200 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all placeholder:text-slate-400"
+                className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all placeholder:text-slate-400"
               />
             </div>
             <code className="text-[10px] text-slate-600 block whitespace-pre-wrap break-all bg-gray-50 p-3 rounded-lg border border-gray-200">
-              className="w-full bg-gray-50 border border-gray-200 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all placeholder:text-slate-400"
+              className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all placeholder:text-slate-400"
             </code>
           </div>
 
           <div className="space-y-4">
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Dropdown Select</label>
-              <select className="w-full bg-gray-50 border border-gray-200 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all cursor-pointer">
+              <select className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all cursor-pointer">
                 <option>Option 1 (Click me)</option>
                 <option>Option 2</option>
               </select>
             </div>
             <code className="text-[10px] text-slate-600 block whitespace-pre-wrap break-all bg-gray-50 p-3 rounded-lg border border-gray-200">
-              className="w-full bg-gray-50 border border-gray-200 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all cursor-pointer"
+              className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all cursor-pointer"
             </code>
           </div>
 
@@ -205,11 +205,11 @@ export default function StyleGuide() {
               <textarea 
                 rows={3}
                 placeholder="Type your description here..." 
-                className="w-full bg-gray-50 border border-gray-200 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all placeholder:text-slate-400 resize-none"
+                className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all placeholder:text-slate-400 resize-none"
               />
             </div>
             <code className="text-[10px] text-slate-600 block whitespace-pre-wrap break-all bg-gray-50 p-3 rounded-lg border border-gray-200">
-              className="w-full bg-gray-50 border border-gray-200 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all placeholder:text-slate-400 resize-none"
+              className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 text-slate-900 text-sm rounded-lg px-4 py-3 outline-none focus:border-[#0074E4] focus:ring-2 focus:ring-[#0074E4]/20 transition-all placeholder:text-slate-400 resize-none"
             </code>
           </div>
         </div>

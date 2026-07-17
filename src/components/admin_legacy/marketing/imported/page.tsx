@@ -429,122 +429,122 @@ export default function ImportedListingsDBPage() {
             
             <div className="p-6 overflow-y-auto custom-scrollbar space-y-4">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Business Name</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Business Name</label>
                 <input 
                   type="text" 
                   value={editingItem.title || ""} 
                   onChange={e => setEditingItem({...editingItem, title: e.target.value})}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Full Address</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Full Address</label>
                 <textarea 
                   rows={2}
                   value={editingItem.address || ""} 
                   onChange={e => setEditingItem({...editingItem, address: e.target.value})}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none resize-none"
+                  className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none resize-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Country</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Country</label>
                   <input 
                     type="text" 
                     value={editingItem.country || ""} 
                     onChange={e => setEditingItem({...editingItem, country: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                    className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">State</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">State</label>
                   <input 
                     type="text" 
                     value={editingItem.state || ""} 
                     onChange={e => setEditingItem({...editingItem, state: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                    className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">District</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">District</label>
                   <input 
                     type="text" 
                     value={editingItem.district || ""} 
                     onChange={e => setEditingItem({...editingItem, district: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                    className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Block</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Block</label>
                   <input 
                     type="text" 
                     value={editingItem.block || ""} 
                     onChange={e => setEditingItem({...editingItem, block: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                    className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Town / Village</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Town / Village</label>
                   <input 
                     type="text" 
                     value={editingItem.townVillage || ""} 
                     onChange={e => setEditingItem({...editingItem, townVillage: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                    className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">PIN Code</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">PIN Code</label>
                   <input 
                     type="text" 
                     value={editingItem.pin || ""} 
                     onChange={e => setEditingItem({...editingItem, pin: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                    className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Phone Number</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Phone Number</label>
                   <input 
                     type="text" 
                     value={editingItem.phone || ""} 
                     onChange={e => setEditingItem({...editingItem, phone: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                    className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                     placeholder="+91..."
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">WhatsApp Number</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">WhatsApp Number</label>
                   <input 
                     type="text" 
                     value={editingItem.whatsapp || ""} 
                     onChange={e => setEditingItem({...editingItem, whatsapp: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                    className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                     placeholder="+91..."
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Website</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Website</label>
                 <input 
                   type="text" 
                   value={editingItem.website || ""} 
                   onChange={e => setEditingItem({...editingItem, website: e.target.value})}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                   placeholder="https://..."
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Listing Type</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Listing Type</label>
                 <select 
                   value={editingItem.listingType || editingItem.baseRole} 
                   onChange={e => setEditingItem({...editingItem, listingType: e.target.value})}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                 >
                   <option value="store">Store / Retail Shop</option>
                   <option value="weaver">Master Weaver</option>
@@ -553,35 +553,35 @@ export default function ImportedListingsDBPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Description</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Description</label>
                 <textarea 
                   rows={3}
                   value={editingItem.desc || ""} 
                   onChange={e => setEditingItem({...editingItem, desc: e.target.value})}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none resize-none"
+                  className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none resize-none"
                   placeholder="Short description of the store or weaver..."
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Products / Specialties</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Products / Specialties</label>
                 <input 
                   type="text" 
                   value={editingItem.productsOffered || ""} 
                   onChange={e => setEditingItem({...editingItem, productsOffered: e.target.value})}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
+                  className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-semibold focus:border-blue-500 outline-none"
                   placeholder="e.g. Silk Sarees, Cotton Dress Materials, Bomkai..."
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Image Upload</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Image Upload</label>
                 <input 
                   type="file" 
                   accept="image/*"
                   onChange={handleImageUpload}
                   disabled={isUploading}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 text-sm font-semibold focus:border-blue-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-2 text-sm font-semibold focus:border-blue-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
                 {isUploading && <p className="text-xs text-blue-600 mt-2 font-bold animate-pulse">Uploading image...</p>}
                 {editingItem.img && (
