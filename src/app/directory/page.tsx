@@ -68,7 +68,11 @@ function DirectoryContent() {
       }
 
       // Location matching logic - assuming format like "Village, Block, District, State, Country" or similar
-      const addr = (item.address || "").toLowerCase();
+      let rawAddr = item.address || "";
+      if (typeof rawAddr === "object") {
+        rawAddr = JSON.stringify(rawAddr);
+      }
+      const addr = String(rawAddr).toLowerCase();
       const dist = ((item as any).district || "").toLowerCase();
       const st = ((item as any).state || "").toLowerCase();
       const cntry = ((item as any).country || "").toLowerCase();
@@ -112,7 +116,9 @@ function DirectoryContent() {
     // Apply Sorting
     return filtered.sort((a, b) => {
       if (selectedSort === "newest") {
-        return (((b as any).createdAt || 0) as number) - (((a as any).createdAt || 0) as number);
+        const timeA = typeof (a as any).createdAt === "object" && (a as any).createdAt?.toMillis ? (a as any).createdAt.toMillis() : new Date((a as any).createdAt || 0).getTime();
+        const timeB = typeof (b as any).createdAt === "object" && (b as any).createdAt?.toMillis ? (b as any).createdAt.toMillis() : new Date((b as any).createdAt || 0).getTime();
+        return timeB - timeA;
       }
       if (selectedSort === "rating") {
         return ((b as any).googleRating || 0) - ((a as any).googleRating || 0);
