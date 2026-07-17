@@ -144,9 +144,9 @@ export default function AdminSPA() {
         return <AdminLogistics />;
       case "orders-returns":
         return <AdminReturns />;
-      case "finance-payouts":
+      case "payouts":
         return <AdminPayouts />;
-      case "finance-tax":
+      case "tax":
         return <AdminTax />;
       case "ads":
         return <AdminAds />;
@@ -158,11 +158,11 @@ export default function AdminSPA() {
         return <AdminPageBuilder />;
       case "help":
         return <AdminHelp />;
-      case "support-tickets":
+      case "tickets":
         return <AdminTickets />;
-      case "support-fraud":
+      case "fraud":
         return <AdminFraud />;
-      case "support-audit":
+      case "audit":
         return <AdminAudit />;
 
       case "subscriptions":
