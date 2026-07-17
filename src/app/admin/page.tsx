@@ -20,6 +20,9 @@ import AdminLogistics from "@/components/admin/AdminLogistics";
 import AdminReturns from "@/components/admin/AdminReturns";
 import AdminPayouts from "@/components/admin/AdminPayouts";
 import AdminTax from "@/components/admin/AdminTax";
+import AdminTickets from "@/components/admin/AdminTickets";
+import AdminFraud from "@/components/admin/AdminFraud";
+import AdminAudit from "@/components/admin/AdminAudit";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -155,6 +158,13 @@ export default function AdminSPA() {
         return <AdminPageBuilder />;
       case "help":
         return <AdminHelp />;
+      case "support-tickets":
+        return <AdminTickets />;
+      case "support-fraud":
+        return <AdminFraud />;
+      case "support-audit":
+        return <AdminAudit />;
+
       case "subscriptions":
         return <div className="p-8 text-gray-500">SaaS Subscriptions module coming soon.</div>;
       case "settings":
