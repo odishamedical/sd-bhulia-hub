@@ -40,7 +40,8 @@ export default function AdminPageBuilder() {
       try {
         const docSnap = await getDoc(doc(db, "page_layouts", "home_page"));
         if (docSnap.exists()) {
-          setWidgets(docSnap.data().widgets || []);
+          const loadedWidgets = docSnap.data().widgets || [];
+          setWidgets(loadedWidgets.map((w: any) => ({ ...w, data: w.data || {} })));
         } else {
           // Pre-populate with the current layout so the admin has a starting point
           setWidgets([
@@ -53,13 +54,13 @@ export default function AdminPageBuilder() {
                 ]
               }
             },
-            { type: "ArtisanCircles" },
+            { type: "ArtisanCircles", data: {} },
             { type: "BannerSlot", data: { id: "homepage_middle" } },
             {
               type: "ProductCarousel",
               data: { title: "The Vault", filterType: "trending", itemLimit: 6 }
             },
-            { type: "HeritageStory" },
+            { type: "HeritageStory", data: {} },
             {
               type: "DirectoryGrid",
               data: { title: "Ecosystem Directory", subtitle: "Discover our network of verified partners", role: "weaver", itemLimit: 8 }
