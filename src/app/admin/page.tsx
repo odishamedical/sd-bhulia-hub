@@ -24,6 +24,7 @@ import AdminTickets from "@/components/admin/AdminTickets";
 import AdminFraud from "@/components/admin/AdminFraud";
 import AdminAudit from "@/components/admin/AdminAudit";
 import AdminGoogleCRM from "@/components/admin/AdminGoogleCRM";
+import AdminCommissions from "@/components/admin/AdminCommissions";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -168,7 +169,8 @@ export default function AdminSPA() {
         return <AdminFraud />;
       case "audit":
         return <AdminAudit />;
-
+      case "commissions":
+        return <AdminCommissions />;
       case "subscriptions":
         return <div className="p-8 text-gray-500">SaaS Subscriptions module coming soon.</div>;
       case "settings":
@@ -349,17 +351,22 @@ export default function AdminSPA() {
             <div className="h-6 w-[1px] bg-white/20 mx-2 self-center shrink-0"></div>
             <span className="text-[10px] text-blue-200 font-bold uppercase tracking-wider mr-1 shrink-0">Demo Hubs:</span>
             
-            {["customer", "reseller", "store", "weaver"].map(role => (
+            {["customer", "reseller", "store", "weaver", "wholesaler", "supplier"].map(role => (
               <button 
                 key={role}
                 onClick={() => {
                   localStorage.setItem("sd_view_as_uid", "demo-" + role);
                   localStorage.setItem("sd_view_as_role", role);
                   localStorage.setItem("sd_view_as_name", "Demo " + role.charAt(0).toUpperCase() + role.slice(1));
-                  if (role === "store" || role === "weaver") {
+                  if (["store", "weaver", "wholesaler", "supplier"].includes(role)) {
                     localStorage.setItem("sd_seller_mode", "true");
                   }
-                  window.open("/dashboard", "_blank");
+                  
+                  let targetUrl = "/dashboard";
+                  if (role === "wholesaler") targetUrl = "/dashboard/wholesaler";
+                  if (role === "supplier") targetUrl = "/dashboard/supplier";
+                  
+                  window.open(targetUrl, "_blank");
                 }}
                 className="px-4 py-1.5 text-xs font-bold rounded-full bg-[#0052A3] text-blue-50 border border-[#003d7a] shadow-sm hover:bg-[#003d7a] hover:text-white transition-all shrink-0 capitalize"
               >

@@ -1110,8 +1110,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [productCategory, setProductCategory] = useState("Saree");
   const [productDesc, setProductDesc] = useState("");
   const [stockQuantity, setStockQuantity] = useState(1);
-  const [allowResellerMargin, setAllowResellerMargin] = useState(false);
-  const [resellerMarginPercentage, setResellerMarginPercentage] = useState(5);
+  const [resellerBasePrice, setResellerBasePrice] = useState("");
   const [isSpecialOffer, setIsSpecialOffer] = useState(false);
   const [specialOfferTag, setSpecialOfferTag] = useState("");
   const [productImage, setProductImage] = useState("");
@@ -1142,7 +1141,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const saveDraft = () => {
-    const draft = { productName, productPrice, commercialPrice, availableForRetail, availableForWholesale, wholesaleTerms, productCategory, productDesc, stockQuantity, allowResellerMargin, resellerMarginPercentage, isSpecialOffer, specialOfferTag, productImage, img2, img3, img4, youtubeUrl, productMrp, productLongDesc, originalWeaver, sareeType, material, design, colorUse, length, hasBlouse };
+    const draft = { productName, productPrice, commercialPrice, availableForRetail, availableForWholesale, wholesaleTerms, productCategory, productDesc, stockQuantity, resellerBasePrice, isSpecialOffer, specialOfferTag, productImage, img2, img3, img4, youtubeUrl, productMrp, productLongDesc, originalWeaver, sareeType, material, design, colorUse, length, hasBlouse };
     localStorage.setItem("sd_product_draft", JSON.stringify(draft));
     alert("Draft saved to browser!");
   };
@@ -1185,8 +1184,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         if(p.wholesaleTerms) setWholesaleTerms(p.wholesaleTerms);
         if(p.availableForRetail !== undefined) setAvailableForRetail(p.availableForRetail);
         if(p.availableForWholesale !== undefined) setAvailableForWholesale(p.availableForWholesale);
-        if(p.allowResellerMargin !== undefined) setAllowResellerMargin(p.allowResellerMargin);
-        if(p.resellerMarginPercentage) setResellerMarginPercentage(p.resellerMarginPercentage);
+        if(p.resellerBasePrice) setResellerBasePrice(p.resellerBasePrice);
         if(p.isSpecialOffer !== undefined) setIsSpecialOffer(p.isSpecialOffer);
         if(p.specialOfferTag) setSpecialOfferTag(p.specialOfferTag);
       }
@@ -1284,9 +1282,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         youtubeUrl: youtubeUrl || undefined,
         stockQuantity: Number(stockQuantity),
         inStock: Number(stockQuantity) > 0,
-        allowResellerMargin,
-        resellerMarginPercentage: allowResellerMargin ? Number(resellerMarginPercentage) : 0,
-        resellerPrice: allowResellerMargin ? String(Math.floor(parsedPrice * (1 - Number(resellerMarginPercentage) / 100))) : undefined,
+        resellerPrice: resellerBasePrice ? Number(resellerBasePrice.toString().replace(/[^0-9.]/g, '')) : undefined,
         isSpecialOffer,
         specialOfferTag: isSpecialOffer ? specialOfferTag : undefined,
       };
@@ -1675,22 +1671,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
             )}
             
             <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-              <label className="flex items-start space-x-3 cursor-pointer mb-3">
-                <input type="checkbox" checked={allowResellerMargin} onChange={e => setAllowResellerMargin(e.target.checked)} className="form-checkbox text-[#0070F3] rounded w-5 h-5 mt-0.5 focus:ring-[#0070F3]" />
-                <div>
-                  <span className="text-sm text-blue-900 font-bold block">Allow Reseller Promotion?</span>
-                  <span className="text-xs text-blue-700">Opt-in to allow resellers to market your product.</span>
-                </div>
-              </label>
-              {allowResellerMargin && (
-                <div className="mt-4">
-                  <label className="block text-xs font-bold text-blue-800 uppercase tracking-wider mb-2">Margin Percentage (Min 5%)</label>
-                  <input type="number" min="5" max="90" value={resellerMarginPercentage} onChange={e => setResellerMarginPercentage(Math.max(5, Number(e.target.value)))} className="w-full bg-white border border-blue-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
-                  <div className="text-xs text-blue-800 font-bold mt-2">
-                    Resellers will sell this at a ₹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount.
-                  </div>
-                </div>
-              )}
+              <div className="mb-3">
+                <span className="text-sm text-blue-900 font-bold block">Reseller Base Price (₹)</span>
+                <span className="text-xs text-blue-700 block mb-2">The minimum amount you demand to be paid if an Agent/Reseller sells this product. Only Resellers see this price.</span>
+                <input type="text" value={resellerBasePrice} onChange={e => setResellerBasePrice(e.target.value)} className="w-full bg-white border border-blue-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="e.g. 25000" />
+              </div>
             </div>
 
             <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">

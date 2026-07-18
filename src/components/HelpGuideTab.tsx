@@ -23,7 +23,6 @@ const SELLER_CATEGORY_GUIDES = [
     details: (
       <ul className="list-disc pl-4 space-y-2">
         <li><strong>Add your Sambalpuri Products:</strong> Upload new sarees, manage inventory, and update prices.</li>
-        <li><strong>B2B / Wholesale Setup:</strong> Create special bulk pricing for verified resellers.</li>
       </ul>
     )
   },
@@ -233,10 +232,6 @@ export default function HelpGuideTab({ userRole }: { userRole: string }) {
         <div className="bg-white p-6 rounded-2xl border-l-4 border-l-[#0074E4] border border-y-gray-200 border-r-gray-200 shadow-sm hover:shadow-md transition-shadow">
           <h4 className="font-bold text-[#0074E4] text-lg mb-2">When do I receive my payouts?</h4>
           <p className="text-sm text-gray-600 font-medium leading-relaxed">You can view your available balance in <strong className="text-gray-900 bg-gray-100 px-1 rounded">4. Finance & Earnings &gt; Wallet & Bank Payouts</strong>. Payouts are processed every Tuesday and Friday directly to your registered bank account.</p>
-        </div>
-        <div className="bg-white p-6 rounded-2xl border-l-4 border-l-[#0074E4] border border-y-gray-200 border-r-gray-200 shadow-sm hover:shadow-md transition-shadow">
-          <h4 className="font-bold text-[#0074E4] text-lg mb-2">Can I sell wholesale (B2B) and retail at the same time?</h4>
-          <p className="text-sm text-gray-600 font-medium leading-relaxed">Yes! In <strong className="text-gray-900 bg-gray-100 px-1 rounded">2. Your Catalog &gt; B2B / Wholesale Setup</strong>, you can configure special wholesale pricing. Retail customers will see the standard MRP, while approved B2B Resellers will automatically see your wholesale rates when they log in.</p>
         </div>
       </div>
     </div>
