@@ -25,6 +25,9 @@ import AdminFraud from "@/components/admin/AdminFraud";
 import AdminAudit from "@/components/admin/AdminAudit";
 import AdminGoogleCRM from "@/components/admin/AdminGoogleCRM";
 import AdminCommissions from "@/components/admin/AdminCommissions";
+import AdminB2BInquiries from "@/components/admin/AdminB2BInquiries";
+import AdminAffiliates from "@/components/admin/AdminAffiliates";
+import AdminEscrow from "@/components/admin/AdminEscrow";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -49,7 +52,8 @@ const SIDEBAR_CATEGORIES = [
     title: "3. Catalog & Commerce",
     icon: "🛍️",
     subLinks: [
-      { name: "Product Catalog", id: "products" }
+      { name: "Product Catalog", id: "products" },
+      { name: "B2B Price Inquiries", id: "b2b_inquiries" }
     ]
   },
   {
@@ -68,6 +72,8 @@ const SIDEBAR_CATEGORIES = [
     subLinks: [
       { name: "Seller Payouts", id: "payouts" },
       { name: "Reseller Commissions", id: "commissions" },
+      { name: "Affiliate Tracking", id: "affiliates" },
+      { name: "Escrow Management", id: "escrow" },
       { name: "SaaS Subscriptions", id: "subscriptions" },
       { name: "Tax & Compliance", id: "tax" }
     ]
@@ -141,6 +147,8 @@ export default function AdminSPA() {
         return <AdminKyc />;
       case "products":
         return <AdminProducts />;
+      case "b2b_inquiries":
+        return <AdminB2BInquiries />;
       case "orders":
         return <AdminOrders />;
       case "logistics-dispatch":
@@ -171,6 +179,8 @@ export default function AdminSPA() {
         return <AdminAudit />;
       case "commissions":
         return <AdminCommissions />;
+      case "affiliates":
+        return <AdminAffiliates />;
       case "subscriptions":
         return <div className="p-8 text-gray-500">SaaS Subscriptions module coming soon.</div>;
       case "settings":

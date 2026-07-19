@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useState, Suspense, useEffect } from "react";
 import { auth, googleProvider } from "@/lib/firebase";
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc, getDoc, updateDoc, increment } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function LoginForm() {
@@ -33,8 +35,29 @@ function LoginForm() {
       if (isRegistering) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await sendEmailVerification(userCredential.user);
+        
+        // Affiliate Tracking Logic
+        const refId = localStorage.getItem("sd_affiliate_ref");
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          email: userCredential.user.email,
+          role: "customer", // Default role
+          referredBy: refId || null,
+          createdAt: new Date().toISOString()
+        }, { merge: true });
+
+        if (refId) {
+          try {
+            const userRef = doc(db, "users", refId);
+            const userDoc = await getDoc(userRef);
+            if (userDoc.exists()) await updateDoc(userRef, { totalSignups: increment(1) });
+            else {
+              const resRef = doc(db, "resellers", refId);
+              if ((await getDoc(resRef)).exists()) await updateDoc(resRef, { totalSignups: increment(1) });
+            }
+          } catch (e) { console.error(e); }
+        }
+
         setMessage("Account created! Please check your email to verify your address.");
-        // We will still redirect them, but they'll see the banner in the dashboard.
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
@@ -46,7 +69,34 @@ function LoginForm() {
 
   const handleGoogleSignIn = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const cred = await signInWithPopup(auth, googleProvider);
+      
+      // Affiliate Tracking for Google SignIn (Only if new user)
+      const userRef = doc(db, "users", cred.user.uid);
+      const userDoc = await getDoc(userRef);
+      
+      if (!userDoc.exists()) {
+        const refId = localStorage.getItem("sd_affiliate_ref");
+        await setDoc(userRef, {
+          email: cred.user.email,
+          name: cred.user.displayName,
+          role: "customer",
+          referredBy: refId || null,
+          createdAt: new Date().toISOString()
+        }, { merge: true });
+
+        if (refId) {
+          try {
+            const refererRef = doc(db, "users", refId);
+            if ((await getDoc(refererRef)).exists()) await updateDoc(refererRef, { totalSignups: increment(1) });
+            else {
+              const resRef = doc(db, "resellers", refId);
+              if ((await getDoc(resRef)).exists()) await updateDoc(resRef, { totalSignups: increment(1) });
+            }
+          } catch (e) { console.error(e); }
+        }
+      }
+      
       window.location.href = redirectUrl;
     } catch (err: any) {
       setError(err.message);

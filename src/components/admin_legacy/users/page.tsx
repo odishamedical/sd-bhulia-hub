@@ -1277,23 +1277,37 @@ export default function UserManagementPage() {
                   </div>
                   <div className="text-sm font-bold text-gray-900 leading-relaxed">{typeof selectedUserForDetails.address === 'object' ? JSON.stringify(selectedUserForDetails.address) : String(selectedUserForDetails.address)}</div>
                 </div>
+                <div className="bg-green-50 p-4 rounded-2xl border border-green-100 mb-4">
+                  <div className="text-[10px] uppercase tracking-widest text-green-700 font-bold mb-1">Referral ID (Shareable)</div>
+                  <div className="text-xl font-black text-green-900 font-mono tracking-widest mb-4">{selectedUserForDetails.referralId}</div>
+                  
+                  <div className="grid grid-cols-2 gap-4 border-t border-green-200 pt-3">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-green-700 font-bold mb-1">Referred Registrations</div>
+                      <div className="text-sm font-black text-green-900">
+                        {authUsers.filter(u => u.referredBy === selectedUserForDetails.referralId).length} Users
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-green-700 font-bold mb-1">Referred Orders</div>
+                      <div className="text-sm font-black text-green-900">
+                        {orders.filter(o => o.referralId === selectedUserForDetails.referralId).length} Orders
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {selectedUserForDetails.role === 'reseller' && (
-                  <>
-                    <div className="bg-green-50 p-4 rounded-2xl border border-green-100 mb-4">
-                      <div className="text-[10px] uppercase tracking-widest text-green-700 font-bold mb-1">Referral ID (Shareable)</div>
-                      <div className="text-xl font-black text-green-900 font-mono tracking-widest">{selectedUserForDetails.referralId}</div>
+                  <div className="flex gap-4 mb-4">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Commission Tier</div>
+                      <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.tier}</div>
                     </div>
-                    <div className="flex gap-4 mb-4">
-                      <div>
-                        <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Commission Tier</div>
-                        <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.tier}</div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Base Rate</div>
-                        <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.commissionRate}%</div>
-                      </div>
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Base Rate</div>
+                      <div className="text-sm font-bold text-gray-900">{selectedUserForDetails.commissionRate}%</div>
                     </div>
-                  </>
+                  </div>
                 )}
                 <div>
                   <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Lifetime Volume</div>

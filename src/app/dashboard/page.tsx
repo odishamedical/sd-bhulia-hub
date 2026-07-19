@@ -39,6 +39,7 @@ export default function DashboardPage() {
   const [storeSlug, setStoreSlug] = useState<string>("demo");
   const [globalNotifications, setGlobalNotifications] = useState<any[]>([]);
   const [canSellWholesale, setCanSellWholesale] = useState(false);
+  const [affiliateCommissionsPaid, setAffiliateCommissionsPaid] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -109,6 +110,17 @@ export default function DashboardPage() {
               const vendorDoc = await getDoc(doc(db, targetCollection, user.uid));
               if (vendorDoc.exists()) {
                 setCanSellWholesale(vendorDoc.data().canSellWholesale || false);
+              }
+
+              // Fetch Commissions Paid out to Resellers
+              try {
+                const commQ = query(collection(db, "reseller_commissions"), where("sellerId", "==", user.uid));
+                const commSnap = await getDocs(commQ);
+                let totalPaid = 0;
+                commSnap.forEach(d => totalPaid += d.data().amount || 0);
+                setAffiliateCommissionsPaid(totalPaid);
+              } catch (e) {
+                console.error("Failed to fetch commissions paid:", e);
               }
             }
 
@@ -202,7 +214,7 @@ export default function DashboardPage() {
       { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
       
       { id: "products", label: "Add your Sambalpuri Products", icon: "📦", category: "2. Your Catalog" },
-      { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "2. Your Catalog" },
+
       
       { id: "orders", label: "Manage Orders", icon: "🚚", category: "3. Orders & Deliveries" },
       
@@ -227,7 +239,7 @@ export default function DashboardPage() {
       { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
       
       { id: "products", label: "Add your Sambalpuri Products", icon: "📦", category: "2. Your Catalog" },
-      { id: "b2b_settings", label: "B2B / Wholesale Setup", icon: "🤝", category: "2. Your Catalog" },
+
       
       { id: "orders", label: "Manage Orders", icon: "🚚", category: "3. Orders & Deliveries" },
       
@@ -1110,7 +1122,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [productCategory, setProductCategory] = useState("Saree");
   const [productDesc, setProductDesc] = useState("");
   const [stockQuantity, setStockQuantity] = useState(1);
-  const [resellerBasePrice, setResellerBasePrice] = useState("");
+  const [allowResellerMargin, setAllowResellerMargin] = useState(false);
+  const [resellerMarginPercentage, setResellerMarginPercentage] = useState(5);
   const [isSpecialOffer, setIsSpecialOffer] = useState(false);
   const [specialOfferTag, setSpecialOfferTag] = useState("");
   const [productImage, setProductImage] = useState("");
@@ -1141,7 +1154,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const saveDraft = () => {
-    const draft = { productName, productPrice, commercialPrice, availableForRetail, availableForWholesale, wholesaleTerms, productCategory, productDesc, stockQuantity, resellerBasePrice, isSpecialOffer, specialOfferTag, productImage, img2, img3, img4, youtubeUrl, productMrp, productLongDesc, originalWeaver, sareeType, material, design, colorUse, length, hasBlouse };
+    const draft = { productName, productPrice, commercialPrice, availableForRetail, availableForWholesale, wholesaleTerms, productCategory, productDesc, stockQuantity, allowResellerMargin, resellerMarginPercentage, isSpecialOffer, specialOfferTag, productImage, img2, img3, img4, youtubeUrl, productMrp, productLongDesc, originalWeaver, sareeType, material, design, colorUse, length, hasBlouse };
     localStorage.setItem("sd_product_draft", JSON.stringify(draft));
     alert("Draft saved to browser!");
   };
@@ -1184,7 +1197,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         if(p.wholesaleTerms) setWholesaleTerms(p.wholesaleTerms);
         if(p.availableForRetail !== undefined) setAvailableForRetail(p.availableForRetail);
         if(p.availableForWholesale !== undefined) setAvailableForWholesale(p.availableForWholesale);
-        if(p.resellerBasePrice) setResellerBasePrice(p.resellerBasePrice);
+        if(p.allowResellerMargin !== undefined) setAllowResellerMargin(p.allowResellerMargin);
+        if(p.resellerMarginPercentage) setResellerMarginPercentage(p.resellerMarginPercentage);
         if(p.isSpecialOffer !== undefined) setIsSpecialOffer(p.isSpecialOffer);
         if(p.specialOfferTag) setSpecialOfferTag(p.specialOfferTag);
       }
@@ -1282,7 +1296,9 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         youtubeUrl: youtubeUrl || undefined,
         stockQuantity: Number(stockQuantity),
         inStock: Number(stockQuantity) > 0,
-        resellerPrice: resellerBasePrice ? Number(resellerBasePrice.toString().replace(/[^0-9.]/g, '')) : undefined,
+        allowResellerMargin,
+        resellerMarginPercentage: allowResellerMargin ? Number(resellerMarginPercentage) : 0,
+        resellerPrice: allowResellerMargin ? String(Math.floor(parsedPrice * (1 - Number(resellerMarginPercentage) / 100))) : undefined,
         isSpecialOffer,
         specialOfferTag: isSpecialOffer ? specialOfferTag : undefined,
       };
@@ -1373,7 +1389,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Inventory</h3>
             <div className="text-3xl font-black text-gray-900">{sellerProducts.length}</div>
@@ -1381,6 +1397,13 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Wallet Balance</h3>
             <div className="text-3xl font-black text-green-600">₹{availableBalance.toLocaleString()}</div>
+          </div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-50 text-purple-200">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+            <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2 relative z-10">Affiliate Comm. Paid</h3>
+            <div className="text-3xl font-black text-purple-600 relative z-10">₹{affiliateCommissionsPaid.toLocaleString()}</div>
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Orders</h3>
@@ -1641,42 +1664,28 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         
         {showAdvanced && (
           <div className="p-6 space-y-6 animate-in slide-in-from-top-2">
-            {canSellWholesale && (
-              <div className="p-5 bg-purple-50 rounded-2xl border border-purple-100">
-                <h4 className="text-sm font-bold text-purple-900 mb-4">Availability Options (B2B Privileges Enabled)</h4>
-                <div className="flex gap-6">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={availableForRetail} onChange={e => setAvailableForRetail(e.target.checked)} className="form-checkbox text-purple-600 rounded w-5 h-5 focus:ring-purple-500" />
-                    <span className="font-bold text-gray-900 text-sm">Retail</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={availableForWholesale} onChange={e => setAvailableForWholesale(e.target.checked)} className="form-checkbox text-purple-600 rounded w-5 h-5 focus:ring-purple-500" />
-                    <span className="font-bold text-gray-900 text-sm">Wholesale</span>
-                  </label>
-                </div>
-                
-                {availableForWholesale && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                    <div>
-                      <label className="block text-xs font-bold text-purple-800 uppercase tracking-wider mb-2">Wholesale Commercial Price (₹)</label>
-                      <input type="text" value={commercialPrice} onChange={e => setCommercialPrice(e.target.value)} className="w-full bg-white border border-purple-200 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-purple-500 outline-none transition-all" required={availableForWholesale} placeholder="e.g. 29000" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-purple-800 uppercase tracking-wider mb-2">Wholesale Supply Terms (MOQ, Dispatch)</label>
-                      <textarea value={wholesaleTerms} onChange={e => setWholesaleTerms(e.target.value)} className="w-full bg-white border border-purple-200 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-purple-500 outline-none transition-all" required={availableForWholesale} placeholder="e.g. Min 5 Sarees, 15 days dispatch..." rows={1} />
+
+            
+            {availableForRetail && (
+              <div className="bg-blue-50 p-4 rounded-xl border border-blue-200 mt-6">
+                <label className="flex items-start space-x-3 cursor-pointer mb-3">
+                  <input type="checkbox" checked={allowResellerMargin} onChange={e => setAllowResellerMargin(e.target.checked)} className="form-checkbox text-[#0070F3] rounded w-5 h-5 mt-0.5 focus:ring-[#0070F3]" />
+                  <div>
+                    <span className="text-sm text-blue-900 font-bold block">Allow Resellers to promote this product?</span>
+                    <span className="text-xs text-blue-700">Agents will market your item for a commission.</span>
+                  </div>
+                </label>
+                {allowResellerMargin && (
+                  <div className="mt-4">
+                    <label className="block text-xs font-bold text-blue-800 uppercase tracking-wider mb-2">Reseller Discount Percentage (Min 5%)</label>
+                    <input type="number" min="5" max="90" value={resellerMarginPercentage} onChange={e => setResellerMarginPercentage(Math.max(5, Number(e.target.value)))} className="w-full bg-white border border-blue-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
+                    <div className="text-xs text-blue-800 font-bold mt-2">
+                      Resellers will sell this at a ₹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount from your MRP.
                     </div>
                   </div>
                 )}
               </div>
             )}
-            
-            <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-              <div className="mb-3">
-                <span className="text-sm text-blue-900 font-bold block">Reseller Base Price (₹)</span>
-                <span className="text-xs text-blue-700 block mb-2">The minimum amount you demand to be paid if an Agent/Reseller sells this product. Only Resellers see this price.</span>
-                <input type="text" value={resellerBasePrice} onChange={e => setResellerBasePrice(e.target.value)} className="w-full bg-white border border-blue-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="e.g. 25000" />
-              </div>
-            </div>
 
             <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
               <label className="flex items-start space-x-3 cursor-pointer mb-3">
@@ -1747,7 +1756,16 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
                 {sellerOrders.length > 0 ? sellerOrders.map(order => (
                   <tr key={order.id} className="text-sm hover:bg-gray-50 transition-colors group">
                     <td className="py-4 px-4 text-gray-500 font-mono text-xs">{order.orderId || order.id}</td>
-                    <td className="py-4 px-4 text-gray-900 font-bold">{order.productName || "Proxy Order"}</td>
+                    <td className="py-4 px-4 text-gray-900 font-bold">
+                      {order.productName || "Proxy Order"}
+                      {order.referralId && (
+                        <div className="mt-1">
+                          <span className="bg-purple-100 text-purple-700 text-[10px] uppercase font-black px-2 py-0.5 rounded tracking-widest shadow-sm">
+                            Reseller Cut
+                          </span>
+                        </div>
+                      )}
+                    </td>
                     <td className="py-4 px-4">
                       <span className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded-full text-xs font-bold">
                         {order.logisticsStatus || "Pending Sourcing"}
@@ -2168,74 +2186,6 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: str
         </div>
       )}
 
-      {activeTab === "b2b_settings" && (
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">B2B & Wholesale Configuration</h2>
-          <p className="text-gray-500 mb-8 font-medium">Manage your wholesale supply terms and B2B catalog access.</p>
-          
-          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xl mb-8">
-            <div className="absolute top-0 right-0 p-4">
-              <span className="bg-[#C5A059] text-[#051815] text-[10px] font-black uppercase px-3 py-1.5 rounded-full tracking-widest shadow-md">Premium Feature</span>
-            </div>
-            
-            <div className="flex gap-4 items-start relative z-10">
-              <div className="bg-white/10 p-3 rounded-full shrink-0">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white mb-2">Bulk Orders & Wholesale Reach</h3>
-                <p className="text-gray-300 text-sm mb-4 leading-relaxed max-w-2xl">
-                  Unlock access to thousands of registered shops, boutiques, and resellers across India. Sell your products in bulk quantities with special B2B pricing to scale your revenue.
-                </p>
-                <div className="space-y-2 mb-6">
-                  <div className="flex items-center gap-2 text-sm text-gray-300">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span>Custom MOQ (Minimum Order Quantity) Controls</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-300">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span>Hidden Wholesale Pricing (Only verified B2B buyers can see)</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-300">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    <span>Priority Support & Assisted Sales</span>
-                  </div>
-                </div>
-                
-                <button 
-                  onClick={async (e) => {
-                    if (!auth.currentUser) return;
-                    const btn = e.currentTarget;
-                    btn.disabled = true;
-                    btn.innerText = "Requesting...";
-                    try {
-                      const collectionName = roleTitle.includes("Weaver") ? "weavers" : "stores";
-                      await updateDoc(doc(db, collectionName, auth.currentUser.uid), {
-                        b2bRequested: true
-                      });
-                      alert("B2B Access Requested successfully! Admins will review your profile.");
-                      btn.innerText = "Request Sent";
-                    } catch (e) {
-                      console.error(e);
-                      alert("Failed to request B2B access.");
-                      btn.disabled = false;
-                      btn.innerText = "Request B2B Access Approval";
-                    }
-                  }}
-                  className="bg-[#C5A059] text-[#051815] px-6 py-3 rounded-xl font-bold hover:bg-white transition-all shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0">
-                  Request B2B Access Approval
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-2xl p-6 text-center">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400 mx-auto mb-3"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            <h4 className="text-lg font-bold text-gray-900 mb-1">Your B2B Status is Pending</h4>
-            <p className="text-sm text-gray-500 max-w-md mx-auto">Once the Admin approves your request, you will be able to configure your global wholesale terms here.</p>
-          </div>
-        </div>
-      )}
 
       {activeTab === "store_settings" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">

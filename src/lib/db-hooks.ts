@@ -698,27 +698,49 @@ export async function addOrder(order: Partial<Omit<Order, 'id'>>) {
     const docRef = doc(collection(db, "orders"));
     await setDoc(docRef, { ...order, id: docRef.id });
     
-    // Check if referralId exists to increment reseller promoter stats
-    if (order.referralId) {
-      const resellerRef = doc(db, "resellers", order.referralId);
-      const resellerDoc = await getDoc(resellerRef);
+    // Check if referralId exists to sync to reseller_commissions ledger
+    if (order.referralId && order.productId) {
+      // Get exact margin from product
+      const productRef = doc(db, "products", order.productId);
+      const productDoc = await getDoc(productRef);
       
-      if (resellerDoc.exists()) {
-        const resellerData = resellerDoc.data();
-        const priceNum = parseInt(order.productPrice?.replace(/[^0-9]/g, '') || "0");
-        const qty = order.quantity || 1;
-        const totalCost = priceNum * qty;
-        const commission = Math.round(totalCost * 0.05); // 5% commission rate
-        
-        const newTotalSales = (resellerData.totalSales || 0) + 1;
-        const newTier = (resellerData.tier === "Silver" && newTotalSales >= 50) ? "Gold" : resellerData.tier;
+      if (productDoc.exists()) {
+        const productData = productDoc.data();
+        if (productData.allowResellerMargin && productData.resellerMarginPercentage) {
+          const priceNum = parseInt(order.productPrice?.replace(/[^0-9]/g, '') || "0");
+          const qty = order.quantity || 1;
+          const totalCost = priceNum * qty;
+          const marginPerc = Number(productData.resellerMarginPercentage) / 100;
+          const commissionAmount = Math.floor(totalCost * marginPerc);
+          
+          if (commissionAmount > 0) {
+            // Write exact transaction into the Reseller Ledger!
+            await addDoc(collection(db, "reseller_commissions"), {
+              resellerId: order.referralId,
+              productId: order.productId,
+              productName: order.productName,
+              orderId: docRef.id,
+              amount: commissionAmount,
+              status: "pending",
+              sellerId: productData.sellerId, // To show to the creator
+              createdAt: new Date().toISOString()
+            });
 
-        await updateDoc(resellerRef, {
-          totalSales: increment(1),
-          commissionEarned: increment(commission),
-          tier: newTier
-        });
-        console.log(`Updated promoter stats: sales=${newTotalSales}, commission=+₹${commission}, tier=${newTier}`);
+            // Keep user doc stats updated for legacy and tracking
+            const userRef = doc(db, "users", order.referralId);
+            if ((await getDoc(userRef)).exists()) {
+              await updateDoc(userRef, { 
+                commissionEarned: increment(commissionAmount),
+                totalSales: increment(1)
+              });
+            } else {
+              const resRef = doc(db, "resellers", order.referralId);
+              if ((await getDoc(resRef)).exists()) {
+                await updateDoc(resRef, { commissionEarned: increment(commissionAmount) });
+              }
+            }
+          }
+        }
       }
     }
     

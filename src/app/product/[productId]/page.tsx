@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import UserMenu from "@/components/UserMenu";
 import Link from "next/link";
+import { db } from "@/lib/firebase";
+import { collection, addDoc } from "firebase/firestore";
 import { useParams } from "next/navigation";
 import { useProductBySlug, useProducts, addOrder, useWeavers, useStores } from "@/lib/db-hooks";
 import { MASTER_FRANCHISES } from "@/app/reseller/data";
@@ -50,6 +52,9 @@ export default function ProductDetailPage() {
   const [activeMediaIndex, setActiveMediaIndex] = useState<number>(0);
   const [bgColor, setBgColor] = useState<string>("rgba(197,160,89,0.15)");
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
+  const [showB2BInquiryModal, setShowB2BInquiryModal] = useState<boolean>(false);
+  const [inquiryQuantity, setInquiryQuantity] = useState<number>(10);
+  const [b2bInquiryStatus, setB2bInquiryStatus] = useState<string>("");
 
   const allImages = product ? [product.img, product.img2, product.img3, product.img4, ...(product.images || [])].filter(Boolean) : [];
   
@@ -91,6 +96,32 @@ export default function ProductDetailPage() {
         });
     }
   }, [activeMedia]);
+
+  const submitB2BInquiry = async () => {
+    if (!userUid || userUid === "sd_super_admin_custom_uid") return;
+    setB2bInquiryStatus("submitting");
+    try {
+      await addDoc(collection(db, "b2b_inquiries"), {
+        productId: product?.id || productSlug,
+        productName: product?.title,
+        supplierId: (product as any)?.sellerId || "",
+        inquirerId: userUid,
+        inquirerName: userName,
+        inquirerRole: userRole,
+        requestedQuantity: inquiryQuantity,
+        status: "pending",
+        createdAt: new Date().toISOString()
+      });
+      setB2bInquiryStatus("success");
+      setTimeout(() => {
+        setShowB2BInquiryModal(false);
+        setB2bInquiryStatus("");
+      }, 2000);
+    } catch (e) {
+      console.error(e);
+      setB2bInquiryStatus("error");
+    }
+  };
 
   useEffect(() => {
     const checkAuth = () => {
@@ -177,24 +208,17 @@ export default function ProductDetailPage() {
         {product && <GlobalBannerSlot placementId="content_top" context={{ audience: "products", specificId: product.id, category: product.category, material: product.material, design: product.design }} />}
         
         {(() => {
-          const isB2BApproved = userRole === "reseller" || userRole === "wholesaler" || userRole === "shop" || userRole === "store" || userRole === "weaver" || userRole === "super_admin";
+          const isB2BApproved = typeof window !== 'undefined' && (
+            userRole === "super_admin" ||
+            localStorage.getItem("sd_global_b2b_access") === "true" ||
+            (localStorage.getItem("sd_approved_b2b_suppliers") || "").split(",").includes(String((product as any)?.sellerId))
+          );
           const isRetail = product?.availableForRetail !== false;
           const isWholesale = product?.availableForWholesale === true;
 
-          if (product && !isB2BApproved && !isRetail && isWholesale) {
-            return (
-              <div className="min-h-[60vh] flex items-center justify-center bg-transparent text-center p-6 w-full">
-                <div className="bg-[#0B2B26] border border-[#C5A059]/30 p-10 rounded-3xl shadow-2xl max-w-lg w-full">
-                  <span className="text-6xl mb-4 block">🔒</span>
-                  <h1 className="text-2xl font-bold text-[#C5A059] mb-2">B2B Exclusive Product</h1>
-                  <p className="text-gray-300 mb-6 text-sm leading-relaxed">This product is strictly available for our verified Wholesale partners. Please login with a B2B account to view commercial pricing.</p>
-                  <Link href="/" className="bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs shadow-lg">Return to Catalog</Link>
-                </div>
-              </div>
-            );
-          }
-
-          return productLoading ? (
+          // If it's wholesale ONLY and user is not approved, we still let them see the page, but the price/cart will be hidden and replaced with inquiry button.
+          // We removed the full-page blocker here so they can actually view the product details and click "Contact for Bulk Price".
+        })()}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-pulse">
             <div className="lg:col-span-6 h-[500px] bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl"></div>
             <div className="lg:col-span-6 space-y-6">
@@ -339,34 +363,65 @@ export default function ProductDetailPage() {
               </div>
 
               <div className="flex flex-col gap-2 border-t border-b border-[#C5A059]/20 py-4">
-                <div className="flex items-baseline gap-4">
+                <div className="flex flex-col items-start gap-4">
                   {(() => {
-                    const isB2BApproved = userRole === "reseller" || userRole === "wholesaler" || userRole === "shop" || userRole === "store" || userRole === "weaver" || userRole === "super_admin";
+                    const isB2BApproved = typeof window !== 'undefined' && (
+                      userRole === "super_admin" ||
+                      localStorage.getItem("sd_global_b2b_access") === "true" ||
+                      (localStorage.getItem("sd_approved_b2b_suppliers") || "").split(",").includes(String((product as any)?.sellerId))
+                    );
                     const isRetail = product.availableForRetail !== false;
                     const isWholesale = product.availableForWholesale === true;
                     
-                    if (isB2BApproved && isWholesale) {
-                      return (
-                        <>
-                          <span className="text-3xl font-serif font-bold text-[#C5A059]">₹{product.commercialPrice?.toLocaleString() || product.price}</span>
-                          <span className="text-[10px] text-[#C5A059] bg-[#C5A059]/10 px-2 py-1 rounded font-bold uppercase tracking-widest border border-[#C5A059]/20 whitespace-nowrap">B2B Wholesale Price</span>
-                          {isRetail && (
-                            <span className="text-sm text-gray-500 line-through ml-2">Retail: ₹{(parseFloat(product.price.toString().replace(/[^0-9]/g, ''))).toLocaleString('en-IN')}</span>
-                          )}
-                        </>
-                      );
-                    }
-                    
                     return (
-                      <>
-                        <span className={`text-3xl font-serif font-bold ${userRole === "reseller" && product.allowResellerMargin ? "text-gray-400 line-through text-2xl" : "text-[#C5A059]"}`}>{product.price}</span>
-                        {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
-                          <span className="text-sm text-gray-400 line-through">{product.mrp || `₹ ${(parseFloat(product.price.toString().replace(/[^0-9]/g, '')) * 1.2).toLocaleString('en-IN')}`}</span>
+                      <div className="w-full space-y-4">
+                        {/* Retail Pricing Block */}
+                        {isRetail && (
+                          <div className="flex items-baseline gap-4">
+                            <span className={`text-3xl font-serif font-bold ${userRole === "reseller" && product.allowResellerMargin ? "text-gray-400 line-through text-2xl" : "text-[#C5A059]"}`}>{product.price}</span>
+                            {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
+                              <span className="text-sm text-gray-400 line-through">{product.mrp || `₹ ${(parseFloat(product.price.toString().replace(/[^0-9]/g, '')) * 1.2).toLocaleString('en-IN')}`}</span>
+                            )}
+                            {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
+                              <span className="text-xs text-green-400 font-bold">Direct Weaver Price</span>
+                            )}
+                          </div>
                         )}
-                        {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
-                          <span className="text-xs text-green-400 font-bold">Direct Weaver Price</span>
+
+                        {/* Wholesale Pricing Block */}
+                        {isWholesale && (
+                          <div className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-4 mt-2">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-[10px] text-purple-400 font-bold uppercase tracking-widest flex items-center gap-1">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                                B2B Wholesale Status
+                              </span>
+                              {isB2BApproved && <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded font-bold uppercase border border-green-500/30">Verified</span>}
+                            </div>
+                            
+                            {isB2BApproved ? (
+                              <div className="flex items-baseline gap-3">
+                                <span className="text-3xl font-serif font-bold text-purple-300">₹{product.commercialPrice?.toLocaleString() || product.price}</span>
+                                <span className="text-xs text-purple-200">Bulk Rate</span>
+                              </div>
+                            ) : (
+                              <div className="flex flex-col gap-3">
+                                <span className="text-sm text-gray-400 italic">Bulk pricing is hidden for unverified users.</span>
+                                <button onClick={() => {
+                                  if (!userRole) {
+                                    alert("Please login to request bulk pricing.");
+                                    return;
+                                  }
+                                  setShowB2BInquiryModal(true);
+                                }} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold uppercase tracking-wider py-2.5 px-4 rounded-lg shadow-lg border border-purple-400/50 transition-all self-start flex items-center gap-2">
+                                  <span>Contact for Bulk Price</span>
+                                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         )}
-                      </>
+                      </div>
                     );
                   })()}
                 </div>
@@ -379,7 +434,11 @@ export default function ProductDetailPage() {
                 )}
                 
                 {(() => {
-                  const isB2BApproved = userRole === "reseller" || userRole === "wholesaler" || userRole === "shop" || userRole === "store" || userRole === "weaver" || userRole === "super_admin";
+                  const isB2BApproved = typeof window !== 'undefined' && (
+                    userRole === "super_admin" ||
+                    localStorage.getItem("sd_global_b2b_access") === "true" ||
+                    (localStorage.getItem("sd_approved_b2b_suppliers") || "").split(",").includes(String((product as any)?.sellerId))
+                  );
                   if (isB2BApproved && product.availableForWholesale && product.wholesaleTerms) {
                     return (
                       <div className="mt-3 p-3 bg-purple-900/20 border border-purple-500/30 rounded-xl">
@@ -452,7 +511,14 @@ export default function ProductDetailPage() {
                 <p className="text-xs sm:text-sm font-sans leading-relaxed">{product.longDesc}</p>
               </div>
               <div className="grid grid-cols-2 gap-4 mt-6">
-                {(product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0)) ? (
+                {(product.availableForRetail === false) ? (
+                  <button 
+                    disabled
+                    className="w-full py-4 bg-gray-800 text-gray-400 font-bold uppercase tracking-wider rounded-xl cursor-not-allowed border border-gray-700"
+                  >
+                    B2B Bulk Order Only
+                  </button>
+                ) : (product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0)) ? (
                   <button 
                     disabled
                     className="w-full py-4 bg-gray-800 text-gray-500 font-bold uppercase tracking-wider rounded-xl cursor-not-allowed border border-gray-700"
@@ -553,9 +619,6 @@ export default function ProductDetailPage() {
           </div>
 
         </div>
-        );
-      })()}
-
       </div>
 
       {product && (
@@ -581,6 +644,39 @@ export default function ProductDetailPage() {
 
       {/* Global Footer */}
       
+      {showB2BInquiryModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-[#0B2B26] border border-purple-500/30 rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+            <button onClick={() => setShowB2BInquiryModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white">✕</button>
+            <h3 className="text-xl font-bold text-purple-400 mb-2">Request Bulk Pricing</h3>
+            <p className="text-sm text-gray-300 mb-6">Enter your expected order quantity to view the exclusive B2B Commercial Price for this product.</p>
+            
+            <div className="mb-6">
+              <label className="block text-xs font-bold text-purple-300 uppercase tracking-wider mb-2">Expected Quantity</label>
+              <input type="number" min="1" value={inquiryQuantity} onChange={e => setInquiryQuantity(Number(e.target.value))} className="w-full bg-[#051815] border border-purple-500/50 rounded-xl p-3 text-white focus:outline-none focus:border-purple-400 text-lg" />
+            </div>
+
+            {b2bInquiryStatus === "success" ? (
+              <div className="bg-green-500/20 text-green-400 p-4 rounded-xl text-center font-bold">
+                Request Sent Successfully! Admin will review shortly.
+              </div>
+            ) : b2bInquiryStatus === "error" ? (
+              <div className="bg-red-500/20 text-red-400 p-4 rounded-xl text-center font-bold">
+                Error submitting request. Try again.
+              </div>
+            ) : (
+              <button 
+                onClick={submitB2BInquiry}
+                disabled={b2bInquiryStatus === "submitting"}
+                className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold uppercase tracking-wider rounded-xl shadow-lg transition-all"
+              >
+                {b2bInquiryStatus === "submitting" ? "Submitting..." : "Submit Inquiry"}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {showProfileBlocker && (
         <ProfileBlockerModal onClose={() => setShowProfileBlocker(false)} />
       )}
