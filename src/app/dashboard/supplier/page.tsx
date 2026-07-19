@@ -8,6 +8,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import DashboardLayout, { NavItem } from "@/components/DashboardLayout";
 import SupplierInventoryUpload from "@/components/dashboard/SupplierInventoryUpload";
 import { useOrders, useProducts } from "@/lib/db-hooks";
+import GlobalBannerSlot from "@/components/GlobalBannerSlot";
+import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
 import Image from "next/image";
 
 export default function SupplierDashboardPage() {
@@ -26,12 +28,10 @@ export default function SupplierDashboardPage() {
   const myMaterials = products.filter(p => p.sellerId === userUid && p.sellerType === "supplier");
   const myOrders = orders.filter(o => o.sellerId === userUid);
 
-  // KYC & Profile state
+  // KYC & Business Profile state
   const [gstNumber, setGstNumber] = useState("");
   const [udyamNumber, setUdyamNumber] = useState("");
   const [businessAddress, setBusinessAddress] = useState("");
-  
-  // Profile Setup States
   const [companyName, setCompanyName] = useState("");
   const [companyDesc, setCompanyDesc] = useState("");
   const [phone, setPhone] = useState("");
@@ -43,7 +43,23 @@ export default function SupplierDashboardPage() {
   const [materialTypes, setMaterialTypes] = useState("");
   const [supplyCapacity, setSupplyCapacity] = useState("");
   const [storeSlug, setStoreSlug] = useState("");
-  
+
+  // Personal Profile State
+  const [personalName, setPersonalName] = useState("");
+  const [personalDob, setPersonalDob] = useState("");
+  const [personalPhone, setPersonalPhone] = useState("");
+  const [personalEmail, setPersonalEmail] = useState("");
+  const [personalCountry, setPersonalCountry] = useState("India");
+  const [personalState, setPersonalState] = useState("");
+  const [personalDistrict, setPersonalDistrict] = useState("");
+  const [personalBlock, setPersonalBlock] = useState("");
+  const [personalTownVillage, setPersonalTownVillage] = useState("");
+  const [personalPin, setPersonalPin] = useState("");
+  const [personalAddress, setPersonalAddress] = useState("");
+  const [personalAadhaar, setPersonalAadhaar] = useState("");
+  const [personalPhoto, setPersonalPhoto] = useState("");
+  const [isSavingPersonal, setIsSavingPersonal] = useState(false);
+
   const [bankHolder, setBankHolder] = useState("");
   const [bankName, setBankName] = useState("");
   const [bankAccount, setBankAccount] = useState("");
@@ -103,6 +119,20 @@ export default function SupplierDashboardPage() {
               setBankUpi(data.bankUpi || "");
               const slug = String(data.companyName || data.title || "supplier").toLowerCase().replace(/[^a-z0-9]+/g, '-');
               setStoreSlug(slug);
+              // Personal fields
+              setPersonalName(data.personalName || "");
+              setPersonalDob(data.personalDob || "");
+              setPersonalPhone(data.personalPhone || "");
+              setPersonalEmail(data.personalEmail || "");
+              setPersonalCountry(data.personalCountry || "India");
+              setPersonalState(data.personalState || "");
+              setPersonalDistrict(data.personalDistrict || "");
+              setPersonalBlock(data.personalBlock || "");
+              setPersonalTownVillage(data.personalTownVillage || "");
+              setPersonalPin(data.personalPin || "");
+              setPersonalAddress(data.personalAddress || "");
+              setPersonalAadhaar(data.personalAadhaar || "");
+              setPersonalPhoto(data.personalPhoto || "");
             }
           }
         } catch (error) {
@@ -126,6 +156,7 @@ export default function SupplierDashboardPage() {
   }
 
   const navItems: NavItem[] = [
+    { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
     { id: "profile", label: "Supplier Profile", icon: "🏢", category: "1. Profile & Setup" },
     { id: "kyc", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
     { id: "operations", label: "Business Operations", icon: "⚙️", category: "1. Profile & Setup" },
@@ -139,6 +170,25 @@ export default function SupplierDashboardPage() {
     { id: "crm", label: "Weaver CRM & Orders", icon: "🤝", category: "Orders & Logistics" },
     { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "Finance & Earnings" },
   ];
+
+  const handleSavePersonal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isDemoMode) return alert("Demo mode: Cannot save.");
+    setIsSavingPersonal(true);
+    try {
+      await updateDoc(doc(db, "suppliers", userUid), {
+        personalName, personalDob, personalPhone, personalEmail,
+        personalCountry, personalState, personalDistrict, personalBlock,
+        personalTownVillage, personalPin, personalAddress,
+        personalAadhaar, personalPhoto,
+      });
+      alert("Personal Profile saved!");
+    } catch (err) {
+      console.error(err);
+      alert("Error saving personal profile.");
+    }
+    setIsSavingPersonal(false);
+  };
 
   const handleSaveKyc = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -358,7 +408,123 @@ export default function SupplierDashboardPage() {
           </div>
         )}
 
+        {activeTab === "personal" && (
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-3xl animate-in fade-in">
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">Personal Profile & KYC</h2>
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-8">
+              <h3 className="text-red-800 font-bold text-sm mb-1">🔒 Strictly Confidential</h3>
+              <p className="text-red-700 text-xs font-medium">This information is for official KYC and bank verification only. It will NEVER be shown publicly. A verified person must be behind every business.</p>
+            </div>
+            <form className="space-y-8" onSubmit={handleSavePersonal}>
+              {/* Personal Photo */}
+              <div>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Personal Photo (Owner / Director)</label>
+                {personalPhoto ? (
+                  <div className="flex items-center gap-4">
+                    <img src={personalPhoto} alt="Personal" className="w-20 h-20 rounded-full object-cover border-2 border-gray-200" />
+                    <button type="button" onClick={() => setPersonalPhoto("")} className="text-sm text-red-500 hover:underline">Remove</button>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-4 bg-gray-50">
+                    <input type="url" placeholder="Paste photo URL" value={personalPhoto} onChange={e => setPersonalPhoto(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#0070F3] outline-none bg-white" />
+                  </div>
+                )}
+              </div>
+              {/* Section 1: Personal Identity */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">1. Personal Identity</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Full Name (As per Aadhaar / Bank)</label>
+                    <input type="text" value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" required />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Date of Birth</label>
+                    <input type="date" value={personalDob} onChange={e => setPersonalDob(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Personal Phone</label>
+                    <input type="tel" value={personalPhone} onChange={e => setPersonalPhone(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" placeholder="+91..." />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Personal Email</label>
+                    <input type="email" value={personalEmail} onChange={e => setPersonalEmail(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" placeholder="owner@email.com" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Aadhaar Number (Confidential)</label>
+                    <input type="password" value={personalAadhaar} onChange={e => setPersonalAadhaar(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none font-mono" placeholder="XXXX XXXX XXXX" />
+                  </div>
+                </div>
+              </div>
+              {/* Section 2: Residential Address */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2">2. Residential Address</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Country</label>
+                    <select value={personalCountry} onChange={e => { setPersonalCountry(e.target.value); setPersonalState(""); setPersonalDistrict(""); }} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
+                      <option value="India">India</option>
+                      <option value="International">International</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">State</label>
+                    {personalCountry === "India" ? (
+                      <select value={personalState} onChange={e => { setPersonalState(e.target.value); setPersonalDistrict(""); }} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
+                        <option value="">Select State...</option>
+                        {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    ) : (
+                      <input type="text" value={personalState} onChange={e => setPersonalState(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" placeholder="Province / State" />
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">District</label>
+                    {personalCountry === "India" && personalState === "Odisha" ? (
+                      <select value={personalDistrict} onChange={e => { setPersonalDistrict(e.target.value); setPersonalBlock(""); }} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
+                        <option value="">Select District...</option>
+                        {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                      </select>
+                    ) : (
+                      <input type="text" value={personalDistrict} onChange={e => setPersonalDistrict(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" placeholder="District" />
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Block</label>
+                    {personalCountry === "India" && personalState === "Odisha" && personalDistrict && ODISHA_DISTRICT_BLOCKS[personalDistrict] ? (
+                      <select value={personalBlock} onChange={e => setPersonalBlock(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none">
+                        <option value="">Select Block...</option>
+                        {ODISHA_DISTRICT_BLOCKS[personalDistrict].map(b => <option key={b} value={b}>{b}</option>)}
+                      </select>
+                    ) : (
+                      <input type="text" value={personalBlock} onChange={e => setPersonalBlock(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" placeholder="Block / Tehsil" />
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Town / Village</label>
+                    <input type="text" value={personalTownVillage} onChange={e => setPersonalTownVillage(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">PIN Code</label>
+                    <input type="text" value={personalPin} onChange={e => setPersonalPin(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" placeholder="6-digit PIN" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Full Street Address</label>
+                    <textarea value={personalAddress} onChange={e => setPersonalAddress(e.target.value)} rows={2} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
+                  </div>
+                </div>
+              </div>
+              <div className="pt-4 border-t border-gray-100 flex justify-end">
+                <button type="submit" disabled={isSavingPersonal} className="bg-[#0070F3] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#005BB5] disabled:opacity-50 transition-colors shadow-sm">
+                  {isSavingPersonal ? "Saving..." : "Save Personal Profile"}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
         {activeTab === "profile" && (
+
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Supplier Profile</h2>
             <form onSubmit={handleSaveKyc} className="space-y-6">
