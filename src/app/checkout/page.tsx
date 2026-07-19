@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useCart } from "@/context/CartContext";
+import { useCart, calculateItemPrice } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
@@ -34,7 +34,7 @@ export default function CheckoutPage() {
   if (appliedCoupon) {
     sellerSubtotal = cart
       .filter((item: any) => item.sellerId === appliedCoupon.sellerId || item.storeId === appliedCoupon.sellerId)
-      .reduce((total: number, item: any) => total + parseInt(item.price.replace(/[^0-9]/g, "")) * item.cartQuantity, 0);
+      .reduce((total: number, item: any) => total + calculateItemPrice(item) * item.cartQuantity, 0);
 
     if (appliedCoupon.type === "percentage") {
       discountAmount = sellerSubtotal * (appliedCoupon.value / 100);
@@ -365,7 +365,7 @@ export default function CheckoutPage() {
                     <p className="text-[10px] text-gray-400 mt-1">Qty: {item.cartQuantity}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-[#C5A059]">₹{parseInt(item.price.replace(/[^0-9]/g, "")) * item.cartQuantity}</p>
+                    <p className="text-sm font-bold text-[#C5A059]">₹{calculateItemPrice(item) * item.cartQuantity}</p>
                   </div>
                 </div>
               ))}

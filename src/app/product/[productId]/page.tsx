@@ -400,21 +400,32 @@ export default function ProductDetailPage() {
                             </div>
                             
                             {isB2BApproved ? (
-                              <div className="flex items-baseline gap-3">
-                                <span className="text-3xl font-serif font-bold text-purple-300">₹{product.commercialPrice?.toLocaleString() || product.price}</span>
-                                <span className="text-xs text-purple-200">Bulk Rate</span>
+                              <div className="flex flex-col gap-2 mt-2">
+                                {product.wholesaleTiers && product.wholesaleTiers.length > 0 ? (
+                                  product.wholesaleTiers.map((tier: any, idx: number) => (
+                                    <div key={idx} className="flex justify-between items-center bg-purple-900/40 p-2 rounded-lg border border-purple-500/20">
+                                      <span className="text-xs text-purple-200">Min. {tier.minQty} pcs</span>
+                                      <span className="text-lg font-serif font-bold text-purple-300">₹{tier.price.toLocaleString()}</span>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="flex items-baseline gap-3">
+                                    <span className="text-3xl font-serif font-bold text-purple-300">₹{product.commercialPrice?.toLocaleString() || product.price}</span>
+                                    <span className="text-xs text-purple-200">Bulk Rate</span>
+                                  </div>
+                                )}
                               </div>
                             ) : (
                               <div className="flex flex-col gap-3">
-                                <span className="text-sm text-gray-400 italic">Bulk pricing is hidden for unverified users.</span>
+                                <span className="text-xs text-purple-200 font-medium">Interested in wholesale quantities? Submit a request to the platform admin to unlock exclusive B2B rates for this catalog.</span>
                                 <button onClick={() => {
                                   if (!userRole) {
                                     alert("Please login to request bulk pricing.");
                                     return;
                                   }
                                   setShowB2BInquiryModal(true);
-                                }} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold uppercase tracking-wider py-2.5 px-4 rounded-lg shadow-lg border border-purple-400/50 transition-all self-start flex items-center gap-2">
-                                  <span>Contact for Bulk Price</span>
+                                }} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold uppercase tracking-wider py-2.5 px-4 rounded-lg shadow-lg border border-purple-400/50 transition-all self-start flex items-center gap-2 mt-1">
+                                  <span>Request Wholesale Access</span>
                                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                                 </button>
                               </div>

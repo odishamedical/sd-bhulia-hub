@@ -7,6 +7,23 @@ export interface CartItem extends Product {
   cartQuantity: number;
 }
 
+export const calculateItemPrice = (item: any): number => {
+  let unitPrice = typeof item.price === 'string' ? parseInt(item.price.replace(/[^0-9]/g, "")) : Number(item.price);
+  const isB2B = typeof window !== 'undefined' && localStorage.getItem("sd_global_b2b_access") === "true";
+  
+  if (isB2B && item.availableForWholesale && item.wholesaleTiers && item.wholesaleTiers.length > 0) {
+    const eligibleTiers = item.wholesaleTiers
+      .filter((t: any) => item.cartQuantity >= t.minQty)
+      .sort((a: any, b: any) => b.minQty - a.minQty);
+    if (eligibleTiers.length > 0) {
+      unitPrice = eligibleTiers[0].price;
+    }
+  } else if (isB2B && item.availableForWholesale && item.commercialPrice) {
+    unitPrice = Number(item.commercialPrice);
+  }
+  return unitPrice;
+};
+
 interface CartContextType {
   cart: CartItem[];
   addToCart: (product: Product) => void;
@@ -134,8 +151,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const cartCount = cart.reduce((total, item) => total + item.cartQuantity, 0);
   
   const cartTotal = cart.reduce((total, item) => {
-    const priceNum = parseInt(item.price.replace(/[^0-9]/g, ""));
-    return total + priceNum * item.cartQuantity;
+    return total + calculateItemPrice(item) * item.cartQuantity;
   }, 0);
 
   return (

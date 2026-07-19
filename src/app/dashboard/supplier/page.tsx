@@ -186,8 +186,8 @@ export default function SupplierDashboardPage() {
     { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "1. Profile & Setup" },
     { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
     { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
-    { id: "catalog", label: "Catalog Management", icon: "📋", category: "2. Your Catalog" },
-    { id: "pricing_rates", label: "Market Rates Update", icon: "📉", category: "2. Your Catalog" },
+    { id: "catalog", label: "Catalog Management", icon: "📋", category: "2. Catalog Management" },
+    { id: "pricing_rates", label: "Market Rates Update", icon: "📉", category: "2. Catalog Management" },
     { id: "crm", label: "Weaver CRM & Orders", icon: "🤝", category: "3. Orders & Deliveries" },
     { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
     { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
@@ -319,8 +319,8 @@ export default function SupplierDashboardPage() {
       <div className="p-6">
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-black text-gray-900">Raw Material Supplier Dashboard</h1>
-            <p className="text-gray-500 mt-2 text-lg">Manage yarn inventory, daily market rates, and weaver orders.</p>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Catalog Management</h1>
+          <p className="text-gray-500 font-medium mt-1">Manage your raw materials and bulk inventory.</p>
           </div>
           <div className="bg-indigo-50 text-indigo-800 px-4 py-2 rounded-xl font-bold border border-indigo-200">
             Supplier Mode Active
@@ -351,17 +351,23 @@ export default function SupplierDashboardPage() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Inventory Management</h2>
                 <p className="text-gray-500">Upload raw materials with B2B Pricing and custom MOQ.</p>
               </div>
-              <button 
-                onClick={() => setIsUploadOpen(true)}
-                className="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-lg flex items-center gap-2"
-              >
-                <span>+</span> Add Raw Material
-              </button>
+                <button 
+                  onClick={() => setIsUploadOpen(true)}
+                  className="bg-[#1f2937] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-black transition-colors shadow-sm w-full md:w-auto"
+                >
+                  <span className="mr-2">+</span>Add Item
+                </button>
             </div>
 
             {myMaterials.length === 0 ? (
               <div className="bg-gray-50 rounded-2xl p-12 border-2 border-dashed border-gray-200 text-center">
-                <p className="text-gray-500 font-medium">You have no active raw materials in stock.</p>
+                <p className="text-gray-500 max-w-md mx-auto mb-6">You haven't added any products to your catalog. Add your first item to start selling.</p>
+                <button 
+                  onClick={() => setIsUploadOpen(true)}
+                  className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm"
+                >
+                  Upload First Item
+                </button>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

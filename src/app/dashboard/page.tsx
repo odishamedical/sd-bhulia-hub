@@ -243,7 +243,7 @@ export default function DashboardPage() {
       { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
       { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
       
-      { id: "products", label: "Add your Sambalpuri Products", icon: "📦", category: "2. Your Catalog" },
+      { id: "products", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
 
       
       { id: "orders", label: "Manage Orders", icon: "🚚", category: "3. Orders & Deliveries" },
@@ -268,7 +268,7 @@ export default function DashboardPage() {
       { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
       { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
       
-      { id: "products", label: "Add your Sambalpuri Products", icon: "📦", category: "2. Your Catalog" },
+      { id: "products", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
 
       
       { id: "orders", label: "Manage Orders", icon: "🚚", category: "3. Orders & Deliveries" },
@@ -310,7 +310,7 @@ export default function DashboardPage() {
       { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
       { id: "security", label: "Security & Login", icon: "🔐", category: "1. Profile & Setup" },
       { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "1. Profile & Setup" },
-      { id: "inventory", label: "Inventory Catalog", icon: "📦", category: "2. Your Catalog" },
+      { id: "inventory", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
       { id: "orders", label: "Order Management", icon: "🚚", category: "3. Orders & Deliveries" },
       { id: "wallet", label: "Wallet & Payouts", icon: "💰", category: "4. Finance & Earnings" },
       { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
@@ -1396,8 +1396,10 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
       <SaaSUpgraderModal isOpen={isUpgraderOpen} onClose={() => setIsUpgraderOpen(false)} />
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">{roleTitle}</h1>
-          <p className="text-gray-500 font-medium mt-1">Manage your inventory and dispatch operations.</p>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Catalog Management</h1>
+          <p className="text-gray-500 font-medium mt-1">
+            {roleTitle.includes('Weaver') ? 'Manage your handloom products and dispatch operations.' : 'Manage your retail inventory and dispatch operations.'}
+          </p>
         </div>
       </header>
 
@@ -1462,7 +1464,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                   <p className="text-sm text-gray-500 mt-1">Manage and track your inventory.</p>
                 </div>
                 <button onClick={handleAddNewClick} className="bg-[#1f2937] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-black transition-colors shadow-sm w-full md:w-auto">
-                  + Add Inventory
+                  + Add Item
                 </button>
               </div>
 
@@ -1497,7 +1499,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                   <h3 className="text-lg font-bold text-gray-900 mb-2">No Products Yet</h3>
                   <p className="text-gray-500 max-w-md mx-auto mb-6">You haven't added any products to your catalog. Add your first item to start selling.</p>
                   <button onClick={handleAddNewClick} className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm">
-                    Upload First Product
+                    Upload First Item
                   </button>
                 </div>
               ) : (

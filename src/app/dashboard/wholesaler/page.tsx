@@ -6,7 +6,7 @@ import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import DashboardLayout, { NavItem } from "@/components/DashboardLayout";
-import UniversalProductUpload from "@/components/dashboard/UniversalProductUpload";
+import UnifiedProductUpload from "@/components/dashboard/UnifiedProductUpload";
 import { useOrders, useProducts } from "@/lib/db-hooks";
 import Image from "next/image";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
@@ -182,7 +182,7 @@ export default function WholesalerDashboardPage() {
     { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "1. Profile & Setup" },
     { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
     { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
-    { id: "catalog", label: "Bulk Catalog Management", icon: "📦", category: "2. Your Catalog" },
+    { id: "catalog", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
     { id: "orders", label: "B2B Orders & Fulfillment", icon: "🚚", category: "3. Orders & Deliveries" },
     { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
     { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
@@ -294,8 +294,8 @@ export default function WholesalerDashboardPage() {
       <div className="p-6">
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-black text-gray-900">B2B Wholesaler Dashboard</h1>
-            <p className="text-gray-500 mt-2 text-lg">Manage your bulk catalog, MOQ pricing, and B2B orders.</p>
+            <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Catalog Management</h1>
+            <p className="text-gray-500 font-medium mt-1">Manage your B2B bulk products and dispatch operations.</p>
           </div>
           <div className="bg-blue-50 text-blue-800 px-4 py-2 rounded-xl font-bold border border-blue-200">
             Wholesale Mode Active
@@ -323,20 +323,26 @@ export default function WholesalerDashboardPage() {
           <div className="animate-in fade-in space-y-6">
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Bulk Catalog Management</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Catalog Management</h2>
                 <p className="text-gray-500">Upload products with B2B Tiered Bulk Pricing and custom MOQ.</p>
               </div>
               <button 
                 onClick={() => setIsUploadOpen(true)}
-                className="bg-[#0074E4] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#005bb5] transition-colors shadow-lg flex items-center gap-2"
+                className="bg-[#1f2937] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-black transition-colors shadow-sm w-full md:w-auto"
               >
-                <span>+</span> Add B2B Product
+                <span className="mr-2">+</span>Add Item
               </button>
             </div>
 
             {myProducts.length === 0 ? (
               <div className="bg-gray-50 rounded-2xl p-12 border-2 border-dashed border-gray-200 text-center">
-                <p className="text-gray-500 font-medium">You have no active B2B products.</p>
+                <p className="text-gray-500 max-w-md mx-auto mb-6">You haven't added any products to your catalog. Add your first item to start selling.</p>
+                <button 
+                  onClick={() => setIsUploadOpen(true)}
+                  className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm"
+                >
+                  Upload First Item
+                </button>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -864,11 +870,13 @@ export default function WholesalerDashboardPage() {
         {activeTab === "reviews" && <ReviewsTab />}
         {activeTab === "help_guide" && <HelpGuideTab userRole="wholesaler" />}
 
-        <UniversalProductUpload 
+        <UnifiedProductUpload 
           isOpen={isUploadOpen}
           onClose={() => setIsUploadOpen(false)}
           sellerRole="wholesaler"
           sellerId={userUid}
+          isAutoApprovedUser={sellerData?.isAutoApproved}
+          storeName={sellerData?.businessName || sellerData?.companyName}
         />
       </div>
     </DashboardLayout>
