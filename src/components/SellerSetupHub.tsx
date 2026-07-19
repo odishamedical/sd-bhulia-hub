@@ -249,14 +249,14 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           applicationDate: serverTimestamp(),
           phone: phone,
           whatsapp: phone,
-          email: email,
+          email: auth.currentUser?.email || "",
           address: {
             streetAddress,
             state,
             district,
             block,
             cityTownVillage: block,
-            pincode: pinCode
+            pincode: pincode
           },
           state,
           district,

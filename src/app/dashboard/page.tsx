@@ -78,9 +78,22 @@ export default function DashboardPage() {
             const viewAsName = localStorage.getItem("sd_view_as_name");
             
             if (actualRole === "super_admin" && viewAsUid && viewAsRole) {
+              if (viewAsRole === "wholesaler") {
+                router.push("/dashboard/wholesaler");
+                return;
+              } else if (viewAsRole === "supplier" || viewAsRole === "raw_material") {
+                router.push("/dashboard/supplier");
+                return;
+              }
               setRole(viewAsRole);
               setUserName(viewAsName || "Viewing User");
               setIsViewAsMode(true);
+            } else if (actualRole === "wholesaler") {
+              router.push("/dashboard/wholesaler");
+              return;
+            } else if (actualRole === "supplier" || actualRole === "raw_material") {
+              router.push("/dashboard/supplier");
+              return;
             } else if (actualRole === "weaver_staff" || actualRole === "store_staff") {
               const bossUid = userDoc.data().bossUid;
               if (bossUid) {
@@ -427,11 +440,11 @@ export default function DashboardPage() {
           {actualRole === "customer" && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
           {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
           {actualRole === "store" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
-          {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" />}
+          {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" affiliateCommissionsPaid={affiliateCommissionsPaid} />}
         </>
       )}
-      {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Store Hub (Staff)" />}
-      {actualRole === "wholesaler" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="B2B Wholesaler Hub" />}
+      {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Store Hub (Staff)" affiliateCommissionsPaid={affiliateCommissionsPaid} />}
+      {actualRole === "wholesaler" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="B2B Wholesaler Hub" affiliateCommissionsPaid={affiliateCommissionsPaid} />}
       {actualRole === "reseller" && <ResellerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "super_admin" && <SuperAdminDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "raw_material" && <SupplierDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
@@ -830,7 +843,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
 /* ==========================================
    2. WEAVER DASHBOARD
    ========================================== */
-function SellerDashboard({ activeTab, onTabChange, roleTitle }: { activeTab: string, onTabChange: (id: string) => void, roleTitle: string }) {
+function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissionsPaid = 0 }: { activeTab: string, onTabChange: (id: string) => void, roleTitle: string, affiliateCommissionsPaid?: number }) {
   // Common hooks
   const { products } = useProducts();
   const { orders } = useOrders();
