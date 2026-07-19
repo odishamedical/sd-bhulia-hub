@@ -35,7 +35,7 @@ export default function DirectoryGridWidget({ data }: { data: DirectoryGridData 
         const snapshot = await getDocs(q);
         
         // Let's do a simple client-side sort to show featured (tier) first, then random
-        let fetchedPartners = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        let fetchedPartners: any[] = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         fetchedPartners.sort((a, b) => {
            const aTier = a.tier === "Diamond" ? 3 : a.tier === "Gold" ? 2 : 1;
            const bTier = b.tier === "Diamond" ? 3 : b.tier === "Gold" ? 2 : 1;

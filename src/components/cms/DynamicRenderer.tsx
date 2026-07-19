@@ -185,7 +185,7 @@ export default function DynamicRenderer({ rows }: { rows: CMSRow[] }) {
           case "hero":
             return <HeroBlock key={row.id} row={row} />;
           case "products":
-            return <ProductsBlock key={row.id} title={!row.hideTitle ? row.title : undefined} category={row.category} flashSaleEndTime={row.flashSaleEndTime} themeStyle={row.themeStyle} />;
+            return <ProductsBlock key={row.id} title={!row.hideTitle ? row.title : undefined} category={row.category} flashSaleEndTime={row.flashSaleEndTime} themeStyle={(row as any).themeStyle} />;
           case "banner":
             return <BannerBlock key={row.id} bannerText={row.bannerText} bannerImage={row.bannerImage} />;
           case "adsense":

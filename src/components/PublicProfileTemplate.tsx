@@ -432,7 +432,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                     <div className="flex-1 min-w-0">
                       <h4 className="text-white text-xs font-bold truncate group-hover:text-[#C5A059] transition-colors">{sp.title}</h4>
                       <div className="text-gray-400 text-[10px] truncate mt-0.5">{sp.weaverName || sp.storeName}</div>
-                      <div className="text-[#C5A059] text-xs font-bold mt-1">₹{sp.price.toLocaleString("en-IN")}</div>
+                      <div className="text-[#C5A059] text-xs font-bold mt-1">₹{Number(sp.price).toLocaleString("en-IN")}</div>
                     </div>
                   </Link>
                 ))}

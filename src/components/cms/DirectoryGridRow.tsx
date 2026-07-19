@@ -19,7 +19,7 @@ export default function DirectoryGridRow() {
     const vList = stores.map(v => ({ ...v, role: "store", displayType: "Retail Shop" }));
     const wList = weavers.map(w => ({ ...w, role: "weaver", displayType: "Master Weaver" }));
     // We shuffle them to make them random as requested
-    const all = [...vList, ...wList].filter(item => item.status === "approved" || item.status === "unclaimed");
+    const all = [...vList, ...wList].filter(item => item.status === "approved" || (item.status as any) === "unclaimed");
     return all.sort(() => Math.random() - 0.5);
   }, [stores, weavers]);
 
@@ -107,7 +107,7 @@ export default function DirectoryGridRow() {
       if (i + 15 < items.length || chunk.length === 15) {
         result.push(
           <div key={`ad-${currentAdIndex}`} className="w-full my-8">
-            <GlobalBannerSlot placement={`directory_grid_ad_${currentAdIndex}`} fallbackColor="from-[#0B2B26] to-[#051815]" />
+            <GlobalBannerSlot placementId={`directory_grid_ad_${currentAdIndex}`} fallbackColor="from-[#0B2B26] to-[#051815]" />
           </div>
         );
         currentAdIndex++;

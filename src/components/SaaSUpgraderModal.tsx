@@ -25,7 +25,7 @@ export default function SaaSUpgraderModal({ isOpen, onClose, defaultPlan = "weav
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           planId: defaultPlan,
-          customerId: auth.currentUser.uid,
+          customerId: auth.currentUser!.uid,
         })
       });
       const data = await res.json();

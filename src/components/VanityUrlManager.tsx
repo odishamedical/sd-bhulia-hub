@@ -61,7 +61,7 @@ export default function VanityUrlManager({ currentSlug = "shyam-dash-303", roleT
     if (totals.count === 0 || isProcessingPayment) return;
     setIsProcessingPayment(true);
 
-    const selectedUrls = [];
+    const selectedUrls: string[] = [];
     if (selectedProfessional) selectedUrls.push(`bhulia.com/${roleType}/${rawSearch}`);
     if (selectedPremium) selectedUrls.push(`bhulia.com/${rawSearch}`);
     if (selectedEnterprise) selectedUrls.push(`${rawSearch}.bhulia.com`);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { db } from "./firebase";
-import { collection, doc, onSnapshot, query, where, setDoc, deleteDoc, updateDoc, getDoc, increment, limit } from "firebase/firestore";
+import { collection, doc, onSnapshot, query, where, setDoc, deleteDoc, updateDoc, getDoc, increment, limit, addDoc } from "firebase/firestore";
 import { Product } from "./products";
 
 // ============================================================================
@@ -88,6 +88,7 @@ export interface Order {
   parentOrderId?: string;
   sellerId?: string;
   sellerType?: string;
+  productId?: string;
   productName: string;
   productPrice: string;
   quantity: number;

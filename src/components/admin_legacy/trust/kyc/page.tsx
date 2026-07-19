@@ -315,14 +315,14 @@ export default function KycResolutionDesk() {
                         </div>
                       ) : item.type === "document_verification" ? (
                         <div>
-                           <p className="text-sm font-bold text-blue-600 uppercase mb-1">{(user as any).documentType || "BANK"} UPLOAD</p>
-                           { (user as any).documentUrl ? (
-                             <a href={(user as any).documentUrl} target="_blank" className="underline text-blue-500">View Document ↗</a>
+                           <p className="text-sm font-bold text-blue-600 uppercase mb-1">{(item as any).documentType || "BANK"} UPLOAD</p>
+                           { (item as any).documentUrl ? (
+                             <a href={(item as any).documentUrl} target="_blank" className="underline text-blue-500">View Document ↗</a>
                            ) : (
                              <div>
-                                <p><span className="font-semibold">Bank:</span> {(user as any).bankName}</p>
-                                <p><span className="font-semibold">A/C:</span> {(user as any).accountNumber}</p>
-                                <p><span className="font-semibold">IFSC:</span> {(user as any).ifsc}</p>
+                                <p><span className="font-semibold">Bank:</span> {(item as any).bankName}</p>
+                                <p><span className="font-semibold">A/C:</span> {(item as any).accountNumber}</p>
+                                <p><span className="font-semibold">IFSC:</span> {(item as any).ifsc}</p>
                              </div>
                            )}
                         </div>
