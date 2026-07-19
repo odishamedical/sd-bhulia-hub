@@ -152,7 +152,7 @@ export default function WholesalerDashboardPage() {
       userStatus="active"
       storeSlug="b2b-store"
       activeTab={activeTab}
-      setActiveTab={setActiveTab}
+      onTabChange={setActiveTab}
       navItems={navItems}
       globalNotifications={[]}
       isSuperAdminViewAs={isDemoMode}

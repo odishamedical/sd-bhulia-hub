@@ -158,7 +158,7 @@ export default function SupplierDashboardPage() {
       userStatus="active"
       storeSlug="raw-materials"
       activeTab={activeTab}
-      setActiveTab={setActiveTab}
+      onTabChange={setActiveTab}
       navItems={navItems}
       globalNotifications={[]}
       isSuperAdminViewAs={isDemoMode}
