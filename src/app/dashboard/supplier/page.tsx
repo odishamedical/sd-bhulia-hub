@@ -74,21 +74,24 @@ export default function SupplierDashboardPage() {
   const [silkPrice, setSilkPrice] = useState("5500");
 
   useEffect(() => {
-    const viewAsRole = localStorage.getItem("sd_view_as_role");
-    if (viewAsRole === "supplier") {
-      setUserName(localStorage.getItem("sd_view_as_name") || "Demo Supplier");
-      setUserUid(localStorage.getItem("sd_view_as_uid") || "demo-supplier");
-      setIsDemoMode(true);
-      setLoading(false);
-      return;
-    }
-
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
             const actualRole = userDoc.data().role;
+            
+            const params = new URLSearchParams(window.location.search);
+            const viewAsRole = params.get("viewAs");
+            
+            if (actualRole === "super_admin" && viewAsRole === "supplier") {
+              setUserName("Demo Supplier");
+              setUserUid("demo-supplier");
+              setIsDemoMode(true);
+              setLoading(false);
+              return;
+            }
+            
             if (actualRole !== "supplier") {
               router.push("/dashboard");
               return;

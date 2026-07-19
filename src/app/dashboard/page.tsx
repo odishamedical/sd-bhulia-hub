@@ -44,7 +44,14 @@ export default function DashboardPage() {
 
   useEffect(() => {
     // Load saved seller mode preference
-    const savedMode = localStorage.getItem("sd_seller_mode");
+    let savedMode = localStorage.getItem("sd_seller_mode");
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const viewAsRole = params.get("viewAs");
+      if (viewAsRole && ["store", "weaver", "wholesaler", "supplier"].includes(viewAsRole)) {
+        savedMode = "true";
+      }
+    }
     if (savedMode === "true") setIsSellerMode(true);
 
     if (typeof window !== "undefined") {
@@ -73,9 +80,16 @@ export default function DashboardPage() {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
             const actualRole = userDoc.data().role || "customer";
-            const viewAsUid = localStorage.getItem("sd_view_as_uid");
-            const viewAsRole = localStorage.getItem("sd_view_as_role");
-            const viewAsName = localStorage.getItem("sd_view_as_name");
+            
+            // Clean up legacy localStorage keys
+            localStorage.removeItem("sd_view_as_uid");
+            localStorage.removeItem("sd_view_as_role");
+            localStorage.removeItem("sd_view_as_name");
+            
+            const params = new URLSearchParams(window.location.search);
+            const viewAsRole = params.get("viewAs");
+            const viewAsUid = viewAsRole ? "demo-" + viewAsRole : null;
+            const viewAsName = viewAsRole ? "Demo " + viewAsRole.charAt(0).toUpperCase() + viewAsRole.slice(1) : null;
             
             if (actualRole === "super_admin" && viewAsUid && viewAsRole) {
               if (viewAsRole === "wholesaler") {
@@ -358,9 +372,12 @@ export default function DashboardPage() {
           </div>
           <button 
             onClick={() => {
-              localStorage.removeItem("sd_view_as_uid");
-              localStorage.removeItem("sd_view_as_role");
-              localStorage.removeItem("sd_view_as_name");
+              // Legacy cleanup already happens on initialization, but we can ensure it's clean here too
+              const params = new URLSearchParams(window.location.search);
+              if (params.has("viewAs")) {
+                params.delete("viewAs");
+                router.replace("/dashboard");
+              }
               window.location.reload();
             }}
             className="px-4 py-1.5 bg-white text-blue-700 text-xs font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors"

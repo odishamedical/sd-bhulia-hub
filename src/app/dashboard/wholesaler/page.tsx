@@ -69,21 +69,24 @@ export default function WholesalerDashboardPage() {
   const [isSavingKyc, setIsSavingKyc] = useState(false);
 
   useEffect(() => {
-    const viewAsRole = localStorage.getItem("sd_view_as_role");
-    if (viewAsRole === "wholesaler") {
-      setUserName(localStorage.getItem("sd_view_as_name") || "Demo Wholesaler");
-      setUserUid(localStorage.getItem("sd_view_as_uid") || "demo-wholesaler");
-      setIsDemoMode(true);
-      setLoading(false);
-      return;
-    }
-
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
             const actualRole = userDoc.data().role;
+            
+            const params = new URLSearchParams(window.location.search);
+            const viewAsRole = params.get("viewAs");
+            
+            if (actualRole === "super_admin" && viewAsRole === "wholesaler") {
+              setUserName("Demo Wholesaler");
+              setUserUid("demo-wholesaler");
+              setIsDemoMode(true);
+              setLoading(false);
+              return;
+            }
+            
             if (actualRole !== "wholesaler") {
               router.push("/dashboard");
               return;

@@ -365,16 +365,9 @@ export default function AdminSPA() {
               <button 
                 key={role}
                 onClick={() => {
-                  localStorage.setItem("sd_view_as_uid", "demo-" + role);
-                  localStorage.setItem("sd_view_as_role", role);
-                  localStorage.setItem("sd_view_as_name", "Demo " + role.charAt(0).toUpperCase() + role.slice(1));
-                  if (["store", "weaver", "wholesaler", "supplier"].includes(role)) {
-                    localStorage.setItem("sd_seller_mode", "true");
-                  }
-                  
-                  let targetUrl = "/dashboard";
-                  if (role === "wholesaler") targetUrl = "/dashboard/wholesaler";
-                  if (role === "supplier") targetUrl = "/dashboard/supplier";
+                  let targetUrl = `/dashboard?viewAs=${role}`;
+                  if (role === "wholesaler") targetUrl = `/dashboard/wholesaler?viewAs=${role}`;
+                  if (role === "supplier") targetUrl = `/dashboard/supplier?viewAs=${role}`;
                   
                   window.open(targetUrl, "_blank");
                 }}
