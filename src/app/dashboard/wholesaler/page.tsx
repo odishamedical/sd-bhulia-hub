@@ -291,14 +291,11 @@ export default function WholesalerDashboardPage() {
           </div>
         )}
 
-        {activeTab === "kyc" && (
+        {activeTab === "profile" && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Business Profile & KYC</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Business Profile</h2>
             <form onSubmit={handleSaveKyc} className="space-y-8">
-              
-              {/* 1. Basic Info */}
               <div className="space-y-4">
-                <h3 className="text-lg font-bold text-gray-800 border-b pb-2">1. Basic Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">Company Name</label>
@@ -342,10 +339,18 @@ export default function WholesalerDashboardPage() {
                   </div>
                 </div>
               </div>
+              <button type="submit" disabled={isSavingKyc} className="w-full bg-[#0074E4] text-white font-bold py-4 rounded-xl hover:bg-[#005bb5] transition-colors disabled:opacity-50 text-lg shadow-lg">
+                {isSavingKyc ? "Saving..." : "Save Business Profile"}
+              </button>
+            </form>
+          </div>
+        )}
 
-              {/* 2. Operations */}
+        {activeTab === "operations" && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Operations (B2B)</h2>
+            <form onSubmit={handleSaveKyc} className="space-y-8">
               <div className="space-y-4">
-                <h3 className="text-lg font-bold text-gray-800 border-b pb-2">2. Operations (B2B)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">Default Minimum Order Quantity (MOQ)</label>
@@ -369,10 +374,18 @@ export default function WholesalerDashboardPage() {
                   </div>
                 </div>
               </div>
+              <button type="submit" disabled={isSavingKyc} className="w-full bg-[#0074E4] text-white font-bold py-4 rounded-xl hover:bg-[#005bb5] transition-colors disabled:opacity-50 text-lg shadow-lg">
+                {isSavingKyc ? "Saving..." : "Save Operations"}
+              </button>
+            </form>
+          </div>
+        )}
 
-              {/* 3. Registration */}
+        {activeTab === "kyc" && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">KYC & Registration</h2>
+            <form onSubmit={handleSaveKyc} className="space-y-8">
               <div className="space-y-4">
-                <h3 className="text-lg font-bold text-gray-800 border-b pb-2">3. KYC & Registration</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">GST Number (MANDATORY)</label>
@@ -397,10 +410,18 @@ export default function WholesalerDashboardPage() {
                   </div>
                 </div>
               </div>
+              <button type="submit" disabled={isSavingKyc} className="w-full bg-[#0074E4] text-white font-bold py-4 rounded-xl hover:bg-[#005bb5] transition-colors disabled:opacity-50 text-lg shadow-lg">
+                {isSavingKyc ? "Saving..." : "Save Registration"}
+              </button>
+            </form>
+          </div>
+        )}
 
-              {/* 4. Bank Details */}
+        {activeTab === "finance" && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Bank Details</h2>
+            <form onSubmit={handleSaveKyc} className="space-y-8">
               <div className="space-y-4">
-                <h3 className="text-lg font-bold text-gray-800 border-b pb-2">4. Bank Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="md:col-span-2">
                     <label className="block text-sm font-bold text-gray-700 mb-2">Account Holder Name</label>
@@ -454,15 +475,26 @@ export default function WholesalerDashboardPage() {
                   </div>
                 </div>
               </div>
-
-              <button 
-                type="submit" 
-                disabled={isSavingKyc}
-                className="w-full bg-[#0074E4] text-white font-bold py-4 rounded-xl hover:bg-[#005bb5] transition-colors disabled:opacity-50 text-lg shadow-lg"
-              >
-                {isSavingKyc ? "Saving..." : "Save Business Profile"}
+              <button type="submit" disabled={isSavingKyc} className="w-full bg-[#0074E4] text-white font-bold py-4 rounded-xl hover:bg-[#005bb5] transition-colors disabled:opacity-50 text-lg shadow-lg">
+                {isSavingKyc ? "Saving..." : "Save Bank Details"}
               </button>
             </form>
+          </div>
+        )}
+
+        {activeTab === "staff" && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center animate-in fade-in max-w-2xl">
+            <div className="text-6xl mb-4">👥</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Staff Accounts Management</h2>
+            <p className="text-gray-500 max-w-lg mx-auto">This feature is coming soon for B2B Wholesalers. You will be able to add warehouse managers and sales staff to manage your catalog and orders.</p>
+          </div>
+        )}
+
+        {activeTab === "security" && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center animate-in fade-in max-w-2xl">
+            <div className="text-6xl mb-4">🔐</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Security & Login Settings</h2>
+            <p className="text-gray-500 max-w-lg mx-auto">Update your password, manage 2FA, and review your login activity. (Coming soon)</p>
           </div>
         )}
 

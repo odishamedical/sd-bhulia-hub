@@ -218,7 +218,7 @@ export default function DashboardPage() {
     if (activeTab === "home") setActiveTab("overview");
   } else if (actualRole === "weaver") {
     navItems = [
-      { id: "home", label: "Dashboard Overview", icon: "📊", category: "1. Profile & Setup" },
+      { id: "home", label: "Dashboard Overview", icon: "📊", category: "Dashboard & Reports" },
       { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
       { id: "store_settings", label: "Setup Public Store", icon: "🏪", category: "1. Profile & Setup" },
       { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
@@ -243,7 +243,7 @@ export default function DashboardPage() {
     ];
   } else if (actualRole === "store" || actualRole === "wholesaler") {
     navItems = [
-      { id: "home", label: "Dashboard Overview", icon: "📊", category: "1. Profile & Setup" },
+      { id: "home", label: "Dashboard Overview", icon: "📊", category: "Dashboard & Reports" },
       { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
       { id: "store_settings", label: "Setup Public Store", icon: "🏪", category: "1. Profile & Setup" },
       { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
@@ -274,7 +274,7 @@ export default function DashboardPage() {
     ];
   } else if (actualRole === "reseller") {
     navItems = [
-      { id: "home", label: "Dashboard Overview", icon: "📊", category: "1. Profile & Setup" },
+      { id: "home", label: "Dashboard Overview", icon: "📊", category: "Dashboard & Reports" },
       { id: "profile", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
       { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
       { id: "security", label: "Security & Login", icon: "🔐", category: "1. Profile & Setup" },

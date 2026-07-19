@@ -131,7 +131,7 @@ export default function ResellerDashboardPage() {
       userStatus="active"
       storeSlug={`reseller-${userUid}`}
       activeTab={activeTab}
-      setActiveTab={setActiveTab}
+      onTabChange={setActiveTab}
       navItems={navItems}
       globalNotifications={[]}
       isSuperAdminViewAs={false}
