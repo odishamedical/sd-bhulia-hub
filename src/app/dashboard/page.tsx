@@ -22,6 +22,8 @@ import {
 
 import DashboardLayout, { NavItem } from "@/components/DashboardLayout";
 import ImageUploader from "@/components/ImageUploader";
+import SecurityTab from "@/components/SecurityTab";
+import StaffAccountsTab from "@/components/StaffAccountsTab";
 import SellerSetupHub from "@/components/SellerSetupHub";
 import SaaSUpgraderModal from "@/components/SaaSUpgraderModal";
 import PricingTab from "@/components/PricingTab";
@@ -1960,80 +1962,13 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
       )}
 
       {activeTab === "staff" && (
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Staff Accounts</h2>
-            <span className="px-3 py-1 bg-blue-50 text-[#0070F3] rounded-full text-xs font-bold border border-blue-100">{staffMembers.length} / 2 Used</span>
-          </div>
-          <p className="text-sm text-gray-500 font-medium">Invite up to 2 assistants. Staff can only access the "My Catalog" and "Upload Product" tabs.</p>
-          
-          {staffMembers.length === 0 ? (
-            <div className="text-center py-10 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium mb-6">No staff members invited yet.</div>
-          ) : (
-            <div className="space-y-4 mb-6">
-              {staffMembers.map((email) => (
-                <div key={email} className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center font-bold text-gray-700 shadow-sm">{email[0].toUpperCase()}</div>
-                    <div>
-                      <p className="text-sm font-bold text-gray-900">{email}</p>
-                      <p className="text-xs text-green-600 font-bold uppercase tracking-wider">Active</p>
-                    </div>
-                  </div>
-                  <button onClick={() => setStaffMembers(prev => prev.filter(e => e !== email))} className="text-red-500 hover:text-red-700 font-bold text-xs">Remove</button>
-                </div>
-              ))}
-            </div>
-          )}
-          
-          {staffMembers.length < 2 && (
-            <div className="border-t border-gray-100 pt-6">
-              <h3 className="text-sm font-bold text-gray-900 mb-4">Invite New Staff</h3>
-              <div className="flex gap-4">
-                <input 
-                  type="email" 
-                  value={staffEmailInput}
-                  onChange={(e) => setStaffEmailInput(e.target.value)}
-                  placeholder="Assistant's Email Address" 
-                  className="flex-1 border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none" 
-                />
-                <button 
-                  onClick={async () => {
-                    if (staffEmailInput && !staffMembers.includes(staffEmailInput.toLowerCase())) {
-                      const emailToInvite = staffEmailInput.toLowerCase();
-                      try {
-                        const q = query(collection(db, "users"), where("email", "==", emailToInvite));
-                        const querySnapshot = await getDocs(q);
-                        if (!querySnapshot.empty) {
-                          const staffDoc = querySnapshot.docs[0];
-                          await updateDoc(staffDoc.ref, {
-                            role: roleTitle.includes("Weaver") ? "weaver_staff" : "store_staff",
-                            bossUid: auth.currentUser?.uid
-                          });
-                          const newStaff = [...staffMembers, emailToInvite];
-                          setStaffMembers(newStaff);
-                          await updateDoc(doc(db, "users", auth.currentUser!.uid), {
-                            staffMembers: newStaff
-                          });
-                          setStaffEmailInput("");
-                          alert("Staff successfully linked! When they log in, they will have access to your catalog.");
-                        } else {
-                          alert("User not found! Please ask them to create an account on Bhulia.com first using this email, then try inviting them again.");
-                        }
-                      } catch (error) {
-                        console.error("Error inviting staff:", error);
-                        alert("Error inviting staff.");
-                      }
-                    }
-                  }}
-                  disabled={!staffEmailInput}
-                  className="bg-[#1f2937] text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm disabled:opacity-50"
-                >
-                  Send Invite
-                </button>
-              </div>
-            </div>
-          )}
+        <div className="animate-in fade-in max-w-2xl">
+          <StaffAccountsTab 
+            userUid={auth.currentUser?.uid || ""}
+            roleType={roleTitle.includes("Weaver") ? "weaver" : "store"}
+            staffMembers={staffMembers}
+            setStaffMembers={setStaffMembers}
+          />
         </div>
       )}
 
@@ -3643,99 +3578,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
    ========================================== */
 import { EmailAuthProvider, linkWithCredential, updatePassword } from "firebase/auth";
 
-function SecurityTab() {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [isGoogleUser, setIsGoogleUser] = useState(false);
 
-  useEffect(() => {
-    const checkProvider = (user: any) => {
-      if (user) {
-        const providers = user.providerData.map((p: any) => p.providerId);
-        setIsGoogleUser(providers.includes("google.com") && !providers.includes("password"));
-      }
-    };
-    checkProvider(auth.currentUser);
-    const unsubscribe = onAuthStateChanged(auth, checkProvider);
-    return () => unsubscribe();
-  }, []);
-
-  const handleUpdateSecurity = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      setMessage("Passwords do not match.");
-      return;
-    }
-    if (password.length < 6) {
-      setMessage("Password must be at least 6 characters.");
-      return;
-    }
-    if (!auth.currentUser || !auth.currentUser.email) return;
-
-    setLoading(true);
-    setMessage("");
-    try {
-      if (isGoogleUser) {
-        // Link Google Account with an Email/Password credential
-        const credential = EmailAuthProvider.credential(auth.currentUser.email, password);
-        await linkWithCredential(auth.currentUser, credential);
-        setMessage("Success! You can now log in using your email and this password.");
-        setIsGoogleUser(false);
-      } else {
-        // Just update existing password
-        await updatePassword(auth.currentUser, password);
-        setMessage("Password updated successfully.");
-      }
-      setPassword("");
-      setConfirmPassword("");
-    } catch (error: any) {
-      console.error(error);
-      setMessage(error.message || "Failed to update security settings.");
-    }
-    setLoading(false);
-  };
-
-  return (
-    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
-      <h2 className="text-xl font-bold text-gray-900 mb-2">Security & Login</h2>
-      <p className="text-sm text-gray-500 font-medium mb-6">Manage your account security and login methods.</p>
-
-      {message && (
-        <div className={"p-4 rounded-xl text-sm font-bold "}>
-          {message}
-        </div>
-      )}
-
-      {isGoogleUser ? (
-        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 mb-6">
-          <h3 className="font-bold text-blue-900 flex items-center gap-2"><span>🛡️</span> Google Connected Account</h3>
-          <p className="text-sm text-blue-700 mt-1">You currently log in using Google. Set a password below to enable Email/Password login as a backup.</p>
-        </div>
-      ) : (
-        <div className="bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-2xl p-5 mb-6">
-          <h3 className="font-bold text-gray-900 flex items-center gap-2"><span>🔑</span> Email & Password Account</h3>
-          <p className="text-sm text-gray-600 mt-1">Change your password below to keep your account secure.</p>
-        </div>
-      )}
-
-      <form onSubmit={handleUpdateSecurity} className="space-y-5">
-        <div>
-          <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">New Password</label>
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="••••••••" />
-        </div>
-        <div>
-          <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Confirm Password</label>
-          <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" placeholder="••••••••" />
-        </div>
-        <button disabled={loading} type="submit" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm disabled:opacity-50">
-          {loading ? "Saving..." : isGoogleUser ? "Add Password Login" : "Update Password"}
-        </button>
-      </form>
-    </div>
-  );
-}
 
 /* ==========================================
    SUPPLIER DASHBOARD (RAW MATERIAL)

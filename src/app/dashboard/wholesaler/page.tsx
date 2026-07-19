@@ -12,6 +12,8 @@ import Image from "next/image";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
 import PricingTab from "@/components/PricingTab";
 import ImageUploader from "@/components/ImageUploader";
+import SecurityTab from "@/components/SecurityTab";
+import StaffAccountsTab from "@/components/StaffAccountsTab";
 import { uploadBase64ToStorage } from "@/lib/storageUtils";
 import VanityUrlManager from "@/components/VanityUrlManager";
 
@@ -46,6 +48,11 @@ export default function WholesalerDashboardPage() {
   const [moq, setMoq] = useState("10");
   const [monthlyCapacity, setMonthlyCapacity] = useState("");
   const [storeSlug, setStoreSlug] = useState("");
+  
+  // KYC Docs
+  const [kycType, setKycType] = useState("");
+  const [kycId, setKycId] = useState("");
+  const [kycDocumentUrl, setKycDocumentUrl] = useState("");
 
   // Personal Profile State (the person behind the business)
   const [personalName, setPersonalName] = useState("");
@@ -71,6 +78,7 @@ export default function WholesalerDashboardPage() {
   const [isSavingBank, setIsSavingBank] = useState(false);
 
   const [isSavingKyc, setIsSavingKyc] = useState(false);
+  const [staffMembers, setStaffMembers] = useState<string[]>([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -115,6 +123,9 @@ export default function WholesalerDashboardPage() {
               setProfileImage(data.profileImage || data.img || "");
               setMoq(data.moq || "10");
               setMonthlyCapacity(data.monthlyCapacity || "");
+              setKycType(data.kycType || "");
+              setKycId(data.kycId || "");
+              setKycDocumentUrl(data.kycDocumentUrl || "");
               setBankHolder(data.bankHolder || "");
               setBankName(data.bankName || "");
               setBankAccount(data.bankAccount || "");
@@ -136,6 +147,7 @@ export default function WholesalerDashboardPage() {
               setPersonalAddress(data.personalAddress || "");
               setPersonalAadhaar(data.personalAadhaar || "");
               setPersonalPhoto(data.personalPhoto || "");
+              setStaffMembers(data.staffMembers || []);
             }
           }
         } catch (error) {
@@ -214,9 +226,16 @@ export default function WholesalerDashboardPage() {
         setProfileImage(finalLogoUrl);
       }
 
+      let finalKycUrl = kycDocumentUrl;
+      if (kycDocumentUrl && kycDocumentUrl.startsWith("data:image")) {
+        finalKycUrl = await uploadBase64ToStorage(kycDocumentUrl, `kyc_docs/${auth.currentUser?.uid}`);
+        setKycDocumentUrl(finalKycUrl);
+      }
+
       const kycData = {
         gstNumber, udyamNumber, businessAddress, companyName, companyDesc,
         phone, whatsapp, state, district, city, profileImage: finalLogoUrl, moq, monthlyCapacity, slug,
+        kycType, kycId, kycDocumentUrl: finalKycUrl,
       };
 
       await updateDoc(doc(db, "wholesalers", userUid), kycData);
@@ -693,25 +712,51 @@ export default function WholesalerDashboardPage() {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">GST Number (MANDATORY)</label>
-                    <input 
-                      type="text" 
+                    <label className="block text-sm font-bold text-gray-700 mb-2">GST Number (Optional)</label>
+                    <input
+                      type="text"
                       value={gstNumber}
                       onChange={e => setGstNumber(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all uppercase bg-gray-50 focus:bg-white"
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white"
                       placeholder="22AAAAA0000A1Z5"
-                      required
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">Udyam Registration</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={udyamNumber}
                       onChange={e => setUdyamNumber(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all uppercase bg-gray-50 focus:bg-white"
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white"
                       placeholder="UDYAM-XX-00-0000000"
                     />
+                  </div>
+                  <div className="md:col-span-2 border-t border-gray-100 pt-6 mt-2">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">KYC Documents</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="col-span-2">
+                        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">KYC Document Type</label>
+                        <select value={kycType} onChange={e => setKycType(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0074E4]/15 rounded-xl p-3 text-gray-900 focus:border-[#0074E4] outline-none" required>
+                          <option value="">Select Document Type...</option>
+                          <option value="gst">GST Registration Number</option>
+                          <option value="udyam">Aadhaar Udyam Number</option>
+                          <option value="aadhaar">Personal Aadhaar Card</option>
+                        </select>
+                      </div>
+                      <div className="col-span-2">
+                        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Document ID / Number</label>
+                        <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0074E4]/15 rounded-xl p-3 text-gray-900 focus:border-[#0074E4] outline-none" required />
+                      </div>
+                      <div className="col-span-2">
+                        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Upload KYC Document (Photo/PDF)</label>
+                        <ImageUploader 
+                          value={kycDocumentUrl} 
+                          onChange={setKycDocumentUrl}
+                          label="KYC Document"
+                          aspectRatio="landscape"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -788,18 +833,19 @@ export default function WholesalerDashboardPage() {
         )}
 
         {activeTab === "staff" && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center animate-in fade-in max-w-2xl">
-            <div className="text-6xl mb-4">👥</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Staff Accounts Management</h2>
-            <p className="text-gray-500 max-w-lg mx-auto">This feature is coming soon for B2B Wholesalers. You will be able to add warehouse managers and sales staff to manage your catalog and orders.</p>
+          <div className="animate-in fade-in max-w-2xl">
+            <StaffAccountsTab 
+              userUid={userUid}
+              roleType="wholesaler"
+              staffMembers={staffMembers}
+              setStaffMembers={setStaffMembers}
+            />
           </div>
         )}
 
         {activeTab === "security" && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center animate-in fade-in max-w-2xl">
-            <div className="text-6xl mb-4">🔐</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Security & Login Settings</h2>
-            <p className="text-gray-500 max-w-lg mx-auto">Update your password, manage 2FA, and review your login activity. (Coming soon)</p>
+          <div className="animate-in fade-in max-w-2xl">
+            <SecurityTab />
           </div>
         )}
 
