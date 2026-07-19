@@ -14,6 +14,11 @@ import PricingTab from "@/components/PricingTab";
 import ImageUploader from "@/components/ImageUploader";
 import SecurityTab from "@/components/SecurityTab";
 import StaffAccountsTab from "@/components/StaffAccountsTab";
+import MessagesTab from "@/components/MessagesTab";
+import SupportTicketsTab from "@/components/SupportTicketsTab";
+import MarketingTab from "@/components/MarketingTab";
+import ReviewsTab from "@/components/ReviewsTab";
+import HelpGuideTab from "@/components/HelpGuideTab";
 import { uploadBase64ToStorage } from "@/lib/storageUtils";
 import VanityUrlManager from "@/components/VanityUrlManager";
 
@@ -174,15 +179,19 @@ export default function WholesalerDashboardPage() {
     { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
     { id: "profile", label: "Business Profile", icon: "🏢", category: "1. Profile & Setup" },
     { id: "kyc", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
-    { id: "operations", label: "Business Operations", icon: "⚙️", category: "1. Profile & Setup" },
     { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "1. Profile & Setup" },
     { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
     { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
-    { id: "security", label: "Security & Login", icon: "🔐", category: "1. Profile & Setup" },
-    { id: "home", label: "Overview & Insights", icon: "📊", category: "Dashboard & Reports" },
-    { id: "catalog", label: "Bulk Catalog Management", icon: "📦", category: "Catalog & Inventory" },
-    { id: "orders", label: "B2B Orders & Fulfillment", icon: "🚚", category: "Orders & Logistics" },
-    { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "Finance & Earnings" },
+    { id: "catalog", label: "Bulk Catalog Management", icon: "📦", category: "2. Your Catalog" },
+    { id: "orders", label: "B2B Orders & Fulfillment", icon: "🚚", category: "3. Orders & Deliveries" },
+    { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
+    { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
+    { id: "messages", label: "Customer Messages", icon: "💬", category: "5. Marketing & Comm" },
+    { id: "reviews", label: "Reviews & Ratings", icon: "⭐", category: "5. Marketing & Comm" },
+    { id: "help_guide", label: "Help & Support Guide", icon: "📘", category: "6. Help & Support" },
+    { id: "support", label: "Contact Admin Support", icon: "🎧", category: "6. Help & Support" },
+    { id: "security", label: "Security & Login", icon: "🔐", category: "7. Security" },
+    { id: "home", label: "Dashboard & Insights", icon: "📊", category: "Dashboard & Reports" },
   ];
 
   const handleSavePersonal = async (e: React.FormEvent) => {
@@ -848,6 +857,12 @@ export default function WholesalerDashboardPage() {
             <SecurityTab />
           </div>
         )}
+
+        {activeTab === "messages" && <MessagesTab />}
+        {activeTab === "support" && <SupportTicketsTab />}
+        {activeTab === "marketing" && <MarketingTab />}
+        {activeTab === "reviews" && <ReviewsTab />}
+        {activeTab === "help_guide" && <HelpGuideTab userRole="wholesaler" />}
 
         <UniversalProductUpload 
           isOpen={isUploadOpen}

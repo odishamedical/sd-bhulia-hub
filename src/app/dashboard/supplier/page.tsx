@@ -15,6 +15,11 @@ import Image from "next/image";
 import ImageUploader from "@/components/ImageUploader";
 import SecurityTab from "@/components/SecurityTab";
 import StaffAccountsTab from "@/components/StaffAccountsTab";
+import MessagesTab from "@/components/MessagesTab";
+import SupportTicketsTab from "@/components/SupportTicketsTab";
+import MarketingTab from "@/components/MarketingTab";
+import ReviewsTab from "@/components/ReviewsTab";
+import HelpGuideTab from "@/components/HelpGuideTab";
 import { uploadBase64ToStorage } from "@/lib/storageUtils";
 import VanityUrlManager from "@/components/VanityUrlManager";
 
@@ -178,16 +183,20 @@ export default function SupplierDashboardPage() {
     { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
     { id: "profile", label: "Supplier Profile", icon: "🏢", category: "1. Profile & Setup" },
     { id: "kyc", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
-    { id: "operations", label: "Business Operations", icon: "⚙️", category: "1. Profile & Setup" },
     { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "1. Profile & Setup" },
     { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
     { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
-    { id: "security", label: "Security & Login", icon: "🔐", category: "1. Profile & Setup" },
+    { id: "catalog", label: "Catalog Management", icon: "📋", category: "2. Your Catalog" },
+    { id: "pricing_rates", label: "Market Rates Update", icon: "📉", category: "2. Your Catalog" },
+    { id: "crm", label: "Weaver CRM & Orders", icon: "🤝", category: "3. Orders & Deliveries" },
+    { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
+    { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
+    { id: "messages", label: "Customer Messages", icon: "💬", category: "5. Marketing & Comm" },
+    { id: "reviews", label: "Reviews & Ratings", icon: "⭐", category: "5. Marketing & Comm" },
+    { id: "help_guide", label: "Help & Support Guide", icon: "📘", category: "6. Help & Support" },
+    { id: "support", label: "Contact Admin Support", icon: "🎧", category: "6. Help & Support" },
+    { id: "security", label: "Security & Login", icon: "🔐", category: "7. Security" },
     { id: "home", label: "Inventory & Stock", icon: "📦", category: "Dashboard & Reports" },
-    { id: "catalog", label: "Catalog Management", icon: "📋", category: "Catalog & Inventory" },
-    { id: "pricing_rates", label: "Market Rates Update", icon: "📉", category: "Catalog & Inventory" },
-    { id: "crm", label: "Weaver CRM & Orders", icon: "🤝", category: "Orders & Logistics" },
-    { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "Finance & Earnings" },
   ];
 
   const handleSavePersonal = async (e: React.FormEvent) => {
@@ -751,7 +760,7 @@ export default function SupplierDashboardPage() {
         {activeTab === "finance" && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Bank Details</h2>
-            <form onSubmit={handleSaveKyc} className="space-y-8">
+            <form onSubmit={handleSaveBank} className="space-y-8">
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="md:col-span-2">
@@ -830,40 +839,6 @@ export default function SupplierDashboardPage() {
           </div>
         )}
 
-        {activeTab === "finance" && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Finance & Bank Payouts</h2>
-            <p className="text-gray-500 mb-6 text-sm">Add your bank account to receive settlement payouts directly.</p>
-            <form onSubmit={handleSaveBank} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Account Holder Name</label>
-                  <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="Name on bank account" />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Bank Name</label>
-                  <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="e.g. SBI" />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Account Number</label>
-                  <input type="password" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="XXXX XXXX" />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">IFSC Code</label>
-                  <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none uppercase bg-gray-50 focus:bg-white" placeholder="SBIN0001234" />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">UPI ID</label>
-                  <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="yourupi@bank" />
-                </div>
-              </div>
-              <button type="submit" disabled={isSavingBank} className="w-full bg-emerald-600 text-white font-bold py-4 rounded-xl hover:bg-emerald-700 transition-colors disabled:opacity-50 text-lg shadow-lg">
-                {isSavingBank ? "Saving..." : "Save Bank Details"}
-              </button>
-            </form>
-          </div>
-        )}
-
         {activeTab === "vanity_url" && (
           <div className="animate-in fade-in max-w-4xl">
             <VanityUrlManager currentSlug={storeSlug} roleType="supplier" />
@@ -875,6 +850,12 @@ export default function SupplierDashboardPage() {
             <PricingTab isPublicPage={false} userRole="supplier" />
           </div>
         )}
+
+        {activeTab === "messages" && <MessagesTab />}
+        {activeTab === "support" && <SupportTicketsTab />}
+        {activeTab === "marketing" && <MarketingTab />}
+        {activeTab === "reviews" && <ReviewsTab />}
+        {activeTab === "help_guide" && <HelpGuideTab userRole="supplier" />}
         <SupplierInventoryUpload 
           isOpen={isUploadOpen}
           onClose={() => setIsUploadOpen(false)}
