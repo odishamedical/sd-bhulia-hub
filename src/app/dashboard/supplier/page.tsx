@@ -31,22 +31,29 @@ export default function SupplierDashboardPage() {
   const [udyamNumber, setUdyamNumber] = useState("");
   const [businessAddress, setBusinessAddress] = useState("");
   
-  // New States for Profile Setup
+  // Profile Setup States
   const [companyName, setCompanyName] = useState("");
+  const [companyDesc, setCompanyDesc] = useState("");
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [state, setState] = useState("");
+  const [district, setDistrict] = useState("");
+  const [city, setCity] = useState("");
+  const [profileImage, setProfileImage] = useState("");
   const [materialTypes, setMaterialTypes] = useState("");
   const [supplyCapacity, setSupplyCapacity] = useState("");
+  const [storeSlug, setStoreSlug] = useState("");
   
   const [bankHolder, setBankHolder] = useState("");
   const [bankName, setBankName] = useState("");
   const [bankAccount, setBankAccount] = useState("");
   const [bankIfsc, setBankIfsc] = useState("");
   const [bankUpi, setBankUpi] = useState("");
+  const [isSavingBank, setIsSavingBank] = useState(false);
 
   const [isSavingKyc, setIsSavingKyc] = useState(false);
 
-  // Pricing State
+  // Market Rates State
   const [cottonPrice, setCottonPrice] = useState("3200");
   const [silkPrice, setSilkPrice] = useState("5500");
 
@@ -79,18 +86,23 @@ export default function SupplierDashboardPage() {
               setGstNumber(data.gstNumber || data.gst || "");
               setUdyamNumber(data.udyamNumber || "");
               setBusinessAddress(data.businessAddress || "");
-              
               setCompanyName(data.companyName || data.title || "");
+              setCompanyDesc(data.companyDesc || "");
               setPhone(data.phone || "");
               setWhatsapp(data.whatsapp || "");
+              setState(data.state || "");
+              setDistrict(data.district || "");
+              setCity(data.city || "");
+              setProfileImage(data.profileImage || data.img || "");
               setMaterialTypes(data.materialTypes || "");
               setSupplyCapacity(data.supplyCapacity || "");
-              
               setBankHolder(data.bankHolder || "");
               setBankName(data.bankName || "");
               setBankAccount(data.bankAccount || "");
               setBankIfsc(data.bankIfsc || "");
               setBankUpi(data.bankUpi || "");
+              const slug = String(data.companyName || data.title || "supplier").toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              setStoreSlug(slug);
             }
           }
         } catch (error) {
@@ -117,41 +129,66 @@ export default function SupplierDashboardPage() {
     { id: "profile", label: "Supplier Profile", icon: "🏢", category: "1. Profile & Setup" },
     { id: "kyc", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
     { id: "operations", label: "Business Operations", icon: "⚙️", category: "1. Profile & Setup" },
+    { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "1. Profile & Setup" },
     { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
+    { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
     { id: "security", label: "Security & Login", icon: "🔐", category: "1. Profile & Setup" },
     { id: "home", label: "Inventory & Stock", icon: "📦", category: "Dashboard & Reports" },
     { id: "catalog", label: "Catalog Management", icon: "📋", category: "Catalog & Inventory" },
-    { id: "pricing", label: "Market Rates Update", icon: "📉", category: "Catalog & Inventory" },
+    { id: "pricing_rates", label: "Market Rates Update", icon: "📉", category: "Catalog & Inventory" },
     { id: "crm", label: "Weaver CRM & Orders", icon: "🤝", category: "Orders & Logistics" },
     { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "Finance & Earnings" },
   ];
 
   const handleSaveKyc = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isDemoMode) return alert("Demo mode: Cannot save KYC.");
+    if (isDemoMode) return alert("Demo mode: Cannot save.");
     setIsSavingKyc(true);
     try {
+      const slug = companyName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       await updateDoc(doc(db, "suppliers", userUid), {
         gstNumber,
         udyamNumber,
         businessAddress,
         companyName,
+        companyDesc,
         phone,
         whatsapp,
+        state,
+        district,
+        city,
+        profileImage,
         materialTypes,
         supplyCapacity,
+        slug,
+      });
+      setStoreSlug(slug);
+      alert("Profile saved!");
+    } catch (err) {
+      console.error(err);
+      alert("Error saving.");
+    }
+    setIsSavingKyc(false);
+  };
+
+  const handleSaveBank = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isDemoMode) return alert("Demo mode: Cannot save.");
+    setIsSavingBank(true);
+    try {
+      await updateDoc(doc(db, "suppliers", userUid), {
         bankHolder,
         bankName,
         bankAccount,
         bankIfsc,
-        bankUpi
+        bankUpi,
       });
-      alert("Business Profile updated successfully!");
+      alert("Bank details saved!");
     } catch (err) {
       console.error(err);
-      alert("Error saving profile.");
+      alert("Error saving bank details.");
     }
-    setIsSavingKyc(false);
+    setIsSavingBank(false);
   };
 
   const totalStockKg = myMaterials.reduce((acc, curr) => acc + (Number(curr.stockKg) || 0), 0);
@@ -161,7 +198,7 @@ export default function SupplierDashboardPage() {
       userName={userName}
       userRole="supplier"
       userStatus="active"
-      storeSlug="raw-materials"
+      storeSlug={storeSlug || "b2b-supplier"}
       activeTab={activeTab}
       onTabChange={setActiveTab}
       navItems={navItems}
@@ -244,7 +281,7 @@ export default function SupplierDashboardPage() {
           </div>
         )}
 
-        {activeTab === "pricing" && (
+        {activeTab === "pricing_rates" && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 animate-in fade-in max-w-2xl">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Daily Market Rates</h2>
             <p className="text-gray-500 mb-8">Update your base market prices for standard yarn types. These are visible publicly to weavers.</p>
@@ -324,49 +361,62 @@ export default function SupplierDashboardPage() {
         {activeTab === "profile" && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Supplier Profile</h2>
-            <form onSubmit={handleSaveKyc} className="space-y-8">
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Company / Supplier Name</label>
-                    <input 
-                      type="text" 
-                      value={companyName}
-                      onChange={e => setCompanyName(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
-                      placeholder="Enter company name"
+            <form onSubmit={handleSaveKyc} className="space-y-6">
+
+              {/* Company Logo */}
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Company Logo</label>
+                {profileImage ? (
+                  <div className="flex items-center gap-4">
+                    <img src={profileImage} alt="Logo" className="w-20 h-20 rounded-xl object-cover border border-gray-200" />
+                    <button type="button" onClick={() => setProfileImage("")} className="text-sm text-red-500 hover:underline">Remove</button>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center bg-gray-50">
+                    <p className="text-gray-500 text-sm">Upload company logo (PNG or JPG recommended)</p>
+                    <input
+                      type="url"
+                      placeholder="Or paste image URL"
+                      value={profileImage}
+                      onChange={e => setProfileImage(e.target.value)}
+                      className="mt-2 w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#0074E4] outline-none bg-white"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Godown / Business Address</label>
-                    <input 
-                      type="text"
-                      value={businessAddress}
-                      onChange={e => setBusinessAddress(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
-                      placeholder="Full business address..."
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
-                    <input 
-                      type="tel" 
-                      value={phone}
-                      onChange={e => setPhone(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
-                      placeholder="+91..."
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">WhatsApp Number</label>
-                    <input 
-                      type="tel" 
-                      value={whatsapp}
-                      onChange={e => setWhatsapp(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
-                      placeholder="+91..."
-                    />
-                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Company / Supplier Name</label>
+                  <input type="text" value={companyName} onChange={e => setCompanyName(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="e.g. Sri Ram Yarn Suppliers" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Company Description</label>
+                  <textarea value={companyDesc} onChange={e => setCompanyDesc(e.target.value)} rows={3} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white resize-none" placeholder="Describe your materials, quality standards, and supply capabilities..." />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
+                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="+91..." />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">WhatsApp Number</label>
+                  <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="+91..." />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Godown / Business Address</label>
+                  <input type="text" value={businessAddress} onChange={e => setBusinessAddress(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="Street, locality..." />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">State</label>
+                  <input type="text" value={state} onChange={e => setState(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="e.g. Odisha" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">District</label>
+                  <input type="text" value={district} onChange={e => setDistrict(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="e.g. Bargarh" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">City / Pincode</label>
+                  <input type="text" value={city} onChange={e => setCity(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="e.g. Bargarh - 768028" />
                 </div>
               </div>
               <button type="submit" disabled={isSavingKyc} className="w-full bg-[#0074E4] text-white font-bold py-4 rounded-xl hover:bg-[#005bb5] transition-colors disabled:opacity-50 text-lg shadow-lg">
@@ -525,6 +575,80 @@ export default function SupplierDashboardPage() {
             <div className="text-6xl mb-4">🔐</div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Security & Login Settings</h2>
             <p className="text-gray-500 max-w-lg mx-auto">Update your password, manage 2FA, and review your login activity. (Coming soon)</p>
+          </div>
+        )}
+
+        {activeTab === "finance" && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Finance & Bank Payouts</h2>
+            <p className="text-gray-500 mb-6 text-sm">Add your bank account to receive settlement payouts directly.</p>
+            <form onSubmit={handleSaveBank} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Account Holder Name</label>
+                  <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="Name on bank account" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Bank Name</label>
+                  <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="e.g. SBI" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Account Number</label>
+                  <input type="password" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="XXXX XXXX" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">IFSC Code</label>
+                  <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none uppercase bg-gray-50 focus:bg-white" placeholder="SBIN0001234" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">UPI ID</label>
+                  <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="yourupi@bank" />
+                </div>
+              </div>
+              <button type="submit" disabled={isSavingBank} className="w-full bg-emerald-600 text-white font-bold py-4 rounded-xl hover:bg-emerald-700 transition-colors disabled:opacity-50 text-lg shadow-lg">
+                {isSavingBank ? "Saving..." : "Save Bank Details"}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {activeTab === "vanity_url" && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Custom Brand URL</h2>
+            <p className="text-gray-500 mb-6 text-sm">Your public supplier profile link on Bhulia.com.</p>
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-800 text-sm font-medium">
+              Your public profile: <strong>bhulia.com/supplier/{storeSlug || "your-company-name"}</strong>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "pricing" && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">B2B Pricing Plans</h2>
+            <p className="text-gray-500 mb-6 text-sm">Choose a plan for your supply operations.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="border-2 border-[#0074E4] rounded-2xl p-6">
+                <div className="text-xs font-bold text-[#0074E4] uppercase tracking-wider mb-2">Current Plan</div>
+                <h3 className="text-xl font-black text-gray-900">Supplier Starter</h3>
+                <p className="text-3xl font-black text-gray-900 my-3">Free</p>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li>✅ Up to 10 materials listed</li>
+                  <li>✅ Basic order management</li>
+                  <li>✅ Public profile page</li>
+                </ul>
+              </div>
+              <div className="border-2 border-gray-200 rounded-2xl p-6 bg-gray-50">
+                <div className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Upgrade</div>
+                <h3 className="text-xl font-black text-gray-900">Supplier Pro</h3>
+                <p className="text-3xl font-black text-gray-900 my-3">₹1,999<span className="text-base font-normal text-gray-500">/yr</span></p>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li>✅ Unlimited materials</li>
+                  <li>✅ Priority listing to weavers</li>
+                  <li>✅ Live rate update tools</li>
+                </ul>
+                <button className="mt-4 w-full bg-amber-500 text-white font-bold py-2 rounded-xl hover:bg-amber-600 transition-colors">Upgrade Now</button>
+              </div>
+            </div>
           </div>
         )}
         <SupplierInventoryUpload 
