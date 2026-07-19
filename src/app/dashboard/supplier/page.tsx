@@ -26,9 +26,24 @@ export default function SupplierDashboardPage() {
   const myMaterials = products.filter(p => p.sellerId === userUid && p.sellerType === "supplier");
   const myOrders = orders.filter(o => o.sellerId === userUid);
 
-  // KYC state
+  // KYC & Profile state
   const [gstNumber, setGstNumber] = useState("");
+  const [udyamNumber, setUdyamNumber] = useState("");
   const [businessAddress, setBusinessAddress] = useState("");
+  
+  // New States for Profile Setup
+  const [companyName, setCompanyName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [materialTypes, setMaterialTypes] = useState("");
+  const [supplyCapacity, setSupplyCapacity] = useState("");
+  
+  const [bankHolder, setBankHolder] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [bankAccount, setBankAccount] = useState("");
+  const [bankIfsc, setBankIfsc] = useState("");
+  const [bankUpi, setBankUpi] = useState("");
+
   const [isSavingKyc, setIsSavingKyc] = useState(false);
 
   // Pricing State
@@ -58,10 +73,24 @@ export default function SupplierDashboardPage() {
             setUserName(userDoc.data().name || user.email?.split("@")[0] || "Supplier");
             setUserUid(user.uid);
             
-            const storeDoc = await getDoc(doc(db, "stores", user.uid));
+            const storeDoc = await getDoc(doc(db, "suppliers", user.uid));
             if (storeDoc.exists()) {
-              setGstNumber(storeDoc.data().gstNumber || "");
-              setBusinessAddress(storeDoc.data().businessAddress || "");
+              const data = storeDoc.data();
+              setGstNumber(data.gstNumber || data.gst || "");
+              setUdyamNumber(data.udyamNumber || "");
+              setBusinessAddress(data.businessAddress || "");
+              
+              setCompanyName(data.companyName || data.title || "");
+              setPhone(data.phone || "");
+              setWhatsapp(data.whatsapp || "");
+              setMaterialTypes(data.materialTypes || "");
+              setSupplyCapacity(data.supplyCapacity || "");
+              
+              setBankHolder(data.bankHolder || "");
+              setBankName(data.bankName || "");
+              setBankAccount(data.bankAccount || "");
+              setBankIfsc(data.bankIfsc || "");
+              setBankUpi(data.bankUpi || "");
             }
           }
         } catch (error) {
@@ -97,9 +126,20 @@ export default function SupplierDashboardPage() {
     if (isDemoMode) return alert("Demo mode: Cannot save KYC.");
     setIsSavingKyc(true);
     try {
-      await updateDoc(doc(db, "stores", userUid), {
+      await updateDoc(doc(db, "suppliers", userUid), {
         gstNumber,
-        businessAddress
+        udyamNumber,
+        businessAddress,
+        companyName,
+        phone,
+        whatsapp,
+        materialTypes,
+        supplyCapacity,
+        bankHolder,
+        bankName,
+        bankAccount,
+        bankIfsc,
+        bankUpi
       });
       alert("Business Profile updated successfully!");
     } catch (err) {
@@ -279,31 +319,171 @@ export default function SupplierDashboardPage() {
         {activeTab === "profile" && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Supplier Profile & KYC</h2>
-            <form onSubmit={handleSaveKyc} className="space-y-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Business Address / Godown</label>
-                <textarea 
-                  value={businessAddress}
-                  onChange={e => setBusinessAddress(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all resize-none bg-gray-50 focus:bg-white"
-                  rows={3}
-                  placeholder="Full business address..."
-                />
+            <form onSubmit={handleSaveKyc} className="space-y-8">
+              
+              {/* 1. Basic Info */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-800 border-b pb-2">1. Basic Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Company / Supplier Name</label>
+                    <input 
+                      type="text" 
+                      value={companyName}
+                      onChange={e => setCompanyName(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
+                      placeholder="Enter company name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Godown / Business Address</label>
+                    <input 
+                      type="text"
+                      value={businessAddress}
+                      onChange={e => setBusinessAddress(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
+                      placeholder="Full business address..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
+                    <input 
+                      type="tel" 
+                      value={phone}
+                      onChange={e => setPhone(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
+                      placeholder="+91..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">WhatsApp Number</label>
+                    <input 
+                      type="tel" 
+                      value={whatsapp}
+                      onChange={e => setWhatsapp(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
+                      placeholder="+91..."
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">GST Number</label>
-                <input 
-                  type="text" 
-                  value={gstNumber}
-                  onChange={e => setGstNumber(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all uppercase bg-gray-50 focus:bg-white"
-                  placeholder="22AAAAA0000A1Z5"
-                />
+
+              {/* 2. Operations & Supply */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-800 border-b pb-2">2. Supply Operations</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Primary Materials Supplied</label>
+                    <input 
+                      type="text" 
+                      value={materialTypes}
+                      onChange={e => setMaterialTypes(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
+                      placeholder="e.g. Cotton Yarn, Silk, Dyes"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Monthly Supply Capacity (Kg)</label>
+                    <input 
+                      type="text" 
+                      value={supplyCapacity}
+                      onChange={e => setSupplyCapacity(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
+                      placeholder="e.g. 1000 Kg"
+                    />
+                  </div>
+                </div>
               </div>
+
+              {/* 3. Registration */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-800 border-b pb-2">3. KYC & Registration</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">GST Number (MANDATORY)</label>
+                    <input 
+                      type="text" 
+                      value={gstNumber}
+                      onChange={e => setGstNumber(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all uppercase bg-gray-50 focus:bg-white"
+                      placeholder="22AAAAA0000A1Z5"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Udyam Registration</label>
+                    <input 
+                      type="text" 
+                      value={udyamNumber}
+                      onChange={e => setUdyamNumber(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all uppercase bg-gray-50 focus:bg-white"
+                      placeholder="UDYAM-XX-00-0000000"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Bank Details */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-800 border-b pb-2">4. Bank Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Account Holder Name</label>
+                    <input 
+                      type="text" 
+                      value={bankHolder}
+                      onChange={e => setBankHolder(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
+                      placeholder="Name on bank account"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Bank Name</label>
+                    <input 
+                      type="text" 
+                      value={bankName}
+                      onChange={e => setBankName(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
+                      placeholder="e.g. HDFC Bank"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Account Number</label>
+                    <input 
+                      type="password" 
+                      value={bankAccount}
+                      onChange={e => setBankAccount(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
+                      placeholder="XXXX XXXX"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">IFSC Code</label>
+                    <input 
+                      type="text" 
+                      value={bankIfsc}
+                      onChange={e => setBankIfsc(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all uppercase bg-gray-50 focus:bg-white"
+                      placeholder="HDFC0001234"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">UPI ID</label>
+                    <input 
+                      type="text" 
+                      value={bankUpi}
+                      onChange={e => setBankUpi(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none transition-all bg-gray-50 focus:bg-white"
+                      placeholder="yourupi@bank"
+                    />
+                  </div>
+                </div>
+              </div>
+
               <button 
                 type="submit" 
                 disabled={isSavingKyc}
-                className="w-full bg-[#0074E4] text-white font-bold py-3 rounded-xl hover:bg-[#005bb5] transition-colors disabled:opacity-50"
+                className="w-full bg-[#0074E4] text-white font-bold py-4 rounded-xl hover:bg-[#005bb5] transition-colors disabled:opacity-50 text-lg shadow-lg"
               >
                 {isSavingKyc ? "Saving..." : "Save Profile"}
               </button>
