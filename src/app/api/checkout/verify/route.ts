@@ -33,15 +33,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Invalid payment signature" }, { status: 400 });
     }
 
-    // --- TIER 1: FETCH GLOBAL COMMISSION SETTING ---
+    // --- TIER 1: FETCH GLOBAL COMMISSION SETTINGS ---
     let globalCommissionRate = 5; // Default fallback
+    let roleRates: Record<string, number> = {};
     try {
       const settingsSnap = await getDoc(doc(db, "settings", "platform"));
-      if (settingsSnap.exists() && settingsSnap.data().globalCommissionRate !== undefined) {
-        globalCommissionRate = settingsSnap.data().globalCommissionRate;
+      if (settingsSnap.exists()) {
+        const data = settingsSnap.data();
+        if (data.globalCommissionRate !== undefined) globalCommissionRate = data.globalCommissionRate;
+        if (data.weaverCommissionRate !== undefined) roleRates.weaver = data.weaverCommissionRate;
+        if (data.storeCommissionRate !== undefined) roleRates.store = data.storeCommissionRate;
+        if (data.wholesalerCommissionRate !== undefined) roleRates.wholesaler = data.wholesalerCommissionRate;
+        if (data.supplierCommissionRate !== undefined) roleRates.supplier = data.supplierCommissionRate;
       }
     } catch (err) {
-      console.error("Failed to load global commission rate:", err);
+      console.error("Failed to load platform settings:", err);
     }
 
     // --- SECURE BACKEND CART SPLITTING & INVENTORY DEDUCTION ---
@@ -56,16 +62,22 @@ export async function POST(request: Request) {
     
     for (const sellerId of Object.keys(groupedBySeller)) {
       const sellerItems = groupedBySeller[sellerId];
-      // --- TIER 2: FETCH USER COMMISSION SETTING ---
+      // --- TIER 2: FETCH USER COMMISSION SETTING & ROLE ---
       let sellerCommissionRate: number | null = null;
+      let sellerRole: string | null = null;
       if (sellerId !== "bhulia-hub") {
         try {
           const sellerSnap = await getDoc(doc(db, "users", sellerId));
-          if (sellerSnap.exists() && sellerSnap.data().commissionRate !== undefined) {
-             sellerCommissionRate = sellerSnap.data().commissionRate;
+          if (sellerSnap.exists()) {
+             if (sellerSnap.data().commissionRate !== undefined) {
+               sellerCommissionRate = sellerSnap.data().commissionRate;
+             }
+             if (sellerSnap.data().role) {
+               sellerRole = sellerSnap.data().role;
+             }
           }
         } catch(err) {
-          console.error("Failed to load seller commission rate:", err);
+          console.error("Failed to load seller info:", err);
         }
       }
       
@@ -82,10 +94,14 @@ export async function POST(request: Request) {
         
         // --- TIER 3: PRODUCT OVERRIDE CASCADE ---
         let effectiveRate = globalCommissionRate;
+        if (sellerRole && roleRates[sellerRole] !== undefined) {
+           effectiveRate = roleRates[sellerRole]; // Role level overrides global
+        }
+        if (sellerCommissionRate !== null) {
+           effectiveRate = sellerCommissionRate; // User level overrides role/global
+        }
         if (item.platformCommissionRate !== undefined && item.platformCommissionRate !== null) {
            effectiveRate = item.platformCommissionRate; // Product level overrides all
-        } else if (sellerCommissionRate !== null) {
-           effectiveRate = sellerCommissionRate; // User level overrides global
         }
         
         platformShare += itemSubTotal * (effectiveRate / 100);
