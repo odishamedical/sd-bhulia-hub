@@ -318,7 +318,10 @@ export default function SupplierDashboardPage() {
                 </table>
               </div>
             )}
-               {activeTab === "profile" && (
+          </div>
+        )}
+
+        {activeTab === "profile" && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Supplier Profile</h2>
             <form onSubmit={handleSaveKyc} className="space-y-8">
@@ -523,9 +526,7 @@ export default function SupplierDashboardPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Security & Login Settings</h2>
             <p className="text-gray-500 max-w-lg mx-auto">Update your password, manage 2FA, and review your login activity. (Coming soon)</p>
           </div>
-        )}       </div>
         )}
-
         <SupplierInventoryUpload 
           isOpen={isUploadOpen}
           onClose={() => setIsUploadOpen(false)}

@@ -110,11 +110,15 @@ export default function WholesalerDashboardPage() {
   }
 
   const navItems: NavItem[] = [
-    { id: "kyc", label: "Business Profile & KYC", icon: "🏢", category: "1. Profile & Setup" },
+    { id: "profile", label: "Business Profile", icon: "🏢", category: "1. Profile & Setup" },
+    { id: "kyc", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
+    { id: "operations", label: "Business Operations", icon: "⚙️", category: "1. Profile & Setup" },
+    { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
+    { id: "security", label: "Security & Login", icon: "🔐", category: "1. Profile & Setup" },
     { id: "home", label: "Overview & Insights", icon: "📊", category: "Dashboard & Reports" },
     { id: "catalog", label: "Bulk Catalog Management", icon: "📦", category: "Catalog & Inventory" },
     { id: "orders", label: "B2B Orders & Fulfillment", icon: "🚚", category: "Orders & Logistics" },
-    { id: "finance", label: "Finance & Payouts", icon: "💰", category: "Orders & Logistics" },
+    { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "Finance & Earnings" },
   ];
 
   const handleSaveKyc = async (e: React.FormEvent) => {
