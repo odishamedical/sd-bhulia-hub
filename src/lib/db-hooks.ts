@@ -921,3 +921,75 @@ export async function updateGlobalSettings(data: Partial<GlobalSettings>) {
     return { success: false, error };
   }
 }
+
+export function useWholesalerBySlug(slug: string) {
+  const [wholesaler, setWholesaler] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!slug) return;
+    const q = query(collection(db, "wholesalers"), where("slug", "==", slug));
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
+      if (!snapshot.empty) {
+        const docSnap = snapshot.docs[0];
+        setWholesaler({ id: docSnap.id, ...docSnap.data() });
+        setLoading(false);
+      } else {
+        try {
+          const docRef = doc(db, "wholesalers", slug);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setWholesaler({ id: docSnap.id, ...docSnap.data() });
+          } else {
+            setWholesaler(null);
+          }
+        } catch (e) {
+          setWholesaler(null);
+        }
+        setLoading(false);
+      }
+    }, (error) => {
+      console.error("Error fetching wholesaler by slug: ", error);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, [slug]);
+
+  return { wholesaler, loading };
+}
+
+export function useSupplierBySlug(slug: string) {
+  const [supplier, setSupplier] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!slug) return;
+    const q = query(collection(db, "suppliers"), where("slug", "==", slug));
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
+      if (!snapshot.empty) {
+        const docSnap = snapshot.docs[0];
+        setSupplier({ id: docSnap.id, ...docSnap.data() });
+        setLoading(false);
+      } else {
+        try {
+          const docRef = doc(db, "suppliers", slug);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setSupplier({ id: docSnap.id, ...docSnap.data() });
+          } else {
+            setSupplier(null);
+          }
+        } catch (e) {
+          setSupplier(null);
+        }
+        setLoading(false);
+      }
+    }, (error) => {
+      console.error("Error fetching supplier by slug: ", error);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, [slug]);
+
+  return { supplier, loading };
+}

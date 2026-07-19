@@ -18,6 +18,7 @@ export function usePendingCounts() {
   const [counts, setCounts] = useState<PendingCounts>({
     kycBase: 0,
     kycClaims: 0,
+    kyc: 0,
     products: 0,
     orders: 0,
     finance: 0,

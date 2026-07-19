@@ -875,8 +875,8 @@ export default function WholesalerDashboardPage() {
           onClose={() => setIsUploadOpen(false)}
           sellerRole="wholesaler"
           sellerId={userUid}
-          isAutoApprovedUser={sellerData?.isAutoApproved}
-          storeName={sellerData?.businessName || sellerData?.companyName}
+          isAutoApprovedUser={false}
+          storeName={companyName}
         />
       </div>
     </DashboardLayout>

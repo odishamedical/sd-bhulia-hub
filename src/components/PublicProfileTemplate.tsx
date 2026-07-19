@@ -11,7 +11,7 @@ import Breadcrumbs, { BreadcrumbItem } from "./Breadcrumbs";
 import { useRouter } from "next/navigation";
 
 export interface PublicProfileProps {
-  type: "weaver" | "store";
+  type: "weaver" | "store" | "wholesaler" | "supplier";
   profile: {
     name: string;
     image: string;
@@ -20,6 +20,7 @@ export interface PublicProfileProps {
     country?: string;
     description: string;
     address: string;
+    rawAddress?: any;
     phone: string;
     whatsapp: string;
     status?: string;
@@ -29,6 +30,7 @@ export interface PublicProfileProps {
     listingType?: string;
     productsOffered?: string;
     weaverExperience?: string;
+    handloomExperience?: string;
     generations?: string;
     specialties?: string[];
     materials?: string[];
@@ -46,9 +48,25 @@ export interface PublicProfileProps {
 
 export default function PublicProfileTemplate({ type, profile, products = [], allProducts = [], allProfiles = [] }: PublicProfileProps) {
   const isWeaver = type === "weaver";
-  const badgeText = isWeaver ? "Bhulia.com Verified Weavers" : "Bhulia.com Verified Sambalpuri Shop";
-  const badgeColor = isWeaver ? "text-[#C5A059] border-[#C5A059]" : "text-blue-400 border-blue-400";
-  const badgeBg = isWeaver ? "bg-[#C5A059]/10" : "bg-blue-400/10";
+  const isStore = type === "store";
+  const isWholesaler = type === "wholesaler";
+  const isSupplier = type === "supplier";
+  
+  let badgeText = "Bhulia.com Verified Partner";
+  if (isWeaver) badgeText = "Bhulia.com Verified Weavers";
+  if (isStore) badgeText = "Bhulia.com Verified Sambalpuri Shop";
+  if (isWholesaler) badgeText = "Bhulia.com Verified Wholesaler";
+  if (isSupplier) badgeText = "Bhulia.com Verified Raw Material Supplier";
+
+  let badgeColor = "text-purple-400 border-purple-400";
+  if (isWeaver) badgeColor = "text-[#C5A059] border-[#C5A059]";
+  if (isStore) badgeColor = "text-blue-400 border-blue-400";
+  if (isSupplier) badgeColor = "text-emerald-500 border-emerald-500";
+
+  let badgeBg = "bg-purple-400/10";
+  if (isWeaver) badgeBg = "bg-[#C5A059]/10";
+  if (isStore) badgeBg = "bg-blue-400/10";
+  if (isSupplier) badgeBg = "bg-emerald-500/10";
   const [userRole, setUserRole] = useState<string | null>(null);
   const [quickSearch, setQuickSearch] = useState("");
   const router = useRouter();
