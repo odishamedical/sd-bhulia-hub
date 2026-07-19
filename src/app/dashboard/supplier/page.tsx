@@ -10,7 +10,11 @@ import SupplierInventoryUpload from "@/components/dashboard/SupplierInventoryUpl
 import { useOrders, useProducts } from "@/lib/db-hooks";
 import GlobalBannerSlot from "@/components/GlobalBannerSlot";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from "@/lib/locations";
+import PricingTab from "@/components/PricingTab";
 import Image from "next/image";
+import ImageUploader from "@/components/ImageUploader";
+import { uploadBase64ToStorage } from "@/lib/storageUtils";
+import VanityUrlManager from "@/components/VanityUrlManager";
 
 export default function SupplierDashboardPage() {
   const [userName, setUserName] = useState<string>("");
@@ -179,12 +183,21 @@ export default function SupplierDashboardPage() {
     if (isDemoMode) return alert("Demo mode: Cannot save.");
     setIsSavingPersonal(true);
     try {
-      await updateDoc(doc(db, "suppliers", userUid), {
+      let finalPhotoUrl = personalPhoto;
+      if (personalPhoto && personalPhoto.startsWith("data:image")) {
+        finalPhotoUrl = await uploadBase64ToStorage(personalPhoto, `kyc/${auth.currentUser?.uid}`);
+        setPersonalPhoto(finalPhotoUrl);
+      }
+
+      const personalData = {
         personalName, personalDob, personalPhone, personalEmail,
         personalCountry, personalState, personalDistrict, personalBlock,
         personalTownVillage, personalPin, personalAddress,
-        personalAadhaar, personalPhoto,
-      });
+        personalAadhaar, personalPhoto: finalPhotoUrl,
+      };
+
+      await updateDoc(doc(db, "suppliers", userUid), personalData);
+      await updateDoc(doc(db, "users", userUid), personalData);
       alert("Personal Profile saved!");
     } catch (err) {
       console.error(err);
@@ -199,7 +212,14 @@ export default function SupplierDashboardPage() {
     setIsSavingKyc(true);
     try {
       const slug = companyName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-      await updateDoc(doc(db, "suppliers", userUid), {
+      
+      let finalLogoUrl = profileImage;
+      if (profileImage && profileImage.startsWith("data:image")) {
+        finalLogoUrl = await uploadBase64ToStorage(profileImage, `profiles/${auth.currentUser?.uid}`);
+        setProfileImage(finalLogoUrl);
+      }
+
+      const kycData = {
         gstNumber,
         udyamNumber,
         businessAddress,
@@ -210,11 +230,14 @@ export default function SupplierDashboardPage() {
         state,
         district,
         city,
-        profileImage,
+        profileImage: finalLogoUrl,
         materialTypes,
         supplyCapacity,
         slug,
-      });
+      };
+
+      await updateDoc(doc(db, "suppliers", userUid), kycData);
+      await updateDoc(doc(db, "users", userUid), kycData);
       setStoreSlug(slug);
       alert("Profile saved!");
     } catch (err) {
@@ -229,13 +252,16 @@ export default function SupplierDashboardPage() {
     if (isDemoMode) return alert("Demo mode: Cannot save.");
     setIsSavingBank(true);
     try {
-      await updateDoc(doc(db, "suppliers", userUid), {
+      const bankData = {
         bankHolder,
         bankName,
         bankAccount,
         bankIfsc,
         bankUpi,
-      });
+      };
+
+      await updateDoc(doc(db, "suppliers", userUid), bankData);
+      await updateDoc(doc(db, "users", userUid), bankData);
       alert("Bank details saved!");
     } catch (err) {
       console.error(err);
@@ -422,16 +448,12 @@ export default function SupplierDashboardPage() {
               {/* Personal Photo */}
               <div>
                 <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Personal Photo (Owner / Director)</label>
-                {personalPhoto ? (
-                  <div className="flex items-center gap-4">
-                    <img src={personalPhoto} alt="Personal" className="w-20 h-20 rounded-full object-cover border-2 border-gray-200" />
-                    <button type="button" onClick={() => setPersonalPhoto("")} className="text-sm text-red-500 hover:underline">Remove</button>
-                  </div>
-                ) : (
-                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-4 bg-gray-50">
-                    <input type="url" placeholder="Paste photo URL" value={personalPhoto} onChange={e => setPersonalPhoto(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#0070F3] outline-none bg-white" />
-                  </div>
-                )}
+                <ImageUploader 
+                  value={personalPhoto} 
+                  onChange={setPersonalPhoto}
+                  label="Personal Photo"
+                  aspectRatio="square"
+                />
               </div>
               {/* Section 1: Personal Identity */}
               <div className="space-y-4">
@@ -535,23 +557,12 @@ export default function SupplierDashboardPage() {
               {/* Company Logo */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Company Logo</label>
-                {profileImage ? (
-                  <div className="flex items-center gap-4">
-                    <img src={profileImage} alt="Logo" className="w-20 h-20 rounded-xl object-cover border border-gray-200" />
-                    <button type="button" onClick={() => setProfileImage("")} className="text-sm text-red-500 hover:underline">Remove</button>
-                  </div>
-                ) : (
-                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center bg-gray-50">
-                    <p className="text-gray-500 text-sm">Upload company logo (PNG or JPG recommended)</p>
-                    <input
-                      type="url"
-                      placeholder="Or paste image URL"
-                      value={profileImage}
-                      onChange={e => setProfileImage(e.target.value)}
-                      className="mt-2 w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#0074E4] outline-none bg-white"
-                    />
-                  </div>
-                )}
+                <ImageUploader 
+                  value={profileImage} 
+                  onChange={setProfileImage}
+                  label="Company Logo"
+                  aspectRatio="square"
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -577,11 +588,35 @@ export default function SupplierDashboardPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">State</label>
-                  <input type="text" value={state} onChange={e => setState(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="e.g. Odisha" />
+                  <select
+                    value={state}
+                    onChange={e => { setState(e.target.value); setDistrict(""); }}
+                    className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white"
+                  >
+                    <option value="">Select State...</option>
+                    {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">District</label>
-                  <input type="text" value={district} onChange={e => setDistrict(e.target.value)} className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white" placeholder="e.g. Bargarh" />
+                  {state === "Odisha" ? (
+                    <select
+                      value={district}
+                      onChange={e => setDistrict(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white"
+                    >
+                      <option value="">Select District...</option>
+                      {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      value={district}
+                      onChange={e => setDistrict(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#0074E4] outline-none bg-gray-50 focus:bg-white"
+                      placeholder="e.g. Bargarh"
+                    />
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">City / Pincode</label>
@@ -782,42 +817,14 @@ export default function SupplierDashboardPage() {
         )}
 
         {activeTab === "vanity_url" && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Custom Brand URL</h2>
-            <p className="text-gray-500 mb-6 text-sm">Your public supplier profile link on Bhulia.com.</p>
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-800 text-sm font-medium">
-              Your public profile: <strong>bhulia.com/supplier/{storeSlug || "your-company-name"}</strong>
-            </div>
+          <div className="animate-in fade-in max-w-4xl">
+            <VanityUrlManager currentSlug={storeSlug} roleType="supplier" />
           </div>
         )}
 
         {activeTab === "pricing" && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">B2B Pricing Plans</h2>
-            <p className="text-gray-500 mb-6 text-sm">Choose a plan for your supply operations.</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="border-2 border-[#0074E4] rounded-2xl p-6">
-                <div className="text-xs font-bold text-[#0074E4] uppercase tracking-wider mb-2">Current Plan</div>
-                <h3 className="text-xl font-black text-gray-900">Supplier Starter</h3>
-                <p className="text-3xl font-black text-gray-900 my-3">Free</p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>✅ Up to 10 materials listed</li>
-                  <li>✅ Basic order management</li>
-                  <li>✅ Public profile page</li>
-                </ul>
-              </div>
-              <div className="border-2 border-gray-200 rounded-2xl p-6 bg-gray-50">
-                <div className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Upgrade</div>
-                <h3 className="text-xl font-black text-gray-900">Supplier Pro</h3>
-                <p className="text-3xl font-black text-gray-900 my-3">₹1,999<span className="text-base font-normal text-gray-500">/yr</span></p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>✅ Unlimited materials</li>
-                  <li>✅ Priority listing to weavers</li>
-                  <li>✅ Live rate update tools</li>
-                </ul>
-                <button className="mt-4 w-full bg-amber-500 text-white font-bold py-2 rounded-xl hover:bg-amber-600 transition-colors">Upgrade Now</button>
-              </div>
-            </div>
+          <div className="animate-in fade-in">
+            <PricingTab isPublicPage={false} userRole="supplier" />
           </div>
         )}
         <SupplierInventoryUpload 

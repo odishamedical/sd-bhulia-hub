@@ -3,13 +3,23 @@
 import { useState } from "react";
 import SaaSUpgraderModal from "@/components/SaaSUpgraderModal";
 
-export default function PricingTab({ isPublicPage = false, userRole = "weaver" }: { isPublicPage?: boolean, userRole?: "weaver" | "shop" }) {
+export default function PricingTab({ isPublicPage = false, userRole = "weaver" }: { isPublicPage?: boolean, userRole?: "weaver" | "shop" | "wholesaler" | "supplier" }) {
   // We don't need billing cycle toggle anymore because we show both monthly and yearly cards!
-  const [role, setRole] = useState<"weaver" | "shop">(userRole);
+  const [role, setRole] = useState<"weaver" | "shop" | "wholesaler" | "supplier">(userRole);
   
   // Upgrader Modal State
   const [isUpgraderOpen, setIsUpgraderOpen] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string>("");
+
+  const getRoleTitle = () => {
+    if (role === "weaver") return "Weaver Pro";
+    if (role === "wholesaler") return "Wholesaler Pro";
+    if (role === "supplier") return "Supplier Pro";
+    return "Shop Pro";
+  };
+
+  const getMonthlyPrice = () => role === "weaver" ? "999" : "1,099";
+  const getYearlyPrice = () => role === "weaver" ? "9,999" : "10,999";
 
   const handleUpgrade = (planId: string) => {
     setSelectedPlanId(planId);
@@ -114,11 +124,11 @@ export default function PricingTab({ isPublicPage = false, userRole = "weaver" }
           {/* Pro Monthly Tier */}
           <div className="bg-[#0A221E]/60 backdrop-blur-xl border border-[#C5A059]/40 rounded-3xl p-8 flex flex-col relative hover:border-[#C5A059] transition-colors">
             <div className="mb-8">
-              <h3 className="text-2xl font-black text-[#C5A059] mb-2">{role === "weaver" ? "Weaver Pro" : "Shop Pro"}</h3>
+              <h3 className="text-2xl font-black text-[#C5A059] mb-2">{getRoleTitle()}</h3>
               <p className="text-slate-300 text-sm">Monthly billing, cancel anytime.</p>
             </div>
             <div className="mb-8 flex items-end gap-1">
-              <span className="text-5xl font-black text-white">₹{role === "weaver" ? "999" : "1,099"}</span>
+              <span className="text-5xl font-black text-white">₹{getMonthlyPrice()}</span>
               <span className="text-slate-400 font-medium pb-1">/mo</span>
             </div>
             <ul className="space-y-4 mb-8 flex-1">
@@ -142,11 +152,11 @@ export default function PricingTab({ isPublicPage = false, userRole = "weaver" }
               Most Popular <span className="bg-black/20 px-2 py-0.5 rounded-full text-[10px]">SAVE 16%</span>
             </div>
             <div className="mb-8">
-              <h3 className="text-2xl font-black text-[#C5A059] mb-2">{role === "weaver" ? "Weaver Pro" : "Shop Pro"}</h3>
+              <h3 className="text-2xl font-black text-[#C5A059] mb-2">{getRoleTitle()}</h3>
               <p className="text-slate-300 text-sm">Yearly billing for maximum savings.</p>
             </div>
             <div className="mb-8 flex items-end gap-1">
-              <span className="text-5xl font-black text-white">₹{role === "weaver" ? "9,999" : "10,999"}</span>
+              <span className="text-5xl font-black text-white">₹{getYearlyPrice()}</span>
               <span className="text-slate-400 font-medium pb-1">/yr</span>
             </div>
             <ul className="space-y-4 mb-8 flex-1">

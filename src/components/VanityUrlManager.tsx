@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Script from "next/script";
 
-export default function VanityUrlManager({ currentSlug = "shyam-dash-303" }: { currentSlug?: string }) {
+export default function VanityUrlManager({ currentSlug = "shyam-dash-303", roleType = "store" }: { currentSlug?: string, roleType?: string }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -62,7 +62,7 @@ export default function VanityUrlManager({ currentSlug = "shyam-dash-303" }: { c
     setIsProcessingPayment(true);
 
     const selectedUrls = [];
-    if (selectedProfessional) selectedUrls.push(`bhulia.com/store/${rawSearch}`);
+    if (selectedProfessional) selectedUrls.push(`bhulia.com/${roleType}/${rawSearch}`);
     if (selectedPremium) selectedUrls.push(`bhulia.com/${rawSearch}`);
     if (selectedEnterprise) selectedUrls.push(`${rawSearch}.bhulia.com`);
 
@@ -173,7 +173,7 @@ export default function VanityUrlManager({ currentSlug = "shyam-dash-303" }: { c
                 <p className="text-sm text-red-200 font-semibold mb-1">Your brand identity is currently unprotected.</p>
                 <p className="text-xs text-red-100/70">
                   You are currently using the generic auto-generated ID link: 
-                  <span className="font-mono text-white bg-black/30 px-2 py-0.5 rounded mx-1 break-all">bhulia.com/store/{currentSlug}</span>. 
+                  <span className="font-mono text-white bg-black/30 px-2 py-0.5 rounded mx-1 break-all">bhulia.com/{roleType}/{currentSlug}</span>. 
                   Protect your actual name before a competitor registers it.
                 </p>
               </div>
@@ -231,7 +231,7 @@ export default function VanityUrlManager({ currentSlug = "shyam-dash-303" }: { c
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-[10px] font-black uppercase tracking-widest text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded">Professional</span>
                       </div>
-                      <p className="text-sm sm:text-base font-bold text-white break-all">bhulia.com/store/<span className="text-[#C5A059]">{rawSearch}</span></p>
+                      <p className="text-sm sm:text-base font-bold text-white break-all">bhulia.com/{roleType}/<span className="text-[#C5A059]">{rawSearch}</span></p>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
