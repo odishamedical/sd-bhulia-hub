@@ -22,6 +22,28 @@ import ReviewsTab from "@/components/ReviewsTab";
 import HelpGuideTab from "@/components/HelpGuideTab";
 import { uploadBase64ToStorage } from "@/lib/storageUtils";
 import VanityUrlManager from "@/components/VanityUrlManager";
+import OnboardingTour from "@/components/dashboard/OnboardingTour";
+import { Step } from "react-joyride";
+
+const supplierTourSteps: Step[] = [
+  {
+    target: "body",
+    content: "Welcome to your Raw Material Supplier Dashboard!",
+    placement: "center" as const,
+  },
+  {
+    target: "#tour-tab-kyc",
+    content: "Complete your Business Verification (KYC) here to get verified.",
+  },
+  {
+    target: "#tour-tab-inventory",
+    content: "Use the Inventory Management tab to post your raw materials in bulk.",
+  },
+  {
+    target: "#tour-tab-orders",
+    content: "Track orders from Weavers and other buyers here.",
+  },
+];
 
 export default function SupplierDashboardPage() {
   const [userName, setUserName] = useState<string>("");
@@ -867,6 +889,8 @@ export default function SupplierDashboardPage() {
           onClose={() => setIsUploadOpen(false)}
           sellerId={userUid}
         />
+        
+        <OnboardingTour steps={supplierTourSteps} tourId="supplier" />
       </div>
     </DashboardLayout>
   );

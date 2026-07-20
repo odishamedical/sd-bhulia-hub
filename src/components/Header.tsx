@@ -48,7 +48,7 @@ export default function Header() {
           {/* Left Side: Gold Logo, Bhulia.com & Slogan */}
           <Link href="/" className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 cursor-pointer hover:opacity-90 transition-opacity">
             <div className="relative w-10 sm:w-14 h-10 sm:h-14 rounded-full overflow-hidden shadow-[0_0_20px_rgba(197,160,89,0.4)] shrink-0 bg-[#0B2B26]">
-              <Image src="/logo.png" alt="Bhulia Gold Logo" fill className="object-cover scale-[1.15]" />
+              <Image src="/logo.png" alt="Bhulia Gold Logo" fill sizes="56px" className="object-cover scale-[1.15]" />
             </div>
             <div className="min-w-0 flex flex-col items-stretch">
               <h1 className="text-xl sm:text-2xl font-serif font-black tracking-wider text-[#C5A059] leading-none">Bhulia.com</h1>

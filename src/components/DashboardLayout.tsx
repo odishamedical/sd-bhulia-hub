@@ -77,7 +77,7 @@ export default function DashboardLayout({
           </button>
           <Link href="/">
             <div className="relative w-12 h-12 rounded-full overflow-hidden shadow-sm cursor-pointer">
-              <Image src="/logo.png" alt="Bhulia Logo" fill className="object-cover scale-[1.15]" />
+              <Image src="/logo.png" alt="Bhulia Logo" fill sizes="56px" className="object-cover scale-[1.15]" />
             </div>
           </Link>
           <div>
@@ -208,6 +208,7 @@ export default function DashboardLayout({
                       {items.map((item) => (
                         <button 
                           key={item.id}
+                          id={`tour-tab-${item.id}`}
                           onClick={() => {
                             onTabChange(item.id);
                             setMobileMenuOpen(false);
@@ -238,6 +239,7 @@ export default function DashboardLayout({
             {navItems.map(item => (
               <button
                 key={item.id}
+                id={`tour-mobile-tab-${item.id}`}
                 onClick={() => onTabChange(item.id)}
                 className={`whitespace-nowrap snap-center px-4 py-2 rounded-full text-sm font-bold transition-all flex items-center ${activeTab === item.id ? "bg-[#0074E4] text-white shadow-sm" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
               >

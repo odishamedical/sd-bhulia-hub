@@ -21,6 +21,32 @@ import ReviewsTab from "@/components/ReviewsTab";
 import HelpGuideTab from "@/components/HelpGuideTab";
 import { uploadBase64ToStorage } from "@/lib/storageUtils";
 import VanityUrlManager from "@/components/VanityUrlManager";
+import OnboardingTour from "@/components/dashboard/OnboardingTour";
+import { Step } from "react-joyride";
+
+const wholesalerTourSteps: Step[] = [
+  {
+    target: "body",
+    content: "Welcome to your Wholesaler Dashboard! Let's take a quick tour.",
+    placement: "center" as const,
+  },
+  {
+    target: "#tour-tab-kyc",
+    content: "First, complete your Business KYC here to get the 'Verified Wholesaler' badge.",
+  },
+  {
+    target: "#tour-tab-catalog",
+    content: "Use the Catalog Management tab to add your inventory with tiered B2B pricing.",
+  },
+  {
+    target: "#tour-tab-orders",
+    content: "Manage your bulk shipments and incoming orders right here.",
+  },
+  {
+    target: "#tour-tab-vanity_url",
+    content: "Don't forget to claim your custom storefront link to share on WhatsApp!",
+  },
+];
 
 export default function WholesalerDashboardPage() {
   const [userName, setUserName] = useState<string>("");
@@ -878,6 +904,8 @@ export default function WholesalerDashboardPage() {
           isAutoApprovedUser={false}
           storeName={companyName}
         />
+        
+        <OnboardingTour steps={wholesalerTourSteps} tourId="wholesaler" />
       </div>
     </DashboardLayout>
   );
