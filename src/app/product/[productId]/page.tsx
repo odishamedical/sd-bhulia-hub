@@ -294,7 +294,7 @@ export default function ProductDetailPage() {
                     allowFullScreen
                   ></iframe>
                 ) : (
-                  <Image src={activeMedia?.url || product.img} alt={product.title} fill className="object-contain transition-transform duration-700 hover:scale-105 animate-fadeIn" />
+                  <Image src={activeMedia?.url || product?.img || "/bhulia-hero.png"} alt={product?.title || "Product"} fill className="object-contain transition-transform duration-700 hover:scale-105 animate-fadeIn" />
                 )}
               </div>
               
@@ -339,7 +339,7 @@ export default function ProductDetailPage() {
                         </div>
                       </>
                     ) : (
-                      <Image src={media.url || ""} alt={`Thumbnail ${index + 1}`} fill className="object-cover" />
+                      <Image src={media.url || "/bhulia-hero.png"} alt={`Thumbnail ${index + 1}`} fill className="object-cover" />
                     )}
                   </div>
                 </button>
@@ -378,11 +378,11 @@ export default function ProductDetailPage() {
                         {/* Retail Pricing Block */}
                         {isRetail && (
                           <div className="flex items-baseline gap-4">
-                            <span className={`text-3xl font-serif font-bold ${userRole === "reseller" && product.allowResellerMargin ? "text-gray-400 line-through text-2xl" : "text-[#C5A059]"}`}>{product.price}</span>
-                            {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
-                              <span className="text-sm text-gray-400 line-through">{product.mrp || `₹ ${(parseFloat(product.price.toString().replace(/[^0-9]/g, '')) * 1.2).toLocaleString('en-IN')}`}</span>
+                            <span className={`text-3xl font-serif font-bold ${userRole === "reseller" && product?.allowResellerMargin ? "text-gray-400 line-through text-2xl" : "text-[#C5A059]"}`}>{product?.price || "₹0"}</span>
+                            {(!userRole || userRole !== "reseller" || !product?.allowResellerMargin) && (
+                              <span className="text-sm text-gray-400 line-through">{product?.mrp || `₹ ${(parseFloat((product?.price?.toString() || "0").replace(/[^0-9.]/g, '')) * 1.2).toLocaleString('en-IN')}`}</span>
                             )}
-                            {(!userRole || userRole !== "reseller" || !product.allowResellerMargin) && (
+                            {(!userRole || userRole !== "reseller" || !product?.allowResellerMargin) && (
                               <span className="text-xs text-green-400 font-bold">Direct Weaver Price</span>
                             )}
                           </div>
@@ -486,7 +486,7 @@ export default function ProductDetailPage() {
                   <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Length & Blouse</span>
                   <span className="text-xs font-semibold text-white">{product.length || "6.2 Meters"} {product.hasBlouse ? "(With Blouse)" : ""}</span>
                 </div>
-                {product.weaverName && product.weaverName.toLowerCase() !== "new" && (
+                {product?.weaverName && String(product.weaverName).toLowerCase() !== "new" && (
                   <div>
                     <span className="text-[9px] uppercase tracking-widest text-gray-400 block mb-0.5">Weaver / Designer</span>
                     <span className="text-xs font-semibold text-white">{product.weaverName}</span>
