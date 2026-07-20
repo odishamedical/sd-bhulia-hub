@@ -26,7 +26,7 @@ export async function sendEmailMessage(payload: EmailPayload) {
 
   try {
     const data = await resend.emails.send({
-      from: 'Bhulia Hub <notifications@updates.bhulia.com>', // Update this to your verified domain later
+      from: 'Bhulia Hub <notifications@update.bhulia.com>', // Matched to the domain you registered
       to: [payload.to],
       subject: payload.subject,
       html: payload.htmlContent,

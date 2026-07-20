@@ -11,13 +11,13 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import DirectorySidebarFilter from "@/components/DirectorySidebarFilter";
 import ProductCard from "@/components/ProductCard";
 
-function DirectoryContent() {
+export default function ClientDirectory({ initialRole = 'all', initialState = 'Odisha', initialDistrict = 'all' }: { initialRole?: string, initialState?: string, initialDistrict?: string }) {
   const { stores, loading: storesLoading } = useStores(50);
   const { weavers, loading: weaversLoading } = useWeavers(50);
   const { wholesalers, loading: wholesalersLoading } = useWholesalers(50);
   const { suppliers, loading: suppliersLoading } = useSuppliers(50);
 
-  const [selectedRole, setSelectedRole] = useState<string>("all");
+  const [selectedRole, setSelectedRole] = useState<string>(initialRole);
   const searchParams = useSearchParams();
   const initialSearch = searchParams?.get("search") || "";
   const [searchQuery, setSearchQuery] = useState(initialSearch);
@@ -35,10 +35,26 @@ function DirectoryContent() {
   
   // Cascading Location States
   const [selectedCountry, setSelectedCountry] = useState<string>("India");
-  const [selectedState, setSelectedState] = useState<string>("Odisha");
-  const [selectedDistrict, setSelectedDistrict] = useState<string>("all");
+  const [selectedState, setSelectedState] = useState<string>(initialState || "Odisha");
+  const [selectedDistrict, setSelectedDistrict] = useState<string>(initialDistrict || "all");
   const [selectedBlock, setSelectedBlock] = useState<string>("");
   const [selectedVillage, setSelectedVillage] = useState<string>("");
+
+  // URL Sync Effect for taxonomy
+  useEffect(() => {
+    const rolePath = selectedRole === 'all' ? '' : selectedRole;
+    let url = '/directory';
+    if (rolePath) url += `/${rolePath}`;
+    if (rolePath && selectedState && selectedState !== 'all' && selectedState !== 'Odisha') url += `/${encodeURIComponent(selectedState.toLowerCase())}`;
+    else if (rolePath && selectedDistrict !== 'all') url += `/odisha`; // default state in url path if district exists
+    
+    if (rolePath && selectedDistrict !== 'all') url += `/${encodeURIComponent(selectedDistrict.toLowerCase())}`;
+    
+    // Only update if url actually changed
+    if (window.location.pathname !== url) {
+      window.history.replaceState({}, '', url);
+    }
+  }, [selectedRole, selectedState, selectedDistrict]);
 
   const combinedDirectory = useMemo(() => {
     const vList = stores.map(v => ({ ...v, role: "store", displayType: "Retail Shop" }));
@@ -233,17 +249,18 @@ function DirectoryContent() {
             { label: "B2B Wholesalers", value: "wholesaler" },
             { label: "Raw Materials", value: "raw_material" }
           ].map(roleOption => (
-            <button 
+            <Link 
+              href={`/directory${roleOption.value === 'all' ? '' : '/' + roleOption.value}`}
               key={roleOption.value}
               onClick={() => setSelectedRole(roleOption.value)}
-              className={`px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all ${
+              className={`px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all text-center inline-block ${
                 selectedRole === roleOption.value 
                   ? 'bg-[#0052A3] text-white shadow-md ring-4 ring-[#0066CC]/30 -translate-y-1' 
                   : 'bg-[#0066CC]/90 hover:bg-[#0052A3] text-white border border-white/30 shadow-md backdrop-blur-md'
               }`}
             >
               {roleOption.label}
-            </button>
+            </Link>
           ))}
         </div>
       </div>
@@ -436,29 +453,36 @@ function DirectoryContent() {
           </div>
 
           <div className="flex flex-wrap gap-2 justify-center w-full max-w-5xl mx-auto opacity-70 hover:opacity-100 transition-opacity">
-            {ODISHA_DISTRICTS.map((district) => (
-              <button 
+            {ODISHA_DISTRICTS.map((district) => {
+              const roleSegment = selectedRole === 'all' ? '' : `/${selectedRole}`;
+              const stateSegment = selectedState === 'all' || !selectedState ? '/odisha' : `/${selectedState.toLowerCase()}`;
+              const linkUrl = `/directory${roleSegment}${stateSegment}/${district.toLowerCase()}`;
+              
+              return (
+              <Link 
+                href={linkUrl}
                 key={district} 
                 onClick={() => {
                   setSelectedDistrict(district);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className={`border px-2 py-1 rounded-md text-[9px] uppercase font-bold tracking-wider transition-all duration-300 ${
-                  selectedDistrict === district 
+                className={`border px-2 py-1 rounded-md text-[9px] uppercase font-bold tracking-wider transition-all duration-300 text-center inline-block ${
+                  selectedDistrict.toLowerCase() === district.toLowerCase() 
                     ? 'bg-[#C5A059] text-[#051815] border-[#C5A059]' 
                     : 'bg-transparent border-[#C5A059]/20 text-gray-500 hover:text-[#C5A059] hover:border-[#C5A059]/40'
                 }`}
               >
                 {district}
-              </button>
-            ))}
+              </Link>
+            )})}
             {selectedDistrict !== "all" && (
-              <button 
+              <Link 
+                href={`/directory${selectedRole === 'all' ? '' : '/' + selectedRole}`}
                 onClick={() => setSelectedDistrict("all")}
-                className="bg-red-900/20 text-red-400 border border-red-500/20 px-2 py-1 rounded-md text-[9px] uppercase font-bold tracking-wider hover:bg-red-900/40 transition-all"
+                className="bg-red-900/20 text-red-400 border border-red-500/20 px-2 py-1 rounded-md text-[9px] uppercase font-bold tracking-wider hover:bg-red-900/40 transition-all text-center inline-block"
               >
                 Clear
-              </button>
+              </Link>
             )}
           </div>
         </div>
@@ -468,10 +492,4 @@ function DirectoryContent() {
   );
 }
 
-export default function GlobalDirectoryPage() {
-  return (
-    <Suspense fallback={<div className="flex-1 min-h-screen flex items-center justify-center bg-[#051815]"><div className="w-12 h-12 border-4 border-[#C5A059] border-t-transparent rounded-full animate-spin"></div></div>}>
-      <DirectoryContent />
-    </Suspense>
-  );
-}
+
