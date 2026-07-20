@@ -207,18 +207,7 @@ export default function ProductDetailPage() {
 
         {product && <GlobalBannerSlot placementId="content_top" context={{ audience: "products", specificId: product.id, category: product.category, material: product.material, design: product.design }} />}
         
-        {(() => {
-          const isB2BApproved = typeof window !== 'undefined' && (
-            userRole === "super_admin" ||
-            localStorage.getItem("sd_global_b2b_access") === "true" ||
-            (localStorage.getItem("sd_approved_b2b_suppliers") || "").split(",").includes(String((product as any)?.sellerId))
-          );
-          const isRetail = product?.availableForRetail !== false;
-          const isWholesale = product?.availableForWholesale === true;
-
-          // If it's wholesale ONLY and user is not approved, we still let them see the page, but the price/cart will be hidden and replaced with inquiry button.
-          // We removed the full-page blocker here so they can actually view the product details and click "Contact for Bulk Price".
-        })()}
+        {productLoading ? (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-pulse">
             <div className="lg:col-span-6 h-[500px] bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl"></div>
             <div className="lg:col-span-6 space-y-6">
