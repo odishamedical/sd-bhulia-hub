@@ -1,8 +1,7 @@
-// src/lib/email.ts
+import { Resend } from 'resend';
 
 /**
- * Free-Tier Email API Simulator (SMTP / Resend)
- * Simulation Mode Enabled: Logs payloads instead of calling external HTTP endpoint.
+ * Official Resend Email API Integration
  */
 
 interface EmailPayload {
@@ -12,41 +11,34 @@ interface EmailPayload {
 }
 
 export async function sendEmailMessage(payload: EmailPayload) {
-  console.log(`[Email API Simulated] Preparing to send via SMTP / Resend...`);
-  console.log(`To: ${payload.to}`);
-  console.log(`Subject: ${payload.subject}`);
-  console.log(`Body (HTML preview): ${payload.htmlContent.slice(0, 100)}...`);
+  // If the API key is missing, fall back to simulation mode
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("[Email API] Missing RESEND_API_KEY. Running in Simulation Mode.");
+    console.log(`To: ${payload.to} | Subject: ${payload.subject}`);
+    return {
+      success: true,
+      messageId: `simulated_${Date.now()}`,
+      provider: "Simulation Mode"
+    };
+  }
 
-  // Simulation Mode logic:
-  return {
-    success: true,
-    messageId: `email_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-    provider: "Simulated Email Provider"
-  };
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
-  // -------------------------------------------------------------
-  // REAL IMPLEMENTATION (Using Nodemailer or Resend)
-  // -------------------------------------------------------------
-  /*
   try {
-    // Example with Resend:
-    // const res = await fetch('https://api.resend.com/emails', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({
-    //     from: 'Bhulia Updates <notifications@bhulia.com>',
-    //     to: payload.to,
-    //     subject: payload.subject,
-    //     html: payload.htmlContent
-    //   })
-    // });
-    // return { success: true, data: await res.json() };
+    const data = await resend.emails.send({
+      from: 'Bhulia Hub <notifications@updates.bhulia.com>', // Update this to your verified domain later
+      to: [payload.to],
+      subject: payload.subject,
+      html: payload.htmlContent,
+    });
+
+    if (data.error) {
+      throw new Error(data.error.message);
+    }
+
+    return { success: true, data };
   } catch (error: any) {
     console.error("[Email API Error]", error);
     return { success: false, error: error.message };
   }
-  */
 }
