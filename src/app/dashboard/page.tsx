@@ -1168,7 +1168,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
   const [img2Caption, setImg2Caption] = useState("");
   const [img3Caption, setImg3Caption] = useState("");
   const [img4Caption, setImg4Caption] = useState("");
-  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [youtubeUrls, setYoutubeUrls] = useState<string[]>(['', '', '', '']);
 
   const [productMrp, setProductMrp] = useState("");
   const [productLongDesc, setProductLongDesc] = useState("");
@@ -1187,7 +1187,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const saveDraft = () => {
-    const draft = { productName, productPrice, commercialPrice, availableForRetail, availableForWholesale, wholesaleTerms, productCategory, productDesc, stockQuantity, allowResellerMargin, resellerMarginPercentage, isSpecialOffer, specialOfferTag, productImage, img2, img3, img4, youtubeUrl, productMrp, productLongDesc, originalWeaver, sareeType, material, design, colorUse, length, hasBlouse };
+    const draft = { productName, productPrice, commercialPrice, availableForRetail, availableForWholesale, wholesaleTerms, productCategory, productDesc, stockQuantity, allowResellerMargin, resellerMarginPercentage, isSpecialOffer, specialOfferTag, productImage, img2, img3, img4, youtubeUrls, productMrp, productLongDesc, originalWeaver, sareeType, material, design, colorUse, length, hasBlouse };
     localStorage.setItem("sd_product_draft", JSON.stringify(draft));
     alert("Draft saved to browser!");
   };
@@ -1225,7 +1225,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
         if(p.img2) setImg2(p.img2);
         if(p.img3) setImg3(p.img3);
         if(p.img4) setImg4(p.img4);
-        if(p.youtubeUrl) setYoutubeUrl(p.youtubeUrl);
+        if(p.youtubeUrls) setYoutubeUrls([...p.youtubeUrls, '', '', '', ''].slice(0, 4));
+        else if(p.youtubeUrl) setYoutubeUrls([p.youtubeUrl, '', '', '']);
         if(p.commercialPrice) setCommercialPrice(p.commercialPrice);
         if(p.wholesaleTerms) setWholesaleTerms(p.wholesaleTerms);
         if(p.availableForRetail !== undefined) setAvailableForRetail(p.availableForRetail);
@@ -1253,7 +1254,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
     setImg2(p.img2 || "");
     setImg3(p.img3 || "");
     setImg4(p.img4 || "");
-    setYoutubeUrl(p.youtubeUrl || "");
+    if (p.youtubeUrls && p.youtubeUrls.length > 0) {
+      setYoutubeUrls([...p.youtubeUrls, '', '', '', ''].slice(0, 4));
+    } else {
+      setYoutubeUrls([p.youtubeUrl || "", '', '', '']);
+    }
     setUploadStep(1);
     setShowAdvanced(false);
     setIsAddInventoryOpen(true);
@@ -1326,7 +1331,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
         img4: img4Url,
         images: finalImages,
         imageCaptions: [imgCaption, img2Caption, img3Caption, img4Caption],
-        youtubeUrl: youtubeUrl || undefined,
+        youtubeUrls: youtubeUrls.filter(url => url.trim() !== ''),
+        youtubeUrl: youtubeUrls.filter(url => url.trim() !== '')[0] || undefined,
         stockQuantity: Number(stockQuantity),
         inStock: Number(stockQuantity) > 0,
         allowResellerMargin,
@@ -1678,10 +1684,26 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
     <div className="space-y-6 animate-in slide-in-from-right-4 fade-in">
       <div className="bg-gray-50 p-6 rounded-2xl border border-gray-200">
         <h3 className="text-sm font-bold text-gray-900 mb-4">Product Images & Video</h3>
-        <div className="mb-6">
-          <label className="block text-xs font-bold text-[#FF0000] uppercase tracking-wider mb-2">YouTube Demo Video (Optional)</label>
-          <input type="url" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} placeholder="e.g. https://youtube.com/shorts/..." className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#FF0000] outline-none transition-all" />
-          <p className="text-[10px] text-gray-500 mt-1">Paste a YouTube Shorts link to embed a vertical product demo.</p>
+        <div className="mb-4">
+          <label className="block text-xs font-bold text-[#FF0000] uppercase tracking-wider mb-2 flex items-center gap-2">
+            <span className="text-lg leading-none">▶</span> YouTube Shorts URLs <span className="text-xs text-gray-500 font-normal normal-case">(Up to 4 videos, Optional)</span>
+          </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[0, 1, 2, 3].map(index => (
+              <input 
+                key={index}
+                type="url" 
+                value={youtubeUrls[index] || ""} 
+                onChange={e => {
+                  const newUrls = [...youtubeUrls];
+                  newUrls[index] = e.target.value;
+                  setYoutubeUrls(newUrls);
+                }} 
+                placeholder={`Video ${index + 1} URL (https://youtube.com/shorts/...)`} 
+                className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#FF0000] outline-none transition-all" 
+              />
+            ))}
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <ImageUploader label="Main Photo" value={productImage} onChange={setProductImage} aspectRatio="portrait" captionValue={imgCaption} onCaptionChange={setImgCaption} />

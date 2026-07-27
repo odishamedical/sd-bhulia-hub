@@ -58,9 +58,10 @@ export default function ProductDetailPage() {
 
   const allImages = product ? [product.img, product.img2, product.img3, product.img4, ...(product.images || [])].filter(Boolean) : [];
   
+  const videoUrls = (product as any)?.youtubeUrls || (product?.youtubeUrl ? [product.youtubeUrl] : []);
   const allMedia = [
-    ...(product?.youtubeUrl ? [{ type: "video" as const, url: product.youtubeUrl }] : []),
-    ...allImages.map(img => ({ type: "image" as const, url: img }))
+    ...videoUrls.map((url: string) => ({ type: "video" as const, url })),
+    ...allImages.map((img: string) => ({ type: "image" as const, url: img }))
   ];
 
   const activeMedia = allMedia[activeMediaIndex] || { type: 'image', url: product?.img || "" };
