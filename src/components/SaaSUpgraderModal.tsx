@@ -58,6 +58,7 @@ export default function SaaSUpgraderModal({ isOpen, onClose, defaultPlan = "weav
             subscriptionId: data.subscriptionId,
             razorpayPaymentId: response.razorpay_payment_id,
             razorpaySignature: response.razorpay_signature,
+            planId: defaultPlan,
           });
           alert("Payment Successful! Welcome to Pro.");
           onClose();
@@ -89,27 +90,12 @@ export default function SaaSUpgraderModal({ isOpen, onClose, defaultPlan = "weav
         
         <div className="text-center mb-6">
           <div className="text-5xl mb-4">🚀</div>
-          <h2 className="text-3xl font-black text-gray-900 tracking-tight">Upgrade to Pro</h2>
-          <p className="text-gray-500 mt-2 font-medium">Unlock unlimited products, wholesale (B2B) features, and priority shipping gateway logistics.</p>
+          <h2 className="text-3xl font-black text-gray-900 tracking-tight">Confirm Subscription</h2>
+          <p className="text-gray-500 mt-2 font-medium">You are about to subscribe to the <span className="font-bold text-gray-800">{defaultPlan}</span> plan. Your payment method will be securely saved via Razorpay for future billing cycles.</p>
         </div>
 
-        <div className="space-y-4 mb-8">
-          <div className="flex items-center gap-3">
-            <span className="text-green-500 text-xl font-bold">✓</span>
-            <span className="text-gray-700 font-medium">Unlimited Product Uploads</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-green-500 text-xl font-bold">✓</span>
-            <span className="text-gray-700 font-medium">Wholesale & B2B Purchasing unlocked</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-green-500 text-xl font-bold">✓</span>
-            <span className="text-gray-700 font-medium">Automated Shipping Gateway Waybills</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-green-500 text-xl font-bold">✓</span>
-            <span className="text-gray-700 font-medium">Priority Customer Support</span>
-          </div>
+        <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl mb-6">
+           <p className="text-sm text-blue-800 font-medium text-center">By clicking subscribe, you agree to our Terms of Service. You can cancel your subscription at any time from your billing dashboard.</p>
         </div>
 
         <button 

@@ -607,6 +607,24 @@ export async function addProduct(product: Partial<Omit<Product, 'id'>>, customId
 
 export async function deleteProduct(id: string) {
   try {
+    const snap = await getDoc(doc(db, "products", id));
+    if (snap.exists()) {
+      const data = snap.data();
+      // Only penalize quota for products that were previously approved or active
+      if (data.status === "approved" || data.status === "active") {
+        const vendorId = data.weaverId || data.storeId || data.supplierId || data.vendorId;
+        const vendorRole = data.weaverId ? "weavers" : data.storeId ? "stores" : data.supplierId ? "suppliers" : null;
+        if (vendorId && vendorRole) {
+          const { arrayUnion } = await import("firebase/firestore");
+          await updateDoc(doc(db, vendorRole, vendorId), {
+            deletedProductsHistory: arrayUnion({
+              productId: id,
+              deletedAt: new Date().toISOString()
+            })
+          });
+        }
+      }
+    }
     await deleteDoc(doc(db, "products", id));
     return { success: true };
   } catch (error) {

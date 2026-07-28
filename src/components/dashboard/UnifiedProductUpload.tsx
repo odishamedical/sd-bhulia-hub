@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { auth, db } from "@/lib/firebase";
-import { doc, getDoc, collection, addDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, updateDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
 import { uploadBase64ToStorage } from "@/lib/storageUtils";
 import ImageUploader from "@/components/ImageUploader";
 
@@ -205,6 +205,45 @@ export default function UnifiedProductUpload({
     if (!productImage) { alert("Main image is required."); return; }
     
     if (!validateTiers()) return;
+
+    // Subscription & Quota Validation (only on new product creation)
+    if (!existingProduct) {
+      const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+      const uData = userDoc.exists() ? userDoc.data() : {};
+      const planId = uData.planId || "free";
+      
+      let maxProducts = 0;
+      if (planId.includes("_adv_")) maxProducts = Infinity;
+      else if (planId.includes("_pro_")) maxProducts = 25;
+      else maxProducts = 0; // Free tier
+
+      if (maxProducts < Infinity) {
+        // Count active/pending products
+        const productsQ = query(collection(db, "products"), where("sellerId", "==", auth.currentUser.uid));
+        const pSnap = await getDocs(productsQ);
+        const currentCount = pSnap.size;
+
+        // Count recently deleted products (90-day cooldown)
+        let deletedCount = 0;
+        const vendorCol = sellerRole === "weaver" ? "weavers" : sellerRole === "store" || sellerRole === "shop" ? "stores" : sellerRole === "wholesaler" ? "wholesalers" : sellerRole === "supplier" ? "suppliers" : null;
+        if (vendorCol) {
+          const vDoc = await getDoc(doc(db, vendorCol, sellerId));
+          if (vDoc.exists() && vDoc.data().deletedProductsHistory) {
+            const ninetyDaysAgo = new Date();
+            ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+            const recentDeletions = vDoc.data().deletedProductsHistory.filter((p: any) => new Date(p.deletedAt) > ninetyDaysAgo);
+            deletedCount = recentDeletions.length;
+          }
+        }
+
+        const totalUsedQuota = currentCount + deletedCount;
+
+        if (totalUsedQuota >= maxProducts) {
+          alert(`Upload Limit Reached!\n\nYour plan allows ${maxProducts} products. You currently have ${currentCount} active/pending products and ${deletedCount} recently deleted products in the 90-day cooldown period.\n\nPlease upgrade to Advance Pro for unlimited uploads.`);
+          return;
+        }
+      }
+    }
 
     setIsUploading(true);
     try {

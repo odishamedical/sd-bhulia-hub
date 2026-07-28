@@ -13,28 +13,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Map internal plans to Razorpay ENV plan IDs
-    let rzpPlanId = "";
-    switch (planId) {
-      case "weaver-monthly":
-        rzpPlanId = process.env.RAZORPAY_PLAN_WEAVER_MONTHLY?.trim() || "";
-        break;
-      case "weaver-yearly":
-        rzpPlanId = process.env.RAZORPAY_PLAN_WEAVER_YEARLY?.trim() || "";
-        break;
-      case "shop-monthly":
-        rzpPlanId = process.env.RAZORPAY_PLAN_SHOP_MONTHLY?.trim() || "";
-        break;
-      case "shop-yearly":
-        rzpPlanId = process.env.RAZORPAY_PLAN_SHOP_YEARLY?.trim() || "";
-        break;
-      default:
-        rzpPlanId = process.env.RAZORPAY_PLAN_DEFAULT?.trim() || planId;
-    }
+    // Automatically map internal planId (e.g., plan_bhulia_pro_monthly) to ENV variable RAZORPAY_PLAN_BHULIA_PRO_MONTHLY
+    const envKey = planId.toUpperCase();
+    const rzpPlanId = process.env[envKey]?.trim();
 
     if (!rzpPlanId) {
       return NextResponse.json(
-        { success: false, error: "Razorpay Plan ID is not configured for this tier." },
+        { success: false, error: `Razorpay Plan ID is not configured for ${planId}. Please set ${envKey} in .env` },
         { status: 500 }
       );
     }

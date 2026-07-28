@@ -3,22 +3,31 @@
 import React, { useState } from "react";
 import Script from "next/script";
 
-export default function VanityUrlManager({ currentSlug = "shyam-dash-303", roleType = "store" }: { currentSlug?: string, roleType?: string }) {
+export default function VanityUrlManager({ 
+  currentSlug = "demo", 
+  roleType = "weaver",
+  userState = "odisha",
+  userDistrict = "sambalpur"
+}: { 
+  currentSlug?: string, 
+  roleType?: string,
+  userState?: string,
+  userDistrict?: string
+}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  // Selected Tiers
-  const [selectedProfessional, setSelectedProfessional] = useState(false);
-  const [selectedPremium, setSelectedPremium] = useState(false);
-  const [selectedEnterprise, setSelectedEnterprise] = useState(false);
+  // Selected Tier
+  const [selectedTier, setSelectedTier] = useState<"subdomain" | "topPath" | "statePath" | "districtPath">("topPath");
 
   const PRICING = {
-    professional: 999, // ₹999/yr
-    premium: 2999,     // ₹2,999/yr
-    enterprise: 4999,  // ₹4,999/yr
+    subdomain: 2999,  // shop.bhulia.com
+    topPath: 1499,    // bhulia.com/shop
+    statePath: 999,   // bhulia.com/odisha/shop
+    districtPath: 599 // bhulia.com/odisha/sambalpur/shop
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -32,39 +41,30 @@ export default function VanityUrlManager({ currentSlug = "shyam-dash-303", roleT
     setTimeout(() => {
       setIsSearching(false);
       setHasSearched(true);
-      // Auto-select the cheapest one to encourage purchase
-      setSelectedProfessional(true);
+      // Auto-select topPath as default recommended
+      setSelectedTier("topPath");
     }, 1200);
   };
 
   const calculateTotal = () => {
-    let base = 0;
-    let count = 0;
-    if (selectedProfessional) { base += PRICING.professional; count++; }
-    if (selectedPremium) { base += PRICING.premium; count++; }
-    if (selectedEnterprise) { base += PRICING.enterprise; count++; }
-
-    let discountPercent = 0;
-    if (count === 2) discountPercent = 0.15; // 15% Combo Discount
-    if (count === 3) discountPercent = 0.25; // 25% Maximum Discount
-
-    const discountAmount = Math.floor(base * discountPercent);
-    const finalTotal = base - discountAmount;
-
-    return { base, discountPercent, discountAmount, finalTotal, count };
+    let finalTotal = PRICING[selectedTier];
+    return { finalTotal, count: 1 };
   };
 
   const totals = calculateTotal();
   const rawSearch = searchQuery.toLowerCase().replace(/[^a-z0-9-]/g, "");
+  const stateFmt = userState.toLowerCase().replace(/[^a-z0-9-]/g, "");
+  const districtFmt = userDistrict.toLowerCase().replace(/[^a-z0-9-]/g, "");
 
   const handleCheckout = async () => {
     if (totals.count === 0 || isProcessingPayment) return;
     setIsProcessingPayment(true);
 
     const selectedUrls: string[] = [];
-    if (selectedProfessional) selectedUrls.push(`bhulia.com/${roleType}/${rawSearch}`);
-    if (selectedPremium) selectedUrls.push(`bhulia.com/${rawSearch}`);
-    if (selectedEnterprise) selectedUrls.push(`${rawSearch}.bhulia.com`);
+    if (selectedTier === "subdomain") selectedUrls.push(`${rawSearch}.bhulia.com`);
+    else if (selectedTier === "topPath") selectedUrls.push(`bhulia.com/${rawSearch}`);
+    else if (selectedTier === "statePath") selectedUrls.push(`bhulia.com/${stateFmt}/${rawSearch}`);
+    else if (selectedTier === "districtPath") selectedUrls.push(`bhulia.com/${stateFmt}/${districtFmt}/${rawSearch}`);
 
     try {
       // 1. Generate Order
@@ -75,6 +75,7 @@ export default function VanityUrlManager({ currentSlug = "shyam-dash-303", roleT
           amount: totals.finalTotal,
           urls: selectedUrls,
           slug: currentSlug,
+          tier: selectedTier
         })
       });
 
@@ -146,9 +147,9 @@ export default function VanityUrlManager({ currentSlug = "shyam-dash-303", roleT
         <div className="w-20 h-20 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6">
           <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
         </div>
-        <h2 className="text-3xl font-serif text-[#C5A059] font-bold mb-4">URLs Secured!</h2>
+        <h2 className="text-3xl font-serif text-[#C5A059] font-bold mb-4">URL Secured!</h2>
         <p className="text-gray-300 text-lg max-w-md mx-auto leading-relaxed">
-          Your new brand identity is now locked and protected for 1 year. The Bhulia Auto-Provisioning engine is updating your storefront right now!
+          Your new brand identity is now locked and protected for 1 year. The Auto-Provisioning engine is updating your storefront right now!
         </p>
       </div>
     );
@@ -165,16 +166,16 @@ export default function VanityUrlManager({ currentSlug = "shyam-dash-303", roleT
       <div className="relative z-10 space-y-8">
         {/* Header & Warning Hook */}
         <div>
-          <h2 className="text-2xl sm:text-3xl font-serif text-[#C5A059] font-bold mb-3">Claim Your Brand URL</h2>
+          <h2 className="text-2xl sm:text-3xl font-serif text-[#C5A059] font-bold mb-3">Claim Your Vanity URL</h2>
           <div className="bg-red-900/20 border-l-4 border-red-500 p-4 rounded-r-xl">
             <div className="flex items-start gap-3">
               <span className="text-xl">⚠️</span>
               <div>
                 <p className="text-sm text-red-200 font-semibold mb-1">Your brand identity is currently unprotected.</p>
                 <p className="text-xs text-red-100/70">
-                  You are currently using the generic auto-generated ID link: 
+                  You are currently using the free generic directory link: 
                   <span className="font-mono text-white bg-black/30 px-2 py-0.5 rounded mx-1 break-all">bhulia.com/{roleType}/{currentSlug}</span>. 
-                  Protect your actual name before a competitor registers it.
+                  Protect your actual name and make it memorable for customers.
                 </p>
               </div>
             </div>
@@ -204,7 +205,7 @@ export default function VanityUrlManager({ currentSlug = "shyam-dash-303", roleT
           </button>
         </form>
 
-        {/* Search Results / GoDaddy Engine */}
+        {/* Search Results */}
         {hasSearched && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center gap-3">
@@ -215,127 +216,138 @@ export default function VanityUrlManager({ currentSlug = "shyam-dash-303", roleT
             </div>
 
             <div className="space-y-3">
-              {/* Professional Tier */}
+              {/* Option 1: Subdomain */}
               <label className={`block cursor-pointer p-4 border-2 rounded-2xl transition-all ${
-                selectedProfessional ? "border-[#C5A059] bg-[#C5A059]/10" : "border-gray-700 bg-black/20 hover:border-gray-500"
+                selectedTier === "subdomain" ? "border-[#C5A059] bg-[#C5A059]/10" : "border-gray-700 bg-black/20 hover:border-gray-500"
               }`}>
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
                     <input 
-                      type="checkbox" 
-                      checked={selectedProfessional} 
-                      onChange={() => setSelectedProfessional(!selectedProfessional)}
+                      type="radio" 
+                      name="vanityTier"
+                      checked={selectedTier === "subdomain"} 
+                      onChange={() => setSelectedTier("subdomain")}
                       className="w-5 h-5 accent-[#C5A059]" 
                     />
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded">Professional</span>
-                      </div>
-                      <p className="text-sm sm:text-base font-bold text-white break-all">bhulia.com/{roleType}/<span className="text-[#C5A059]">{rawSearch}</span></p>
-                    </div>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <p className="font-bold text-[#C5A059]">₹{PRICING.professional}</p>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">per year</p>
-                  </div>
-                </div>
-              </label>
-
-              {/* Premium Tier */}
-              <label className={`block cursor-pointer p-4 border-2 rounded-2xl transition-all ${
-                selectedPremium ? "border-[#C5A059] bg-[#C5A059]/10" : "border-gray-700 bg-black/20 hover:border-gray-500"
-              }`}>
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <input 
-                      type="checkbox" 
-                      checked={selectedPremium} 
-                      onChange={() => setSelectedPremium(!selectedPremium)}
-                      className="w-5 h-5 accent-[#C5A059]" 
-                    />
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-purple-400 bg-purple-400/10 px-2 py-0.5 rounded">Premium (Top Level)</span>
-                      </div>
-                      <p className="text-sm sm:text-base font-bold text-white break-all">bhulia.com/<span className="text-[#C5A059]">{rawSearch}</span></p>
-                    </div>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <p className="font-bold text-[#C5A059]">₹{PRICING.premium}</p>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">per year</p>
-                  </div>
-                </div>
-              </label>
-
-              {/* Enterprise Tier */}
-              <label className={`block cursor-pointer p-4 border-2 rounded-2xl transition-all ${
-                selectedEnterprise ? "border-[#C5A059] bg-[#C5A059]/10" : "border-gray-700 bg-black/20 hover:border-gray-500"
-              }`}>
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <input 
-                      type="checkbox" 
-                      checked={selectedEnterprise} 
-                      onChange={() => setSelectedEnterprise(!selectedEnterprise)}
-                      className="w-5 h-5 accent-[#C5A059]" 
-                    />
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded">Enterprise (Subdomain)</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[#C5A059] bg-[#C5A059]/10 px-2 py-0.5 rounded">Premium Subdomain</span>
                       </div>
                       <p className="text-sm sm:text-base font-bold text-white break-all"><span className="text-[#C5A059]">{rawSearch}</span>.bhulia.com</p>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="font-bold text-[#C5A059]">₹{PRICING.enterprise}</p>
+                    <p className="font-bold text-[#C5A059]">₹{PRICING.subdomain}</p>
                     <p className="text-[10px] text-gray-400 uppercase tracking-widest">per year</p>
                   </div>
                 </div>
               </label>
-            </div>
 
-            {/* Checkout & Combo Logic */}
-            {totals.count > 0 && (
-              <div className="mt-8 bg-black/40 border border-[#C5A059]/20 rounded-2xl p-6">
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
-                  
-                  <div className="w-full sm:w-auto">
-                    {totals.count > 1 ? (
-                      <div className="mb-2">
-                        <span className="inline-block bg-green-500/20 border border-green-500/50 text-green-400 text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded mb-1">
-                          🔥 {totals.discountPercent * 100}% Brand Protection Combo Applied!
-                        </span>
+              {/* Option 2: Top Path */}
+              <label className={`block cursor-pointer p-4 border-2 rounded-2xl transition-all ${
+                selectedTier === "topPath" ? "border-[#C5A059] bg-[#C5A059]/10" : "border-gray-700 bg-black/20 hover:border-gray-500"
+              }`}>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <input 
+                      type="radio" 
+                      name="vanityTier"
+                      checked={selectedTier === "topPath"} 
+                      onChange={() => setSelectedTier("topPath")}
+                      className="w-5 h-5 accent-[#C5A059]" 
+                    />
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-green-400 border border-green-500/30 px-2 py-0.5 rounded">Recommended</span>
                       </div>
-                    ) : (
-                      <p className="text-xs text-gray-400 mb-2">Select multiple URLs to unlock combo discounts.</p>
-                    )}
-                    
-                    <div className="flex items-end gap-3">
-                      <div className="text-3xl font-black text-white">₹{totals.finalTotal.toLocaleString()} <span className="text-sm text-gray-400 font-medium">/ year</span></div>
-                      {totals.count > 1 && (
-                        <div className="text-sm text-gray-500 line-through mb-1.5">₹{totals.base.toLocaleString()}</div>
-                      )}
+                      <p className="text-sm sm:text-base font-bold text-white break-all">bhulia.com/<span className="text-[#C5A059]">{rawSearch}</span></p>
                     </div>
                   </div>
-
-                  <button 
-                    onClick={handleCheckout}
-                    disabled={isProcessingPayment}
-                    className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#C5A059] to-[#A07B35] text-[#0A1021] font-black uppercase tracking-widest rounded-xl hover:shadow-[0_0_20px_rgba(197,160,89,0.4)] hover:-translate-y-0.5 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-                  >
-                    {isProcessingPayment ? (
-                      <><span className="w-5 h-5 border-2 border-[#0A1021] border-t-transparent rounded-full animate-spin"></span> Processing...</>
-                    ) : (
-                      `Secure ${totals.count} ${totals.count === 1 ? 'URL' : 'URLs'}`
-                    )}
-                  </button>
-                  
+                  <div className="text-right shrink-0">
+                    <p className="font-bold text-[#C5A059]">₹{PRICING.topPath}</p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">per year</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              </label>
 
+              {/* Option 3: State Path */}
+              <label className={`block cursor-pointer p-4 border-2 rounded-2xl transition-all ${
+                selectedTier === "statePath" ? "border-[#C5A059] bg-[#C5A059]/10" : "border-gray-700 bg-black/20 hover:border-gray-500"
+              }`}>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <input 
+                      type="radio" 
+                      name="vanityTier"
+                      checked={selectedTier === "statePath"} 
+                      onChange={() => setSelectedTier("statePath")}
+                      className="w-5 h-5 accent-[#C5A059]" 
+                    />
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded">State Level</span>
+                      </div>
+                      <p className="text-sm sm:text-base font-bold text-white break-all">bhulia.com/{stateFmt}/<span className="text-[#C5A059]">{rawSearch}</span></p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="font-bold text-[#C5A059]">₹{PRICING.statePath}</p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">per year</p>
+                  </div>
+                </div>
+              </label>
+
+              {/* Option 4: District Path */}
+              <label className={`block cursor-pointer p-4 border-2 rounded-2xl transition-all ${
+                selectedTier === "districtPath" ? "border-[#C5A059] bg-[#C5A059]/10" : "border-gray-700 bg-black/20 hover:border-gray-500"
+              }`}>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <input 
+                      type="radio" 
+                      name="vanityTier"
+                      checked={selectedTier === "districtPath"} 
+                      onChange={() => setSelectedTier("districtPath")}
+                      className="w-5 h-5 accent-[#C5A059]" 
+                    />
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 bg-gray-400/10 px-2 py-0.5 rounded">District Level</span>
+                      </div>
+                      <p className="text-sm sm:text-base font-bold text-white break-all">bhulia.com/{stateFmt}/{districtFmt}/<span className="text-[#C5A059]">{rawSearch}</span></p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="font-bold text-[#C5A059]">₹{PRICING.districtPath}</p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">per year</p>
+                  </div>
+                </div>
+              </label>
+
+            </div>
           </div>
         )}
+
+        {/* Checkout Footer */}
+        <div className={`transition-all duration-500 overflow-hidden ${hasSearched ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"}`}>
+          <div className="pt-6 border-t border-gray-700">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+              <div>
+                <p className="text-gray-400 text-sm font-medium mb-1">Total Amount (1 Year)</p>
+                <p className="text-3xl font-black text-white">₹{totals.finalTotal.toLocaleString('en-IN')}</p>
+              </div>
+              <button 
+                onClick={handleCheckout}
+                disabled={isProcessingPayment}
+                className="w-full sm:w-auto bg-gradient-to-r from-[#996515] to-[#C5A059] text-black font-black uppercase tracking-wider px-10 py-4 rounded-xl hover:brightness-110 disabled:opacity-50 transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:shadow-[0_0_30px_rgba(197,160,89,0.5)] transform hover:-translate-y-1"
+              >
+                {isProcessingPayment ? "Processing..." : "Pay Securely & Claim"}
+              </button>
+            </div>
+            <p className="text-center text-xs text-gray-500 mt-6 font-medium">Auto-renews yearly. Cancel anytime. Payments secured by Razorpay.</p>
+          </div>
+        </div>
+
       </div>
     </div>
   );
