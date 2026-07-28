@@ -245,31 +245,44 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
             </div>
           )}
 
-          {/* Middle Section: Full Width Map */}
-          {(profile.address || profile.googlePlaceId) && (
-            <div className="w-full h-48 sm:h-64 rounded-3xl overflow-hidden border border-[#C5A059]/40 shadow-xl bg-[#051815]">
-              <iframe
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                loading="lazy"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                src={`https://www.google.com/maps?q=${encodeURIComponent(profile.name + ' ' + (profile.address || ''))}&output=embed`}
-              ></iframe>
-            </div>
-          )}
+          {/* New 5-Image Bento Box Gallery */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 rounded-3xl overflow-hidden mt-2 border border-[#C5A059]/30 shadow-2xl bg-[#051815]">
+            {Array.from({ length: 5 }).map((_, i) => {
+              const img = profile.gallery?.[i] || "https://placehold.co/600x400/051815/333333?text=Add+Photo";
+              return (
+                <div key={i} className={`bg-[#051815] relative group overflow-hidden ${i === 0 ? 'col-span-2 row-span-2 aspect-square' : 'col-span-1 row-span-1 aspect-square'}`}>
+                  <Image src={img} fill className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" alt={`Showroom ${i+1}`} unoptimized />
+                  {!profile.gallery?.[i] && profile.status === "unclaimed" && (
+                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 backdrop-blur-sm">
+                       <span className="text-[#C5A059] text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-[#C5A059] rounded-full">Upload</span>
+                     </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
 
-          {/* Artisan Heritage & Visual Showcase Side-by-Side */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            {/* Left: Artisan Heritage & Craft (or Shop Details) */}
-            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl flex flex-col h-full">
-              <h3 className="text-xl font-serif text-[#C5A059] font-bold tracking-wider mb-6">
+          {/* Description & Artisan Heritage Side-by-Side (or stacked) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+            {/* Left: Description */}
+            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl h-full relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-48 h-48 bg-[#C5A059]/5 blur-[50px] rounded-full pointer-events-none" />
+               <h3 className="text-sm uppercase tracking-widest text-[#C5A059] font-bold mb-4">About the {isWeaver ? "Weaver" : "Shop"}</h3>
+               <p className="text-sm md:text-base text-white/90 font-sans leading-relaxed relative z-10">
+                 {profile.status === "unclaimed" 
+                   ? "This profile was collected from a reliable source but is not yet verified. If you are the owner, please verify it to claim and update your information."
+                   : (profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms.")}
+               </p>
+            </div>
+
+            {/* Right: Artisan Heritage & Craft (or Shop Details) */}
+            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl flex flex-col h-full relative overflow-hidden">
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#C5A059]/5 blur-[50px] rounded-full pointer-events-none" />
+              <h3 className="text-sm uppercase tracking-widest text-[#C5A059] font-bold mb-6 relative z-10">
                 {type === "store" ? "Store Details & Legacy" : "Artisan Heritage & Craft"}
               </h3>
               
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-8 gap-x-4 flex-1">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-8 gap-x-4 flex-1 relative z-10">
                 {profile.generations && (
                   <div className="flex flex-col items-center text-center">
                     <div className="w-12 h-12 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-3">
@@ -305,39 +318,6 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                 )}
               </div>
             </div>
-
-            {/* Right: Visual Showcase */}
-            {profile.gallery && profile.gallery.length > 0 ? (
-              <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl flex flex-col h-full">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-serif text-[#C5A059] font-bold tracking-wider">Visual Showcase</h3>
-                  <span className="text-xs text-[#C5A059] uppercase font-bold tracking-wider cursor-pointer hover:underline">View Gallery →</span>
-                </div>
-                
-                <div className="grid grid-cols-3 gap-3 flex-1">
-                  {profile.gallery.map((imgUrl, i) => (
-                    <div key={i} className="relative w-full h-full min-h-[120px] rounded-xl overflow-hidden border border-white/10 shadow-lg bg-[#051815]">
-                      <Image src={imgUrl} alt={`Showcase ${i + 1}`} fill className="object-cover hover:scale-105 transition-transform duration-500" unoptimized />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="bg-[#0B2B26]/50 border border-white/10 rounded-3xl p-6 flex items-center justify-center h-full">
-                 <p className="text-white/40 italic text-sm">No photos uploaded yet.</p>
-              </div>
-            )}
-            
-          </div>
-
-          {/* Bottom Section: Description */}
-          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl">
-             <h3 className="text-sm uppercase tracking-widest text-[#C5A059] font-bold mb-4">About the Weaver</h3>
-             <p className="text-sm md:text-base text-white/90 font-sans leading-relaxed">
-               {profile.status === "unclaimed" 
-                 ? "This profile was collected from a reliable source but is not yet verified. If you are the owner, please verify it to claim and update your information."
-                 : (profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms.")}
-             </p>
           </div>
 
         {/* Product Grid Section */}
@@ -369,6 +349,21 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
       <div className="w-full lg:w-80 shrink-0 space-y-6">
         <div className="sticky top-24 space-y-6">
           
+          {/* Map Sidebar Widget (Glassmorphism) */}
+          {(profile.address || profile.googlePlaceId) && (
+            <div className="relative group">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[#C5A059]/5 blur-[60px] rounded-[40px] pointer-events-none -z-10" />
+              <div className="bg-[#051815]/80 backdrop-blur-md border border-[#C5A059]/30 shadow-xl rounded-2xl p-5 relative overflow-hidden transition-transform duration-300">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-white mb-4 flex items-center gap-2 drop-shadow-md">
+                  📍 Find us on Google Maps
+                </h3>
+                <div className="w-full aspect-square rounded-xl overflow-hidden border border-[#C5A059]/20 relative shadow-inner bg-black/20">
+                  <iframe width="100%" height="100%" style={{ border: 0 }} loading="lazy" src={`https://maps.google.com/maps?q=${encodeURIComponent(profile.name + " " + (profile.address || ''))}&t=&z=14&ie=UTF8&iwloc=&output=embed`}></iframe>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Quick Search Widget */}
           <div className="bg-[#051815] border border-[#C5A059]/30 rounded-2xl p-5 shadow-lg relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#C5A059]/5 blur-3xl rounded-full"></div>

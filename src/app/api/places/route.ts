@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       data.places = data.places.map((place: any) => {
         const photoUrls: string[] = [];
         if (place.photos && place.photos.length > 0) {
-          const maxPhotos = Math.min(place.photos.length, 4);
+          const maxPhotos = Math.min(place.photos.length, 5);
           for (let i = 0; i < maxPhotos; i++) {
             const photoName = place.photos[i].name;
             photoUrls.push(`https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=800&maxWidthPx=800&key=${apiKey}`);
