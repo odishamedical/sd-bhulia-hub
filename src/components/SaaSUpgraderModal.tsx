@@ -53,7 +53,7 @@ export default function SaaSUpgraderModal({ isOpen, onClose, defaultPlan = "weav
         description: "Pro Seller Subscription",
         handler: async function (response: any) {
           // On Success
-          await updateDoc(doc(db, "users", auth.currentUser.uid), {
+          await updateDoc(doc(db, "users", auth.currentUser!.uid), {
             subscriptionStatus: "active",
             subscriptionId: data.subscriptionId,
             razorpayPaymentId: response.razorpay_payment_id,
