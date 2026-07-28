@@ -308,7 +308,7 @@ export default function AdminUserEditModal({ user, onClose, handleConvertRole }:
                 <div><label className="block text-xs font-bold text-gray-700 mb-1">Document ID</label><input type="text" value={formData.kycId} onChange={e => setFormData({...formData, kycId: e.target.value})} className="w-full border rounded-lg px-4 py-2 text-sm" /></div>
                 <div className="md:col-span-2">
                   <label className="block text-xs font-bold text-gray-700 mb-1">KYC Upload</label>
-                  <ImageUploader label="Upload KYC" aspectRatio="video" value={formData.kycDocumentUrl} onChange={url => setFormData({...formData, kycDocumentUrl: url})} />
+                  <ImageUploader label="Upload KYC" aspectRatio="landscape" value={formData.kycDocumentUrl} onChange={url => setFormData({...formData, kycDocumentUrl: url})} />
                 </div>
 
                 <div className="md:col-span-2 border-b pb-2 mt-4"><h4 className="text-sm font-bold">Bank Details</h4></div>
