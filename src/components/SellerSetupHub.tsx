@@ -36,6 +36,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
   const [logoUrl, setLogoUrl] = useState("");
   const [coverImages, setCoverImages] = useState<string[]>([]);
 
+  // Heritage & Craft (Step 4)
+  const [description, setDescription] = useState("");
+  const [generations, setGenerations] = useState("");
+  const [weaverExperience, setWeaverExperience] = useState("");
+  const [specialties, setSpecialties] = useState("");
+  const [googleMapsLink, setGoogleMapsLink] = useState("");
+
   // KYC
   const [kycType, setKycType] = useState("");
   const [kycId, setKycId] = useState("");
@@ -89,6 +96,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           setLogoUrl(data.image || data.logoUrl || "");
           setCoverImages(data.gallery || []);
 
+          // Heritage & Craft
+          setDescription(data.description || data.desc || "");
+          setGenerations(data.generations || "");
+          setWeaverExperience(data.weaverExperience || data.experience || "");
+          setSpecialties(Array.isArray(data.specialties) ? data.specialties.join(", ") : (data.specialties || ""));
+          setGoogleMapsLink(data.googleMapsLink || data.googlePlaceId || "");
+
           setKycType(data.kycType || "");
           setKycId(data.kycId || "");
           setKycDocumentUrl(data.kycDocumentUrl || "");
@@ -136,12 +150,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
     { id: 1, title: "Profile", icon: "👤", isReady: !!(personalName && phone && whatsapp) },
     { id: 2, title: "Address", icon: "📍", isReady: !!(streetAddress && district && state && pincode) },
     { id: 3, title: "Assets", icon: "🖼️", isReady: !!(logoUrl || coverImages.length > 0) },
-    { id: 4, title: "KYC", icon: "🛡️", isReady: !!(kycType && kycId && kycDocumentUrl && ((desiredRole === 'b2b' || desiredRole === 'raw_material') ? gstNumber : true)) },
-    { id: 5, title: "Bank", icon: "🏦", isReady: !!(bankHolder && bankName && bankAccount && bankIfsc) },
+    { id: 4, title: "Heritage", icon: "🧵", isReady: !!(description) },
+    { id: 5, title: "KYC", icon: "🛡️", isReady: !!(kycType && kycId && kycDocumentUrl && ((desiredRole === 'b2b' || desiredRole === 'raw_material') ? gstNumber : true)) },
+    { id: 6, title: "Bank", icon: "🏦", isReady: !!(bankHolder && bankName && bankAccount && bankIfsc) },
   ];
 
   if (desiredRole === "reseller") {
-    steps.push({ id: 6, title: "Marketing", icon: "📈", isReady: !!(followerCount && (facebookUrl || instagramUrl) && handloomExperience) });
+    steps.push({ id: 7, title: "Marketing", icon: "📈", isReady: !!(followerCount && (facebookUrl || instagramUrl) && handloomExperience) });
   }
 
   const totalSteps = steps.length;
@@ -175,6 +190,12 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         updates.image = logoUrl;
         updates.gallery = coverImages;
       } else if (currentStep === 4) {
+        updates.description = description;
+        updates.generations = generations;
+        updates.weaverExperience = weaverExperience;
+        updates.specialties = specialties.split(",").map(s => s.trim()).filter(Boolean);
+        updates.googleMapsLink = googleMapsLink;
+      } else if (currentStep === 5) {
         let finalKycUrl = kycDocumentUrl;
         if (kycDocumentUrl && kycDocumentUrl.startsWith("data:image")) {
           finalKycUrl = await uploadBase64ToStorage(kycDocumentUrl, `kyc/${auth.currentUser.uid}`);
@@ -184,13 +205,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         updates.kycId = kycId;
         updates.kycDocumentUrl = finalKycUrl;
         updates.gst = gstNumber;
-      } else if (currentStep === 5) {
+      } else if (currentStep === 6) {
         updates.bankHolder = bankHolder;
         updates.bankName = bankName;
         updates.bankAccount = bankAccount;
         updates.bankIfsc = bankIfsc;
         updates.bankUpi = bankUpi;
-      } else if (currentStep === 6) {
+      } else if (currentStep === 7) {
         updates.facebookUrl = facebookUrl;
         updates.instagramUrl = instagramUrl;
         updates.followerCount = followerCount;
@@ -274,7 +295,12 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           state,
           district,
           block,
-          country: "India"
+          country: "India",
+          description,
+          generations,
+          weaverExperience,
+          specialties: specialties.split(",").map(s => s.trim()).filter(Boolean),
+          googleMapsLink
         });
       }
       alert("Application submitted successfully! You will be notified once an Admin approves your account.");
@@ -594,8 +620,63 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           </div>
         )}
 
-        {/* === STEP 4: KYC === */}
+        {/* === STEP 4: HERITAGE & CRAFT === */}
         {currentStep === 4 && (
+          <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Business Details & Heritage</h3>
+            <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl text-xs text-amber-800 font-medium mb-4">
+              This information will be prominently displayed on your public profile to attract customers.
+            </div>
+            
+            <div>
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">About Your Business (Description)</label>
+              <textarea 
+                value={description} 
+                onChange={e => setDescription(e.target.value)} 
+                rows={4}
+                className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" 
+                placeholder={desiredRole === 'weaver' ? "e.g. Master of Sambalpuri Pata from Dasrajpur, Sonepur..." : "e.g. A premium authentic handloom store..."}
+              ></textarea>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Google Maps Link (Optional)</label>
+                <input type="url" value={googleMapsLink} onChange={e => setGoogleMapsLink(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="https://maps.google.com/..." />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Specialties (Comma Separated)</label>
+                <input type="text" value={specialties} onChange={e => setSpecialties(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="e.g. Double Ikat, Pasapalli, Bomkai" />
+              </div>
+            </div>
+
+            {desiredRole === 'weaver' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Generations in Weaving</label>
+                  <select 
+                    value={generations} 
+                    onChange={e => setGenerations(e.target.value)}
+                    className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
+                  >
+                    <option value="">Select Generation</option>
+                    <option value="1st Generation">1st Generation</option>
+                    <option value="2nd Generation">2nd Generation</option>
+                    <option value="3rd Generation">3rd Generation</option>
+                    <option value="4th Generation+">4th Generation+</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Years of Experience</label>
+                  <input type="text" value={weaverExperience} onChange={e => setWeaverExperience(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="e.g. 25 Years" />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* === STEP 5: KYC === */}
+        {currentStep === 5 && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Identity Verification</h3>
             <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl text-xs text-blue-800 font-medium mb-4">
@@ -646,8 +727,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           </div>
         )}
 
-        {/* === STEP 5: BANK === */}
-        {currentStep === 5 && (
+        {/* === STEP 6: BANK === */}
+        {currentStep === 6 && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Bank Details</h3>
             <div className="bg-green-50 border border-green-200 p-4 rounded-xl text-xs text-green-800 font-medium mb-4">
@@ -688,8 +769,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           </div>
         )}
 
-        {/* === STEP 6: MARKETING (RESELLER ONLY) === */}
-        {currentStep === 6 && desiredRole === "reseller" && (
+        {/* === STEP 7: MARKETING (RESELLER ONLY) === */}
+        {currentStep === 7 && desiredRole === "reseller" && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Marketing Network</h3>
             <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 p-4 rounded-xl text-xs text-[#996515] font-medium mb-4">

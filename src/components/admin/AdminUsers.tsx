@@ -52,6 +52,11 @@ export default function UserManagementPage() {
   const [allowDirectContact, setAllowDirectContact] = useState(false);
   const [newUserCanSellWholesale, setNewUserCanSellWholesale] = useState(false);
 
+  // Heritage Admin Fields
+  const [newUserDescription, setNewUserDescription] = useState("");
+  const [newUserGoogleMapsLink, setNewUserGoogleMapsLink] = useState("");
+  const [newUserSpecialties, setNewUserSpecialties] = useState("");
+
   // SaaS Configuration State
   const [newSubStatus, setNewSubStatus] = useState("free_trial");
   const [newSubLimit, setNewSubLimit] = useState("10");
@@ -486,7 +491,10 @@ export default function UserManagementPage() {
         await addWeaver({
           slug: generatedSlug,
           title: newUserName,
-          desc: `Master weaver specializing in handlooms from ${newUserDistrict || newUserState || "Odisha"}.`,
+          desc: newUserDescription || `Master weaver specializing in handlooms from ${newUserDistrict || newUserState || "Odisha"}.`,
+          description: newUserDescription || `Master weaver specializing in handlooms from ${newUserDistrict || newUserState || "Odisha"}.`,
+          googleMapsLink: newUserGoogleMapsLink,
+          specialties: newUserSpecialties.split(",").map(s => s.trim()).filter(Boolean),
           img: "/bhulia-hero.png",
           badge: "Odishan Master Weaver",
           phone: newUserPhone || "N/A",
@@ -514,7 +522,10 @@ export default function UserManagementPage() {
         await addStore({
           slug: generatedSlug,
           title: newUserName,
-          desc: `Premium handloom store located in ${newUserDistrict || newUserState || "Odisha"}.`,
+          desc: newUserDescription || `Premium handloom store located in ${newUserDistrict || newUserState || "Odisha"}.`,
+          description: newUserDescription || `Premium handloom store located in ${newUserDistrict || newUserState || "Odisha"}.`,
+          googleMapsLink: newUserGoogleMapsLink,
+          specialties: newUserSpecialties.split(",").map(s => s.trim()).filter(Boolean),
           img: "/bhulia-hero.png",
           badge: "Verified Store",
           phone: newUserPhone || "N/A",
@@ -997,6 +1008,25 @@ export default function UserManagementPage() {
                     <input type="tel" value={newUserWhatsapp} onChange={e => setNewUserWhatsapp(e.target.value)} placeholder="+91" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   </div>
                 </div>
+
+                {(newUserRole === 'weaver' || newUserRole === 'store') && (
+                  <>
+                    <div>
+                      <label className="text-xs font-bold text-gray-700 mb-1.5 block">Store/Weaver Description</label>
+                      <textarea value={newUserDescription} onChange={e => setNewUserDescription(e.target.value)} rows={2} className="w-full border border-gray-300 rounded-xl p-3 text-sm focus:border-blue-500 outline-none" placeholder="Enter description for public profile..."></textarea>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold text-gray-700 mb-1.5 block">Google Maps Link</label>
+                        <input type="url" value={newUserGoogleMapsLink} onChange={e => setNewUserGoogleMapsLink(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm focus:border-blue-500 outline-none" placeholder="https://maps.google.com/..." />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-gray-700 mb-1.5 block">Specialties (Comma Separated)</label>
+                        <input type="text" value={newUserSpecialties} onChange={e => setNewUserSpecialties(e.target.value)} className="w-full border border-gray-300 rounded-xl p-3 text-sm focus:border-blue-500 outline-none" placeholder="e.g. Silk, Bomkai" />
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 {newUserRole !== 'customer' && (
                   <>
