@@ -32,6 +32,10 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
   const [state, setState] = useState("Odisha");
   const [pincode, setPincode] = useState("");
 
+  // Assets
+  const [logoUrl, setLogoUrl] = useState("");
+  const [coverImages, setCoverImages] = useState<string[]>([]);
+
   // KYC
   const [kycType, setKycType] = useState("");
   const [kycId, setKycId] = useState("");
@@ -82,6 +86,9 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           setState(data.address?.state || data.state || "Odisha");
           setPincode(data.address?.pincode || data.pin || "");
 
+          setLogoUrl(data.image || data.logoUrl || "");
+          setCoverImages(data.gallery || []);
+
           setKycType(data.kycType || "");
           setKycId(data.kycId || "");
           setKycDocumentUrl(data.kycDocumentUrl || "");
@@ -128,12 +135,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
   const steps = [
     { id: 1, title: "Profile", icon: "👤", isReady: !!(personalName && phone && whatsapp) },
     { id: 2, title: "Address", icon: "📍", isReady: !!(streetAddress && district && state && pincode) },
-    { id: 3, title: "KYC", icon: "🛡️", isReady: !!(kycType && kycId && kycDocumentUrl && ((desiredRole === 'b2b' || desiredRole === 'raw_material') ? gstNumber : true)) },
-    { id: 4, title: "Bank", icon: "🏦", isReady: !!(bankHolder && bankName && bankAccount && bankIfsc) },
+    { id: 3, title: "Assets", icon: "🖼️", isReady: !!(logoUrl || coverImages.length > 0) },
+    { id: 4, title: "KYC", icon: "🛡️", isReady: !!(kycType && kycId && kycDocumentUrl && ((desiredRole === 'b2b' || desiredRole === 'raw_material') ? gstNumber : true)) },
+    { id: 5, title: "Bank", icon: "🏦", isReady: !!(bankHolder && bankName && bankAccount && bankIfsc) },
   ];
 
   if (desiredRole === "reseller") {
-    steps.push({ id: 5, title: "Marketing", icon: "📈", isReady: !!(followerCount && (facebookUrl || instagramUrl) && handloomExperience) });
+    steps.push({ id: 6, title: "Marketing", icon: "📈", isReady: !!(followerCount && (facebookUrl || instagramUrl) && handloomExperience) });
   }
 
   const totalSteps = steps.length;
@@ -164,6 +172,9 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           pincode
         };
       } else if (currentStep === 3) {
+        updates.image = logoUrl;
+        updates.gallery = coverImages;
+      } else if (currentStep === 4) {
         let finalKycUrl = kycDocumentUrl;
         if (kycDocumentUrl && kycDocumentUrl.startsWith("data:image")) {
           finalKycUrl = await uploadBase64ToStorage(kycDocumentUrl, `kyc/${auth.currentUser.uid}`);
@@ -173,13 +184,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         updates.kycId = kycId;
         updates.kycDocumentUrl = finalKycUrl;
         updates.gst = gstNumber;
-      } else if (currentStep === 4) {
+      } else if (currentStep === 5) {
         updates.bankHolder = bankHolder;
         updates.bankName = bankName;
         updates.bankAccount = bankAccount;
         updates.bankIfsc = bankIfsc;
         updates.bankUpi = bankUpi;
-      } else if (currentStep === 5) {
+      } else if (currentStep === 6) {
         updates.facebookUrl = facebookUrl;
         updates.instagramUrl = instagramUrl;
         updates.followerCount = followerCount;
@@ -250,6 +261,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           phone: phone,
           whatsapp: phone,
           email: auth.currentUser?.email || "",
+          image: logoUrl,
+          gallery: coverImages,
           address: {
             streetAddress,
             state,
@@ -463,8 +476,126 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           </div>
         )}
 
-        {/* === STEP 3: KYC === */}
+        {/* === STEP 3: ASSETS === */}
         {currentStep === 3 && (
+          <div className="space-y-8 animate-in slide-in-from-right-4 fade-in duration-300">
+            <section>
+              <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Branding Assets</h3>
+              <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 p-4 rounded-xl text-xs text-[#996515] font-medium mb-6">
+                These images will be displayed on your public profile. The Bento layout requires exactly 5 high-quality images.
+              </div>
+              
+              {/* Dedicated Logo Upload Section */}
+              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
+                <h4 className="text-sm font-bold text-gray-700 mb-4">Shop Logo / Avatar</h4>
+                <div className="flex gap-6 items-start">
+                  <div className="w-24 h-24 bg-white rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden shrink-0 relative">
+                    {logoUrl ? (
+                      <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-gray-400 text-xs text-center px-2">No Logo</span>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <ImageUploader 
+                      label="Upload Dedicated Logo"
+                      aspectRatio="square"
+                      value={logoUrl}
+                      onChange={setLogoUrl}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Cover Images Bento Manager */}
+              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-700">Cover Images (Bento Layout)</h4>
+                    <p className="text-[10px] text-gray-500 mt-1">Upload 5 cover images. You can also quickly assign any of these to be your shop logo.</p>
+                  </div>
+                  {logoUrl && (
+                    <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm">
+                      <span className="text-[10px] font-bold text-gray-500 uppercase">Active Logo:</span>
+                      <img src={logoUrl} alt="Logo" className="w-6 h-6 rounded-full object-cover" />
+                    </div>
+                  )}
+                </div>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {/* Hero Slot (Index 0) */}
+                  <div className="lg:col-span-1 bg-white p-4 rounded-xl border border-blue-200 shadow-sm relative">
+                    <div className="absolute top-0 right-0 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg rounded-tr-xl z-10">
+                      HERO (MAIN)
+                    </div>
+                    <ImageUploader 
+                      label="Upload Hero Image"
+                      aspectRatio="square"
+                      value={coverImages[0] || ""}
+                      onChange={(url) => {
+                        const newCovers = [...coverImages];
+                        newCovers[0] = url;
+                        setCoverImages(newCovers);
+                      }}
+                    />
+                    {coverImages[0] && (
+                      <button 
+                        onClick={() => setLogoUrl(coverImages[0])}
+                        className={`mt-2 w-full text-xs font-bold py-1.5 rounded transition-colors ${logoUrl === coverImages[0] ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
+                      >
+                        {logoUrl === coverImages[0] ? '✓ Current Logo' : 'Set as Logo'}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Secondary Slots (Index 1 to 4) */}
+                  <div className="lg:col-span-2 grid grid-cols-2 gap-4">
+                    {[1, 2, 3, 4].map(idx => (
+                      <div key={idx} className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm relative">
+                        <ImageUploader 
+                          label={`Grid Image ${idx}`}
+                          aspectRatio="square"
+                          value={coverImages[idx] || ""}
+                          onChange={(url) => {
+                            const newCovers = [...coverImages];
+                            while (newCovers.length <= idx) newCovers.push("");
+                            newCovers[idx] = url;
+                            setCoverImages(newCovers);
+                          }}
+                        />
+                        {coverImages[idx] && (
+                          <div className="flex gap-2 mt-2">
+                            <button 
+                              onClick={() => {
+                                const newCovers = [...coverImages];
+                                const temp = newCovers[0];
+                                newCovers[0] = newCovers[idx];
+                                newCovers[idx] = temp || "";
+                                setCoverImages(newCovers);
+                              }}
+                              className="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 text-[10px] font-bold py-1.5 rounded transition-colors"
+                            >
+                              Make Hero
+                            </button>
+                            <button 
+                              onClick={() => setLogoUrl(coverImages[idx])}
+                              className={`flex-1 text-[10px] font-bold py-1.5 rounded transition-colors ${logoUrl === coverImages[idx] ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
+                            >
+                              {logoUrl === coverImages[idx] ? '✓ Logo' : 'Set Logo'}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
+
+        {/* === STEP 4: KYC === */}
+        {currentStep === 4 && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Identity Verification</h3>
             <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl text-xs text-blue-800 font-medium mb-4">
@@ -515,8 +646,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           </div>
         )}
 
-        {/* === STEP 4: BANK === */}
-        {currentStep === 4 && (
+        {/* === STEP 5: BANK === */}
+        {currentStep === 5 && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Bank Details</h3>
             <div className="bg-green-50 border border-green-200 p-4 rounded-xl text-xs text-green-800 font-medium mb-4">
@@ -557,8 +688,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           </div>
         )}
 
-        {/* === STEP 5: MARKETING (RESELLER ONLY) === */}
-        {currentStep === 5 && desiredRole === "reseller" && (
+        {/* === STEP 6: MARKETING (RESELLER ONLY) === */}
+        {currentStep === 6 && desiredRole === "reseller" && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Marketing Network</h3>
             <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 p-4 rounded-xl text-xs text-[#996515] font-medium mb-4">
