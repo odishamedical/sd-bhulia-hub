@@ -239,9 +239,9 @@ export default function DashboardPage() {
       { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
       { id: "store_settings", label: "Setup Public Store", icon: "🏪", category: "1. Profile & Setup" },
       { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
-      { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "1. Profile & Setup" },
+      { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "8. Subscription & Billing" },
       { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
-      { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
+      { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "8. Subscription & Billing" },
       
       { id: "products", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
 
@@ -264,9 +264,9 @@ export default function DashboardPage() {
       { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
       { id: "store_settings", label: "Setup Public Store", icon: "🏪", category: "1. Profile & Setup" },
       { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
-      { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "1. Profile & Setup" },
+      { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "8. Subscription & Billing" },
       { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
-      { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "1. Profile & Setup" },
+      { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "8. Subscription & Billing" },
       
       { id: "products", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
 
