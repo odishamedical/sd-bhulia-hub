@@ -21,48 +21,7 @@ export default function AdminAudit() {
   useEffect(() => {
     // Mocking an immutable audit log
     setTimeout(() => {
-      setLogs([
-        {
-          id: "LOG-1004",
-          adminId: "ADM-001",
-          adminName: "Super Admin",
-          action: "DELETE",
-          resource: "Coupon",
-          details: "Deleted coupon DIWALI20",
-          ipAddress: "192.168.1.45",
-          timestamp: new Date().toISOString()
-        },
-        {
-          id: "LOG-1003",
-          adminId: "ADM-002",
-          adminName: "Support Staff (Rahul)",
-          action: "UPDATE",
-          resource: "Order",
-          details: "Changed status of ORD-8821 from processing to shipped",
-          ipAddress: "10.0.0.12",
-          timestamp: new Date(Date.now() - 3600000).toISOString()
-        },
-        {
-          id: "LOG-1002",
-          adminId: "ADM-001",
-          adminName: "Super Admin",
-          action: "UPDATE",
-          resource: "System",
-          details: "Updated HeroSlider configuration in Visual Page Builder",
-          ipAddress: "192.168.1.45",
-          timestamp: new Date(Date.now() - 7200000).toISOString()
-        },
-        {
-          id: "LOG-1001",
-          adminId: "ADM-003",
-          adminName: "Finance (Priya)",
-          action: "PAYOUT",
-          resource: "Ledger",
-          details: "Settled ₹15,000 to weaver ID WVR-991",
-          ipAddress: "10.0.0.44",
-          timestamp: new Date(Date.now() - 86400000).toISOString()
-        }
-      ]);
+      setLogs([]);
       setLoading(false);
     }, 600);
   }, []);

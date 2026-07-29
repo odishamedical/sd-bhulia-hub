@@ -46,31 +46,7 @@ export default function AdminTickets() {
       setTickets(data);
     } catch (e) {
       console.error(e);
-      // Let's generate some mock tickets for demo if collection is empty
-      setTickets([
-        {
-          id: "TKT-9921",
-          customerName: "Rahul Sharma",
-          email: "rahul@example.com",
-          subject: "Order not delivered yet",
-          message: "Hi, my order #ORD-4512 was supposed to arrive yesterday but I haven't received it.",
-          status: "open",
-          priority: "high",
-          createdAt: new Date().toISOString(),
-          replies: []
-        },
-        {
-          id: "TKT-8834",
-          customerName: "Priya Singh",
-          email: "priya@example.com",
-          subject: "Wrong color received",
-          message: "I ordered a red Sambalpuri saree but received a blue one. How can I exchange?",
-          status: "in_progress",
-          priority: "medium",
-          createdAt: new Date(Date.now() - 86400000).toISOString(),
-          replies: [{ message: "We are checking with the weaver.", sender: "admin", timestamp: new Date().toISOString() }]
-        }
-      ]);
+      setTickets([]);
     }
     setLoading(false);
   };

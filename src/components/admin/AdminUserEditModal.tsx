@@ -239,7 +239,7 @@ export default function AdminUserEditModal({ user, onClose, handleConvertRole }:
               {/* Orphan Credentials (if N/A email) */}
               {(user.email === 'N/A' || !user.email) && (user.role === 'weaver' || user.role === 'store') && (
                 <div className="bg-purple-50 p-6 rounded-2xl border border-purple-100">
-                  <h4 className="text-sm font-bold text-purple-900 uppercase mb-2">Orphan Profile / Dummy Account</h4>
+                  <h4 className="text-sm font-bold text-purple-900 uppercase mb-2">Managed Vendor Profile</h4>
                   <p className="text-sm text-purple-800 font-medium mb-4">Create credentials for this user so they can log in and claim the profile.</p>
                   <div className="flex gap-3">
                     <input id="crmDummyEmail" type="email" placeholder="Email" className="flex-1 border border-purple-200 rounded-lg px-3 py-2 text-sm" />

@@ -3531,7 +3531,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
             {selectedItem.type === "weavers" && !personalDataCache[selectedItem.id] && (
               <div className="grid grid-cols-1 gap-4 bg-purple-50 p-6 rounded-2xl border border-purple-100 mb-8">
                 <div className="col-span-full mb-2 border-b border-purple-200 pb-2">
-                  <h4 className="text-sm font-bold text-purple-900 uppercase">Orphan Profile / Dummy Account</h4>
+                  <h4 className="text-sm font-bold text-purple-900 uppercase">Managed Vendor Profile</h4>
                 </div>
                 <p className="text-sm text-purple-800 font-medium">This Weaver profile does not have an active login account. Create credentials for them below.</p>
                 <div className="flex flex-col gap-3">

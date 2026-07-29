@@ -7,28 +7,7 @@ export default function AdminFraud() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mocking fraud detection engine results
-    setTimeout(() => {
-      setFlaggedOrders([
-        {
-          id: "ORD-9912",
-          customerName: "Unknown User",
-          amount: 45000,
-          paymentMethod: "COD",
-          riskScore: 92,
-          flags: ["High value COD", "New account created 5 mins ago", "IP address mismatch with shipping city"],
-          date: new Date().toISOString()
-        },
-        {
-          id: "ORD-8821",
-          customerName: "Jane Doe",
-          amount: 12000,
-          paymentMethod: "Credit Card",
-          riskScore: 75,
-          flags: ["Billing and Shipping address mismatch", "Multiple failed payment attempts prior to success"],
-          date: new Date(Date.now() - 3600000).toISOString()
-        }
-      ]);
+      setFlaggedOrders([]);
       setLoading(false);
     }, 800);
   }, []);

@@ -5,23 +5,15 @@ import React, { useState } from "react";
 export default function AdminCommissions() {
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Mock data for demonstration based on the implementation plan
   const overviewStats = {
-    totalGenerated: "₹1,45,000",
-    pendingPayouts: "₹25,000",
-    paidThisMonth: "₹15,000",
+    totalGenerated: "₹0",
+    pendingPayouts: "₹0",
+    paidThisMonth: "₹0",
   };
 
-  const pendingRequests = [
-    { id: "REQ-001", resellerName: "Aman Reseller", amount: 4500, status: "pending", date: "2026-07-17", upi: "aman@okicici" },
-    { id: "REQ-002", resellerName: "Odisha Handloom Connect", amount: 12000, status: "pending", date: "2026-07-16", upi: "odisha@ybl" },
-  ];
+  const pendingRequests: any[] = [];
 
-  const ledger = [
-    { orderId: "ORD-991", reseller: "Aman Reseller", commission: 1200, status: "cleared", date: "2026-07-10" },
-    { orderId: "ORD-992", reseller: "Odisha Handloom Connect", commission: 3400, status: "pending", date: "2026-07-18" },
-    { orderId: "ORD-993", reseller: "Aman Reseller", commission: 800, status: "cleared", date: "2026-07-11" },
-  ];
+  const ledger: any[] = [];
 
   return (
     <div className="space-y-6 animate-in fade-in">
