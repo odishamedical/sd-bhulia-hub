@@ -134,12 +134,24 @@ export default function AdminSPA() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>("1. Overview & Insights");
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [adminPermissions, setAdminPermissions] = useState<string[]>([]);
   const pendingCounts = usePendingCounts();
 
   useEffect(() => {
     const role = localStorage.getItem("sd_current_user_role");
-    if (role === "super_admin" || role === "admin") {
+    if (role === "super_admin" || role === "admin" || role === "staff") {
       setIsAdmin(true);
+      if (role === "staff") {
+        try {
+          const perms = JSON.parse(localStorage.getItem("sd_admin_permissions") || "[]");
+          setAdminPermissions(perms);
+          if (perms.length > 0) setActiveTab(perms[0]);
+        } catch (e) {
+          setAdminPermissions([]);
+        }
+      } else {
+        setAdminPermissions(["all"]);
+      }
     } else {
       setIsAdmin(false);
     }
@@ -292,9 +304,21 @@ export default function AdminSPA() {
 
         <nav className="flex-1 overflow-y-auto p-4 space-y-1 custom-scrollbar">
           {SIDEBAR_CATEGORIES.map((category) => {
-            const hasSubLinks = category.subLinks && category.subLinks.length > 0;
+            let allowedSubLinks = category.subLinks || [];
+            
+            if (!adminPermissions.includes("all")) {
+              // Filter sublinks if not super_admin
+              allowedSubLinks = allowedSubLinks.filter(sub => adminPermissions.includes(sub.id));
+              
+              const catId = category.id || (category.href ? 'simulator' : null);
+              if (allowedSubLinks.length === 0 && (!catId || !adminPermissions.includes(catId))) {
+                return null;
+              }
+            }
+
+            const hasSubLinks = allowedSubLinks.length > 0;
             const isExpanded = expandedCategory === category.title;
-            const isPathActive = activeTab === category.id || (hasSubLinks && category.subLinks.some(s => activeTab === s.id));
+            const isPathActive = activeTab === category.id || (hasSubLinks && allowedSubLinks.some(s => activeTab === s.id));
 
             return (
               <div key={category.title} className="mb-1">
@@ -348,7 +372,7 @@ export default function AdminSPA() {
 
                 {hasSubLinks && isExpanded && (
                   <div className="mt-1 mb-2 ml-10 pl-3 border-l-2 border-white/20 flex flex-col space-y-1">
-                    {category.subLinks.map((sub) => {
+                    {allowedSubLinks.map((sub) => {
                       const isSubActive = activeTab === sub.id;
                       return (
                         <button 

@@ -42,6 +42,7 @@ export default function UserManagementPage() {
   const [newUserName, setNewUserName] = useState("");
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserPassword, setNewUserPassword] = useState("");
+  const [newUserAdminPermissions, setNewUserAdminPermissions] = useState<string[]>([]);
   const [newUserPhone, setNewUserPhone] = useState("");
   const [newUserWhatsapp, setNewUserWhatsapp] = useState("");
   const [newUserCountry, setNewUserCountry] = useState("India");
@@ -480,13 +481,19 @@ export default function UserManagementPage() {
       await signOut(secondaryAuth); // Sign out of the secondary app
       
       // 2. Create the Users collection document
-      await setDoc(doc(db, "users", newUid), {
+      const userDocData: any = {
         name: newUserName,
         email: newUserEmail,
         role: newUserRole,
         applicationStatus: "approved",
         createdAt: new Date().toISOString()
-      });
+      };
+      
+      if (newUserRole === "staff") {
+        userDocData.adminPermissions = newUserAdminPermissions;
+      }
+
+      await setDoc(doc(db, "users", newUid), userDocData);
 
       if (newUserRole === "weaver") {
         await addWeaver({
@@ -980,6 +987,7 @@ export default function UserManagementPage() {
                       <option value="store">Retail Store / Franchise</option>
                       <option value="supplier">Raw Material Supplier</option>
                       <option value="wholesaler">B2B Wholesaler</option>
+                      <option value="staff">Platform Staff (Admin)</option>
                     </select>
                   </div>
                   <div>
@@ -998,6 +1006,32 @@ export default function UserManagementPage() {
                     <input type="text" value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} placeholder="Temporary Password" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-sm font-medium focus:border-blue-500 outline-none" />
                   </div>
                 </div>
+
+                {newUserRole === 'staff' && (
+                  <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 mt-4">
+                    <h4 className="text-sm font-bold text-gray-800 mb-3">Admin Permissions (Maker-Checker)</h4>
+                    <p className="text-xs text-gray-500 mb-3">Staff accounts require secondary approval by a Super Admin for key changes.</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {['users', 'products', 'orders', 'kyc', 'ads', 'crawler', 'simulator'].map(perm => (
+                        <label key={perm} className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            checked={newUserAdminPermissions.includes(perm)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setNewUserAdminPermissions([...newUserAdminPermissions, perm]);
+                              } else {
+                                setNewUserAdminPermissions(newUserAdminPermissions.filter(p => p !== perm));
+                              }
+                            }}
+                            className="w-4 h-4 text-blue-600 rounded border-gray-300" 
+                          />
+                          <span className="capitalize">{perm}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
