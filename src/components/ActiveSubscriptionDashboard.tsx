@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Shield, Zap, Info, AlertTriangle } from 'lucide-react';
+import { useState } from "react";
 import { auth, db } from "@/lib/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 
@@ -63,8 +63,8 @@ export default function ActiveSubscriptionDashboard({ subscriptionId, planId, on
       
       <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8 pb-8 border-b border-[#C5A059]/20">
         <div className="flex items-center gap-6">
-          <div className="w-20 h-20 bg-green-900/40 text-green-400 rounded-full flex items-center justify-center border border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.15)] shrink-0">
-            <CheckCircle2 className="w-10 h-10" />
+          <div className="w-20 h-20 bg-green-900/40 text-green-400 rounded-full flex items-center justify-center border border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.15)] shrink-0 text-4xl">
+            ✅
           </div>
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -83,7 +83,7 @@ export default function ActiveSubscriptionDashboard({ subscriptionId, planId, on
       <div className="grid md:grid-cols-2 gap-8 mb-10">
         <div className="bg-[#132A25] p-6 rounded-2xl border border-slate-700/50">
           <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-[#C5A059]" />
+            <span className="text-xl">🛡️</span>
             Billing Details
           </h3>
           <div className="space-y-4">
@@ -106,7 +106,7 @@ export default function ActiveSubscriptionDashboard({ subscriptionId, planId, on
         <div className="bg-[#132A25] p-6 rounded-2xl border border-slate-700/50 flex flex-col justify-between">
           <div>
             <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-              <Zap className="w-5 h-5 text-[#C5A059]" />
+              <span className="text-xl">⚡</span>
               Premium Features Unlocked
             </h3>
             <p className="text-sm text-slate-400 mb-6">
@@ -124,7 +124,7 @@ export default function ActiveSubscriptionDashboard({ subscriptionId, planId, on
           ) : (
             <div className="bg-red-950/40 border border-red-900/50 p-4 rounded-xl animate-in fade-in zoom-in-95">
               <p className="text-sm text-white font-medium flex items-start gap-2 mb-4">
-                <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                <span className="text-xl shrink-0 mt-0.5">⚠️</span>
                 Are you sure? You will instantly lose your premium features, vanity URL, and search ranking.
               </p>
               {error && <p className="text-xs text-red-400 mb-3 bg-black/20 p-2 rounded">{error}</p>}

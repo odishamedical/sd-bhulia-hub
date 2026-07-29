@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { AlertTriangle, CheckCircle2, XCircle, Search } from 'lucide-react';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 export default function AdminSubscriptions() {
   const [users, setUsers] = useState<any[]>([]);
@@ -121,11 +121,11 @@ export default function AdminSubscriptions() {
                     <td className="px-6 py-4">
                       {user.subscriptionStatus === "active" ? (
                         <div className="flex items-center gap-1.5 text-green-600 font-bold">
-                          <CheckCircle2 className="w-4 h-4" /> Active
+                          <span>✅</span> Active
                         </div>
                       ) : (
                         <div className="flex items-center gap-1.5 text-red-500 font-bold">
-                          <XCircle className="w-4 h-4" /> Cancelled
+                          <span>❌</span> Cancelled
                           {user.subscriptionCancelledAt && (
                             <span className="text-xs text-gray-400 font-normal ml-1">
                               ({new Date(user.subscriptionCancelledAt).toLocaleDateString()})
@@ -149,7 +149,7 @@ export default function AdminSubscriptions() {
                           {cancellingId === user.id ? (
                             <span className="w-3 h-3 border-2 border-red-600/30 border-t-red-600 rounded-full animate-spin" />
                           ) : (
-                            <AlertTriangle className="w-3.5 h-3.5" />
+                            <span>⚠️</span>
                           )}
                           Force Cancel
                         </button>
