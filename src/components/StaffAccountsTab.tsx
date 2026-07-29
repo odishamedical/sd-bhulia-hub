@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc, doc, deleteField } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase";
 
 interface StaffAccountsTabProps {
@@ -13,6 +13,7 @@ interface StaffAccountsTabProps {
 
 export default function StaffAccountsTab({ userUid, roleType, staffMembers, setStaffMembers }: StaffAccountsTabProps) {
   const [staffEmailInput, setStaffEmailInput] = useState("");
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>(["products", "orders"]);
   const [loading, setLoading] = useState(false);
 
   const handleInvite = async () => {
@@ -34,7 +35,8 @@ export default function StaffAccountsTab({ userUid, roleType, staffMembers, setS
         
         await updateDoc(staffDoc.ref, {
           role: newRole,
-          bossUid: userUid
+          bossUid: userUid,
+          vendorPermissions: selectedPermissions
         });
         
         const newStaff = [...staffMembers, emailToInvite];
@@ -75,7 +77,8 @@ export default function StaffAccountsTab({ userUid, roleType, staffMembers, setS
         const staffDoc = querySnapshot.docs[0];
         await updateDoc(staffDoc.ref, {
           role: "customer", // Downgrade back to normal user
-          bossUid: null
+          bossUid: null,
+          vendorPermissions: deleteField ? deleteField() : null
         });
       }
       
@@ -129,6 +132,30 @@ export default function StaffAccountsTab({ userUid, roleType, staffMembers, setS
       {staffMembers.length < 2 && (
         <div className="border-t border-gray-100 pt-6">
           <h3 className="text-sm font-bold text-gray-900 mb-4">Invite New Staff</h3>
+          
+          <div className="mb-4">
+            <label className="text-xs font-bold text-gray-700 block mb-2">Staff Permissions (What can they access?)</label>
+            <div className="flex flex-wrap gap-3">
+              {['products', 'orders', 'marketing', 'messages'].map(perm => (
+                <label key={perm} className="flex items-center gap-2 cursor-pointer bg-white border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors">
+                  <input 
+                    type="checkbox" 
+                    className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer"
+                    checked={selectedPermissions.includes(perm)}
+                    onChange={(e) => {
+                      if (e.target.checked) setSelectedPermissions([...selectedPermissions, perm]);
+                      else setSelectedPermissions(selectedPermissions.filter(p => p !== perm));
+                    }}
+                  />
+                  <span className="text-sm font-bold text-gray-700 capitalize">{perm}</span>
+                </label>
+              ))}
+            </div>
+            <p className="text-[11px] text-gray-500 mt-2 font-medium bg-red-50 p-2 rounded border border-red-100 text-red-800">
+              Note: Staff accounts can NEVER access Bank details, Wallet Payouts, or Subscription billing.
+            </p>
+          </div>
+
           <div className="flex gap-4">
             <input 
               type="email" 
@@ -139,7 +166,7 @@ export default function StaffAccountsTab({ userUid, roleType, staffMembers, setS
             />
             <button 
               onClick={handleInvite}
-              disabled={!staffEmailInput || loading}
+              disabled={!staffEmailInput || selectedPermissions.length === 0 || loading}
               className="bg-[#1f2937] text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm disabled:opacity-50"
             >
               {loading ? "Sending..." : "Send Invite"}

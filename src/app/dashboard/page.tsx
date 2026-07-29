@@ -43,6 +43,7 @@ export default function DashboardPage() {
   const [globalNotifications, setGlobalNotifications] = useState<any[]>([]);
   const [canSellWholesale, setCanSellWholesale] = useState(false);
   const [affiliateCommissionsPaid, setAffiliateCommissionsPaid] = useState(0);
+  const [vendorPermissions, setVendorPermissions] = useState<string[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -117,6 +118,7 @@ export default function DashboardPage() {
                 setRole(actualRole);
                 setUserName(userDoc.data().name || user.email?.split("@")[0] || "Staff");
                 setIsViewAsMode(false);
+                setVendorPermissions(userDoc.data().vendorPermissions || []);
                 localStorage.setItem("sd_boss_uid", bossUid);
               } else {
                 setRole("customer");
@@ -286,9 +288,11 @@ export default function DashboardPage() {
   } else if (actualRole === "weaver_staff" || actualRole === "store_staff") {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
-      { id: "products", label: "Inventory Catalog", icon: "📦", category: "Catalog & Inventory" },
-      { id: "orders", label: "Order Management", icon: "🚚", category: "Orders & Logistics" },
     ];
+    if (vendorPermissions.includes("products")) navItems.push({ id: "products", label: "Inventory Catalog", icon: "📦", category: "Catalog & Inventory" });
+    if (vendorPermissions.includes("orders")) navItems.push({ id: "orders", label: "Order Management", icon: "🚚", category: "Orders & Logistics" });
+    if (vendorPermissions.includes("marketing")) navItems.push({ id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Marketing & Growth" });
+    if (vendorPermissions.includes("messages")) navItems.push({ id: "messages", label: "Customer Messages", icon: "💬", category: "Marketing & Growth" });
   } else if (actualRole === "reseller") {
     navItems = [
       { id: "home", label: "Dashboard Overview", icon: "📊", category: "Dashboard & Reports" },
@@ -460,10 +464,10 @@ export default function DashboardPage() {
           {actualRole === "customer" && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
           {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
           {actualRole === "store" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
-          {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" affiliateCommissionsPaid={affiliateCommissionsPaid} />}
+          {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" affiliateCommissionsPaid={affiliateCommissionsPaid} vendorPermissions={vendorPermissions} />}
         </>
       )}
-      {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Store Hub (Staff)" affiliateCommissionsPaid={affiliateCommissionsPaid} />}
+      {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Store Hub (Staff)" affiliateCommissionsPaid={affiliateCommissionsPaid} vendorPermissions={vendorPermissions} />}
       {actualRole === "wholesaler" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="B2B Wholesaler Hub" affiliateCommissionsPaid={affiliateCommissionsPaid} />}
       {actualRole === "reseller" && <ResellerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "super_admin" && <SuperAdminDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
@@ -482,6 +486,7 @@ export default function DashboardPage() {
    1. CUSTOMER DASHBOARD
    ========================================== */
 function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
+  const { orders } = useOrders();
   const [userData, setUserData] = useState<any>(null);
   const [showPopup, setShowPopup] = useState(false);
   const [hasSkippedPopup, setHasSkippedPopup] = useState(false);
@@ -633,7 +638,9 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between group hover:border-[#0070F3]/30 transition-colors">
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Orders</h3>
-                <div className="text-sm text-gray-500">No recent orders found.</div>
+                <div className="text-sm text-gray-500">
+                  {orders.filter(o => o.customerId === auth.currentUser?.uid).length} total orders found.
+                </div>
               </div>
               <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View All Orders →</button>
             </div>
@@ -683,14 +690,34 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
               <button key={f} className="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-[#0070F3] border border-gray-200 transition-colors">{f}</button>
             ))}
           </div>
-          <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 flex flex-col md:flex-row gap-4 items-center justify-between hover:border-gray-200 transition-colors">
-            <div>
-              <p className="text-sm font-bold text-gray-900">Order #ORD-99382</p>
-              <p className="text-xs text-gray-500 mt-1">Status: Dispatched via Bhulia Hub</p>
-            </div>
-            <button className="px-5 py-2.5 bg-[#0070F3] text-white text-xs font-bold rounded-xl hover:bg-[#005BB5] transition-colors shadow-sm">Track Order (Bhulia Logistics)</button>
+          <div className="space-y-4">
+            {orders.filter(o => o.customerId === auth.currentUser?.uid).length > 0 ? (
+              orders.filter(o => o.customerId === auth.currentUser?.uid).map(order => (
+                <div key={order.id} className="bg-gray-50 border border-gray-100 rounded-2xl p-5 flex flex-col md:flex-row gap-4 items-center justify-between hover:border-gray-200 transition-colors">
+                  <div>
+                    <p className="text-sm font-bold text-gray-900">Order #{order.id}</p>
+                    <p className="text-xs text-gray-500 mt-1">Status: {order.logisticsStatus || "Processing"}</p>
+                    {order.trackingNumber && (
+                      <p className="text-[10px] text-gray-500 font-mono mt-1 font-bold uppercase">
+                        {order.assignedLogisticsPartner || 'Logistics'}: {order.trackingNumber}
+                      </p>
+                    )}
+                  </div>
+                  {order.trackingNumber ? (
+                    <button onClick={() => alert(`Redirecting to ${order.assignedLogisticsPartner || 'Shiprocket'} tracking for AWB: ${order.trackingNumber}`)} className="px-5 py-2.5 bg-green-500 text-white text-xs font-bold rounded-xl hover:bg-green-600 transition-colors shadow-sm">
+                      Track Shipment
+                    </button>
+                  ) : (
+                    <span className="px-4 py-2 bg-yellow-100 text-yellow-800 text-[10px] font-bold uppercase rounded-lg">
+                      Preparing to Dispatch
+                    </span>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-10 text-gray-400 text-sm font-medium">No orders found.</div>
+            )}
           </div>
-          <div className="text-center py-10 text-gray-400 text-sm font-medium">End of order history.</div>
         </div>
       )}
 
@@ -863,7 +890,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
 /* ==========================================
    2. WEAVER DASHBOARD
    ========================================== */
-function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissionsPaid = 0 }: { activeTab: string, onTabChange: (id: string) => void, roleTitle: string, affiliateCommissionsPaid?: number }) {
+function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissionsPaid = 0, vendorPermissions = [] }: { activeTab: string, onTabChange: (id: string) => void, roleTitle: string, affiliateCommissionsPaid?: number, vendorPermissions?: string[] }) {
   // Common hooks
   const { products } = useProducts();
   const { orders } = useOrders();
@@ -945,6 +972,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
   const [currentProfileStep, setCurrentProfileStep] = useState(1);
   const [storeStatus, setStoreStatus] = useState("");
   const [canSellWholesale, setCanSellWholesale] = useState(false);
+  const [subscriptionTier, setSubscriptionTier] = useState("free");
   const [isUpgraderOpen, setIsUpgraderOpen] = useState(false);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -1011,6 +1039,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
           const data = snap.data();
           setStoreStatus(data.status || "");
           setCanSellWholesale(data.canSellWholesale || false);
+          setSubscriptionTier(data.subscription?.tier || "free");
           if (roleTitle === "Weaver Hub") {
             setWeaverExperience(data.weaverExperience || "");
             setGenerations(data.generations || "");
@@ -1992,12 +2021,21 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
 
       {activeTab === "staff" && (
         <div className="animate-in fade-in max-w-2xl">
-          <StaffAccountsTab 
-            userUid={auth.currentUser?.uid || ""}
-            roleType={roleTitle.includes("Weaver") ? "weaver" : "store"}
-            staffMembers={staffMembers}
-            setStaffMembers={setStaffMembers}
-          />
+          {subscriptionTier === "free" ? (
+             <div className="bg-white p-12 rounded-3xl border border-gray-100 text-center shadow-sm">
+                 <div className="text-5xl mb-4">🔒</div>
+                 <h2 className="text-2xl font-black text-gray-900 mb-2">Pro Feature Locked</h2>
+                 <p className="text-gray-500 mb-8 font-medium">You must upgrade to the Pro Tier to invite staff, assign granular permissions, and delegate dashboard access.</p>
+                 <button onClick={() => setIsUpgraderOpen(true)} className="bg-gradient-to-r from-[#0070F3] to-[#005bb5] text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">Upgrade to Pro</button>
+             </div>
+          ) : (
+            <StaffAccountsTab 
+              userUid={auth.currentUser?.uid || ""}
+              roleType={roleTitle.includes("Weaver") ? "weaver" : "store"}
+              staffMembers={staffMembers}
+              setStaffMembers={setStaffMembers}
+            />
+          )}
         </div>
       )}
 
