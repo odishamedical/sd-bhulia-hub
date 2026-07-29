@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CheckCircle2, Shield, Zap, Info, AlertTriangle } from 'lucide-react';
 import { auth, db } from "@/lib/firebase";
+import { doc, updateDoc } from "firebase/firestore";
 
 interface ActiveSubscriptionDashboardProps {
   subscriptionId: string;
@@ -34,6 +35,12 @@ export default function ActiveSubscriptionDashboard({ subscriptionId, planId, on
         throw new Error(data.error || "Failed to cancel subscription");
       }
       
+      // Update Firestore now that Razorpay is cancelled
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        subscriptionStatus: "cancelled",
+        subscriptionCancelledAt: new Date().toISOString(),
+      });
+
       onCancelSuccess();
     } catch (err: any) {
       console.error(err);

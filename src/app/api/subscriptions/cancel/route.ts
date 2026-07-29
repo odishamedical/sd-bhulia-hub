@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
-import { db } from '@/lib/firebase-admin'; // Use firebase-admin to update firestore securely
 
 export async function POST(request: Request) {
   try {
@@ -29,12 +28,6 @@ export async function POST(request: Request) {
 
     // Cancel Subscription on Razorpay (cancel_at_cycle_end is usually preferred, but we will cancel immediately here)
     const cancelledSubscription = await instance.subscriptions.cancel(subscriptionId);
-
-    // Update Firestore via Admin SDK
-    await db.collection("users").doc(customerId).update({
-      subscriptionStatus: "cancelled",
-      subscriptionCancelledAt: new Date().toISOString(),
-    });
 
     return NextResponse.json({
       success: true,
