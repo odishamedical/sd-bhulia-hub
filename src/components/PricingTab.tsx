@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SaaSUpgraderModal from "@/components/SaaSUpgraderModal";
+import ActiveSubscriptionDashboard from "@/components/ActiveSubscriptionDashboard";
+import { auth, db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function PricingTab({ isPublicPage = false, userRole = "weaver" }: { isPublicPage?: boolean, userRole?: "weaver" | "shop" | "wholesaler" | "supplier" }) {
   const [role, setRole] = useState<"weaver" | "shop" | "wholesaler" | "supplier">(userRole);
@@ -9,6 +12,43 @@ export default function PricingTab({ isPublicPage = false, userRole = "weaver" }
   // Upgrader Modal State
   const [isUpgraderOpen, setIsUpgraderOpen] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string>("");
+
+  // User Subscription State
+  const [subscriptionData, setSubscriptionData] = useState<any>(null);
+  const [loadingSub, setLoadingSub] = useState(true);
+
+  useEffect(() => {
+    if (isPublicPage) {
+      setLoadingSub(false);
+      return;
+    }
+    
+    // Using a delay to ensure auth is initialized if it's not already
+    const checkSub = async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        setLoadingSub(false);
+        return;
+      }
+      try {
+        const d = await getDoc(doc(db, "users", user.uid));
+        if (d.exists()) {
+          setSubscriptionData(d.data());
+        }
+      } catch (err) {
+        console.error("Failed to fetch user sub", err);
+      } finally {
+        setLoadingSub(false);
+      }
+    };
+    
+    const unsubscribe = auth.onAuthStateChanged((u) => {
+      if (u) checkSub();
+      else setLoadingSub(false);
+    });
+
+    return () => unsubscribe();
+  }, [isPublicPage]);
 
   const getRoleTitle = (tier: string) => {
     if (role === "weaver") return `Weaver ${tier}`;
@@ -72,8 +112,21 @@ export default function PricingTab({ isPublicPage = false, userRole = "weaver" }
           </div>
         )}
 
-        {/* Pricing Tickets Container */}
-        <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto animate-in slide-in-from-bottom-12 duration-700 delay-300">
+        {/* Active Subscription Dashboard (If User is Subscribed) */}
+        {!loadingSub && subscriptionData?.subscriptionStatus === "active" && (
+          <ActiveSubscriptionDashboard 
+            subscriptionId={subscriptionData.subscriptionId} 
+            planId={subscriptionData.planId || "PRO"}
+            onCancelSuccess={() => {
+              setSubscriptionData((prev: any) => ({ ...prev, subscriptionStatus: "cancelled" }));
+            }}
+          />
+        )}
+
+        {/* Pricing Tickets Container (Show if not active) */}
+        {(!subscriptionData || subscriptionData.subscriptionStatus !== "active") && (
+          <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto animate-in slide-in-from-bottom-12 duration-700 delay-300 mt-12">
+
           
           {/* Free Tier */}
           <div className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-[#0A221E]/60 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-6 flex flex-col hover:border-slate-500 transition-colors">
@@ -256,6 +309,7 @@ export default function PricingTab({ isPublicPage = false, userRole = "weaver" }
           </div>
 
         </div>
+        )}
 
         {/* FAQ Section */}
         <div className="mt-24 max-w-3xl mx-auto pb-10">
