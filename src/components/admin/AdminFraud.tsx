@@ -7,9 +7,8 @@ export default function AdminFraud() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      setFlaggedOrders([]);
-      setLoading(false);
-    }, 800);
+    setFlaggedOrders([]);
+    setLoading(false);
   }, []);
 
   const handleAction = (id: string, action: string) => {
