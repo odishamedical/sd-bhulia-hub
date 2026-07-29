@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { collection, query, where, getDocs } from 'firebase/firestore';
 
 export default function AdminSubscriptions() {
   const [users, setUsers] = useState<any[]>([]);
