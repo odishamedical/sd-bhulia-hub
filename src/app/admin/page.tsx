@@ -28,6 +28,7 @@ import AdminCommissions from "@/components/admin/AdminCommissions";
 import AdminB2BInquiries from "@/components/admin/AdminB2BInquiries";
 import AdminAffiliates from "@/components/admin/AdminAffiliates";
 import AdminEscrow from "@/components/admin/AdminEscrow";
+import AdminSubscriptions from "@/components/admin/AdminSubscriptions";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -74,12 +75,18 @@ const SIDEBAR_CATEGORIES = [
       { name: "Reseller Commissions", id: "commissions" },
       { name: "Affiliate Tracking", id: "affiliates" },
       { name: "Escrow Management", id: "escrow" },
-      { name: "SaaS Subscriptions", id: "subscriptions" },
       { name: "Tax & Compliance", id: "tax" }
     ]
   },
   {
-    title: "6. Growth & Engagement",
+    title: "6. Monetization & Billing",
+    icon: "💳",
+    subLinks: [
+      { name: "SaaS Subscriptions", id: "subscriptions" }
+    ]
+  },
+  {
+    title: "7. Growth & Engagement",
     icon: "📢",
     subLinks: [
       { name: "Global Ads", id: "ads" },
@@ -89,7 +96,7 @@ const SIDEBAR_CATEGORIES = [
     ]
   },
   {
-    title: "7. Support & Disputes",
+    title: "8. Support & Disputes",
     icon: "🛡️",
     subLinks: [
       { name: "Customer Tickets", id: "tickets" },
@@ -98,7 +105,7 @@ const SIDEBAR_CATEGORIES = [
     ]
   },
   {
-    title: "8. Platform Settings",
+    title: "9. Platform Settings",
     icon: "⚙️",
     subLinks: [
       { name: "Visual Page Builder", id: "cms" },
@@ -108,7 +115,7 @@ const SIDEBAR_CATEGORIES = [
     ]
   },
   {
-    title: "9. Help & Documentation",
+    title: "10. Help & Documentation",
     icon: "📖",
     id: "help",
     subLinks: [
@@ -182,7 +189,7 @@ export default function AdminSPA() {
       case "affiliates":
         return <AdminAffiliates />;
       case "subscriptions":
-        return <div className="p-8 text-gray-500">SaaS Subscriptions module coming soon.</div>;
+        return <AdminSubscriptions />;
       case "settings":
         return <AdminSettings />;
       default:
