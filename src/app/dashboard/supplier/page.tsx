@@ -207,7 +207,7 @@ export default function SupplierDashboardPage() {
     { id: "kyc", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
     { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "8. Subscription & Billing" },
     { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
-    { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "8. Subscription & Billing" },
+    { id: "pricing", label: "Subscription Plan", icon: "💎", category: "8. Subscription & Billing" },
     { id: "catalog", label: "Catalog Management", icon: "📋", category: "2. Catalog Management" },
     { id: "pricing_rates", label: "Market Rates Update", icon: "📉", category: "2. Catalog Management" },
     { id: "crm", label: "Weaver CRM & Orders", icon: "🤝", category: "3. Orders & Deliveries" },

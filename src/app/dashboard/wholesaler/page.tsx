@@ -207,7 +207,7 @@ export default function WholesalerDashboardPage() {
     { id: "kyc", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
     { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "8. Subscription & Billing" },
     { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
-    { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "8. Subscription & Billing" },
+    { id: "pricing", label: "Subscription Plan", icon: "💎", category: "8. Subscription & Billing" },
     { id: "catalog", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
     { id: "orders", label: "B2B Orders & Fulfillment", icon: "🚚", category: "3. Orders & Deliveries" },
     { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },

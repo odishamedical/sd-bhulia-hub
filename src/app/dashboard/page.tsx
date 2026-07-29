@@ -241,7 +241,7 @@ export default function DashboardPage() {
       { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
       { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "8. Subscription & Billing" },
       { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
-      { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "8. Subscription & Billing" },
+      { id: "pricing", label: "Subscription Plan", icon: "💎", category: "8. Subscription & Billing" },
       
       { id: "products", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
 
@@ -266,7 +266,7 @@ export default function DashboardPage() {
       { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
       { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "8. Subscription & Billing" },
       { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
-      { id: "pricing", label: "View Pricing Plans", icon: "💎", category: "8. Subscription & Billing" },
+      { id: "pricing", label: "Subscription Plan", icon: "💎", category: "8. Subscription & Billing" },
       
       { id: "products", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
 
@@ -1402,9 +1402,13 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
       <SaaSUpgraderModal isOpen={isUpgraderOpen} onClose={() => setIsUpgraderOpen(false)} />
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Catalog Management</h1>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
+            {activeTab === "pricing" ? "Your Subscription Plan" : "Catalog Management"}
+          </h1>
           <p className="text-gray-500 font-medium mt-1">
-            {roleTitle.includes('Weaver') ? 'Manage your handloom products and dispatch operations.' : 'Manage your retail inventory and dispatch operations.'}
+            {activeTab === "pricing" 
+              ? "View and manage your current subscription plan and billing cycle."
+              : roleTitle.includes("Weaver") ? "Manage your handloom products and dispatch operations." : "Manage your retail inventory and dispatch operations."}
           </p>
         </div>
       </header>
@@ -1426,7 +1430,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
               onClick={() => window.location.href = "/pricing"}
               className="relative z-10 shrink-0 bg-white text-blue-900 px-8 py-3 rounded-xl font-black shadow-lg hover:bg-gray-50 transition-colors transform hover:-translate-y-1"
             >
-              View Pricing Plans
+              Subscription Plan
             </button>
           </div>
 
