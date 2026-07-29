@@ -121,6 +121,11 @@ const SIDEBAR_CATEGORIES = [
     subLinks: [
       { name: "System Guide", id: "help" }
     ]
+  },
+  {
+    title: "11. Device Simulator",
+    icon: "📱",
+    href: "/admin/simulator"
   }
 ];
 
@@ -314,15 +319,31 @@ export default function AdminSPA() {
                     </div>
                   </button>
                 ) : (
-                  <button 
-                    onClick={() => { setActiveTab(category.id as string); setIsMobileOpen(false); }}
-                    className={`w-full flex items-center px-4 py-2.5 rounded-full transition-all border border-transparent ${activeTab === category.id ? 'bg-white/20 text-white border-white/20 shadow-md font-bold' : 'text-white/90 hover:bg-white/20'}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg">{category.icon}</span>
-                      <span className={`text-sm font-semibold ${activeTab === category.id ? 'text-white' : ''}`}>{category.title}</span>
-                    </div>
-                  </button>
+                  // @ts-expect-error category.href might not exist on all objects
+                  category.href ? (
+                    <a 
+                      // @ts-expect-error category.href might not exist on all objects
+                      href={category.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`w-full flex items-center px-4 py-2.5 rounded-full transition-all border border-transparent text-white/90 hover:bg-white/20`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{category.icon}</span>
+                        <span className={`text-sm font-semibold`}>{category.title}</span>
+                      </div>
+                    </a>
+                  ) : (
+                    <button 
+                      onClick={() => { setActiveTab(category.id as string); setIsMobileOpen(false); }}
+                      className={`w-full flex items-center px-4 py-2.5 rounded-full transition-all border border-transparent ${activeTab === category.id ? 'bg-white/20 text-white border-white/20 shadow-md font-bold' : 'text-white/90 hover:bg-white/20'}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{category.icon}</span>
+                        <span className={`text-sm font-semibold ${activeTab === category.id ? 'text-white' : ''}`}>{category.title}</span>
+                      </div>
+                    </button>
+                  )
                 )}
 
                 {hasSubLinks && isExpanded && (
