@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, setDoc, runTransaction, serverTimestamp } from "firebase/firestore";
+import Image from "next/image";
 import ImageUploader from "@/components/ImageUploader";
 import { uploadBase64ToStorage } from "@/lib/storageUtils";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS, WEAVER_DISTRICTS } from "@/lib/locations";
@@ -517,7 +518,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                 <div className="flex gap-6 items-start">
                   <div className="w-24 h-24 bg-white rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden shrink-0 relative">
                     {logoUrl ? (
-                      <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+                      <Image src={logoUrl} alt="Logo" fill sizes="96px" className="object-cover" />
                     ) : (
                       <span className="text-gray-400 text-xs text-center px-2">No Logo</span>
                     )}
@@ -543,7 +544,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                   {logoUrl && (
                     <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm">
                       <span className="text-[10px] font-bold text-gray-500 uppercase">Active Logo:</span>
-                      <img src={logoUrl} alt="Logo" className="w-6 h-6 rounded-full object-cover" />
+                      <Image src={logoUrl} alt="Logo" fill sizes="24px" className="object-cover" />
                     </div>
                   )}
                 </div>

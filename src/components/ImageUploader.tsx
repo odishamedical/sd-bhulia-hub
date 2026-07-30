@@ -307,9 +307,11 @@ export default function ImageUploader({
           {/* Aspect Preview Frame Container */}
           <div className={`relative overflow-hidden rounded-xl border border-blue-300 bg-gray-50 w-full flex items-center justify-center ${sizeGuidelines.class}`}>
             <div className="absolute inset-0 z-10 border border-dashed border-gray-300 pointer-events-none rounded-xl" />
-            <img 
+            <Image
               src={rawImageSrc} 
               alt="Adjustment Source"
+              fill
+              sizes="300px"
               style={{
                 transform: `scale(${scale}) translate(${offsetX / scale}px, ${offsetY / scale}px)`,
                 transition: "transform 0.05s ease-out"
@@ -481,11 +483,14 @@ export default function ImageUploader({
                 aspectRatio === "landscape" ? "w-64 aspect-[5/2]" : 
                 "w-32 h-32"
               }`}>
-                <img 
+                <Image
                   src={value} 
                   alt="Profile preview" 
+                  fill
+                  sizes="256px"
                   className="object-cover w-full h-full"
                   onError={(e) => {
+                    (e.target as HTMLImageElement).srcset = "";
                     (e.target as HTMLImageElement).src = "/bhulia-hero.png";
                   }}
                 />

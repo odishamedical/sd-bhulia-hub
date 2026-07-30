@@ -6,6 +6,7 @@ import HelpGuideTab from "@/components/HelpGuideTab";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db, storage } from "@/lib/firebase";
+import Image from "next/image";
 import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc, getDocs, query, where, deleteField } from "firebase/firestore";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { onAuthStateChanged } from "firebase/auth";
@@ -1558,12 +1559,15 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                         <tr key={product.id} className="hover:bg-gray-50/50 transition-colors">
                           <td className="py-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
-                                <img 
+                              <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0 relative">
+                                <Image 
                                   src={product.img || "/bhulia-hero.png"} 
                                   alt={product.title} 
-                                  className="w-full h-full object-cover"
+                                  fill
+                                  sizes="48px"
+                                  className="object-cover"
                                   onError={(e) => {
+                                    (e.target as HTMLImageElement).srcset = "";
                                     (e.target as HTMLImageElement).src = "/bhulia-hero.png";
                                   }}
                                 />
@@ -2744,7 +2748,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                 return (
                   <div key={product.id} className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] bg-gray-100">
-                      <img src={product.img} alt={product.title} className="w-full h-full object-cover" />
+                      <Image src={product.img} alt={product.title} fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover" />
                     </div>
                     <div className="p-4 flex flex-col flex-1">
                       <h3 className="font-bold text-gray-900 truncate mb-1">{product.title}</h3>
