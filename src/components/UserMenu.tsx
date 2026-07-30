@@ -33,7 +33,9 @@ export default function UserMenu() {
         className="flex items-center gap-2 md:gap-3 px-2 py-1.5 md:px-3 md:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all shadow-[0_0_15px_rgba(197,160,89,0.15)] hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] cursor-pointer shrink-0"
       >
         {userAvatar ? (
-          <img src={userAvatar} alt="Profile" className="w-6 h-6 md:w-7 md:h-7 rounded-full object-cover border border-[#C5A059]" />
+          <div className="relative w-6 h-6 md:w-7 md:h-7 rounded-full border border-[#C5A059] overflow-hidden shrink-0">
+            <Image src={userAvatar} alt="Profile" fill sizes="28px" className="object-cover" />
+          </div>
         ) : (
           <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-gradient-to-r from-[#996515] to-[#C5A059] text-[#0A1021] flex items-center justify-center font-bold text-[10px] md:text-xs">
             {userName.charAt(0).toUpperCase()}

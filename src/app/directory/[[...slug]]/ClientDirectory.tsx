@@ -175,10 +175,12 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
             
             {/* Massive Square Thumbnail */}
             <div className="w-full aspect-square relative bg-[#051815] overflow-hidden">
-              <img 
+              <Image 
                 src={(item as any).image || (item as any).photo || (item as any).photoUrl || (item as any).imageUrl || (item as any).thumbnail || (item as any).cover_image || (item as any).featured_image || (item as any).picture || (item as any).avatar || (item as any).business_logo || (item as any)['Profile Photo'] || (item as any)['Business Logo'] || (item as any).logo || (item as any).profileImage || (item as any).img || "/bhulia-hero.png"} 
                 alt={item.title || "Listing"}
-                className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                fill
+                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
+                className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B26] via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
               

@@ -148,7 +148,9 @@ export default function Header() {
               {user ? (
                 <div className="flex items-center gap-3">
                   {user.photoURL ? (
-                    <img src={user.photoURL} alt="Profile" className="w-12 h-12 rounded-full border-2 border-[#C5A059] object-cover shadow-lg" />
+                    <div className="relative w-12 h-12 rounded-full border-2 border-[#C5A059] shadow-lg overflow-hidden shrink-0">
+                      <Image src={user.photoURL} alt="Profile" fill sizes="48px" className="object-cover" />
+                    </div>
                   ) : (
                     <div className="w-12 h-12 rounded-full border-2 border-[#C5A059] bg-[#0A3A35] flex items-center justify-center text-[#C5A059] font-bold text-lg shadow-lg">
                       {user.displayName?.charAt(0) || user.email?.charAt(0) || "U"}

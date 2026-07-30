@@ -360,7 +360,9 @@ function ProfileContent() {
           <div className="flex items-center gap-4">
             <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
               {customPhotoUrl || user?.photoURL ? (
-                <img src={customPhotoUrl || user?.photoURL || ""} alt="Profile" className="w-14 h-14 md:w-16 md:h-16 rounded-full border-2 border-[#C5A059] shadow-lg object-cover group-hover:brightness-75 transition-all" />
+                <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full border-2 border-[#C5A059] shadow-lg overflow-hidden group-hover:brightness-75 transition-all shrink-0">
+                  <Image src={customPhotoUrl || user?.photoURL || ""} alt="Profile" fill sizes="64px" className="object-cover" />
+                </div>
               ) : (
                 <div className="w-14 h-14 md:w-16 md:h-16 rounded-full border-2 border-[#C5A059] bg-[#0A3A35] flex items-center justify-center text-xl font-bold text-[#C5A059] shadow-lg group-hover:brightness-75 transition-all">
                   {name ? name.charAt(0).toUpperCase() : "U"}

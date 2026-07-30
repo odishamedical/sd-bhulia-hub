@@ -440,10 +440,12 @@ function SearchContent() {
                 {topSellers.map(seller => (
                   <Link key={seller.id} href={`/${seller.type}/${seller.slug}`} className="block group relative bg-[#0B2B26] rounded-xl border border-[#C5A059]/20 hover:border-[#C5A059]/80 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(197,160,89,0.3)] hover:-translate-y-1">
                     <div className="w-full aspect-square relative bg-[#051815] overflow-hidden">
-                      <img 
+                      <Image 
                         src={(seller as any).image || (seller as any).photo || (seller as any).cover_image || "/bhulia-hero.png"} 
                         alt={seller.title || (seller as any).name || "Seller"}
-                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                        fill
+                        sizes="(max-width: 1024px) 50vw, 25vw"
+                        className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B26] via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
                       <div className="absolute bottom-3 left-3 right-3 z-10">
