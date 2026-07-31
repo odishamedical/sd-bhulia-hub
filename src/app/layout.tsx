@@ -21,6 +21,9 @@ export const metadata: Metadata = {
     locale: "en_IN",
     type: "website",
   },
+  other: {
+    "google-adsense-account": "ca-pub-1792783864518197"
+  },
   twitter: {
     card: "summary_large_image",
     title: "BHULIA | Heritage Sambalpuri Marketplace",
@@ -30,6 +33,7 @@ export const metadata: Metadata = {
 };
 
 import { Suspense } from "react";
+import Script from "next/script";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { LeadCaptureProvider } from "@/context/LeadCaptureContext";
@@ -51,6 +55,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`h-full bg-[#051815]`}>
       <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1792783864518197"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
