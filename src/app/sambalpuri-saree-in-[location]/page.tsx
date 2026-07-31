@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description,
-    openGraph: { title, description },
-    twitter: { card: "summary_large_image", title, description }
+    openGraph: { title, description, images: ["https://bhulia.com/bhulia-hero.png"] },
+    twitter: { card: "summary_large_image", title, description, images: ["https://bhulia.com/bhulia-hero.png"] }
   };
 }
 

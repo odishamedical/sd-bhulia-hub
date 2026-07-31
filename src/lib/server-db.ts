@@ -27,3 +27,36 @@ export async function getProfileMeta(collectionName: string, slug: string) {
     return null;
   }
 }
+
+export async function getProductMeta(slug: string) {
+  try {
+    let snapshot = await adminDb
+      .collection('products')
+      .where('slug', '==', slug)
+      .limit(1)
+      .get();
+
+    let data = null;
+
+    if (snapshot.empty) {
+      // Fallback: Check if slug is the doc ID
+      const doc = await adminDb.collection('products').doc(slug).get();
+      if (doc.exists) {
+        data = doc.data();
+      }
+    } else {
+      data = snapshot.docs[0].data();
+    }
+
+    if (!data) return null;
+    
+    return {
+      title: data.title || data.name || 'Sambalpuri Product',
+      description: data.desc || data.description || 'Check out this authentic Sambalpuri product on Bhulia Hub.',
+      image: (data.images && data.images.length > 0) ? data.images[0] : (data.img || data.image || '/bhulia-hero.png'),
+    };
+  } catch (error) {
+    console.error(`Error fetching meta for product/${slug}:`, error);
+    return null;
+  }
+}
