@@ -4,8 +4,8 @@ import PageClient from "./PageClient";
 export const dynamic = "force-dynamic";
 
 async function fetchPageData(slug: string) {
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'sd-bhulia';
-  const fbApiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyBUpo-Mc3aDs38LtkjgmUxSQNCVzg9XK2o'; // Bhulia Hub default
+  const projectId = 'sd-bhulia';
+  const fbApiKey = 'AIzaSyBUpo-Mc3aDs38LtkjgmUxSQNCVzg9XK2o'; // Bhulia Hub default
   
   const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/pages/${slug}?key=${fbApiKey}`;
   
@@ -44,5 +44,7 @@ export default async function ServerStaticPage({ params }: { params: { pageSlug:
 
   return <PageClient slug={params.pageSlug} initialData={pageData} />;
 }
+
+
 
 
