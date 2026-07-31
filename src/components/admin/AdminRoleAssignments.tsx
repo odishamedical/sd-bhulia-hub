@@ -201,7 +201,7 @@ export default function AdminRoleAssignments() {
                     </div>
                     <div className="flex items-center gap-1">
                       <a 
-                        href={`https://wa.me/?text=${encodeURIComponent(`Hello! You have been granted Admin Staff access to Bhulia Hub. Please go to the website and log in using your email (${invite.email}) to access the Admin Panel.`)}`}
+                        href={`https://wa.me/?text=${encodeURIComponent(`Hello! You have been granted Admin Staff access to Bhulia Hub. Please go to https://bhulia.com/admin and log in using your email (${invite.email}) to access the Admin Panel.`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-green-500 hover:text-green-700 p-2 hover:bg-green-50 rounded-lg transition-colors"

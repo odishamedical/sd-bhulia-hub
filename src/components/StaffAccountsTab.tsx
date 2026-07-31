@@ -125,7 +125,7 @@ export default function StaffAccountsTab({ userUid, roleType, staffMembers, setS
               </div>
               <div className="flex items-center gap-2">
                 <a 
-                  href={`https://wa.me/?text=${encodeURIComponent(`Hello! You have been granted Staff access to my dashboard on Bhulia Hub. Please go to the website and log in using your email (${email}) to access the catalog.`)}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(`Hello! You have been granted Staff access to my dashboard on Bhulia Hub. Please go to https://bhulia.com/login and log in using your email (${email}) to access the catalog.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-green-500 hover:text-green-700 p-2 hover:bg-green-50 rounded-lg transition-colors"
