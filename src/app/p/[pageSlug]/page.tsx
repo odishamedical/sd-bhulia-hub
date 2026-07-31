@@ -1,5 +1,4 @@
 import React from "react";
-import { notFound } from "next/navigation";
 import PageClient from "./PageClient";
 
 export const dynamic = "force-dynamic";
@@ -42,9 +41,7 @@ export async function generateMetadata({ params }: { params: { pageSlug: string 
 export default async function ServerStaticPage({ params }: { params: { pageSlug: string } }) {
   const pageData = await fetchPageData(params.pageSlug);
   
-  if (!pageData) {
-    notFound();
-  }
 
   return <PageClient slug={params.pageSlug} initialData={pageData} />;
 }
+
