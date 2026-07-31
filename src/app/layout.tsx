@@ -41,6 +41,8 @@ import BackToTopButton from "@/components/BackToTopButton";
 import GlobalMaintenanceGate from "@/components/GlobalMaintenanceGate";
 import GlobalAffiliateTracker from "@/components/GlobalAffiliateTracker";
 
+import BetaBanner from "@/components/BetaBanner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -58,6 +60,7 @@ export default function RootLayout({
           <CartProvider>
             <LeadCaptureProvider>
               <GlobalMaintenanceGate>
+                <BetaBanner />
                 <Header />
               <Suspense fallback={null}>
                 <GlobalSearchConsole />
