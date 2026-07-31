@@ -21,12 +21,16 @@ export async function generateMetadata(
     };
   }
 
+  const district = profile.district || "Odisha";
+  const title = `${profile.title} - Authentic Retail Shop in ${district} | Bhulia.com`;
+  const description = `Visit ${profile.title} in ${district} to buy authentic Sambalpuri Pata, Dress materials, and cotton sarees. Handloom mark certified.`;
+
   return {
-    title: `${profile.title} - Authentic Retail Shop | Bhulia.com`,
-    description: profile.description,
+    title: title,
+    description: description,
     openGraph: {
-      title: `${profile.title} - Authentic Retail Shop | Bhulia.com`,
-      description: profile.description,
+      title: title,
+      description: description,
       images: [profile.image],
     },
   };

@@ -888,6 +888,24 @@ export default function UserManagementPage() {
                       )}
                     </td>
                     <td className="py-4 px-6 text-right space-x-2">
+                      {(user.role === 'weaver' || user.role === 'store' || user.role === 'wholesaler' || user.role === 'supplier' || user.role === 'reseller') && (
+                        <button 
+                          onClick={() => {
+                            localStorage.setItem("admin_impersonating_shop", user.id);
+                            localStorage.setItem("admin_impersonating_role", user.role);
+                            
+                            let targetUrl = `/dashboard?viewAs=${user.role}`;
+                            if (user.role === "wholesaler") targetUrl = `/dashboard/wholesaler?viewAs=${user.role}`;
+                            if (user.role === "supplier") targetUrl = `/dashboard/supplier?viewAs=${user.role}`;
+                            if (user.role === "reseller") targetUrl = `/dashboard/reseller?viewAs=${user.role}`;
+                            
+                            window.open(targetUrl, "_blank");
+                          }} 
+                          className="px-3 py-1.5 bg-purple-50 text-purple-600 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-purple-600 hover:text-white transition-all"
+                        >
+                          Login As
+                        </button>
+                      )}
                       <button onClick={() => setSelectedUserForDetails(user)} className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-blue-600 hover:text-white transition-all">
                         View CRM
                       </button>

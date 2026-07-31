@@ -51,7 +51,15 @@ export default function ResellerDashboardPage() {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
             const role = userDoc.data().role;
-            if (role === "reseller" || role === "super_admin") {
+            const params = new URLSearchParams(window.location.search);
+            const viewAsRole = params.get("viewAs");
+            const impersonatingShop = localStorage.getItem("admin_impersonating_shop");
+            
+            if ((role === "super_admin" || role === "admin" || role === "staff") && viewAsRole === "reseller") {
+              setUserName(impersonatingShop ? "Impersonated Reseller" : "Demo Reseller");
+              setUserUid(impersonatingShop || "demo-reseller");
+              // Assuming no extra docs need to be fetched for reseller config yet
+            } else if (role === "reseller") {
               setUserName(userDoc.data().name || "Reseller");
               setUserUid(user.uid);
               setTotalClicks(userDoc.data().totalClicks || 0);

@@ -121,11 +121,20 @@ export default function WholesalerDashboardPage() {
             
             const params = new URLSearchParams(window.location.search);
             const viewAsRole = params.get("viewAs");
+            const impersonatingShop = localStorage.getItem("admin_impersonating_shop");
             
-            if (actualRole === "super_admin" && viewAsRole === "wholesaler") {
-              setUserName("Demo Wholesaler");
-              setUserUid("demo-wholesaler");
-              setIsDemoMode(true);
+            if ((actualRole === "super_admin" || actualRole === "admin" || actualRole === "staff") && viewAsRole === "wholesaler") {
+              setUserName(impersonatingShop ? "Impersonated Wholesaler" : "Demo Wholesaler");
+              setUserUid(impersonatingShop || "demo-wholesaler");
+              setIsDemoMode(!impersonatingShop);
+              
+              const activeUid = impersonatingShop || "demo-wholesaler";
+              const storeDoc = await getDoc(doc(db, "wholesalers", activeUid));
+              if (storeDoc.exists()) {
+                const data = storeDoc.data();
+                setGstNumber(data.gstNumber || data.gst || "");
+                setUdyamNumber(data.udyamNumber || "");
+              }
               setLoading(false);
               return;
             }
@@ -227,7 +236,7 @@ export default function WholesalerDashboardPage() {
     try {
       let finalPhotoUrl = personalPhoto;
       if (personalPhoto && personalPhoto.startsWith("data:image")) {
-        finalPhotoUrl = await uploadBase64ToStorage(personalPhoto, `kyc/${auth.currentUser?.uid}`);
+        finalPhotoUrl = await uploadBase64ToStorage(personalPhoto, `kyc/${(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid}`);
         setPersonalPhoto(finalPhotoUrl);
       }
 
@@ -257,13 +266,13 @@ export default function WholesalerDashboardPage() {
       
       let finalLogoUrl = profileImage;
       if (profileImage && profileImage.startsWith("data:image")) {
-        finalLogoUrl = await uploadBase64ToStorage(profileImage, `profiles/${auth.currentUser?.uid}`);
+        finalLogoUrl = await uploadBase64ToStorage(profileImage, `profiles/${(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid}`);
         setProfileImage(finalLogoUrl);
       }
 
       let finalKycUrl = kycDocumentUrl;
       if (kycDocumentUrl && kycDocumentUrl.startsWith("data:image")) {
-        finalKycUrl = await uploadBase64ToStorage(kycDocumentUrl, `kyc_docs/${auth.currentUser?.uid}`);
+        finalKycUrl = await uploadBase64ToStorage(kycDocumentUrl, `kyc_docs/${(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid}`);
         setKycDocumentUrl(finalKycUrl);
       }
 

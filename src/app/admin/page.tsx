@@ -29,6 +29,7 @@ import AdminB2BInquiries from "@/components/admin/AdminB2BInquiries";
 import AdminAffiliates from "@/components/admin/AdminAffiliates";
 import AdminEscrow from "@/components/admin/AdminEscrow";
 import AdminSubscriptions from "@/components/admin/AdminSubscriptions";
+import AdminRoleAssignments from "@/components/admin/AdminRoleAssignments";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -209,6 +210,8 @@ export default function AdminSPA() {
         return <AdminSubscriptions />;
       case "settings":
         return <AdminSettings />;
+      case "staff":
+        return <AdminRoleAssignments />;
       default:
         return (
           <div className="flex items-center justify-center h-[60vh]">

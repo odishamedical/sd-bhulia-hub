@@ -21,12 +21,16 @@ export async function generateMetadata(
     };
   }
 
+  const district = profile.district || "Odisha";
+  const title = `${profile.title} - Authentic Sambalpuri Saree Weaver in ${district} | Bhulia.com`;
+  const description = `Buy 100% original Sambalpuri Pata, Dress materials, and cotton sarees directly from ${profile.title} in ${district}. Handloom mark certified.`;
+
   return {
-    title: `${profile.title} - Master Weaver | Bhulia.com`,
-    description: profile.description,
+    title: title,
+    description: description,
     openGraph: {
-      title: `${profile.title} - Master Weaver | Bhulia.com`,
-      description: profile.description,
+      title: title,
+      description: description,
       images: [profile.image],
     },
   };

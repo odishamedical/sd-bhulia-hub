@@ -10,8 +10,31 @@ export interface BreadcrumbItem {
 export default function Breadcrumbs({ items, className = "" }: { items: BreadcrumbItem[], className?: string }) {
   if (!items || items.length === 0) return null;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://bhulia.com"
+      },
+      ...items.map((item, index) => ({
+        "@type": "ListItem",
+        "position": index + 2,
+        "name": item.label,
+        "item": item.href ? `https://bhulia.com${item.href}` : undefined
+      }))
+    ]
+  };
+
   return (
     <nav className={`flex items-center flex-wrap gap-2 text-xs md:text-sm font-sans font-semibold text-gray-400 w-full ${className}`}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Link href="/" className="hover:text-white transition-colors">Home</Link>
       
       {items.map((item, index) => (

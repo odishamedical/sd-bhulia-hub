@@ -93,15 +93,16 @@ export default function DashboardPage() {
             
             const params = new URLSearchParams(window.location.search);
             const viewAsRole = params.get("viewAs");
-            const viewAsUid = viewAsRole ? "demo-" + viewAsRole : null;
-            const viewAsName = viewAsRole ? "Demo " + viewAsRole.charAt(0).toUpperCase() + viewAsRole.slice(1) : null;
+            const impersonatingShop = localStorage.getItem("admin_impersonating_shop");
+            const viewAsUid = impersonatingShop || (viewAsRole ? "demo-" + viewAsRole : null);
+            const viewAsName = impersonatingShop ? "Impersonated Shop" : (viewAsRole ? "Demo " + viewAsRole.charAt(0).toUpperCase() + viewAsRole.slice(1) : null);
             
-            if (actualRole === "super_admin" && viewAsUid && viewAsRole) {
+            if ((actualRole === "super_admin" || actualRole === "admin" || actualRole === "staff") && viewAsUid && viewAsRole) {
               if (viewAsRole === "wholesaler") {
-                router.push("/dashboard/wholesaler");
+                router.push("/dashboard/wholesaler?viewAs=wholesaler");
                 return;
               } else if (viewAsRole === "supplier" || viewAsRole === "raw_material") {
-                router.push("/dashboard/supplier");
+                router.push("/dashboard/supplier?viewAs=" + viewAsRole);
                 return;
               }
               setRole(viewAsRole);
@@ -138,16 +139,19 @@ export default function DashboardPage() {
             setStoreSlug(slug);
 
             // Fetch wholesale permissions
-            let targetCollection = actualRole === "weaver" ? "weavers" : (actualRole === "store" || actualRole === "shop" || actualRole === "store" ? "stores" : null);
+            const activeRole = ((actualRole === "super_admin" || actualRole === "admin" || actualRole === "staff") && viewAsRole) ? viewAsRole : actualRole;
+            const activeUid = ((actualRole === "super_admin" || actualRole === "admin" || actualRole === "staff") && viewAsRole) ? viewAsUid : user.uid;
+            
+            let targetCollection = activeRole === "weaver" ? "weavers" : (activeRole === "store" || activeRole === "shop" ? "stores" : null);
             if (targetCollection) {
-              const vendorDoc = await getDoc(doc(db, targetCollection, user.uid));
+              const vendorDoc = await getDoc(doc(db, targetCollection, activeUid as string));
               if (vendorDoc.exists()) {
                 setCanSellWholesale(vendorDoc.data().canSellWholesale || false);
               }
 
               // Fetch Commissions Paid out to Resellers
               try {
-                const commQ = query(collection(db, "reseller_commissions"), where("sellerId", "==", user.uid));
+                const commQ = query(collection(db, "reseller_commissions"), where("sellerId", "==", activeUid));
                 const commSnap = await getDocs(commQ);
                 let totalPaid = 0;
                 commSnap.forEach(d => totalPaid += d.data().amount || 0);
@@ -159,7 +163,7 @@ export default function DashboardPage() {
 
             // Fetch Notifications
             try {
-              const q = query(collection(db, "notifications"), where("userId", "==", user.uid));
+              const q = query(collection(db, "notifications"), where("userId", "==", activeUid));
               const querySnapshot = await getDocs(q);
               const fetchedNotifs = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
               fetchedNotifs.sort((a: any, b: any) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
@@ -640,7 +644,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Orders</h3>
                 <div className="text-sm text-gray-500">
-                  {orders.filter(o => o.customerId === auth.currentUser?.uid).length} total orders found.
+                  {orders.filter(o => o.customerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid).length} total orders found.
                 </div>
               </div>
               <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View All Orders →</button>
@@ -692,8 +696,8 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             ))}
           </div>
           <div className="space-y-4">
-            {orders.filter(o => o.customerId === auth.currentUser?.uid).length > 0 ? (
-              orders.filter(o => o.customerId === auth.currentUser?.uid).map(order => (
+            {orders.filter(o => o.customerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid).length > 0 ? (
+              orders.filter(o => o.customerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid).map(order => (
                 <div key={order.id} className="bg-gray-50 border border-gray-100 rounded-2xl p-5 flex flex-col md:flex-row gap-4 items-center justify-between hover:border-gray-200 transition-colors">
                   <div>
                     <p className="text-sm font-bold text-gray-900">Order #{order.id}</p>
@@ -896,11 +900,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
   const { products } = useProducts();
   const { orders } = useOrders();
   const { transactions } = useTransactions();
-  const sellerTransactions = transactions.filter(t => t.sellerId === auth.currentUser?.uid);
+  const sellerTransactions = transactions.filter(t => t.sellerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid);
   const availableBalance = sellerTransactions.filter(t => t.status === "completed" || t.status === "paid_out").reduce((sum, t) => sum + t.amount, 0);
   
   // Products and Orders
-  const sellerProductsRaw = products.filter(p => p.sellerId === auth.currentUser?.uid);
+  const sellerProductsRaw = products.filter(p => p.sellerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -919,7 +923,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
     return matchesSearch && matchesStatus;
   });
   
-  const sellerOrders = orders.filter(o => o.sellerId === auth.currentUser?.uid && o.logisticsStatus !== "Delivered");
+  const sellerOrders = orders.filter(o => o.sellerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid && o.logisticsStatus !== "Delivered");
 
   // Personal Profile State
   const [personalName, setPersonalName] = useState("");
@@ -2034,7 +2038,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
              </div>
           ) : (
             <StaffAccountsTab 
-              userUid={auth.currentUser?.uid || ""}
+              userUid={(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid || ""}
               roleType={roleTitle.includes("Weaver") ? "weaver" : "store"}
               staffMembers={staffMembers}
               setStaffMembers={setStaffMembers}
@@ -2551,7 +2555,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
   const resellerProducts = products.filter(p => p.allowResellerMargin === true);
 
   // Filter transactions for this reseller
-  const myTransactions = transactions.filter(t => t.resellerId === auth.currentUser?.uid);
+  const myTransactions = transactions.filter(t => t.resellerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid);
 
   // Calculate balances from ledger
   const escrowBalance = myTransactions.filter(t => t.status === "pending_escrow").reduce((sum, t) => sum + t.amount, 0);
@@ -2560,7 +2564,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
   const totalEarned = availableBalance + paidOutBalance;
 
   // Legacy variables
-  const myReferralOrders = orders.filter(o => o.referralId === auth.currentUser?.uid || o.proxyBuyerId === auth.currentUser?.uid || (o as any).resellerId === auth.currentUser?.uid);
+  const myReferralOrders = orders.filter(o => o.referralId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid || o.proxyBuyerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid || (o as any).resellerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid);
 
   // Proxy Order State
   const [customerName, setCustomerName] = useState("");
@@ -2649,7 +2653,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
         pinCode,
         address,
         paymentMethod,
-        resellerId: auth.currentUser?.uid,
+        resellerId: (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid,
         status: "placed",
         hubStatus: "pending",
         createdAt: serverTimestamp(),
@@ -2659,7 +2663,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
       // Record a pending commission transaction to be resolved when escrow clears
       await addDoc(collection(db, "transactions"), {
         type: "reseller_commission",
-        resellerId: auth.currentUser?.uid,
+        resellerId: (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid,
         orderId: orderRef.id,
         amount: 0, // To be calculated on checkout
         status: "pending_escrow",
@@ -2744,7 +2748,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {resellerProducts.map(product => {
-                const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/product/${product.slug}?ref=${auth.currentUser?.uid}` : "";
+                const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/product/${product.slug}?ref=${(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid}` : "";
                 return (
                   <div key={product.id} className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] bg-gray-100">
@@ -2952,7 +2956,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 mb-6">
             <h3 className="font-bold text-gray-900 mb-4">Your Custom Storefront Link</h3>
             <div className="flex gap-4 items-center">
-              <input type="text" readOnly value={`https://bhulia.com/store/${auth.currentUser?.uid}`} className="flex-1 border border-gray-300 rounded-xl p-3 text-sm text-gray-500 bg-white" />
+              <input type="text" readOnly value={`https://bhulia.com/store/${(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid}`} className="flex-1 border border-gray-300 rounded-xl p-3 text-sm text-gray-500 bg-white" />
               <button className="bg-[#0070F3] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm">Copy</button>
             </div>
           </div>
