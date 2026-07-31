@@ -7,7 +7,7 @@ async function fetchPageData(slug: string) {
   const projectId = 'sd-bhulia';
   const fbApiKey = 'AIzaSyBUpo-Mc3aDs38LtkjgmUxSQNCVzg9XK2o';
   
-  const firestoreUrl = "https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/pages/${slug}?key=" + fbApiKey;
+  const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/pages/${slug}?key=${fbApiKey}`;
   
   try {
     const res = await fetch(firestoreUrl, { cache: 'no-store' });
@@ -34,7 +34,7 @@ export async function generateMetadata(props: { params: Promise<{ pageSlug: stri
   }
 
   return {
-    title: "`${pageData.title}` | Bhulia.com",
+    title: `${pageData.title} | Bhulia.com`,
     description: pageData.content ? pageData.content.substring(0, 150).replace(/<[^>]*>?/gm, '') + "..." : "Authentic Sambalpuri Handloom Marketplace.",
   };
 }
