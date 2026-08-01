@@ -40,7 +40,7 @@ function LoginForm() {
         const refId = localStorage.getItem("sd_affiliate_ref");
         await setDoc(doc(db, "users", userCredential.user.uid), {
           email: userCredential.user.email,
-          role: "customer", // Default role
+          roles: { "bhulia-hub": "customer" }, // Default role matrix
           referredBy: refId || null,
           createdAt: new Date().toISOString()
         }, { merge: true });
@@ -80,7 +80,7 @@ function LoginForm() {
         await setDoc(userRef, {
           email: cred.user.email,
           name: cred.user.displayName,
-          role: "customer",
+          roles: { "bhulia-hub": "customer" },
           referredBy: refId || null,
           createdAt: new Date().toISOString()
         }, { merge: true });

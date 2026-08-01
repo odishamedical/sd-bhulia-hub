@@ -126,7 +126,8 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
-  role: string;
+  roles?: { [key: string]: string };
+  role?: string;
   isB2BApproved?: boolean;
   createdAt: string;
 }
@@ -703,7 +704,7 @@ export async function approveResellerAndUserRole(resellerId: string, userId?: st
     
     if (userId && userId !== "demo_user") {
       const userRef = doc(db, "users", userId);
-      await updateDoc(userRef, { role: "resellere" });
+      await updateDoc(userRef, { "roles.bhulia-hub": "resellere" });
     }
     return { success: true };
   } catch (error) {
@@ -828,7 +829,7 @@ export async function convertUserRole(userId: string, userEmail: string, userNam
   try {
     // 1. Update the role in the 'users' collection so they get the correct dashboard
     const userRef = doc(db, "users", userId);
-    await updateDoc(userRef, { role: newRole });
+    await updateDoc(userRef, { "roles.bhulia-hub": newRole });
 
     // 2. Auto-generate a basic profile in the corresponding collection
     const generatedSlug = userName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + userId.slice(0, 4).toLowerCase();

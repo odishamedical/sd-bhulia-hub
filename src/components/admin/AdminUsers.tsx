@@ -235,7 +235,7 @@ export default function UserManagementPage() {
       kycType: u.kycType || null,
       kycId: u.kycId || null,
       kycDocumentUrl: u.kycDocumentUrl || null,
-      source: "organic",
+      source: u.registrationSource || "Organic",
     }));
 
     // Resellers (Marketing Agents)
@@ -835,6 +835,7 @@ export default function UserManagementPage() {
                   </th>
                   <th className="py-4 px-6 font-bold">User Identity</th>
                   <th className="py-4 px-6 font-bold">Role</th>
+                  <th className="py-4 px-6 font-bold">Joined Via</th>
                   <th className="py-4 px-6 font-bold">Location</th>
                   <th className="py-4 px-6 font-bold text-right">Lifetime Vol (₹)</th>
                   <th className="py-4 px-6 font-bold text-right">Actions</th>
@@ -872,6 +873,11 @@ export default function UserManagementPage() {
                         'bg-gray-50 text-gray-700 border-gray-200'
                       }`}>
                         {user.role}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6">
+                      <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-gray-100 text-gray-700 border border-gray-200">
+                        {user.source}
                       </span>
                     </td>
                     <td className="py-4 px-6">

@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               const newAdminData = {
                 email: currentUser.email,
                 name: currentUser.displayName || currentUser.email.split("@")[0],
-                role: "super_admin",
+                roles: { "bhulia-hub": "super_admin" },
                 createdAt: new Date().toISOString()
               };
               await setDoc(userDocRef, newAdminData);
@@ -76,7 +76,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               return;
             }
 
-            if (data.role) {
+            if (data.roles && data.roles["bhulia-hub"]) {
+              localStorage.setItem("sd_current_user_role", data.roles["bhulia-hub"]);
+            } else if (data.role) {
               localStorage.setItem("sd_current_user_role", data.role);
             } else {
               localStorage.setItem("sd_current_user_role", "user");
@@ -90,7 +92,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const newUserData = {
               email: currentUser.email,
               name: userName,
-              role: "user",
+              roles: { "bhulia-hub": "user" },
               createdAt: new Date().toISOString()
             };
             await setDoc(userDocRef, newUserData);
