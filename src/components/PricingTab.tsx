@@ -68,7 +68,6 @@ export default function PricingTab({ isPublicPage = false, userRole = "weaver" }
       <SaaSUpgraderModal 
         isOpen={isUpgraderOpen} 
         onClose={() => setIsUpgraderOpen(false)} 
-        defaultPlan={selectedPlanId as any}
       />
 
       {/* Aesthetic Background Elements */}
