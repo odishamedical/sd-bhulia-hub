@@ -220,27 +220,27 @@ export default function DashboardPage() {
   let navItems: NavItem[] = [];
   if (actualRole === "customer") {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "ðŸ“Š", category: "Dashboard & Reports" },
-      { id: "orders", label: "My Orders", icon: "ðŸ“¦", category: "Orders & Logistics" },
+      { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
+      { id: "orders", label: "My Orders", icon: "📦", category: "Orders & Logistics" },
       { id: "wishlist", label: "Wishlist", icon: "â¤ï¸", category: "Catalog & Inventory" },
-      { id: "profile", label: "Profile Settings", icon: "ðŸ‘¤", category: "User Management" },
+      { id: "profile", label: "Profile Settings", icon: "👤", category: "User Management" },
       { id: "address", label: "Address Book", icon: "ðŸ“", category: "User Management" },
-      { id: "wallet", label: "Wallet & Rewards", icon: "ðŸ’Ž", category: "Finance & Accounting" },
-      { id: "messages", label: "Messages", icon: "ðŸ’¬", category: "Support & Verification" },
-      { id: "support", label: "Support Tickets", icon: "ðŸ“ž", category: "Support & Verification" },
+      { id: "wallet", label: "Wallet & Rewards", icon: "💎", category: "Finance & Accounting" },
+      { id: "messages", label: "Messages", icon: "💬", category: "Support & Verification" },
+      { id: "support", label: "Support Tickets", icon: "📞", category: "Support & Verification" },
       { id: "security", label: "Security & Login", icon: "ðŸ”", category: "Platform & System" },
     ];
     if (activeTab === "seller_hub") {
-      navItems.push({ id: "seller_hub", label: "Partner Application", icon: "ðŸš€", category: "Marketing & Growth" });
+      navItems.push({ id: "seller_hub", label: "Partner Application", icon: "🚀", category: "Marketing & Growth" });
     }
   } else if (actualRole === "super_admin") {
     navItems = [
-      { id: "overview", label: "Overview", icon: "ðŸ“Š", category: "Dashboard & Reports" },
+      { id: "overview", label: "Overview", icon: "📊", category: "Dashboard & Reports" },
       { id: "products", label: "Products", icon: "ðŸ›ï¸", category: "Catalog & Inventory" },
-      { id: "logistics", label: "Logistics", icon: "ðŸšš", category: "Orders & Logistics" },
+      { id: "logistics", label: "Logistics", icon: "🚚", category: "Orders & Logistics" },
       { id: "kyc", label: "KYC (Users)", icon: "ðŸ›¡ï¸", category: "User Management" },
-      { id: "finance", label: "Finance", icon: "ðŸ’°", category: "Finance & Accounting" },
-      { id: "help_guide", label: "Admin Staff Guide", icon: "ðŸ“˜", category: "Support & Verification" },
+      { id: "finance", label: "Finance", icon: "💰", category: "Finance & Accounting" },
+      { id: "help_guide", label: "Admin Staff Guide", icon: "📖", category: "Support & Verification" },
       { id: "google_import", label: "Google Importer", icon: "ðŸŒ", category: "Platform & System" },
     ];
     // Override default tab if needed
@@ -288,7 +288,7 @@ export default function DashboardPage() {
             return (
             <div key={n.id} className="bg-green-50 border border-green-200 p-4 rounded-2xl flex items-start justify-between shadow-sm animate-in fade-in slide-in-from-top-4">
               <div className="flex gap-3 items-start">
-                <div className="text-2xl">{titleStr.includes('ðŸŽ‰') ? 'ðŸŽ‰' : titleStr.includes('ðŸ ') ? 'ðŸ ' : 'ðŸ””'}</div>
+                <div className="text-2xl">{titleStr.includes('🎉') ? '🎉' : titleStr.includes('ðŸ ') ? 'ðŸ ' : '🔔'}</div>
                 <div>
                   <h4 className="font-bold text-green-900 text-sm">{titleStr || "New Notification"}</h4>
                   <p className="text-green-800 text-sm mt-1 leading-snug">{typeof n.message === 'string' ? n.message : ""}</p>
@@ -745,7 +745,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <h2 className="text-xl font-bold text-gray-900 mb-6">Wallet & Rewards</h2>
           <div className="bg-gradient-to-r from-blue-600 to-[#0070F3] rounded-2xl p-6 text-white shadow-lg">
             <p className="text-blue-100 text-sm font-bold uppercase tracking-wider mb-1">Available Balance</p>
-            <h3 className="text-4xl font-black">â‚¹0.00</h3>
+            <h3 className="text-4xl font-black">₹0.00</h3>
           </div>
           <div className="text-center py-10 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium">No transaction history.</div>
         </div>
@@ -1399,12 +1399,30 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
-            {activeTab === "pricing" ? "Your Subscription Plan" : "Catalog Management"}
+            {activeTab === "home" ? "Dashboard Overview" :
+             activeTab === "personal" ? "Profile & Store Setup" :
+             activeTab === "verification" ? "Verification (KYC)" :
+             activeTab === "products" ? "Catalog Management" :
+             activeTab === "wallet" ? "Wallet & Bank Payouts" :
+             activeTab === "security" ? "Security & Login" :
+             activeTab === "help_guide" ? "Help & Support Guide" :
+             activeTab === "support" ? "Contact Admin Support" :
+             activeTab === "orders" ? "Manage Orders" :
+             activeTab === "vanity_url" ? "Premium Vanity URL" :
+             activeTab === "staff" ? "Staff Accounts" :
+             activeTab === "marketing" ? "Marketing & Promos" :
+             activeTab === "messages" ? "Customer Messages" :
+             activeTab === "pricing" ? "Your Subscription Plan" : 
+             "Dashboard"}
           </h1>
           <p className="text-gray-500 font-medium mt-1">
-            {activeTab === "pricing" 
-              ? "View and manage your current subscription plan and billing cycle."
-              : roleTitle.includes("Weaver") ? "Manage your handloom products and dispatch operations." : "Manage your retail inventory and dispatch operations."}
+            {activeTab === "home" ? `Welcome back, ${userName}! Here is an overview of your business performance.` :
+             activeTab === "products" ? (roleTitle.includes("Weaver") ? "Manage your handloom products and dispatch operations." : "Manage your retail inventory and dispatch operations.") :
+             activeTab === "pricing" ? "View and manage your current subscription plan and billing cycle." :
+             activeTab === "wallet" ? "Manage your earnings, pending payouts, and bank details." :
+             activeTab === "orders" ? "Track, dispatch, and manage customer orders." :
+             activeTab === "verification" ? "Upload and manage your KYC documents to verify your business." :
+             "Manage your dashboard settings and features."}
           </p>
         </div>
       </header>
@@ -1417,7 +1435,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
               <div className="w-48 h-48 bg-white rounded-full"></div>
             </div>
             <div className="relative z-10">
-              <h2 className="text-2xl font-black text-white mb-2">ðŸš€ Upgrade to Pro Seller</h2>
+              <h2 className="text-2xl font-black text-white mb-2">🚀 Upgrade to Pro Seller</h2>
               <p className="text-blue-200 font-medium max-w-xl text-sm leading-relaxed">
                 Unlock automated Shiprocket logistics, B2B wholesale selling, and unlimited product uploads. Supercharge your business today!
               </p>
@@ -1437,14 +1455,14 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Wallet Balance</h3>
-            <div className="text-3xl font-black text-green-600">â‚¹{availableBalance.toLocaleString()}</div>
+            <div className="text-3xl font-black text-green-600">₹{availableBalance.toLocaleString()}</div>
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-50 text-purple-200">
               <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
             </div>
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2 relative z-10">Affiliate Comm. Paid</h3>
-            <div className="text-3xl font-black text-purple-600 relative z-10">â‚¹{affiliateCommissionsPaid.toLocaleString()}</div>
+            <div className="text-3xl font-black text-purple-600 relative z-10">₹{affiliateCommissionsPaid.toLocaleString()}</div>
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Orders</h3>
@@ -1546,7 +1564,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                               </div>
                             </div>
                           </td>
-                          <td className="py-4 font-bold text-gray-900">â‚¹{Number(product.price).toLocaleString()}</td>
+                          <td className="py-4 font-bold text-gray-900">₹{Number(product.price).toLocaleString()}</td>
                           <td className="py-4 font-medium text-gray-500">{product.category || "Uncategorized"}</td>
                           <td className="py-4">
                             <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
@@ -1619,11 +1637,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
         <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
       </div>
       <div>
-        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Retail Selling Price (â‚¹)</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Retail Selling Price (₹)</label>
         <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required placeholder="e.g. 34500" />
       </div>
       <div>
-        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Retail MRP (â‚¹)</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Retail MRP (₹)</label>
         <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required placeholder="e.g. 42000" />
       </div>
       <div className="md:col-span-2">
@@ -1740,7 +1758,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                     <label className="block text-xs font-bold text-blue-800 uppercase tracking-wider mb-2">Reseller Discount Percentage (Min 5%)</label>
                     <input type="number" min="5" max="90" value={resellerMarginPercentage} onChange={e => setResellerMarginPercentage(Math.max(5, Number(e.target.value)))} className="w-full bg-white border border-blue-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
                     <div className="text-xs text-blue-800 font-bold mt-2">
-                      Resellers will sell this at a â‚¹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount from your MRP.
+                      Resellers will sell this at a ₹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount from your MRP.
                     </div>
                   </div>
                 )}
@@ -1917,11 +1935,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Pending Payouts</div>
-              <div className="text-3xl font-black text-gray-900">â‚¹0</div>
+              <div className="text-3xl font-black text-gray-900">₹0</div>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Total Payouts</div>
-              <div className="text-3xl font-black text-green-600">â‚¹0</div>
+              <div className="text-3xl font-black text-green-600">₹0</div>
             </div>
           </div>
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
@@ -2741,7 +2759,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Commission Earned</h3>
-              <div className="text-3xl font-black text-green-600">â‚¹{Math.floor(totalEarned).toLocaleString('en-IN')}</div>
+              <div className="text-3xl font-black text-green-600">₹{Math.floor(totalEarned).toLocaleString('en-IN')}</div>
             </div>
           </div>
         </div>
@@ -2768,8 +2786,8 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                     <div className="p-4 flex flex-col flex-1">
                       <h3 className="font-bold text-gray-900 truncate mb-1">{product.title}</h3>
                       <div className="flex justify-between items-center mb-4">
-                        <span className="text-sm font-medium text-gray-500 line-through">â‚¹{product.price}</span>
-                        <span className="text-lg font-black text-[#0070F3]">â‚¹{product.resellerPrice}</span>
+                        <span className="text-sm font-medium text-gray-500 line-through">₹{product.price}</span>
+                        <span className="text-lg font-black text-[#0070F3]">₹{product.resellerPrice}</span>
                       </div>
                       <div className="text-xs text-green-600 font-bold mb-4 bg-green-50 px-2 py-1 rounded w-max">
                         Your Margin: {product.resellerMarginPercentage}%
@@ -2827,7 +2845,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                 <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required>
                   <option value="">Select Method</option>
                   <option value="UPI">Send UPI Link to Customer</option>
-                  <option value="COD">Cash on Delivery (â‚¹100 Extra)</option>
+                  <option value="COD">Cash on Delivery (₹100 Extra)</option>
                   <option value="PREPAID">I will pay now (Prepaid)</option>
                 </select>
               </div>
@@ -2850,7 +2868,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-gradient-to-br from-green-500 to-green-700 p-8 rounded-3xl shadow-lg text-white">
               <h3 className="text-white/80 text-xs font-bold uppercase tracking-wider mb-2">Available Balance</h3>
-              <div className="text-4xl font-black mb-1">â‚¹{availableBalance.toLocaleString('en-IN')}</div>
+              <div className="text-4xl font-black mb-1">₹{availableBalance.toLocaleString('en-IN')}</div>
               <p className="text-xs text-green-100 mt-4">Funds cleared from delivered orders. Ready to withdraw.</p>
               <button 
                 onClick={handleRequestPayout}
@@ -2863,7 +2881,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div>
                 <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Escrow</h3>
-                <div className="text-4xl font-black text-orange-500">â‚¹{escrowBalance.toLocaleString('en-IN')}</div>
+                <div className="text-4xl font-black text-orange-500">₹{escrowBalance.toLocaleString('en-IN')}</div>
                 <p className="text-xs text-gray-400 mt-4">Commissions locked in active transit. Auto-funds upon delivery.</p>
               </div>
             </div>
@@ -2871,7 +2889,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div>
                 <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Earned</h3>
-                <div className="text-4xl font-black text-gray-900">â‚¹{totalEarned.toLocaleString('en-IN')}</div>
+                <div className="text-4xl font-black text-gray-900">₹{totalEarned.toLocaleString('en-IN')}</div>
                 <p className="text-xs text-gray-400 mt-4">Lifetime earnings from Bhulia Hub.</p>
               </div>
             </div>
@@ -2906,7 +2924,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                             {t.status.replace('_', ' ')}
                           </span>
                         </td>
-                        <td className="py-4 px-4 text-right font-bold text-gray-900">+â‚¹{t.amount.toLocaleString('en-IN')}</td>
+                        <td className="py-4 px-4 text-right font-bold text-gray-900">+₹{t.amount.toLocaleString('en-IN')}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -2952,7 +2970,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             </div>
             <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-center">
               <p className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Est. Earnings</p>
-              <p className="text-3xl font-black text-blue-900">â‚¹0</p>
+              <p className="text-3xl font-black text-blue-900">₹0</p>
             </div>
           </div>
           <div className="h-64 flex items-center justify-center bg-gray-50 rounded-2xl border border-gray-100 text-gray-400 font-medium">Chart Data Unavailable</div>
@@ -3353,7 +3371,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
       {activeTab === "overview" && (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            <PremiumMetricCard title="Total Catalog Value" value={<>{productsLoading ? "..." : `â‚¹${totalCatalogValue.toLocaleString()}`}</>} index={0} />
+            <PremiumMetricCard title="Total Catalog Value" value={<>{productsLoading ? "..." : `₹${totalCatalogValue.toLocaleString()}`}</>} index={0} />
             <PremiumMetricCard title="Live Products" value={<>{productsLoading ? "..." : products.length}</>} index={1} />
             <PremiumMetricCard title="Verified Weavers" value={<>{weaversLoading ? "..." : weavers.length}</>} index={2} />
             <PremiumMetricCard title="Retail Stores" value={<>{storesLoading ? "..." : stores.length}</>} index={3} />
