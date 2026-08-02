@@ -91,16 +91,16 @@ export default function AdminGoogleCRM() {
 
   const crmLeads = useMemo(() => {
     const wList = weavers.filter(w => w.source === "google_places").map(w => ({
-      id: w.id, name: w.title, role: "weaver", phone: w.phoneNumber || "N/A", state: String(w.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || w.state || "N/A", district: String(w.address || "").split(",")?.[1]?.trim() || w.district || "N/A", address: w.address, status: w.status || "approved", website: w.website || "N/A", rating: w.rating || "N/A",
+      id: w.id, name: w.title, role: "weaver", phone: w.phoneNumber || "N/A", state: String(w.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || w.state || "N/A", district: String(w.address || "").split(",")?.[1]?.trim() || w.district || "N/A", address: w.address, status: w.status || "approved", website: w.website || "N/A", rating: w.rating || "N/A", img: w.img || "", heroImg: w.heroImg || ""
     }));
     const sList = stores.filter(s => s.source === "google_places").map(s => ({
-      id: s.id, name: s.title, role: "store", phone: s.phoneNumber || "N/A", state: String(s.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || s.state || "N/A", district: String(s.address || "").split(",")?.[1]?.trim() || s.district || "N/A", address: s.address, status: s.status || "approved", website: s.website || "N/A", rating: s.rating || "N/A",
+      id: s.id, name: s.title, role: "store", phone: s.phoneNumber || "N/A", state: String(s.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || s.state || "N/A", district: String(s.address || "").split(",")?.[1]?.trim() || s.district || "N/A", address: s.address, status: s.status || "approved", website: s.website || "N/A", rating: s.rating || "N/A", img: s.img || "", heroImg: s.heroImg || ""
     }));
     const bList = wholesalers.filter(b => b.source === "google_places").map(b => ({
-      id: b.id, name: b.title, role: "wholesaler", phone: b.phoneNumber || "N/A", state: String(b.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || b.state || "N/A", district: String(b.address || "").split(",")?.[1]?.trim() || b.district || "N/A", address: b.address, status: b.status || "approved", website: b.website || "N/A", rating: b.rating || "N/A",
+      id: b.id, name: b.title, role: "wholesaler", phone: b.phoneNumber || "N/A", state: String(b.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || b.state || "N/A", district: String(b.address || "").split(",")?.[1]?.trim() || b.district || "N/A", address: b.address, status: b.status || "approved", website: b.website || "N/A", rating: b.rating || "N/A", img: b.img || "", heroImg: b.heroImg || ""
     }));
     const suList = suppliers.filter(su => su.source === "google_places").map(su => ({
-      id: su.id, name: su.title, role: "supplier", phone: su.phoneNumber || "N/A", state: String(su.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || su.state || "N/A", district: String(su.address || "").split(",")?.[1]?.trim() || su.district || "N/A", address: su.address, status: su.status || "approved", website: su.website || "N/A", rating: su.rating || "N/A",
+      id: su.id, name: su.title, role: "supplier", phone: su.phoneNumber || "N/A", state: String(su.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || su.state || "N/A", district: String(su.address || "").split(",")?.[1]?.trim() || su.district || "N/A", address: su.address, status: su.status || "approved", website: su.website || "N/A", rating: su.rating || "N/A", img: su.img || "", heroImg: su.heroImg || ""
     }));
     return [...wList, ...sList, ...bList, ...suList];
   }, [weavers, stores, wholesalers, suppliers]);
@@ -138,7 +138,9 @@ export default function AdminGoogleCRM() {
       await updateDoc(doc(db, collectionName, editingLead.id), {
         title: editingLead.name,
         address: editingLead.address,
-        phoneNumber: editingLead.phone
+        phoneNumber: editingLead.phone,
+        img: editingLead.img || "",
+        heroImg: editingLead.heroImg || ""
       });
       alert("Lead updated successfully!");
       setEditingLead(null);
@@ -386,6 +388,14 @@ export default function AdminGoogleCRM() {
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Address</label>
                 <textarea required value={editingLead.address} onChange={e => setEditingLead({...editingLead, address: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:border-green-500 outline-none font-medium text-gray-900 h-24 resize-none"></textarea>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Profile Image URL</label>
+                <input type="text" value={editingLead.img || ""} onChange={e => setEditingLead({...editingLead, img: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:border-green-500 outline-none font-medium text-gray-900" placeholder="https://..." />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Hero Image Banner URL</label>
+                <input type="text" value={editingLead.heroImg || ""} onChange={e => setEditingLead({...editingLead, heroImg: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:border-green-500 outline-none font-medium text-gray-900" placeholder="https://..." />
               </div>
               <div className="flex gap-3 pt-4">
                 <button type="button" onClick={() => setEditingLead(null)} className="flex-1 px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 font-bold text-sm uppercase tracking-wider hover:bg-gray-50">Cancel</button>
