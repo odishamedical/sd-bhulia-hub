@@ -315,7 +315,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
 
   if (isLoading) {
     return (
-      <div className="p-8 border-2 border-dashed border-blue-200 bg-blue-50/50 rounded-2xl text-center">
+    <div className="w-full max-w-5xl mx-auto bg-[#111111] border-2 border-yellow-500/80 rounded-[32px] overflow-hidden relative shadow-[0_0_50px_rgba(234,179,8,0.3),0_0_20px_rgba(234,179,8,0.6),inset_0_2px_15px_rgba(255,255,255,0.05)] text-white">
         <h3 className="text-lg font-bold text-blue-900 mb-2">Loading your application...</h3>
       </div>
     );
@@ -346,17 +346,17 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
+    <div className="space-y-6 animate-in fade-in bg-transparent p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
       
       {/* Progress Bar Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl font-black text-gray-900 tracking-tight">Setup Application</h2>
-          <span className="text-xs font-bold text-[#0070F3] bg-blue-50 px-3 py-1 rounded-full">Step {currentStep} of {totalSteps}</span>
+          <h2 className="text-[28px] font-bold text-white tracking-tight">Setup Application</h2>
+          <span className="text-[10px] font-bold text-[#DAA520] border border-[#DAA520]/40 bg-[#DAA520]/10 px-3 py-1 rounded-full uppercase tracking-wider">Step {currentStep} of {totalSteps}</span>
         </div>
-        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden shadow-inner flex">
+        <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden flex shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)]">
           <div 
-            className="bg-[#0070F3] h-2 rounded-full transition-all duration-500 ease-in-out shadow-[0_0_10px_rgba(0,112,243,0.5)]" 
+            className="bg-gradient-to-r from-yellow-500 to-[#DAA520] h-1.5 rounded-full transition-all duration-500 ease-in-out shadow-[0_0_10px_rgba(218,165,32,0.8)]" 
             style={{ width: `${Math.min(100, Math.max(0, progressPercent))}%` }}
           ></div>
         </div>
@@ -367,13 +367,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
               className={`flex flex-col items-center flex-1 cursor-pointer transition-colors ${currentStep === step.id ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
               onClick={() => setCurrentStep(step.id)}
             >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 mb-1 ${
-                step.isReady ? 'bg-green-500 border-green-500 text-white' : 
-                currentStep === step.id ? 'border-[#0070F3] text-[#0070F3]' : 'border-gray-300 text-gray-400'
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mb-1 transition-all ${
+                step.isReady ? 'bg-gradient-to-br from-green-400 to-green-600 text-white shadow-[0_0_10px_rgba(34,197,94,0.5)] border-0' : 
+                currentStep === step.id ? 'bg-gradient-to-r from-yellow-500 to-[#DAA520] text-black shadow-[0_0_15px_rgba(218,165,32,0.6)] border-0' : 'bg-[#222] text-gray-400 border border-gray-600'
               }`}>
                 {step.isReady ? "✓" : step.id}
               </div>
-              <span className={`text-[10px] font-bold uppercase tracking-wider hidden sm:block ${currentStep === step.id ? 'text-[#0070F3]' : 'text-gray-500'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider hidden sm:block ${currentStep === step.id ? 'text-[#DAA520]' : 'text-gray-400'}`}>
                 {step.title}
               </span>
             </div>
@@ -386,13 +386,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         {/* === STEP 1: PROFILE === */}
         {currentStep === 1 && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Profile & Role</h3>
+            <h3 className="text-lg font-bold text-white mb-4 border-b border-[#DAA520]/20 pb-2">Profile & Role</h3>
             <div>
-              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">I want to apply as:</label>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">I want to apply as:</label>
               <select 
                 value={desiredRole} 
                 onChange={(e) => setDesiredRole(e.target.value)}
-                className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none transition-all bg-white font-medium"
+                className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none"
               >
                 <option value="weaver">Master Weaver (Produce & Sell)</option>
                 <option value="store">Store / Shop (Aggregator)</option>
@@ -403,20 +403,20 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Full Legal Name</label>
-                <input type="text" value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="e.g. Ramesh Meher" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Full Legal Name</label>
+                <input type="text" value={personalName} onChange={e => setPersonalName(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="e.g. Ramesh Meher" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Brand / Store Name</label>
-                <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="e.g. Meher Handlooms" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Brand / Store Name</label>
+                <input type="text" value={storeName} onChange={e => setStoreName(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="e.g. Meher Handlooms" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Phone Number</label>
-                <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="+91" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Phone Number</label>
+                <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="+91" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">WhatsApp Number</label>
-                <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="+91" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">WhatsApp Number</label>
+                <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="+91" />
               </div>
             </div>
           </div>
@@ -425,7 +425,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         {/* === STEP 2: ADDRESS === */}
         {currentStep === 2 && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Business Address</h3>
+            <h3 className="text-lg font-bold text-white mb-4 border-b border-[#DAA520]/20 pb-2">Business Address</h3>
             
             {desiredRole === "weaver" && (
               <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl text-xs text-yellow-800 font-medium mb-4 flex items-start gap-2">
@@ -435,18 +435,18 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
             )}
 
             <div>
-              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Street / Local Address</label>
-              <input type="text" value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="House/Shop no., Street" />
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Street / Local Address</label>
+              <input type="text" value={streetAddress} onChange={e => setStreetAddress(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="House/Shop no., Street" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">State</label>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">State</label>
                 <select 
                   value={state} 
                   onChange={e => setState(e.target.value)}
                   disabled={desiredRole === "weaver"}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white disabled:bg-gray-100"
+                  className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value="">Select State</option>
                   {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
@@ -454,12 +454,12 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
               </div>
               
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">District</label>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">District</label>
                 {state === "Odisha" ? (
                   <select 
                     value={district} 
                     onChange={e => handleDistrictChange(e.target.value)}
-                    className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
+                    className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none bg-transparent"
                   >
                     <option value="">Select District</option>
                     {(desiredRole === "weaver" ? WEAVER_DISTRICTS : ODISHA_DISTRICTS).map(d => (
@@ -467,19 +467,19 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                     ))}
                   </select>
                 ) : (
-                  <input type="text" value={district} onChange={e => handleDistrictChange(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="Enter District" />
+                  <input type="text" value={district} onChange={e => handleDistrictChange(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="Enter District" />
                 )}
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div className="md:col-span-2">
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Block / City</label>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Block / City</label>
                 {state === "Odisha" && district && ODISHA_DISTRICT_BLOCKS[district] ? (
                   <select 
                     value={block} 
                     onChange={e => setBlock(e.target.value)}
-                    className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
+                    className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none bg-transparent"
                   >
                     <option value="">Select Block</option>
                     {ODISHA_DISTRICT_BLOCKS[district].map(b => (
@@ -487,18 +487,18 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                     ))}
                   </select>
                 ) : (
-                  <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="Enter Block/City" />
+                  <input type="text" value={block} onChange={e => setBlock(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="Enter Block/City" />
                 )}
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">PIN Code</label>
-                <input type="text" value={pincode} onChange={e => setPincode(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="XXXXXX" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">PIN Code</label>
+                <input type="text" value={pincode} onChange={e => setPincode(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="XXXXXX" />
               </div>
             </div>
             
             <div>
-              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Village / Town (Local Name)</label>
-              <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" />
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Village / Town (Local Name)</label>
+              <input type="text" value={cityTownVillage} onChange={e => setCityTownVillage(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" />
             </div>
           </div>
         )}
@@ -507,16 +507,16 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         {currentStep === 3 && (
           <div className="space-y-8 animate-in slide-in-from-right-4 fade-in duration-300">
             <section>
-              <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Branding Assets</h3>
+              <h3 className="text-lg font-bold text-white mb-4 border-b border-[#DAA520]/20 pb-2">Branding Assets</h3>
               <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 p-4 rounded-xl text-xs text-[#996515] font-medium mb-6">
                 These images will be displayed on your public profile. The Bento layout requires exactly 5 high-quality images.
               </div>
               
               {/* Dedicated Logo Upload Section */}
-              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
-                <h4 className="text-sm font-bold text-gray-700 mb-4">Shop Logo / Avatar</h4>
+              <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#4a3617] mb-6">
+                <h4 className="text-sm font-bold text-gray-300 mb-4">Shop Logo / Avatar</h4>
                 <div className="flex gap-6 items-start">
-                  <div className="w-24 h-24 bg-white rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden shrink-0 relative">
+                  <div className="w-24 h-24 bg-transparent rounded-2xl border-2 border-dashed border-[#4a3617] flex items-center justify-center overflow-hidden shrink-0 relative">
                     {logoUrl ? (
                       <Image src={logoUrl} alt="Logo" fill sizes="96px" className="object-cover" />
                     ) : (
@@ -535,15 +535,15 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
               </div>
 
               {/* Cover Images Bento Manager */}
-              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+              <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#4a3617]">
                 <div className="flex justify-between items-center mb-4">
                   <div>
-                    <h4 className="text-sm font-bold text-gray-700">Cover Images (Bento Layout)</h4>
-                    <p className="text-[10px] text-gray-500 mt-1">Upload 5 cover images. You can also quickly assign any of these to be your shop logo.</p>
+                    <h4 className="text-sm font-bold text-gray-300">Cover Images (Bento Layout)</h4>
+                    <p className="text-[10px] text-gray-400 mt-1">Upload 5 cover images. You can also quickly assign any of these to be your shop logo.</p>
                   </div>
                   {logoUrl && (
-                    <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm">
-                      <span className="text-[10px] font-bold text-gray-500 uppercase">Active Logo:</span>
+                    <div className="flex items-center gap-2 bg-transparent px-3 py-1.5 rounded-lg border border-[#4a3617] shadow-sm">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase">Active Logo:</span>
                       <Image src={logoUrl} alt="Logo" fill sizes="24px" className="object-cover" />
                     </div>
                   )}
@@ -551,8 +551,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                   {/* Hero Slot (Index 0) */}
-                  <div className="lg:col-span-1 bg-white p-4 rounded-xl border border-blue-200 shadow-sm relative">
-                    <div className="absolute top-0 right-0 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg rounded-tr-xl z-10">
+                  <div className="lg:col-span-1 bg-transparent p-4 rounded-xl border border-[#DAA520]/50 shadow-[0_0_15px_rgba(218,165,32,0.15)] shadow-sm relative">
+                    <div className="absolute top-0 right-0 bg-[#DAA520] text-black text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg rounded-tr-xl z-10">
                       HERO (MAIN)
                     </div>
                     <ImageUploader 
@@ -568,7 +568,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                     {coverImages[0] && (
                       <button 
                         onClick={() => setLogoUrl(coverImages[0])}
-                        className={`mt-2 w-full text-xs font-bold py-1.5 rounded transition-colors ${logoUrl === coverImages[0] ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
+                        className={`mt-2 w-full text-xs font-bold py-1.5 rounded transition-colors ${logoUrl === coverImages[0] ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-300'}`}
                       >
                         {logoUrl === coverImages[0] ? '✓ Current Logo' : 'Set as Logo'}
                       </button>
@@ -578,7 +578,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                   {/* Secondary Slots (Index 1 to 4) */}
                   <div className="lg:col-span-2 grid grid-cols-2 gap-4">
                     {[1, 2, 3, 4].map(idx => (
-                      <div key={idx} className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm relative">
+                      <div key={idx} className="bg-transparent p-3 rounded-xl border border-[#4a3617] shadow-sm relative">
                         <ImageUploader 
                           label={`Grid Image ${idx}`}
                           aspectRatio="square"
@@ -606,7 +606,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                             </button>
                             <button 
                               onClick={() => setLogoUrl(coverImages[idx])}
-                              className={`flex-1 text-[10px] font-bold py-1.5 rounded transition-colors ${logoUrl === coverImages[idx] ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
+                              className={`flex-1 text-[10px] font-bold py-1.5 rounded transition-colors ${logoUrl === coverImages[idx] ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-300'}`}
                             >
                               {logoUrl === coverImages[idx] ? '✓ Logo' : 'Set Logo'}
                             </button>
@@ -624,41 +624,41 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         {/* === STEP 4: HERITAGE & CRAFT === */}
         {currentStep === 4 && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Business Details & Heritage</h3>
+            <h3 className="text-lg font-bold text-white mb-4 border-b border-[#DAA520]/20 pb-2">Business Details & Heritage</h3>
             <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl text-xs text-amber-800 font-medium mb-4">
               This information will be prominently displayed on your public profile to attract customers.
             </div>
             
             <div>
-              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">About Your Business (Description)</label>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">About Your Business (Description)</label>
               <textarea 
                 value={description} 
                 onChange={e => setDescription(e.target.value)} 
                 rows={4}
-                className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" 
+                className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" 
                 placeholder={desiredRole === 'weaver' ? "e.g. Master of Sambalpuri Pata from Dasrajpur, Sonepur..." : "e.g. A premium authentic handloom store..."}
               ></textarea>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Google Maps Link (Optional)</label>
-                <input type="url" value={googleMapsLink} onChange={e => setGoogleMapsLink(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="https://maps.google.com/..." />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Google Maps Link (Optional)</label>
+                <input type="url" value={googleMapsLink} onChange={e => setGoogleMapsLink(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="https://maps.google.com/..." />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Specialties (Comma Separated)</label>
-                <input type="text" value={specialties} onChange={e => setSpecialties(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="e.g. Double Ikat, Pasapalli, Bomkai" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Specialties (Comma Separated)</label>
+                <input type="text" value={specialties} onChange={e => setSpecialties(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="e.g. Double Ikat, Pasapalli, Bomkai" />
               </div>
             </div>
 
             {desiredRole === 'weaver' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Generations in Weaving</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Generations in Weaving</label>
                   <select 
                     value={generations} 
                     onChange={e => setGenerations(e.target.value)}
-                    className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
+                    className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none bg-transparent"
                   >
                     <option value="">Select Generation</option>
                     <option value="1st Generation">1st Generation</option>
@@ -668,8 +668,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Years of Experience</label>
-                  <input type="text" value={weaverExperience} onChange={e => setWeaverExperience(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="e.g. 25 Years" />
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Years of Experience</label>
+                  <input type="text" value={weaverExperience} onChange={e => setWeaverExperience(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="e.g. 25 Years" />
                 </div>
               </div>
             )}
@@ -679,8 +679,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         {/* === STEP 5: KYC === */}
         {currentStep === 5 && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Identity Verification</h3>
-            <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl text-xs text-blue-800 font-medium mb-4">
+            <h3 className="text-lg font-bold text-white mb-4 border-b border-[#DAA520]/20 pb-2">Identity Verification</h3>
+            <div className="bg-blue-50 border border-[#DAA520]/50 shadow-[0_0_15px_rgba(218,165,32,0.15)] p-4 rounded-xl text-xs text-blue-800 font-medium mb-4">
               Your documents are stored securely and are only used to verify your identity for direct payouts and fraud prevention.
             </div>
             
@@ -693,11 +693,11 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Document Type</label>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Document Type</label>
                 <select 
                   value={kycType} 
                   onChange={e => setKycType(e.target.value)}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
+                  className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none bg-transparent"
                 >
                   <option value="">Select Document</option>
                   <option value="Aadhar">Aadhar Card</option>
@@ -706,13 +706,13 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Document ID Number</label>
-                <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none uppercase" placeholder="e.g. 1234 5678 9012" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Document ID Number</label>
+                <input type="text" value={kycId} onChange={e => setKycId(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none uppercase" placeholder="e.g. 1234 5678 9012" />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Upload Clear Photo</label>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Upload Clear Photo</label>
               <ImageUploader 
                 value={kycDocumentUrl} 
                 onChange={setKycDocumentUrl}
@@ -722,8 +722,8 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">GST Number {desiredRole === 'b2b' || desiredRole === 'raw_material' ? '(MANDATORY)' : '(Optional)'}</label>
-              <input type="text" value={gstNumber} onChange={e => setGstNumber(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none uppercase" placeholder="e.g. 21AAAAA1234A1Z1" />
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">GST Number {desiredRole === 'b2b' || desiredRole === 'raw_material' ? '(MANDATORY)' : '(Optional)'}</label>
+              <input type="text" value={gstNumber} onChange={e => setGstNumber(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none uppercase" placeholder="e.g. 21AAAAA1234A1Z1" />
             </div>
           </div>
         )}
@@ -731,41 +731,41 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         {/* === STEP 6: BANK === */}
         {currentStep === 6 && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Bank Details</h3>
+            <h3 className="text-lg font-bold text-white mb-4 border-b border-[#DAA520]/20 pb-2">Bank Details</h3>
             <div className="bg-green-50 border border-green-200 p-4 rounded-xl text-xs text-green-800 font-medium mb-4">
               Profits and commissions from your sales will be auto-transferred to this account securely.
             </div>
             
             <div>
-              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Account Holder Name (must match KYC)</label>
-              <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" />
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Account Holder Name (must match KYC)</label>
+              <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Account Number</label>
-                <input type="password" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="XXXX XXXX XXXX" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Account Number</label>
+                <input type="password" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="XXXX XXXX XXXX" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Re-Enter Account Number</label>
-                <input type="text" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Re-Enter Account Number</label>
+                <input type="text" value={bankAccount} onChange={e => setBankAccount(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Bank Name</label>
-                <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="e.g. State Bank of India" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Bank Name</label>
+                <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="e.g. State Bank of India" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">IFSC Code</label>
-                <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none uppercase" placeholder="SBIN000XXXX" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">IFSC Code</label>
+                <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none uppercase" placeholder="SBIN000XXXX" />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">UPI ID (Optional but recommended)</label>
-              <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" placeholder="yourphone@ybl" />
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">UPI ID (Optional but recommended)</label>
+              <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" placeholder="yourphone@ybl" />
             </div>
           </div>
         )}
@@ -773,18 +773,18 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
         {/* === STEP 7: MARKETING (RESELLER ONLY) === */}
         {currentStep === 7 && desiredRole === "reseller" && (
           <div className="space-y-5 animate-in slide-in-from-right-4 fade-in">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Marketing Network</h3>
+            <h3 className="text-lg font-bold text-white mb-4 border-b border-[#DAA520]/20 pb-2">Marketing Network</h3>
             <div className="bg-[#C5A059]/10 border border-[#C5A059]/30 p-4 rounded-xl text-xs text-[#996515] font-medium mb-4">
               To approve you as a Reseller, we need to understand your marketing strength and network.
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Total Social Media Followers</label>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Total Social Media Followers</label>
                 <select 
                   value={followerCount} 
                   onChange={e => setFollowerCount(e.target.value)}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
+                  className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none bg-transparent"
                 >
                   <option value="">Select Range</option>
                   <option value="under_1k">Under 1,000</option>
@@ -794,11 +794,11 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">WhatsApp Group/Community Size</label>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">WhatsApp Group/Community Size</label>
                 <select 
                   value={whatsappGroupSize} 
                   onChange={e => setWhatsappGroupSize(e.target.value)}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none bg-white"
+                  className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none bg-transparent"
                 >
                   <option value="">Select Size</option>
                   <option value="no_group">No Group Yet</option>
@@ -811,34 +811,34 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Facebook Page URL</label>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Facebook Page URL</label>
                 <input 
                   type="url"
                   value={facebookUrl} 
                   onChange={e => setFacebookUrl(e.target.value)} 
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" 
+                  className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" 
                   placeholder="https://facebook.com/..."
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Instagram URL</label>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Instagram URL</label>
                 <input 
                   type="url"
                   value={instagramUrl} 
                   onChange={e => setInstagramUrl(e.target.value)} 
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" 
+                  className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" 
                   placeholder="https://instagram.com/..."
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Previous Experience selling Handlooms?</label>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Previous Experience selling Handlooms?</label>
               <textarea 
                 value={handloomExperience} 
                 onChange={e => setHandloomExperience(e.target.value)} 
                 rows={2}
-                className="w-full border-2 border-gray-300 rounded-xl p-3 text-sm text-gray-900 font-medium shadow-sm focus:ring-4 focus:ring-[#0070F3]/15 focus:border-[#0070F3] outline-none" 
+                className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none" 
                 placeholder="Briefly describe if you have sold Sambalpuri handlooms before, or your primary expected customers."
               ></textarea>
             </div>
@@ -848,12 +848,12 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
       </div>
 
       {/* Navigation Footer */}
-      <div className="pt-6 border-t border-gray-100 flex items-center justify-between mt-8">
+      <div className="pt-6 border-t border-gray-800 flex items-center justify-between mt-8">
         {currentStep > 1 ? (
           <button 
             onClick={handlePrevStep}
             disabled={isSaving}
-            className="px-6 py-3 text-gray-600 font-bold hover:bg-gray-100 rounded-xl transition-colors disabled:opacity-50 text-sm"
+            className="px-6 py-3 rounded-[14px] bg-transparent/5 border border-white/20 text-white hover:bg-transparent/10 hover:border-white/40 shadow-[0_4px_10px_rgba(0,0,0,0.3)] backdrop-blur-md transition-all disabled:opacity-50 text-sm"
           >
             ← Previous
           </button>
@@ -863,7 +863,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           <button 
             onClick={handleNextStep}
             disabled={isSaving}
-            className="px-8 py-3 bg-[#0070F3] text-white font-bold rounded-xl shadow-sm hover:bg-[#005BB5] hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 text-sm"
+            className="bg-gradient-to-b from-[#ffe680] via-[#c2861c] to-[#966311] text-white font-bold shadow-[0_0_25px_rgba(251,191,36,0.6),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_35px_rgba(251,191,36,0.8)] hover:-translate-y-0.5 transition-all border border-[#ffd266]/50 rounded-[14px] px-8 py-3 flex items-center gap-2 disabled:opacity-50 text-sm"
           >
             {isSaving ? "Saving..." : "Save & Next →"}
           </button>
@@ -871,7 +871,7 @@ export default function SellerSetupHub({ userRole }: SellerSetupHubProps) {
           <button 
             onClick={handleSubmitApplication}
             disabled={isSaving || !canSubmitApplication}
-            className="px-8 py-3 bg-green-600 text-white font-bold rounded-xl shadow-sm hover:bg-green-700 hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 disabled:hover:translate-y-0 text-sm"
+            className="flex items-center gap-2 px-8 py-3 rounded-[14px] font-bold transition-all shadow-[0_0_25px_rgba(251,191,36,0.6),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_35px_rgba(251,191,36,0.8)] hover:-translate-y-0.5 border border-[#ffd266]/50 disabled:opacity-50 disabled:hover:translate-y-0 bg-gradient-to-b from-[#ffe680] via-[#c2861c] to-[#966311] text-white text-sm"
           >
             {isSaving ? "Submitting..." : "Submit Final Application 🚀"}
           </button>
