@@ -35,100 +35,65 @@ import AdminNewApplications from "@/components/admin/AdminNewApplications";
 
 const SIDEBAR_CATEGORIES = [
   {
-    title: "1. Overview & Insights",
-    icon: "📊",
-    id: "dashboard",
-    subLinks: [
-      { name: "Global Dashboard", id: "dashboard" }
-    ]
-  },
-  {
-    title: "2. User Identity & CRM",
+    title: "1. Core Operations & Support",
     icon: "👥",
+    id: "dashboard",
     badgeId: "kyc",
     subLinks: [
-      { name: "Master Vendor CRM", id: "master-crm" },
-      { name: "New Applications", id: "applications" },
-      { name: "User Directory", id: "users" },
+      { name: "Global Dashboard", id: "dashboard" },
+      { name: "Pending Applications", id: "applications" },
       { name: "Verification Queue", id: "kyc" },
-      { name: "Ecosystem Guidelines", id: "guide" }
+      { name: "Master Vendor CRM", id: "master-crm" },
+      { name: "User Directory", id: "users" },
+      { name: "Customer Tickets", id: "tickets" }
     ]
   },
   {
-    title: "3. Catalog & Commerce",
-    icon: "🛍️",
-    subLinks: [
-      { name: "Product Catalog", id: "products" },
-      { name: "B2B Price Inquiries", id: "b2b_inquiries" }
-    ]
-  },
-  {
-    title: "4. Orders & Fulfillment",
+    title: "2. Catalog & Fulfillment",
     icon: "📦",
     badgeId: "orders",
     subLinks: [
+      { name: "Product Catalog", id: "products" },
+      { name: "B2B Price Inquiries", id: "b2b_inquiries" },
       { name: "All Orders", id: "orders" },
       { name: "Active Dispatch", id: "logistics-dispatch" },
       { name: "Returns & B2B", id: "orders-returns" }
     ]
   },
   {
-    title: "5. Finance & Revenue",
+    title: "3. Finance & Monetization",
     icon: "💰",
     subLinks: [
       { name: "Seller Payouts", id: "payouts" },
       { name: "Reseller Commissions", id: "commissions" },
       { name: "Affiliate Tracking", id: "affiliates" },
-      { name: "Escrow Management", id: "escrow" },
+      { name: "SaaS Subscriptions", id: "subscriptions" },
+      { name: "Global Ads", id: "ads" },
+      { name: "Coupons & Offers", id: "coupons" },
       { name: "Tax & Compliance", id: "tax" }
     ]
   },
   {
-    title: "6. Monetization & Billing",
-    icon: "💳",
+    title: "4. Data & Growth",
+    icon: "📈",
     subLinks: [
-      { name: "SaaS Subscriptions", id: "subscriptions" }
-    ]
-  },
-  {
-    title: "7. Growth & Engagement",
-    icon: "📢",
-    subLinks: [
-      { name: "Global Ads", id: "ads" },
-      { name: "Coupons & Offers", id: "coupons" },
       { name: "Google Importer", id: "importer" },
       { name: "Google Data CRM", id: "google-crm" }
     ]
   },
   {
-    title: "8. Support & Disputes",
-    icon: "🛡️",
-    subLinks: [
-      { name: "Customer Tickets", id: "tickets" },
-      { name: "Disputes", id: "disputes" },
-      { name: "Fraud Analysis", id: "fraud" }
-    ]
-  },
-  {
-    title: "9. Platform Settings",
+    title: "5. Platform & Security",
     icon: "⚙️",
     subLinks: [
+      { name: "Staff Delegation", id: "staff" },
       { name: "Visual Page Builder", id: "cms" },
-      { name: "Platform Settings", id: "settings" },
+      { name: "Fraud Analysis", id: "fraud" },
       { name: "Global Audit Log", id: "audit" },
-      { name: "Staff Delegation", id: "staff" }
+      { name: "Platform Settings", id: "settings" }
     ]
   },
   {
-    title: "10. Help & Documentation",
-    icon: "📖",
-    id: "help",
-    subLinks: [
-      { name: "System Guide", id: "help" }
-    ]
-  },
-  {
-    title: "11. Device Simulator",
+    title: "Device Simulator",
     icon: "📱",
     href: "/admin/simulator"
   }
@@ -137,7 +102,7 @@ const SIDEBAR_CATEGORIES = [
 export default function AdminSPA() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [expandedCategory, setExpandedCategory] = useState<string | null>("1. Overview & Insights");
+  const [expandedCategory, setExpandedCategory] = useState<string | null>("1. Core Operations & Support");
   const [activeTab, setActiveTab] = useState("dashboard");
   const [adminPermissions, setAdminPermissions] = useState<string[]>([]);
   const pendingCounts = usePendingCounts();
@@ -168,6 +133,8 @@ export default function AdminSPA() {
 
   const renderContent = () => {
     switch (activeTab) {
+      case "applications":
+        return <AdminNewApplications />;
       case "dashboard":
         return <AdminDashboard />;
       case "master-crm":
