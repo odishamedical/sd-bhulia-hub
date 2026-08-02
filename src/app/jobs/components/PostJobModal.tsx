@@ -198,11 +198,13 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto">
-      <div className={`w-full max-w-4xl bg-gradient-to-b from-[#1c1c1c] to-[#0a0a0a] border border-[#DAA520]/40 rounded-3xl overflow-hidden relative shadow-[0_0_20px_rgba(218,165,32,0.3)] flex flex-col my-8`}>
+      <div className={`w-full max-w-4xl bg-[#111111] border border-[#DAA520]/60 rounded-[32px] overflow-hidden relative shadow-[0_0_40px_rgba(218,165,32,0.4),inset_0_2px_15px_rgba(255,255,255,0.05)] flex flex-col my-8`}>
         
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-gradient-to-r from-transparent via-[#ffd266] to-transparent opacity-80 shadow-[0_0_15px_rgba(255,255,255,0.8)] z-50 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-gradient-to-r from-transparent via-[#ffd266] to-transparent opacity-80 shadow-[0_0_15px_rgba(255,255,255,0.8)] z-50 pointer-events-none"></div>
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-[#DAA520]/20 sticky top-0 bg-[#111]/80 backdrop-blur-md z-20">
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-[28px] font-bold text-white">
             {previewMode ? "Preview Job Post" : "Post a New Job"}
           </h2>
           <button onClick={onClose} className="p-2 bg-[#222] hover:bg-[#333] hover:text-white rounded-full transition-colors text-gray-400 border border-gray-700">
@@ -290,18 +292,18 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Company Name *</label>
-                        <input type="text" value={formData.shopName} onChange={e=>updateForm('shopName', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3" />
+                        <input type="text" value={formData.shopName} onChange={e=>updateForm('shopName', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" />
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Job Category *</label>
-                        <input list="categoriesList" placeholder="Select or type..." value={formData.industry} onChange={e=>updateForm('industry', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3" />
+                        <input list="categoriesList" placeholder="Select or type..." value={formData.industry} onChange={e=>updateForm('industry', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" />
                           <datalist id="categoriesList">
                             {atsConfig.industries.map(i => <option key={i} value={i} />)}
                           </datalist>
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Company Address</label>
-                        <input type="text" value={formData.companyAddress} onChange={e=>updateForm('companyAddress', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3" />
+                        <input type="text" value={formData.companyAddress} onChange={e=>updateForm('companyAddress', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" />
                       </div>
                     </div>
                   </div>
@@ -310,19 +312,19 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Contact Person *</label>
-                      <input type="text" value={formData.contactName} onChange={e=>updateForm('contactName', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3" />
+                      <input type="text" value={formData.contactName} onChange={e=>updateForm('contactName', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Email *</label>
-                      <input type="email" value={formData.contactEmail} onChange={e=>updateForm('contactEmail', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3" />
+                      <input type="email" value={formData.contactEmail} onChange={e=>updateForm('contactEmail', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Phone *</label>
-                      <input type="tel" value={formData.contactPhone} onChange={e=>updateForm('contactPhone', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3" />
+                      <input type="tel" value={formData.contactPhone} onChange={e=>updateForm('contactPhone', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">WhatsApp *</label>
-                      <input type="tel" value={formData.contactWhatsapp} onChange={e=>updateForm('contactWhatsapp', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3" />
+                      <input type="tel" value={formData.contactWhatsapp} onChange={e=>updateForm('contactWhatsapp', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" />
                     </div>
                   </div>
                 </div>
@@ -336,11 +338,11 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Job Title *</label>
-                      <input type="text" placeholder="e.g. Master Weaver, Sales Executive" value={formData.title} onChange={e=>updateForm('title', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3" />
+                      <input type="text" placeholder="e.g. Master Weaver, Sales Executive" value={formData.title} onChange={e=>updateForm('title', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Job Type</label>
-                      <select value={formData.jobType} onChange={e=>updateForm('jobType', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3">
+                      <select value={formData.jobType} onChange={e=>updateForm('jobType', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3">
                         <option value="Full-time">Full-time</option>
                         <option value="Part-time">Part-time</option>
                         <option value="Contract">Contract</option>
@@ -349,15 +351,15 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Location (City, State or Remote) *</label>
-                      <input type="text" value={formData.location} onChange={e=>updateForm('location', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3" />
+                      <input type="text" value={formData.location} onChange={e=>updateForm('location', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Salary Range</label>
-                      <input type="text" placeholder="e.g. ₹15k - ₹20k / month" value={formData.salaryRange} onChange={e=>updateForm('salaryRange', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3" />
+                      <input type="text" placeholder="e.g. ₹15k - ₹20k / month" value={formData.salaryRange} onChange={e=>updateForm('salaryRange', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Application Deadline *</label>
-                      <input type="date" value={formData.deadline} onChange={e=>updateForm('deadline', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3" style={{colorScheme:'dark'}} />
+                      <input type="date" value={formData.deadline} onChange={e=>updateForm('deadline', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" style={{colorScheme:'dark'}} />
                     </div>
                   </div>
 
@@ -381,12 +383,12 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                   
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Detailed Job Description *</label>
-                    <textarea value={formData.description} onChange={e=>updateForm('description', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3 min-h-[150px]"></textarea>
+                    <textarea value={formData.description} onChange={e=>updateForm('description', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3 min-h-[150px]"></textarea>
                   </div>
 
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Key Responsibilities</label>
-                    <textarea value={formData.keyResponsibilities} onChange={e=>updateForm('keyResponsibilities', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3 min-h-[100px]"></textarea>
+                    <textarea value={formData.keyResponsibilities} onChange={e=>updateForm('keyResponsibilities', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3 min-h-[100px]"></textarea>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -402,7 +404,7 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Work Schedule</label>
-                      <select value={formData.workSchedule} onChange={e=>updateForm('workSchedule', e.target.value)} className="w-full bg-[#111] border border-[#333] shadow-inner focus:bg-[#1a1a1a] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-xl px-4 py-3">
+                      <select value={formData.workSchedule} onChange={e=>updateForm('workSchedule', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3">
                         <option value="Day Shift">Day Shift</option>
                         <option value="Night Shift">Night Shift</option>
                         <option value="Flexible">Flexible</option>
@@ -421,25 +423,25 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
           {!previewMode ? (
             <>
               <div className="flex gap-4">
-                <button onClick={prevStep} disabled={currentStep === 1} className={`px-6 py-3 rounded-xl font-bold transition-all ${currentStep === 1 ? 'opacity-0 pointer-events-none' : 'bg-[#1a1a1a] border border-[#555] text-white hover:border-[#DAA520]/50 hover:bg-[#222] flex items-center gap-2'}`}>
+                <button onClick={prevStep} disabled={currentStep === 1} className={`px-6 py-3 rounded-xl font-bold transition-all ${currentStep === 1 ? 'opacity-0 pointer-events-none' : 'bg-white/5 border border-white/20 text-white hover:bg-white/10 hover:border-white/40 shadow-[0_4px_10px_rgba(0,0,0,0.3)] backdrop-blur-md flex items-center gap-2'}`}>
                   <ChevronLeft className="w-5 h-5"/> Back
                 </button>
-                <button onClick={saveDraft} className="px-6 py-3 rounded-xl font-bold bg-[#1a1a1a] border border-[#555] text-white hover:border-[#DAA520]/50 hover:bg-[#222] hidden md:block">
+                <button onClick={saveDraft} className="px-6 py-3 rounded-xl font-bold bg-white/5 border border-white/20 text-white hover:bg-white/10 hover:border-white/40 shadow-[0_4px_10px_rgba(0,0,0,0.3)] backdrop-blur-md hidden md:block">
                   Save Draft
                 </button>
               </div>
               <div className="flex gap-4">
                 {currentStep === 3 && (
-                  <button onClick={() => { if(validateStep(3)) setPreviewMode(true); }} className="px-6 py-3 rounded-xl font-bold bg-[#1a1a1a] border border-[#555] text-white hover:border-[#DAA520]/50 hover:bg-[#222]">
+                  <button onClick={() => { if(validateStep(3)) setPreviewMode(true); }} className="px-6 py-3 rounded-xl font-bold bg-white/5 border border-white/20 text-white hover:bg-white/10 hover:border-white/40 shadow-[0_4px_10px_rgba(0,0,0,0.3)] backdrop-blur-md">
                     Preview Mode
                   </button>
                 )}
                 {currentStep < 3 ? (
-                  <button onClick={nextStep} className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg bg-gradient-to-b from-[#ffdb75] via-[#dca029] to-[#9c6a12] text-white font-bold shadow-[0_0_15px_rgba(255,215,0,0.5)] hover:shadow-[0_0_25px_rgba(255,215,0,0.8)] hover:-translate-y-0.5 transition-all border border-[#fff]/20`}>
+                  <button onClick={nextStep} className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg bg-gradient-to-b from-[#ffe680] via-[#c2861c] to-[#966311] text-white font-bold shadow-[0_0_25px_rgba(251,191,36,0.6),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_35px_rgba(251,191,36,0.8)] hover:-translate-y-0.5 transition-all border border-[#ffd266]/50 rounded-[14px]`}>
                     Next <ChevronRight className="w-5 h-5"/>
                   </button>
                 ) : (
-                  <button onClick={handleSubmit} disabled={submitting} className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg ${submitting ? 'opacity-50' : ''} bg-gradient-to-b from-[#ffdb75] via-[#dca029] to-[#9c6a12] text-white font-bold shadow-[0_0_15px_rgba(255,215,0,0.5)] hover:shadow-[0_0_25px_rgba(255,215,0,0.8)] hover:-translate-y-0.5 transition-all border border-[#fff]/20`}>
+                  <button onClick={handleSubmit} disabled={submitting} className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg ${submitting ? 'opacity-50' : ''} bg-gradient-to-b from-[#ffe680] via-[#c2861c] to-[#966311] text-white font-bold shadow-[0_0_25px_rgba(251,191,36,0.6),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_35px_rgba(251,191,36,0.8)] hover:-translate-y-0.5 transition-all border border-[#ffd266]/50 rounded-[14px]`}>
                     {submitting ? 'Posting...' : 'Submit Job'} <CheckCircle2 className="w-5 h-5"/>
                   </button>
                 )}
@@ -447,10 +449,10 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
             </>
           ) : (
              <div className="flex justify-between w-full">
-                <button onClick={prevStep} className="px-6 py-3 rounded-xl font-bold bg-[#1a1a1a] border border-[#555] text-white hover:border-[#DAA520]/50 hover:bg-[#222] flex items-center gap-2">
+                <button onClick={prevStep} className="px-6 py-3 rounded-xl font-bold bg-white/5 border border-white/20 text-white hover:bg-white/10 hover:border-white/40 shadow-[0_4px_10px_rgba(0,0,0,0.3)] backdrop-blur-md flex items-center gap-2">
                   <ChevronLeft className="w-5 h-5"/> Edit Details
                 </button>
-                <button onClick={handleSubmit} disabled={submitting} className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg ${submitting ? 'opacity-50' : ''} bg-gradient-to-b from-[#ffdb75] via-[#dca029] to-[#9c6a12] text-white font-bold shadow-[0_0_15px_rgba(255,215,0,0.5)] hover:shadow-[0_0_25px_rgba(255,215,0,0.8)] hover:-translate-y-0.5 transition-all border border-[#fff]/20`}>
+                <button onClick={handleSubmit} disabled={submitting} className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg ${submitting ? 'opacity-50' : ''} bg-gradient-to-b from-[#ffe680] via-[#c2861c] to-[#966311] text-white font-bold shadow-[0_0_25px_rgba(251,191,36,0.6),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_35px_rgba(251,191,36,0.8)] hover:-translate-y-0.5 transition-all border border-[#ffd266]/50 rounded-[14px]`}>
                   {submitting ? 'Posting...' : 'Confirm & Submit'} <CheckCircle2 className="w-5 h-5"/>
                 </button>
              </div>
