@@ -198,7 +198,7 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto">
-      <div className={`w-full max-w-4xl bg-[#111111] border border-[#DAA520]/60 rounded-[32px] overflow-hidden relative shadow-[0_0_40px_rgba(218,165,32,0.4),inset_0_2px_15px_rgba(255,255,255,0.05)] flex flex-col my-8`}>
+      <div className={`w-full max-w-4xl bg-[#111111] border-2 border-yellow-500/80 rounded-[32px] overflow-hidden relative shadow-[0_0_50px_rgba(234,179,8,0.3),0_0_20px_rgba(234,179,8,0.6),inset_0_2px_15px_rgba(255,255,255,0.05)] flex flex-col my-8`}>
         
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-gradient-to-r from-transparent via-[#ffd266] to-transparent opacity-80 shadow-[0_0_15px_rgba(255,255,255,0.8)] z-50 pointer-events-none"></div>
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-gradient-to-r from-transparent via-[#ffd266] to-transparent opacity-80 shadow-[0_0_15px_rgba(255,255,255,0.8)] z-50 pointer-events-none"></div>

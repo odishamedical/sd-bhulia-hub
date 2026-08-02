@@ -165,8 +165,10 @@ export default function SeekerWizard({ userUid, userEmail, onSuccess }: { userUi
   };
 
   return (
-    <div className={`w-full max-w-4xl mx-auto rounded-3xl p-6 md:p-10 text-white ${atsConfig.theme.primaryBg} border ${atsConfig.theme.primaryBorder}/20 shadow-2xl relative overflow-hidden`}>
+    <div className={`w-full max-w-4xl mx-auto rounded-[32px] p-6 md:p-10 text-white bg-[#111111] border-2 border-yellow-500/80 shadow-[0_0_50px_rgba(234,179,8,0.3),0_0_20px_rgba(234,179,8,0.6),inset_0_2px_15px_rgba(255,255,255,0.05)] relative overflow-hidden`}>
       
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-gradient-to-r from-transparent via-[#ffd266] to-transparent opacity-80 shadow-[0_0_15px_rgba(255,255,255,0.8)] z-50 pointer-events-none"></div>
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-gradient-to-r from-transparent via-[#ffd266] to-transparent opacity-80 shadow-[0_0_15px_rgba(255,255,255,0.8)] z-50 pointer-events-none"></div>
       <div className="mb-10 relative z-10">
         <h1 className="text-3xl font-bold text-center mb-2">Create {atsConfig.terminology.cvName}</h1>
         <div className="flex justify-between items-center mt-8 relative">
