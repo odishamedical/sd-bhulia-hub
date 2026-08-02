@@ -10,6 +10,7 @@ import { jobApplicationsCollection } from '@/lib/jobs';
 import { useEffect } from 'react';
 import PostJobModal from './components/PostJobModal';
 import GlobalBannerSlot from '@/components/GlobalBannerSlot';
+import SaaSUpgraderModal from '@/components/SaaSUpgraderModal';
 import { useAuth } from '@/context/AuthContext';
 
 // Fetch real jobs below
@@ -18,10 +19,22 @@ const CATEGORIES = ['All', 'Master Weaver', 'Dyer', 'Spinner', 'Tailor', 'Sales 
 
 export default function JobsPage() {
   const router = useRouter();
-  const { userData } = useAuth();
-  // using AuthContext or just relying on profile status; for now mocking
-  const profile = null;
+  const { user, userData } = useAuth();
+  
+  const profile = user ? { id: user.uid, role: userRole } : null;
+  
+  const handlePostJobClick = () => {
+    const isPro = userData?.subscriptionTier === 'pro' || userData?.subscriptionTier === 'advance';
+    const isAdmin = userRole === 'admin' || userRole === 'super_admin';
+    
+    if (isPro || isAdmin) {
+      setShowPostModal(true);
+    } else {
+      setShowUpgradeModal(true);
+    }
+  };
   const loginDemo = () => {};
+  
   const [activeCategory, setActiveCategory] = useState('All');
   const [applyingTo, setApplyingTo] = useState<string | null>(null);
   const [appliedJobs, setAppliedJobs] = useState<string[]>([]);
@@ -29,6 +42,7 @@ export default function JobsPage() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(true);
   const [showPostModal, setShowPostModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [viewingJob, setViewingJob] = useState<any | null>(null);
   const [hasSeekerProfile, setHasSeekerProfile] = useState<boolean | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -136,7 +150,7 @@ export default function JobsPage() {
           </Link>
           {userData && ['store', 'weaver', 'wholesaler', 'admin', 'super_admin'].includes(userData.role?.toLowerCase() || '') && (
             <button 
-              onClick={() => setShowPostModal(true)}
+              onClick={handlePostJobClick}
               className="bg-black/20 border border-[#C5A059]/30 text-[#C5A059] font-bold px-6 py-3 rounded-xl hover:bg-black/40 transition-all text-center shadow-md backdrop-blur-sm"
             >
               Post a Job (Vendors)
