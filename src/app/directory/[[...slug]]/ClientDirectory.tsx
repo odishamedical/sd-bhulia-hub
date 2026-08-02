@@ -12,10 +12,10 @@ import DirectorySidebarFilter from "@/components/DirectorySidebarFilter";
 import ProductCard from "@/components/ProductCard";
 
 export default function ClientDirectory({ initialRole = 'all', initialState = 'Odisha', initialDistrict = 'all' }: { initialRole?: string, initialState?: string, initialDistrict?: string }) {
-  const { stores, loading: storesLoading } = useStores(50);
-  const { weavers, loading: weaversLoading } = useWeavers(50);
-  const { wholesalers, loading: wholesalersLoading } = useWholesalers(50);
-  const { suppliers, loading: suppliersLoading } = useSuppliers(50);
+  const { stores, loading: storesLoading } = useStores(1000);
+  const { weavers, loading: weaversLoading } = useWeavers(1000);
+  const { wholesalers, loading: wholesalersLoading } = useWholesalers(1000);
+  const { suppliers, loading: suppliersLoading } = useSuppliers(1000);
 
   const [selectedRole, setSelectedRole] = useState<string>(initialRole);
   const searchParams = useSearchParams();
