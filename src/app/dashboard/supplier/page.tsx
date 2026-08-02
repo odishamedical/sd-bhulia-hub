@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -212,23 +212,23 @@ export default function SupplierDashboardPage() {
   }
 
   const navItems: NavItem[] = [
-    { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
-    { id: "profile", label: "Supplier Profile", icon: "🏢", category: "1. Profile & Setup" },
-    { id: "kyc", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
-    { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "8. Subscription & Billing" },
-    { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
-    { id: "pricing", label: "Subscription Plan", icon: "💎", category: "8. Subscription & Billing" },
-    { id: "catalog", label: "Catalog Management", icon: "📋", category: "2. Catalog Management" },
-    { id: "pricing_rates", label: "Market Rates Update", icon: "📉", category: "2. Catalog Management" },
-    { id: "crm", label: "Weaver CRM & Orders", icon: "🤝", category: "3. Orders & Deliveries" },
-    { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
-    { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
-    { id: "messages", label: "Customer Messages", icon: "💬", category: "5. Marketing & Comm" },
-    { id: "reviews", label: "Reviews & Ratings", icon: "⭐", category: "5. Marketing & Comm" },
-    { id: "help_guide", label: "Help & Support Guide", icon: "📘", category: "6. Help & Support" },
-    { id: "support", label: "Contact Admin Support", icon: "🎧", category: "6. Help & Support" },
-    { id: "security", label: "Security & Login", icon: "🔐", category: "7. Security" },
-    { id: "home", label: "Inventory & Stock", icon: "📦", category: "Dashboard & Reports" },
+    { id: "personal", label: "Personal Profile", icon: "ðŸ‘¤", category: "1. Profile & Setup" },
+    { id: "profile", label: "Supplier Profile", icon: "ðŸ¢", category: "1. Profile & Setup" },
+    { id: "kyc", label: "Verification (KYC)", icon: "ðŸ›¡ï¸", category: "1. Profile & Setup" },
+    { id: "vanity_url", label: "Custom Brand URL", icon: "ðŸ”—", category: "8. Subscription & Billing" },
+    { id: "staff", label: "Staff Accounts", icon: "ðŸ‘¥", category: "1. Profile & Setup" },
+    { id: "pricing", label: "Subscription Plan", icon: "ðŸ’Ž", category: "8. Subscription & Billing" },
+    { id: "catalog", label: "Catalog Management", icon: "ðŸ“‹", category: "2. Catalog Management" },
+    { id: "pricing_rates", label: "Market Rates Update", icon: "ðŸ“‰", category: "2. Catalog Management" },
+    { id: "crm", label: "Weaver CRM & Orders", icon: "ðŸ¤", category: "3. Orders & Deliveries" },
+    { id: "finance", label: "Finance & Bank Payouts", icon: "ðŸ’°", category: "4. Finance & Earnings" },
+    { id: "marketing", label: "Marketing & Promos", icon: "ðŸ“ˆ", category: "5. Marketing & Comm" },
+    { id: "messages", label: "Customer Messages", icon: "ðŸ’¬", category: "5. Marketing & Comm" },
+    { id: "reviews", label: "Reviews & Ratings", icon: "â­", category: "5. Marketing & Comm" },
+    { id: "help_guide", label: "Help & Support Guide", icon: "ðŸ“˜", category: "6. Help & Support" },
+    { id: "support", label: "Contact Admin Support", icon: "ðŸŽ§", category: "6. Help & Support" },
+    { id: "security", label: "Security & Login", icon: "ðŸ”", category: "7. Security" },
+    { id: "home", label: "Inventory & Stock", icon: "ðŸ“¦", category: "Dashboard & Reports" },
   ];
 
   const handleSavePersonal = async (e: React.FormEvent) => {
@@ -238,7 +238,7 @@ export default function SupplierDashboardPage() {
     try {
       let finalPhotoUrl = personalPhoto;
       if (personalPhoto && personalPhoto.startsWith("data:image")) {
-        finalPhotoUrl = await uploadBase64ToStorage(personalPhoto, `kyc/${(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid}`);
+        finalPhotoUrl = await uploadBase64ToStorage(personalPhoto, `kyc/${getEffectiveUserId(auth.currentUser?.uid)}`);
         setPersonalPhoto(finalPhotoUrl);
       }
 
@@ -268,13 +268,13 @@ export default function SupplierDashboardPage() {
       
       let finalLogoUrl = profileImage;
       if (profileImage && profileImage.startsWith("data:image")) {
-        finalLogoUrl = await uploadBase64ToStorage(profileImage, `profiles/${(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid}`);
+        finalLogoUrl = await uploadBase64ToStorage(profileImage, `profiles/${getEffectiveUserId(auth.currentUser?.uid)}`);
         setProfileImage(finalLogoUrl);
       }
 
       let finalKycUrl = kycDocumentUrl;
       if (kycDocumentUrl && kycDocumentUrl.startsWith("data:image")) {
-        finalKycUrl = await uploadBase64ToStorage(kycDocumentUrl, `kyc_docs/${(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid}`);
+        finalKycUrl = await uploadBase64ToStorage(kycDocumentUrl, `kyc_docs/${getEffectiveUserId(auth.currentUser?.uid)}`);
         setKycDocumentUrl(finalKycUrl);
       }
 
@@ -415,10 +415,10 @@ export default function SupplierDashboardPage() {
                     </div>
                     <div className="p-4">
                       <h3 className="font-bold text-gray-900 text-lg truncate">{m.title}</h3>
-                      <p className="text-xs text-gray-500 mb-2">{m.category} • {m.color}</p>
+                      <p className="text-xs text-gray-500 mb-2">{m.category} â€¢ {m.color}</p>
                       <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-50">
                         <span className="text-xs text-gray-500 uppercase tracking-wider font-bold">Price / Kg</span>
-                        <span className="text-lg font-black text-gray-900">₹{m.pricePerKg}</span>
+                        <span className="text-lg font-black text-gray-900">â‚¹{m.pricePerKg}</span>
                       </div>
                     </div>
                   </div>
@@ -440,7 +440,7 @@ export default function SupplierDashboardPage() {
                   <p className="text-xs text-gray-500">Per 10 Kg Bundle</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-500 font-bold">₹</span>
+                  <span className="text-gray-500 font-bold">â‚¹</span>
                   <input type="number" value={cottonPrice} onChange={e => setCottonPrice(e.target.value)} className="w-24 border border-gray-300 rounded-lg p-2 text-center font-bold text-gray-900 focus:ring-2 focus:ring-[#0074E4] outline-none" />
                 </div>
               </div>
@@ -451,7 +451,7 @@ export default function SupplierDashboardPage() {
                   <p className="text-xs text-gray-500">Per Kg</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-500 font-bold">₹</span>
+                  <span className="text-gray-500 font-bold">â‚¹</span>
                   <input type="number" value={silkPrice} onChange={e => setSilkPrice(e.target.value)} className="w-24 border border-gray-300 rounded-lg p-2 text-center font-bold text-gray-900 focus:ring-2 focus:ring-[#0074E4] outline-none" />
                 </div>
               </div>
@@ -487,7 +487,7 @@ export default function SupplierDashboardPage() {
                       <tr key={order.id} className="border-b border-gray-50 hover:bg-gray-50/50">
                         <td className="p-4 text-sm font-medium text-gray-900">{order.id.slice(0, 8).toUpperCase()}</td>
                         <td className="p-4 text-sm font-medium text-gray-700">{order.customerName || 'Guest Weaver'}</td>
-                        <td className="p-4 text-sm font-bold text-emerald-600">₹{order.total}</td>
+                        <td className="p-4 text-sm font-bold text-emerald-600">â‚¹{order.total}</td>
                         <td className="p-4">
                           <span className="bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full uppercase">
                             {order.status || 'Pending'}
@@ -509,7 +509,7 @@ export default function SupplierDashboardPage() {
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-3xl animate-in fade-in">
             <h2 className="text-2xl font-bold text-gray-900 mb-3">Personal Profile & KYC</h2>
             <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-8">
-              <h3 className="text-red-800 font-bold text-sm mb-1">🔒 Strictly Confidential</h3>
+              <h3 className="text-red-800 font-bold text-sm mb-1">ðŸ”’ Strictly Confidential</h3>
               <p className="text-red-700 text-xs font-medium">This information is for official KYC and bank verification only. It will NEVER be shown publicly. A verified person must be behind every business.</p>
             </div>
             <form className="space-y-8" onSubmit={handleSavePersonal}>
@@ -905,3 +905,4 @@ export default function SupplierDashboardPage() {
     </DashboardLayout>
   );
 }
+

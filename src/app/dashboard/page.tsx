@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { auth, db, storage } from "@/lib/firebase";
 import Image from "next/image";
 import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc, getDocs, query, where, deleteField } from "firebase/firestore";
+import { getEffectiveUserId } from "@/lib/impersonation";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { onAuthStateChanged } from "firebase/auth";
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS, WEAVER_DISTRICTS } from "@/lib/locations";
@@ -143,10 +144,14 @@ export default function DashboardPage() {
             const activeUid = ((actualRole === "super_admin" || actualRole === "admin" || actualRole === "staff") && viewAsRole) ? viewAsUid : user.uid;
             
             let targetCollection = activeRole === "weaver" ? "weavers" : (activeRole === "store" || activeRole === "shop" ? "stores" : null);
-            if (targetCollection) {
-              const vendorDoc = await getDoc(doc(db, targetCollection, activeUid as string));
-              if (vendorDoc.exists()) {
-                setCanSellWholesale(vendorDoc.data().canSellWholesale || false);
+            if (targetCollection && activeUid) {
+              try {
+                const vendorDoc = await getDoc(doc(db, targetCollection, activeUid as string));
+                if (vendorDoc.exists()) {
+                  setCanSellWholesale(vendorDoc.data().canSellWholesale || false);
+                }
+              } catch (e) {
+                console.error("Failed to fetch vendorDoc:", e);
               }
 
               // Fetch Commissions Paid out to Resellers
@@ -215,116 +220,116 @@ export default function DashboardPage() {
   let navItems: NavItem[] = [];
   if (actualRole === "customer") {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
-      { id: "orders", label: "My Orders", icon: "📦", category: "Orders & Logistics" },
-      { id: "wishlist", label: "Wishlist", icon: "❤️", category: "Catalog & Inventory" },
-      { id: "profile", label: "Profile Settings", icon: "👤", category: "User Management" },
-      { id: "address", label: "Address Book", icon: "📍", category: "User Management" },
-      { id: "wallet", label: "Wallet & Rewards", icon: "💎", category: "Finance & Accounting" },
-      { id: "messages", label: "Messages", icon: "💬", category: "Support & Verification" },
-      { id: "support", label: "Support Tickets", icon: "📞", category: "Support & Verification" },
-      { id: "security", label: "Security & Login", icon: "🔐", category: "Platform & System" },
+      { id: "home", label: "Dashboard", icon: "ðŸ“Š", category: "Dashboard & Reports" },
+      { id: "orders", label: "My Orders", icon: "ðŸ“¦", category: "Orders & Logistics" },
+      { id: "wishlist", label: "Wishlist", icon: "â¤ï¸", category: "Catalog & Inventory" },
+      { id: "profile", label: "Profile Settings", icon: "ðŸ‘¤", category: "User Management" },
+      { id: "address", label: "Address Book", icon: "ðŸ“", category: "User Management" },
+      { id: "wallet", label: "Wallet & Rewards", icon: "ðŸ’Ž", category: "Finance & Accounting" },
+      { id: "messages", label: "Messages", icon: "ðŸ’¬", category: "Support & Verification" },
+      { id: "support", label: "Support Tickets", icon: "ðŸ“ž", category: "Support & Verification" },
+      { id: "security", label: "Security & Login", icon: "ðŸ”", category: "Platform & System" },
     ];
     if (activeTab === "seller_hub") {
-      navItems.push({ id: "seller_hub", label: "Partner Application", icon: "🚀", category: "Marketing & Growth" });
+      navItems.push({ id: "seller_hub", label: "Partner Application", icon: "ðŸš€", category: "Marketing & Growth" });
     }
   } else if (actualRole === "super_admin") {
     navItems = [
-      { id: "overview", label: "Overview", icon: "📊", category: "Dashboard & Reports" },
-      { id: "products", label: "Products", icon: "🛍️", category: "Catalog & Inventory" },
-      { id: "logistics", label: "Logistics", icon: "🚚", category: "Orders & Logistics" },
-      { id: "kyc", label: "KYC (Users)", icon: "🛡️", category: "User Management" },
-      { id: "finance", label: "Finance", icon: "💰", category: "Finance & Accounting" },
-      { id: "help_guide", label: "Admin Staff Guide", icon: "📘", category: "Support & Verification" },
-      { id: "google_import", label: "Google Importer", icon: "🌍", category: "Platform & System" },
+      { id: "overview", label: "Overview", icon: "ðŸ“Š", category: "Dashboard & Reports" },
+      { id: "products", label: "Products", icon: "ðŸ›ï¸", category: "Catalog & Inventory" },
+      { id: "logistics", label: "Logistics", icon: "ðŸšš", category: "Orders & Logistics" },
+      { id: "kyc", label: "KYC (Users)", icon: "ðŸ›¡ï¸", category: "User Management" },
+      { id: "finance", label: "Finance", icon: "ðŸ’°", category: "Finance & Accounting" },
+      { id: "help_guide", label: "Admin Staff Guide", icon: "ðŸ“˜", category: "Support & Verification" },
+      { id: "google_import", label: "Google Importer", icon: "ðŸŒ", category: "Platform & System" },
     ];
     // Override default tab if needed
     if (activeTab === "home") setActiveTab("overview");
   } else if (actualRole === "weaver") {
     navItems = [
-      { id: "home", label: "Dashboard Overview", icon: "📊", category: "Dashboard & Reports" },
-      { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
-      { id: "store_settings", label: "Setup Public Store", icon: "🏪", category: "1. Profile & Setup" },
-      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
-      { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "8. Subscription & Billing" },
-      { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
-      { id: "pricing", label: "Subscription Plan", icon: "💎", category: "8. Subscription & Billing" },
+      { id: "home", label: "Dashboard Overview", icon: "ðŸ“Š", category: "Dashboard & Reports" },
+      { id: "personal", label: "Personal Profile", icon: "ðŸ‘¤", category: "1. Profile & Setup" },
+      { id: "store_settings", label: "Setup Public Store", icon: "ðŸª", category: "1. Profile & Setup" },
+      { id: "verification", label: "Verification (KYC)", icon: "ðŸ›¡ï¸", category: "1. Profile & Setup" },
+      { id: "vanity_url", label: "Custom Brand URL", icon: "ðŸ”—", category: "8. Subscription & Billing" },
+      { id: "staff", label: "Staff Accounts", icon: "ðŸ‘¥", category: "1. Profile & Setup" },
+      { id: "pricing", label: "Subscription Plan", icon: "ðŸ’Ž", category: "8. Subscription & Billing" },
       
-      { id: "products", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
+      { id: "products", label: "Catalog Management", icon: "ðŸ“¦", category: "2. Catalog Management" },
 
       
-      { id: "orders", label: "Manage Orders", icon: "🚚", category: "3. Orders & Deliveries" },
+      { id: "orders", label: "Manage Orders", icon: "ðŸšš", category: "3. Orders & Deliveries" },
       
-      { id: "wallet", label: "Wallet & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
+      { id: "wallet", label: "Wallet & Bank Payouts", icon: "ðŸ’°", category: "4. Finance & Earnings" },
       
-      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
-      { id: "messages", label: "Customer Messages", icon: "💬", category: "5. Marketing & Comm" },
+      { id: "marketing", label: "Marketing & Promos", icon: "ðŸ“ˆ", category: "5. Marketing & Comm" },
+      { id: "messages", label: "Customer Messages", icon: "ðŸ’¬", category: "5. Marketing & Comm" },
       
-      { id: "help_guide", label: "Help & Support Guide", icon: "📘", category: "6. Help & Support" },
-      { id: "support", label: "Contact Admin Support", icon: "🎧", category: "6. Help & Support" },
+      { id: "help_guide", label: "Help & Support Guide", icon: "ðŸ“˜", category: "6. Help & Support" },
+      { id: "support", label: "Contact Admin Support", icon: "ðŸŽ§", category: "6. Help & Support" },
       
-      { id: "security", label: "Security & Login", icon: "🔐", category: "7. Security" },
+      { id: "security", label: "Security & Login", icon: "ðŸ”", category: "7. Security" },
     ];
   } else if (actualRole === "store" || actualRole === "wholesaler") {
     navItems = [
-      { id: "home", label: "Dashboard Overview", icon: "📊", category: "Dashboard & Reports" },
-      { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
-      { id: "store_settings", label: "Setup Public Store", icon: "🏪", category: "1. Profile & Setup" },
-      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
-      { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "8. Subscription & Billing" },
-      { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
-      { id: "pricing", label: "Subscription Plan", icon: "💎", category: "8. Subscription & Billing" },
+      { id: "home", label: "Dashboard Overview", icon: "ðŸ“Š", category: "Dashboard & Reports" },
+      { id: "personal", label: "Personal Profile", icon: "ðŸ‘¤", category: "1. Profile & Setup" },
+      { id: "store_settings", label: "Setup Public Store", icon: "ðŸª", category: "1. Profile & Setup" },
+      { id: "verification", label: "Verification (KYC)", icon: "ðŸ›¡ï¸", category: "1. Profile & Setup" },
+      { id: "vanity_url", label: "Custom Brand URL", icon: "ðŸ”—", category: "8. Subscription & Billing" },
+      { id: "staff", label: "Staff Accounts", icon: "ðŸ‘¥", category: "1. Profile & Setup" },
+      { id: "pricing", label: "Subscription Plan", icon: "ðŸ’Ž", category: "8. Subscription & Billing" },
       
-      { id: "products", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
+      { id: "products", label: "Catalog Management", icon: "ðŸ“¦", category: "2. Catalog Management" },
 
       
-      { id: "orders", label: "Manage Orders", icon: "🚚", category: "3. Orders & Deliveries" },
+      { id: "orders", label: "Manage Orders", icon: "ðŸšš", category: "3. Orders & Deliveries" },
       
-      { id: "finance", label: "Wallet & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
+      { id: "finance", label: "Wallet & Bank Payouts", icon: "ðŸ’°", category: "4. Finance & Earnings" },
       
-      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
-      { id: "messages", label: "Customer Messages", icon: "💬", category: "5. Marketing & Comm" },
+      { id: "marketing", label: "Marketing & Promos", icon: "ðŸ“ˆ", category: "5. Marketing & Comm" },
+      { id: "messages", label: "Customer Messages", icon: "ðŸ’¬", category: "5. Marketing & Comm" },
       
-      { id: "help_guide", label: "Help & Support Guide", icon: "📘", category: "6. Help & Support" },
-      { id: "support", label: "Contact Admin Support", icon: "🎧", category: "6. Help & Support" },
+      { id: "help_guide", label: "Help & Support Guide", icon: "ðŸ“˜", category: "6. Help & Support" },
+      { id: "support", label: "Contact Admin Support", icon: "ðŸŽ§", category: "6. Help & Support" },
       
-      { id: "security", label: "Security & Password", icon: "🔐", category: "7. Security" },
+      { id: "security", label: "Security & Password", icon: "ðŸ”", category: "7. Security" },
     ];
   } else if (actualRole === "weaver_staff" || actualRole === "store_staff") {
     navItems = [
-      { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
+      { id: "home", label: "Dashboard", icon: "ðŸ“Š", category: "Dashboard & Reports" },
     ];
-    if (vendorPermissions.includes("products")) navItems.push({ id: "products", label: "Inventory Catalog", icon: "📦", category: "Catalog & Inventory" });
-    if (vendorPermissions.includes("orders")) navItems.push({ id: "orders", label: "Order Management", icon: "🚚", category: "Orders & Logistics" });
-    if (vendorPermissions.includes("marketing")) navItems.push({ id: "marketing", label: "Marketing & Promos", icon: "📈", category: "Marketing & Growth" });
-    if (vendorPermissions.includes("messages")) navItems.push({ id: "messages", label: "Customer Messages", icon: "💬", category: "Marketing & Growth" });
+    if (vendorPermissions.includes("products")) navItems.push({ id: "products", label: "Inventory Catalog", icon: "ðŸ“¦", category: "Catalog & Inventory" });
+    if (vendorPermissions.includes("orders")) navItems.push({ id: "orders", label: "Order Management", icon: "ðŸšš", category: "Orders & Logistics" });
+    if (vendorPermissions.includes("marketing")) navItems.push({ id: "marketing", label: "Marketing & Promos", icon: "ðŸ“ˆ", category: "Marketing & Growth" });
+    if (vendorPermissions.includes("messages")) navItems.push({ id: "messages", label: "Customer Messages", icon: "ðŸ’¬", category: "Marketing & Growth" });
   } else if (actualRole === "reseller") {
     navItems = [
-      { id: "home", label: "Dashboard Overview", icon: "📊", category: "Dashboard & Reports" },
-      { id: "profile", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
-      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
-      { id: "security", label: "Security & Login", icon: "🔐", category: "1. Profile & Setup" },
-      { id: "curation", label: "Curate Products", icon: "🛍️", category: "2. Build Your Storefront" },
-      { id: "links", label: "Share Marketing Links", icon: "🔗", category: "2. Build Your Storefront" },
-      { id: "proxy", label: "Place Proxy Orders", icon: "🛒", category: "3. Sales & Orders" },
-      { id: "analytics", label: "Sales Analytics", icon: "📈", category: "3. Sales & Orders" },
-      { id: "wallet", label: "Wallet & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
-      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "5. Help & Support" },
-      { id: "support", label: "Contact Admin Support", icon: "🎧", category: "5. Help & Support" },
+      { id: "home", label: "Dashboard Overview", icon: "ðŸ“Š", category: "Dashboard & Reports" },
+      { id: "profile", label: "Personal Profile", icon: "ðŸ‘¤", category: "1. Profile & Setup" },
+      { id: "verification", label: "Verification (KYC)", icon: "ðŸ›¡ï¸", category: "1. Profile & Setup" },
+      { id: "security", label: "Security & Login", icon: "ðŸ”", category: "1. Profile & Setup" },
+      { id: "curation", label: "Curate Products", icon: "ðŸ›ï¸", category: "2. Build Your Storefront" },
+      { id: "links", label: "Share Marketing Links", icon: "ðŸ”—", category: "2. Build Your Storefront" },
+      { id: "proxy", label: "Place Proxy Orders", icon: "ðŸ›’", category: "3. Sales & Orders" },
+      { id: "analytics", label: "Sales Analytics", icon: "ðŸ“ˆ", category: "3. Sales & Orders" },
+      { id: "wallet", label: "Wallet & Bank Payouts", icon: "ðŸ’°", category: "4. Finance & Earnings" },
+      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "ðŸ“˜", category: "5. Help & Support" },
+      { id: "support", label: "Contact Admin Support", icon: "ðŸŽ§", category: "5. Help & Support" },
     ];
   } else if (actualRole === "raw_material") {
     navItems = [
-      { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
-      { id: "store_settings", label: "Professional Store", icon: "🏪", category: "1. Profile & Setup" },
-      { id: "verification", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
-      { id: "security", label: "Security & Login", icon: "🔐", category: "1. Profile & Setup" },
-      { id: "vanity_url", label: "Brand & URL Settings", icon: "🔗", category: "1. Profile & Setup" },
-      { id: "inventory", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
-      { id: "orders", label: "Order Management", icon: "🚚", category: "3. Orders & Deliveries" },
-      { id: "wallet", label: "Wallet & Payouts", icon: "💰", category: "4. Finance & Earnings" },
-      { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
-      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "📘", category: "6. Help & Support" },
-      { id: "support", label: "Admin Support", icon: "🎧", category: "6. Help & Support" },
+      { id: "personal", label: "Personal Profile", icon: "ðŸ‘¤", category: "1. Profile & Setup" },
+      { id: "store_settings", label: "Professional Store", icon: "ðŸª", category: "1. Profile & Setup" },
+      { id: "verification", label: "Verification (KYC)", icon: "ðŸ›¡ï¸", category: "1. Profile & Setup" },
+      { id: "security", label: "Security & Login", icon: "ðŸ”", category: "1. Profile & Setup" },
+      { id: "vanity_url", label: "Brand & URL Settings", icon: "ðŸ”—", category: "1. Profile & Setup" },
+      { id: "inventory", label: "Catalog Management", icon: "ðŸ“¦", category: "2. Catalog Management" },
+      { id: "orders", label: "Order Management", icon: "ðŸšš", category: "3. Orders & Deliveries" },
+      { id: "wallet", label: "Wallet & Payouts", icon: "ðŸ’°", category: "4. Finance & Earnings" },
+      { id: "marketing", label: "Marketing & Promos", icon: "ðŸ“ˆ", category: "5. Marketing & Comm" },
+      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "ðŸ“˜", category: "6. Help & Support" },
+      { id: "support", label: "Admin Support", icon: "ðŸŽ§", category: "6. Help & Support" },
     ];
   }
 
@@ -352,7 +357,7 @@ export default function DashboardPage() {
             return (
             <div key={n.id} className="bg-green-50 border border-green-200 p-4 rounded-2xl flex items-start justify-between shadow-sm animate-in fade-in slide-in-from-top-4">
               <div className="flex gap-3 items-start">
-                <div className="text-2xl">{titleStr.includes('🎉') ? '🎉' : titleStr.includes('🏠') ? '🏠' : '🔔'}</div>
+                <div className="text-2xl">{titleStr.includes('ðŸŽ‰') ? 'ðŸŽ‰' : titleStr.includes('ðŸ ') ? 'ðŸ ' : 'ðŸ””'}</div>
                 <div>
                   <h4 className="font-bold text-green-900 text-sm">{titleStr || "New Notification"}</h4>
                   <p className="text-green-800 text-sm mt-1 leading-snug">{typeof n.message === 'string' ? n.message : ""}</p>
@@ -402,7 +407,7 @@ export default function DashboardPage() {
       {auth.currentUser && !auth.currentUser.emailVerified && !isViewAsMode && (
         <div className="bg-yellow-50 text-yellow-800 p-4 rounded-xl mb-6 flex justify-between items-center shadow-sm border border-yellow-200">
           <div className="flex items-center gap-3">
-            <span className="text-xl">⚠️</span>
+            <span className="text-xl">âš ï¸</span>
             <div>
               <span className="font-bold text-sm block">Unverified Email Address</span>
               <span className="text-xs font-medium">Please check your inbox to verify your email. Some features may be restricted until verified.</span>
@@ -435,7 +440,7 @@ export default function DashboardPage() {
             <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
               <div className="w-32 h-32 bg-yellow-400 rounded-full"></div>
             </div>
-            <div className="text-7xl mb-6 animate-bounce relative z-10">⏳</div>
+            <div className="text-7xl mb-6 animate-bounce relative z-10">â³</div>
             <h2 className="text-3xl md:text-4xl font-black text-yellow-900 mb-4 tracking-tight relative z-10">Application Under Review</h2>
             <p className="text-yellow-800/80 font-medium text-lg max-w-2xl mx-auto leading-relaxed relative z-10">
               You have successfully submitted your application. Our Administration team is currently reviewing your documents and store details to ensure everything is perfect.
@@ -634,7 +639,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                 <p className="text-sm text-yellow-800 mt-1">Your shipping address and contact info are missing. You must complete this to place orders.</p>
               </div>
               <button onClick={() => onTabChange("profile")} className="shrink-0 px-6 py-3 bg-yellow-400 text-yellow-900 rounded-xl font-bold hover:bg-yellow-500 transition-colors shadow-sm">
-                Complete Now →
+                Complete Now â†’
               </button>
             </div>
           )}
@@ -644,17 +649,17 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Orders</h3>
                 <div className="text-sm text-gray-500">
-                  {orders.filter(o => o.customerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid).length} total orders found.
+                  {orders.filter(o => o.customerId === getEffectiveUserId(auth.currentUser?.uid)).length} total orders found.
                 </div>
               </div>
-              <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View All Orders →</button>
+              <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View All Orders â†’</button>
             </div>
             <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between group hover:border-[#0070F3]/30 transition-colors">
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Wishlist Preview</h3>
                 <div className="text-sm text-gray-500">Your wishlist is empty.</div>
               </div>
-              <button onClick={() => onTabChange("wishlist")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View Wishlist →</button>
+              <button onClick={() => onTabChange("wishlist")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View Wishlist â†’</button>
             </div>
             <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div>
@@ -696,8 +701,8 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             ))}
           </div>
           <div className="space-y-4">
-            {orders.filter(o => o.customerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid).length > 0 ? (
-              orders.filter(o => o.customerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid).map(order => (
+            {orders.filter(o => o.customerId === getEffectiveUserId(auth.currentUser?.uid)).length > 0 ? (
+              orders.filter(o => o.customerId === getEffectiveUserId(auth.currentUser?.uid)).map(order => (
                 <div key={order.id} className="bg-gray-50 border border-gray-100 rounded-2xl p-5 flex flex-col md:flex-row gap-4 items-center justify-between hover:border-gray-200 transition-colors">
                   <div>
                     <p className="text-sm font-bold text-gray-900">Order #{order.id}</p>
@@ -734,12 +739,14 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
       )}
 
       {activeTab === "messages" && (
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-in fade-in">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Direct Messages</h2>
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="w-full md:w-1/3 md:border-r border-gray-100 md:pr-6">
-              <div className="p-5 bg-gray-50 rounded-2xl text-sm text-gray-500 font-medium text-center border border-gray-100">No active conversations</div>
-            </div>
+        <div className="bg-white rounded-3xl p-12 shadow-sm border border-gray-100 text-center animate-in fade-in max-w-3xl mx-auto mt-10">
+          <div className="text-5xl mb-4">🔒</div>
+          <h2 className="text-2xl font-black text-gray-900 mb-2">Premium Feature Locked</h2>
+          <p className="text-gray-500 font-medium mb-8">This module requires an active subscription to access.</p>
+          <button onClick={() => setActiveTab('pricing')} className="bg-[#0070F3] text-white px-8 py-3 rounded-full font-bold hover:bg-[#005BB5] transition-colors shadow-[0_4px_14px_0_rgb(0,112,243,0.39)]">
+            Upgrade Plan
+          </button>
+        </div>
             <div className="w-full md:w-2/3 flex items-center justify-center text-gray-400 font-medium bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 min-h-[300px]">
               Select a chat to start messaging
             </div>
@@ -761,19 +768,50 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           </div>
           <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
             <h3 className="font-bold text-gray-900 mb-5">Raise a Ticket</h3>
-            <form className="space-y-4">
-              <input type="text" placeholder="Subject" className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
-              <textarea rows={4} placeholder="Describe your issue..." className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all"></textarea>
-              <button type="button" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Submit Ticket</button>
+            <form className="space-y-4" onSubmit={async e => {
+              e.preventDefault();
+              const subject = e.target.elements.subject.value;
+              const description = e.target.elements.description.value;
+              const activeUid = getEffectiveUserId(auth.currentUser?.uid);
+              if (!activeUid || !subject || !description) return;
+              try {
+                const btn = e.target.querySelector('button');
+                btn.disabled = true;
+                btn.textContent = 'Submitting...';
+                await addDoc(collection(db, "support_tickets"), {
+                  userId: activeUid,
+                  userEmail: auth.currentUser?.email || "",
+                  role: userRole,
+                  subject,
+                  description,
+                  status: "open",
+                  createdAt: serverTimestamp()
+                });
+                alert("Support ticket raised successfully. We will get back to you soon.");
+                e.target.reset();
+                btn.disabled = false;
+                btn.textContent = 'Submit Ticket';
+              } catch (err) {
+                console.error(err);
+                alert("Failed to raise ticket.");
+                e.target.querySelector('button').disabled = false;
+                e.target.querySelector('button').textContent = 'Submit Ticket';
+              }
+            }}>
+              <input type="text" name="subject" placeholder="Subject" required className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+              <textarea rows={4} name="description" placeholder="Describe your issue..." required className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all"></textarea>
+              <button type="submit" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Submit Ticket</button>
             </form>
           </div>
         </div>
       )}
 
       {activeTab === "address" && (
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6 animate-in fade-in max-w-2xl">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Address Book</h2>
-          <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium">No saved addresses found.</div>
+        <div className="bg-white rounded-3xl p-12 shadow-sm border border-gray-100 text-center animate-in fade-in max-w-2xl mx-auto mt-10">
+          <div className="text-5xl mb-4">🚀</div>
+          <h2 className="text-2xl font-black text-gray-900 mb-2">Address Book (Coming Soon)</h2>
+          <p className="text-gray-500 font-medium mb-8">We are building a seamless multi-address management system for fast checkouts.</p>
+        </div>
           <button className="w-full bg-[#1f2937] text-white py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">+ Add New Address</button>
         </div>
       )}
@@ -783,7 +821,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <h2 className="text-xl font-bold text-gray-900 mb-6">Wallet & Rewards</h2>
           <div className="bg-gradient-to-r from-blue-600 to-[#0070F3] rounded-2xl p-6 text-white shadow-lg">
             <p className="text-blue-100 text-sm font-bold uppercase tracking-wider mb-1">Available Balance</p>
-            <h3 className="text-4xl font-black">₹0.00</h3>
+            <h3 className="text-4xl font-black">â‚¹0.00</h3>
           </div>
           <div className="text-center py-10 bg-gray-50 rounded-2xl border border-gray-100 text-gray-500 font-medium">No transaction history.</div>
         </div>
@@ -900,11 +938,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
   const { products } = useProducts();
   const { orders } = useOrders();
   const { transactions } = useTransactions();
-  const sellerTransactions = transactions.filter(t => t.sellerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid);
+  const sellerTransactions = transactions.filter(t => t.sellerId === getEffectiveUserId(auth.currentUser?.uid));
   const availableBalance = sellerTransactions.filter(t => t.status === "completed" || t.status === "paid_out").reduce((sum, t) => sum + t.amount, 0);
   
   // Products and Orders
-  const sellerProductsRaw = products.filter(p => p.sellerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid);
+  const sellerProductsRaw = products.filter(p => p.sellerId === getEffectiveUserId(auth.currentUser?.uid));
   
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -923,7 +961,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
     return matchesSearch && matchesStatus;
   });
   
-  const sellerOrders = orders.filter(o => o.sellerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid && o.logisticsStatus !== "Delivered");
+  const sellerOrders = orders.filter(o => o.sellerId === getEffectiveUserId(auth.currentUser?.uid) && o.logisticsStatus !== "Delivered");
 
   // Personal Profile State
   const [personalName, setPersonalName] = useState("");
@@ -1411,7 +1449,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
   if (applicationStatus === "pending_approval") {
     return (
       <div className="bg-yellow-50 p-12 rounded-3xl text-center border border-yellow-200 mt-10 animate-in fade-in">
-        <div className="text-6xl mb-6">⏳</div>
+        <div className="text-6xl mb-6">â³</div>
         <h2 className="text-3xl font-black text-yellow-900 mb-4">Account Under Review</h2>
         <p className="text-yellow-800 text-lg font-medium max-w-2xl mx-auto">
           You have successfully joined as a {roleTitle.replace(' Hub', '')}. 
@@ -1455,7 +1493,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
               <div className="w-48 h-48 bg-white rounded-full"></div>
             </div>
             <div className="relative z-10">
-              <h2 className="text-2xl font-black text-white mb-2">🚀 Upgrade to Pro Seller</h2>
+              <h2 className="text-2xl font-black text-white mb-2">ðŸš€ Upgrade to Pro Seller</h2>
               <p className="text-blue-200 font-medium max-w-xl text-sm leading-relaxed">
                 Unlock automated Shiprocket logistics, B2B wholesale selling, and unlimited product uploads. Supercharge your business today!
               </p>
@@ -1475,14 +1513,14 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Wallet Balance</h3>
-            <div className="text-3xl font-black text-green-600">₹{availableBalance.toLocaleString()}</div>
+            <div className="text-3xl font-black text-green-600">â‚¹{availableBalance.toLocaleString()}</div>
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-50 text-purple-200">
               <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
             </div>
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2 relative z-10">Affiliate Comm. Paid</h3>
-            <div className="text-3xl font-black text-purple-600 relative z-10">₹{affiliateCommissionsPaid.toLocaleString()}</div>
+            <div className="text-3xl font-black text-purple-600 relative z-10">â‚¹{affiliateCommissionsPaid.toLocaleString()}</div>
           </div>
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Orders</h3>
@@ -1515,7 +1553,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
               {sellerProductsRaw.length > 0 && (
                 <div className="flex flex-col md:flex-row gap-4 mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-100">
                   <div className="flex-1 relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">ðŸ”</span>
                     <input 
                       type="text" 
                       placeholder="Search products by name..." 
@@ -1539,7 +1577,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
 
               {sellerProductsRaw.length === 0 ? (
                 <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50">
-                  <div className="text-4xl mb-4">🛍️</div>
+                  <div className="text-4xl mb-4">ðŸ›ï¸</div>
                   <h3 className="text-lg font-bold text-gray-900 mb-2">No Products Yet</h3>
                   <p className="text-gray-500 max-w-md mx-auto mb-6">You haven't added any products to your catalog. Add your first item to start selling.</p>
                   <button onClick={handleAddNewClick} className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm">
@@ -1584,7 +1622,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                               </div>
                             </div>
                           </td>
-                          <td className="py-4 font-bold text-gray-900">₹{Number(product.price).toLocaleString()}</td>
+                          <td className="py-4 font-bold text-gray-900">â‚¹{Number(product.price).toLocaleString()}</td>
                           <td className="py-4 font-medium text-gray-500">{product.category || "Uncategorized"}</td>
                           <td className="py-4">
                             <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
@@ -1602,7 +1640,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                           </td>
                           <td className="py-4 text-right whitespace-nowrap">
                             <a href={"/product/" + product.slug} target="_blank" className="inline-block bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors mr-2">
-                              View Live ↗
+                              View Live â†—
                             </a>
                             <button onClick={() => handleEditClick(product)} className="inline-block bg-blue-50 text-[#0070F3] border border-blue-100 hover:bg-blue-100 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors">
                               Edit
@@ -1619,7 +1657,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
             <div>
               <div className="flex items-center gap-4 mb-8">
                 <button onClick={() => setIsAddInventoryOpen(false)} className="text-gray-400 hover:text-gray-900 transition-colors">
-                  ← Back to Catalog
+                  â† Back to Catalog
                 </button>
                 <h2 className="text-2xl font-bold text-gray-900">{editingProductId ? "Edit Inventory" : "Upload New Inventory"}</h2>
               </div>
@@ -1657,11 +1695,11 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
         <input type="text" value={originalWeaver} onChange={e => setOriginalWeaver(e.target.value)} placeholder="e.g. Sambalpuri Cooperative" className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
       </div>
       <div>
-        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Retail Selling Price (₹)</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Retail Selling Price (â‚¹)</label>
         <input type="text" value={productPrice} onChange={e => setProductPrice(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required placeholder="e.g. 34500" />
       </div>
       <div>
-        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Retail MRP (₹)</label>
+        <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Retail MRP (â‚¹)</label>
         <input type="text" value={productMrp} onChange={e => setProductMrp(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required placeholder="e.g. 42000" />
       </div>
       <div className="md:col-span-2">
@@ -1727,7 +1765,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
         <h3 className="text-sm font-bold text-gray-900 mb-4">Product Images & Video</h3>
         <div className="mb-4">
           <label className="block text-xs font-bold text-[#FF0000] uppercase tracking-wider mb-2 flex items-center gap-2">
-            <span className="text-lg leading-none">▶</span> YouTube Shorts URLs <span className="text-xs text-gray-500 font-normal normal-case">(Up to 4 videos, Optional)</span>
+            <span className="text-lg leading-none">â–¶</span> YouTube Shorts URLs <span className="text-xs text-gray-500 font-normal normal-case">(Up to 4 videos, Optional)</span>
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[0, 1, 2, 3].map(index => (
@@ -1756,8 +1794,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
 
       <div className="border border-gray-200 rounded-2xl overflow-hidden bg-white">
         <button type="button" onClick={() => setShowAdvanced(!showAdvanced)} className="w-full p-4 flex justify-between items-center bg-gray-50 hover:bg-gray-100 transition-colors">
-          <span className="font-bold text-gray-900 text-sm">⚙️ Advanced Selling Options (B2B & Resellers)</span>
-          <span className="text-gray-500">{showAdvanced ? "▲" : "▼"}</span>
+          <span className="font-bold text-gray-900 text-sm">âš™ï¸ Advanced Selling Options (B2B & Resellers)</span>
+          <span className="text-gray-500">{showAdvanced ? "â–²" : "â–¼"}</span>
         </button>
         
         {showAdvanced && (
@@ -1778,7 +1816,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                     <label className="block text-xs font-bold text-blue-800 uppercase tracking-wider mb-2">Reseller Discount Percentage (Min 5%)</label>
                     <input type="number" min="5" max="90" value={resellerMarginPercentage} onChange={e => setResellerMarginPercentage(Math.max(5, Number(e.target.value)))} className="w-full bg-white border border-blue-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required />
                     <div className="text-xs text-blue-800 font-bold mt-2">
-                      Resellers will sell this at a ₹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount from your MRP.
+                      Resellers will sell this at a â‚¹{Math.floor(Number(productPrice || 0) * (Number(resellerMarginPercentage) / 100))} discount from your MRP.
                     </div>
                   </div>
                 )}
@@ -1821,7 +1859,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
     <div className="flex gap-4">
       {uploadStep < 3 ? (
         <button type="button" onClick={() => { setUploadStep(uploadStep + 1); saveDraft(); }} className="w-full md:w-auto bg-black text-white px-8 py-3 font-bold rounded-xl hover:bg-gray-800 transition-colors shadow-sm">
-          Next Step →
+          Next Step â†’
         </button>
       ) : (
         <button type="submit" disabled={isUploading} className="w-full md:w-auto bg-[#0070F3] text-white px-8 py-3 font-bold rounded-xl disabled:opacity-50 hover:bg-[#005BB5] transition-colors shadow-sm">
@@ -1936,7 +1974,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                           <span className="text-xs font-mono text-gray-900 font-bold">{order.trackingNumber || 'AWB-PENDING'}</span>
                         </div>
                       )}
-                      <button onClick={() => window.open(`/dashboard/print-slip?orderId=${order.id}`, '_blank')} className="mt-2 w-full px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 transition-colors rounded-lg text-[10px] font-bold uppercase tracking-widest border border-gray-300 shadow-sm flex items-center justify-center gap-1">🖨️ Print Slip</button>
+                      <button onClick={() => window.open(`/dashboard/print-slip?orderId=${order.id}`, '_blank')} className="mt-2 w-full px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 transition-colors rounded-lg text-[10px] font-bold uppercase tracking-widest border border-gray-300 shadow-sm flex items-center justify-center gap-1">ðŸ–¨ï¸ Print Slip</button>
                     </td>
                   </tr>
                 )) : (
@@ -1955,36 +1993,59 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Pending Payouts</div>
-              <div className="text-3xl font-black text-gray-900">₹0</div>
+              <div className="text-3xl font-black text-gray-900">â‚¹0</div>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Total Payouts</div>
-              <div className="text-3xl font-black text-green-600">₹0</div>
+              <div className="text-3xl font-black text-green-600">â‚¹0</div>
             </div>
           </div>
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
             <h3 className="font-bold text-gray-900 mb-6 border-b border-gray-100 pb-2">Bank Details</h3>
-            <form className="space-y-6" onSubmit={e => { e.preventDefault(); alert("Bank details saved securely."); }}>
+                        <form className="space-y-6" onSubmit={async e => {
+              e.preventDefault();
+              const activeUid = getEffectiveUserId(auth.currentUser?.uid);
+              if (!activeUid) return;
+              try {
+                await updateDoc(doc(db, "users", activeUid), {
+                  bankHolder, bankName, bankAccount, bankIfsc, bankUpi
+                });
+                
+                let actualRole = userRole;
+                let targetCollection = actualRole === "weaver" ? "weavers" : (actualRole === "store" || actualRole === "shop" ? "stores" : (actualRole === "raw_material" ? "suppliers" : (actualRole === "wholesaler" ? "wholesalers" : "resellers")));
+                
+                if (targetCollection) {
+                  await updateDoc(doc(db, targetCollection, activeUid), {
+                    bankHolder, bankName, bankAccount, bankIfsc, bankUpi
+                  });
+                }
+                
+                alert("Bank details saved securely.");
+              } catch (err) {
+                console.error(err);
+                alert("Failed to save bank details.");
+              }
+            }}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Account Holder Name</label>
-                  <input type="text" placeholder="As per bank records" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                  <input type="text" value={bankHolder} onChange={e => setBankHolder(e.target.value)} placeholder="As per bank records" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Bank Name</label>
-                  <input type="text" placeholder="e.g. State Bank of India" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
+                  <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} placeholder="e.g. State Bank of India" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none" required />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Account Number</label>
-                  <input type="text" placeholder="Account Number" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono" required />
+                  <input type="text" value={bankAccount} onChange={e => setBankAccount(e.target.value)} placeholder="Account Number" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono" required />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">IFSC Code</label>
-                  <input type="text" placeholder="e.g. SBIN0001234" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono uppercase" required />
+                  <input type="text" value={bankIfsc} onChange={e => setBankIfsc(e.target.value)} placeholder="e.g. SBIN0001234" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono uppercase" required />
                 </div>
                 <div className="col-span-1 md:col-span-2">
                   <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">UPI Details (Optional)</label>
-                  <input type="text" placeholder="yourname@upi" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono" />
+                  <input type="text" value={bankUpi} onChange={e => setBankUpi(e.target.value)} placeholder="yourname@upi" className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3] outline-none font-mono" />
                 </div>
               </div>
               <div className="flex justify-end mt-4">
@@ -1999,12 +2060,14 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
 
 
       {activeTab === "messages" && (
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 animate-in fade-in">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Buyer Messages</h2>
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="w-full md:w-1/3 md:border-r border-gray-100 md:pr-6">
-              <div className="p-5 bg-gray-50 rounded-2xl text-sm text-gray-500 font-medium text-center border border-gray-100">No active conversations</div>
-            </div>
+        <div className="bg-white rounded-3xl p-12 shadow-sm border border-gray-100 text-center animate-in fade-in max-w-3xl mx-auto mt-10">
+          <div className="text-5xl mb-4">🔒</div>
+          <h2 className="text-2xl font-black text-gray-900 mb-2">Premium Feature Locked</h2>
+          <p className="text-gray-500 font-medium mb-8">This module requires an active subscription to access.</p>
+          <button onClick={() => setActiveTab('pricing')} className="bg-[#0070F3] text-white px-8 py-3 rounded-full font-bold hover:bg-[#005BB5] transition-colors shadow-[0_4px_14px_0_rgb(0,112,243,0.39)]">
+            Upgrade Plan
+          </button>
+        </div>
             <div className="w-full md:w-2/3 flex items-center justify-center text-gray-400 font-medium bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 min-h-[300px]">
               Select a chat to start messaging
             </div>
@@ -2018,10 +2081,39 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
           <p className="text-sm text-gray-500 mb-6 font-medium">Raise a dispute or ask for help regarding GI-tags or payouts.</p>
           <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
             <h3 className="font-bold text-gray-900 mb-5">Raise a Ticket</h3>
-            <form className="space-y-4">
-              <input type="text" placeholder="Subject" className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
-              <textarea rows={4} placeholder="Describe your issue..." className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all"></textarea>
-              <button type="button" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Submit Ticket</button>
+            <form className="space-y-4" onSubmit={async e => {
+              e.preventDefault();
+              const subject = e.target.elements.subject.value;
+              const description = e.target.elements.description.value;
+              const activeUid = getEffectiveUserId(auth.currentUser?.uid);
+              if (!activeUid || !subject || !description) return;
+              try {
+                const btn = e.target.querySelector('button');
+                btn.disabled = true;
+                btn.textContent = 'Submitting...';
+                await addDoc(collection(db, "support_tickets"), {
+                  userId: activeUid,
+                  userEmail: auth.currentUser?.email || "",
+                  role: userRole,
+                  subject,
+                  description,
+                  status: "open",
+                  createdAt: serverTimestamp()
+                });
+                alert("Support ticket raised successfully. We will get back to you soon.");
+                e.target.reset();
+                btn.disabled = false;
+                btn.textContent = 'Submit Ticket';
+              } catch (err) {
+                console.error(err);
+                alert("Failed to raise ticket.");
+                e.target.querySelector('button').disabled = false;
+                e.target.querySelector('button').textContent = 'Submit Ticket';
+              }
+            }}>
+              <input type="text" name="subject" placeholder="Subject" required className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+              <textarea rows={4} name="description" placeholder="Describe your issue..." required className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all"></textarea>
+              <button type="submit" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Submit Ticket</button>
             </form>
           </div>
         </div>
@@ -2031,14 +2123,14 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
         <div className="animate-in fade-in max-w-2xl">
           {subscriptionTier === "free" ? (
              <div className="bg-white p-12 rounded-3xl border border-gray-100 text-center shadow-sm">
-                 <div className="text-5xl mb-4">🔒</div>
+                 <div className="text-5xl mb-4">ðŸ”’</div>
                  <h2 className="text-2xl font-black text-gray-900 mb-2">Pro Feature Locked</h2>
                  <p className="text-gray-500 mb-8 font-medium">You must upgrade to the Pro Tier to invite staff, assign granular permissions, and delegate dashboard access.</p>
                  <button onClick={() => setIsUpgraderOpen(true)} className="bg-gradient-to-r from-[#0070F3] to-[#005bb5] text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">Upgrade to Pro</button>
              </div>
           ) : (
             <StaffAccountsTab 
-              userUid={(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid || ""}
+              userUid={getEffectiveUserId(auth.currentUser?.uid) || ""}
               roleType={roleTitle.includes("Weaver") ? "weaver" : "store"}
               staffMembers={staffMembers}
               setStaffMembers={setStaffMembers}
@@ -2249,7 +2341,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
             {/* Step Indicators */}
             {roleTitle === "Weaver Hub" && storeStatus === "pending" && (
               <div className="mb-6 bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl flex items-start gap-3 shadow-sm animate-in fade-in slide-in-from-top-2">
-                <div className="text-xl">⏳</div>
+                <div className="text-xl">â³</div>
                 <div>
                   <h4 className="font-bold text-sm">Store Profile Under Review</h4>
                   <p className="text-xs mt-1">Your public store profile is currently being reviewed by our Admin team. It will be live once approved!</p>
@@ -2480,18 +2572,18 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                               const lat = position.coords.latitude;
                               const lng = position.coords.longitude;
                               setGooglePin(`https://www.google.com/maps?q=${lat},${lng}`);
-                              btn.innerText = "📍 Use Current Location";
+                              btn.innerText = "ðŸ“ Use Current Location";
                             },
                             (error) => {
                               alert("Unable to retrieve your location. Please check browser permissions.");
-                              btn.innerText = "📍 Use Current Location";
+                              btn.innerText = "ðŸ“ Use Current Location";
                             }
                           );
                         } else {
                           alert("Geolocation is not supported by your browser");
                         }
                       }} className="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-600 px-2 py-1 rounded-md font-bold transition-colors border border-blue-200 shadow-sm whitespace-nowrap">
-                        📍 Use Current Location
+                        ðŸ“ Use Current Location
                       </button>
                     </div>
                     <input type="text" placeholder="https://maps.app.goo.gl/..." value={googlePin} onChange={e => setGooglePin(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
@@ -2555,7 +2647,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
   const resellerProducts = products.filter(p => p.allowResellerMargin === true);
 
   // Filter transactions for this reseller
-  const myTransactions = transactions.filter(t => t.resellerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid);
+  const myTransactions = transactions.filter(t => t.resellerId === getEffectiveUserId(auth.currentUser?.uid));
 
   // Calculate balances from ledger
   const escrowBalance = myTransactions.filter(t => t.status === "pending_escrow").reduce((sum, t) => sum + t.amount, 0);
@@ -2564,7 +2656,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
   const totalEarned = availableBalance + paidOutBalance;
 
   // Legacy variables
-  const myReferralOrders = orders.filter(o => o.referralId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid || o.proxyBuyerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid || (o as any).resellerId === (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid);
+  const myReferralOrders = orders.filter(o => o.referralId === getEffectiveUserId(auth.currentUser?.uid) || o.proxyBuyerId === getEffectiveUserId(auth.currentUser?.uid) || (o as any).resellerId === getEffectiveUserId(auth.currentUser?.uid));
 
   // Proxy Order State
   const [customerName, setCustomerName] = useState("");
@@ -2653,7 +2745,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
         pinCode,
         address,
         paymentMethod,
-        resellerId: (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid,
+        resellerId: getEffectiveUserId(auth.currentUser?.uid),
         status: "placed",
         hubStatus: "pending",
         createdAt: serverTimestamp(),
@@ -2663,7 +2755,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
       // Record a pending commission transaction to be resolved when escrow clears
       await addDoc(collection(db, "transactions"), {
         type: "reseller_commission",
-        resellerId: (typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid,
+        resellerId: getEffectiveUserId(auth.currentUser?.uid),
         orderId: orderRef.id,
         amount: 0, // To be calculated on checkout
         status: "pending_escrow",
@@ -2717,7 +2809,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
       {activeTab === "home" && (
         <div className="space-y-6 animate-in fade-in">
           <div className="bg-blue-50 border border-blue-200 p-6 rounded-2xl flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-blue-500 text-xl shadow-sm shrink-0">⏳</div>
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-blue-500 text-xl shadow-sm shrink-0">â³</div>
             <div>
               <h3 className="font-bold text-gray-900 text-lg">Activation Pending</h3>
               <p className="text-sm text-gray-600 mt-1">Our staff will contact you shortly to verify your identity and activate your storefront link.</p>
@@ -2730,7 +2822,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Commission Earned</h3>
-              <div className="text-3xl font-black text-green-600">₹{Math.floor(totalEarned).toLocaleString('en-IN')}</div>
+              <div className="text-3xl font-black text-green-600">â‚¹{Math.floor(totalEarned).toLocaleString('en-IN')}</div>
             </div>
           </div>
         </div>
@@ -2748,7 +2840,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {resellerProducts.map(product => {
-                const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/product/${product.slug}?ref=${(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid}` : "";
+                const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/product/${product.slug}?ref=${getEffectiveUserId(auth.currentUser?.uid)}` : "";
                 return (
                   <div key={product.id} className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
                     <div className="relative w-full aspect-[3/4] sm:aspect-[9/16] bg-gray-100">
@@ -2757,8 +2849,8 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                     <div className="p-4 flex flex-col flex-1">
                       <h3 className="font-bold text-gray-900 truncate mb-1">{product.title}</h3>
                       <div className="flex justify-between items-center mb-4">
-                        <span className="text-sm font-medium text-gray-500 line-through">₹{product.price}</span>
-                        <span className="text-lg font-black text-[#0070F3]">₹{product.resellerPrice}</span>
+                        <span className="text-sm font-medium text-gray-500 line-through">â‚¹{product.price}</span>
+                        <span className="text-lg font-black text-[#0070F3]">â‚¹{product.resellerPrice}</span>
                       </div>
                       <div className="text-xs text-green-600 font-bold mb-4 bg-green-50 px-2 py-1 rounded w-max">
                         Your Margin: {product.resellerMarginPercentage}%
@@ -2816,13 +2908,13 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                 <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full bg-white border border-gray-300 rounded-xl p-3 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" required>
                   <option value="">Select Method</option>
                   <option value="UPI">Send UPI Link to Customer</option>
-                  <option value="COD">Cash on Delivery (₹100 Extra)</option>
+                  <option value="COD">Cash on Delivery (â‚¹100 Extra)</option>
                   <option value="PREPAID">I will pay now (Prepaid)</option>
                 </select>
               </div>
             </div>
             <div className="bg-blue-50 p-5 rounded-2xl border border-blue-100 flex items-start gap-4">
-              <span className="text-xl">ℹ️</span>
+              <span className="text-xl">â„¹ï¸</span>
               <p className="text-sm text-blue-800 font-medium">Proxy orders are shipped in your name. The customer will not see Bhulia.com pricing, ensuring your markup is protected.</p>
             </div>
             <button type="submit" disabled={isOrdering} className="w-full bg-[#0070F3] text-white font-bold py-3.5 rounded-xl disabled:opacity-50 hover:bg-[#005BB5] transition-colors shadow-sm mt-4">
@@ -2839,7 +2931,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-gradient-to-br from-green-500 to-green-700 p-8 rounded-3xl shadow-lg text-white">
               <h3 className="text-white/80 text-xs font-bold uppercase tracking-wider mb-2">Available Balance</h3>
-              <div className="text-4xl font-black mb-1">₹{availableBalance.toLocaleString('en-IN')}</div>
+              <div className="text-4xl font-black mb-1">â‚¹{availableBalance.toLocaleString('en-IN')}</div>
               <p className="text-xs text-green-100 mt-4">Funds cleared from delivered orders. Ready to withdraw.</p>
               <button 
                 onClick={handleRequestPayout}
@@ -2852,7 +2944,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div>
                 <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Pending Escrow</h3>
-                <div className="text-4xl font-black text-orange-500">₹{escrowBalance.toLocaleString('en-IN')}</div>
+                <div className="text-4xl font-black text-orange-500">â‚¹{escrowBalance.toLocaleString('en-IN')}</div>
                 <p className="text-xs text-gray-400 mt-4">Commissions locked in active transit. Auto-funds upon delivery.</p>
               </div>
             </div>
@@ -2860,7 +2952,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div>
                 <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Total Earned</h3>
-                <div className="text-4xl font-black text-gray-900">₹{totalEarned.toLocaleString('en-IN')}</div>
+                <div className="text-4xl font-black text-gray-900">â‚¹{totalEarned.toLocaleString('en-IN')}</div>
                 <p className="text-xs text-gray-400 mt-4">Lifetime earnings from Bhulia Hub.</p>
               </div>
             </div>
@@ -2895,7 +2987,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                             {t.status.replace('_', ' ')}
                           </span>
                         </td>
-                        <td className="py-4 px-4 text-right font-bold text-gray-900">+₹{t.amount.toLocaleString('en-IN')}</td>
+                        <td className="py-4 px-4 text-right font-bold text-gray-900">+â‚¹{t.amount.toLocaleString('en-IN')}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -2941,7 +3033,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             </div>
             <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-center">
               <p className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Est. Earnings</p>
-              <p className="text-3xl font-black text-blue-900">₹0</p>
+              <p className="text-3xl font-black text-blue-900">â‚¹0</p>
             </div>
           </div>
           <div className="h-64 flex items-center justify-center bg-gray-50 rounded-2xl border border-gray-100 text-gray-400 font-medium">Chart Data Unavailable</div>
@@ -2956,7 +3048,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 mb-6">
             <h3 className="font-bold text-gray-900 mb-4">Your Custom Storefront Link</h3>
             <div className="flex gap-4 items-center">
-              <input type="text" readOnly value={`https://bhulia.com/store/${(typeof window !== "undefined" ? (localStorage.getItem("admin_impersonating_shop") || localStorage.getItem("sd_boss_uid")) : null) || auth.currentUser?.uid}`} className="flex-1 border border-gray-300 rounded-xl p-3 text-sm text-gray-500 bg-white" />
+              <input type="text" readOnly value={`https://bhulia.com/store/${getEffectiveUserId(auth.currentUser?.uid)}`} className="flex-1 border border-gray-300 rounded-xl p-3 text-sm text-gray-500 bg-white" />
               <button className="bg-[#0070F3] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm">Copy</button>
             </div>
           </div>
@@ -2968,10 +3060,39 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <h2 className="text-xl font-bold text-gray-900">Contact Admin Support</h2>
           <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
             <h3 className="font-bold text-gray-900 mb-5">Raise a Ticket</h3>
-            <form className="space-y-4">
-              <input type="text" placeholder="Subject" className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
-              <textarea rows={4} placeholder="Describe your issue..." className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all"></textarea>
-              <button type="button" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Submit Ticket</button>
+            <form className="space-y-4" onSubmit={async e => {
+              e.preventDefault();
+              const subject = e.target.elements.subject.value;
+              const description = e.target.elements.description.value;
+              const activeUid = getEffectiveUserId(auth.currentUser?.uid);
+              if (!activeUid || !subject || !description) return;
+              try {
+                const btn = e.target.querySelector('button');
+                btn.disabled = true;
+                btn.textContent = 'Submitting...';
+                await addDoc(collection(db, "support_tickets"), {
+                  userId: activeUid,
+                  userEmail: auth.currentUser?.email || "",
+                  role: userRole,
+                  subject,
+                  description,
+                  status: "open",
+                  createdAt: serverTimestamp()
+                });
+                alert("Support ticket raised successfully. We will get back to you soon.");
+                e.target.reset();
+                btn.disabled = false;
+                btn.textContent = 'Submit Ticket';
+              } catch (err) {
+                console.error(err);
+                alert("Failed to raise ticket.");
+                e.target.querySelector('button').disabled = false;
+                e.target.querySelector('button').textContent = 'Submit Ticket';
+              }
+            }}>
+              <input type="text" name="subject" placeholder="Subject" required className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all" />
+              <textarea rows={4} name="description" placeholder="Describe your issue..." required className="w-full border border-gray-300 bg-white rounded-xl p-3 text-sm text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-[#0070F3] outline-none transition-all"></textarea>
+              <button type="submit" className="bg-[#1f2937] text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">Submit Ticket</button>
             </form>
           </div>
         </div>
@@ -3162,7 +3283,7 @@ function GoogleImporterTab() {
                     <td className="p-4 text-sm text-gray-500 max-w-xs truncate" title={r.formattedAddress}>{r.formattedAddress}</td>
                     <td className="p-4">
                       <div className="flex items-center gap-1">
-                        <span className="text-yellow-400">★</span>
+                        <span className="text-yellow-400">â˜…</span>
                         <span className="font-bold text-gray-900">{r.rating || "N/A"}</span>
                         <span className="text-xs text-gray-400">({r.userRatingCount || 0})</span>
                       </div>
@@ -3313,7 +3434,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
       {activeTab === "overview" && (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            <PremiumMetricCard title="Total Catalog Value" value={<>{productsLoading ? "..." : `₹${totalCatalogValue.toLocaleString()}`}</>} index={0} />
+            <PremiumMetricCard title="Total Catalog Value" value={<>{productsLoading ? "..." : `â‚¹${totalCatalogValue.toLocaleString()}`}</>} index={0} />
             <PremiumMetricCard title="Live Products" value={<>{productsLoading ? "..." : products.length}</>} index={1} />
             <PremiumMetricCard title="Verified Weavers" value={<>{weaversLoading ? "..." : weavers.length}</>} index={2} />
             <PremiumMetricCard title="Retail Stores" value={<>{storesLoading ? "..." : stores.length}</>} index={3} />
@@ -3403,7 +3524,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
               <p className="text-blue-600 text-sm mt-1">We have upgraded to the new Enterprise Admin Engine. Please use the new hub for all Product Approvals, KYC, and Orders.</p>
             </div>
             <a href="/admin/dashboard" className="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl shadow hover:bg-blue-700 transition-colors">
-              Go to Enterprise Admin →
+              Go to Enterprise Admin â†’
             </a>
           </div>
           <h2 className="text-xl font-bold text-gray-900 mb-6 line-through text-gray-400">Product Approvals (Legacy)</h2>
@@ -3537,7 +3658,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
                 <span className="text-xs font-bold uppercase tracking-wider text-[#0070F3]">Ecosystem Verification</span>
                 <h3 className="text-2xl font-black text-gray-900 mt-1">Inspect: {selectedItem.title}</h3>
               </div>
-              <button onClick={() => setSelectedItem(null)} className="p-2 bg-gray-50 text-gray-500 rounded-full hover:bg-gray-100 transition-colors">✕</button>
+              <button onClick={() => setSelectedItem(null)} className="p-2 bg-gray-50 text-gray-500 rounded-full hover:bg-gray-100 transition-colors">âœ•</button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-blue-50 p-6 rounded-2xl border border-blue-100 mb-4">
@@ -3673,12 +3794,12 @@ function SupplierDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Bulk Orders</h3>
             <div className="text-4xl font-black text-[#8B4513]">0</div>
-            <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#8B4513] font-bold text-left">View Orders →</button>
+            <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#8B4513] font-bold text-left">View Orders â†’</button>
           </div>
           <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Inventory Items</h3>
             <div className="text-4xl font-black text-[#8B4513]">0</div>
-            <button onClick={() => onTabChange("inventory")} className="mt-6 text-sm text-[#8B4513] font-bold text-left">Manage Inventory →</button>
+            <button onClick={() => onTabChange("inventory")} className="mt-6 text-sm text-[#8B4513] font-bold text-left">Manage Inventory â†’</button>
           </div>
         </div>
       )}
@@ -3704,4 +3825,5 @@ function SupplierDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
     </div>
   );
 }
+
 
