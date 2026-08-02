@@ -747,11 +747,6 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
             Upgrade Plan
           </button>
         </div>
-            <div className="w-full md:w-2/3 flex items-center justify-center text-gray-400 font-medium bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 min-h-[300px]">
-              Select a chat to start messaging
-            </div>
-          </div>
-        </div>
       )}
 
       {activeTab === "support" && (
@@ -811,8 +806,6 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="text-5xl mb-4">🚀</div>
           <h2 className="text-2xl font-black text-gray-900 mb-2">Address Book (Coming Soon)</h2>
           <p className="text-gray-500 font-medium mb-8">We are building a seamless multi-address management system for fast checkouts.</p>
-        </div>
-          <button className="w-full bg-[#1f2937] text-white py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-sm">+ Add New Address</button>
         </div>
       )}
 
@@ -2067,11 +2060,6 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
           <button onClick={() => setActiveTab('pricing')} className="bg-[#0070F3] text-white px-8 py-3 rounded-full font-bold hover:bg-[#005BB5] transition-colors shadow-[0_4px_14px_0_rgb(0,112,243,0.39)]">
             Upgrade Plan
           </button>
-        </div>
-            <div className="w-full md:w-2/3 flex items-center justify-center text-gray-400 font-medium bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 min-h-[300px]">
-              Select a chat to start messaging
-            </div>
-          </div>
         </div>
       )}
 
