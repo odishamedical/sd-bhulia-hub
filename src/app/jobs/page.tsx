@@ -120,7 +120,7 @@ export default function JobsPage() {
   const filteredJobs = jobs;
 
   return (
-    <main className="min-h-screen bg-[#f8fafc] pb-20 relative overflow-hidden">
+    <main className="min-h-screen bg-[#051815] pb-20 relative overflow-hidden">
       {showPostModal && profile && (
         <PostJobModal 
           onClose={() => setShowPostModal(false)} 
