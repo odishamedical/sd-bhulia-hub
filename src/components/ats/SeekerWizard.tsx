@@ -170,10 +170,10 @@ export default function SeekerWizard({ userUid, userEmail, onSuccess }: { userUi
       <div className="mb-10 relative z-10">
         <h1 className="text-3xl font-bold text-center mb-2">Create {atsConfig.terminology.cvName}</h1>
         <div className="flex justify-between items-center mt-8 relative">
-          <div className="absolute top-1/2 left-0 right-0 h-1 bg-white/10 -z-10 -translate-y-1/2 rounded-full"></div>
-          <div className={`absolute top-1/2 left-0 h-1 ${atsConfig.theme.secondaryBg} -z-10 -translate-y-1/2 transition-all duration-300 rounded-full`} style={{ width: `${((currentStep - 1) / 4) * 100}%` }}></div>
+          <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-700 -z-10 -translate-y-1/2 rounded-full"></div>
+          <div className={`absolute top-1/2 left-0 h-1 bg-[#DAA520] -z-10 -translate-y-1/2 transition-all duration-300 rounded-full`} style={{ width: `${((currentStep - 1) / 4) * 100}%` }}></div>
           {[1,2,3,4,5].map(step => (
-            <div key={step} className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${currentStep >= step ? atsConfig.theme.secondaryBg + ' ' + atsConfig.theme.textLight : 'bg-black/50 text-white/40 border border-white/10'}`}>
+            <div key={step} className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${currentStep >= step ? 'bg-gradient-to-r from-yellow-500 to-[#DAA520] text-black shadow-[0_0_15px_rgba(218,165,32,0.6)] border-0' : 'bg-[#222] text-gray-400 border border-gray-600'}`}>
               {step}
             </div>
           ))}
@@ -190,44 +190,44 @@ export default function SeekerWizard({ userUid, userEmail, onSuccess }: { userUi
         {/* Step 1: Personal Info */}
         {currentStep === 1 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-            <h2 className={`text-xl font-bold flex items-center gap-2 ${atsConfig.theme.primaryText}`}><User className="w-5 h-5"/> Personal Details</h2>
+            <h2 className={`text-xl font-bold flex items-center gap-2 ${atsConfig.theme.primaryText}`}><User className="w-5 h-5 text-[#DAA520] drop-shadow-[0_0_5px_rgba(218,165,32,0.8)]"/> Personal Details</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">Full Name <span className="text-red-500">*</span></label>
-                <input type="text" value={fullName} onChange={e=>setFullName(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 focus:border-[${atsConfig.theme.primaryBorder}] outline-none`} />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Full Name <span className="text-red-500">*</span></label>
+                <input type="text" value={fullName} onChange={e=>setFullName(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`} />
               </div>
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">Date of Birth <span className="text-red-500">*</span></label>
-                <input type="date" value={dob} onChange={e=>setDob(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`} style={{colorScheme:'dark'}}/>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Date of Birth <span className="text-red-500">*</span></label>
+                <input type="date" value={dob} onChange={e=>setDob(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`} style={{colorScheme:'dark'}}/>
               </div>
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">Gender</label>
-                <select value={gender} onChange={e=>setGender(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`}>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Gender</label>
+                <select value={gender} onChange={e=>setGender(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`}>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">Phone Number <span className="text-red-500">*</span></label>
-                <input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`} />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Phone Number <span className="text-red-500">*</span></label>
+                <input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`} />
               </div>
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">WhatsApp Number <span className="text-red-500">*</span></label>
-                <input type="tel" value={whatsapp} onChange={e=>setWhatsapp(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`} />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">WhatsApp Number <span className="text-red-500">*</span></label>
+                <input type="tel" value={whatsapp} onChange={e=>setWhatsapp(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`} />
               </div>
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">Email (Read Only)</label>
-                <input type="text" value={userEmail} disabled className="w-full bg-black/20 opacity-50 border border-white/10 rounded-xl px-4 py-3 outline-none" />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Email (Read Only)</label>
+                <input type="text" value={userEmail} disabled className="w-full bg-[#050505] opacity-50 border border-[#333] rounded-[14px] px-4 py-3 outline-none cursor-not-allowed text-white" />
               </div>
             </div>
 
-            <h3 className={`text-lg font-bold mt-6 mb-4 flex items-center gap-2 ${atsConfig.theme.primaryText}`}><MapPin className="w-4 h-4"/> 5-Tier Location Architecture</h3>
+            <h3 className={`text-lg font-bold mt-6 mb-4 flex items-center gap-2 ${atsConfig.theme.primaryText}`}><MapPin className="w-4 h-4 text-[#DAA520] drop-shadow-[0_0_5px_rgba(218,165,32,0.8)]"/> 5-Tier Location Architecture</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">Country <span className="text-red-500">*</span></label>
-                  <select value={country} onChange={e => {setCountry(e.target.value); setState(""); setDistrict(""); setBlock("");}} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`}>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Country <span className="text-red-500">*</span></label>
+                  <select value={country} onChange={e => {setCountry(e.target.value); setState(""); setDistrict(""); setBlock("");}} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`}>
                     <option value="India">India</option>
                     <option value="Other">Other</option>
                   </select>
@@ -235,8 +235,8 @@ export default function SeekerWizard({ userUid, userEmail, onSuccess }: { userUi
                {country === 'India' ? (
                  <>
                   <div>
-                    <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">State <span className="text-red-500">*</span></label>
-                    <select value={state} onChange={e => {setState(e.target.value); setDistrict(""); setBlock("");}} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`}>
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">State <span className="text-red-500">*</span></label>
+                    <select value={state} onChange={e => {setState(e.target.value); setDistrict(""); setBlock("");}} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`}>
                       <option value="">Select State</option>
                       {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
@@ -244,16 +244,16 @@ export default function SeekerWizard({ userUid, userEmail, onSuccess }: { userUi
                   {state === 'Odisha' ? (
                     <>
                       <div>
-                        <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">District <span className="text-red-500">*</span></label>
-                        <select value={district} onChange={e => {setDistrict(e.target.value); setBlock("");}} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`}>
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">District <span className="text-red-500">*</span></label>
+                        <select value={district} onChange={e => {setDistrict(e.target.value); setBlock("");}} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`}>
                           <option value="">Select District</option>
                           {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
                         </select>
                       </div>
                       {district && ODISHA_DISTRICT_BLOCKS[district as keyof typeof ODISHA_DISTRICT_BLOCKS] && (
                         <div>
-                          <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">Block / City <span className="text-red-500">*</span></label>
-                          <select value={block} onChange={e => setBlock(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`}>
+                          <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Block / City <span className="text-red-500">*</span></label>
+                          <select value={block} onChange={e => setBlock(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`}>
                             <option value="">Select Block/City</option>
                             {ODISHA_DISTRICT_BLOCKS[district as keyof typeof ODISHA_DISTRICT_BLOCKS].map((b: string) => <option key={b} value={b}>{b}</option>)}
                           </select>
@@ -262,27 +262,27 @@ export default function SeekerWizard({ userUid, userEmail, onSuccess }: { userUi
                     </>
                   ) : (
                     <div>
-                        <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">City / District <span className="text-red-500">*</span></label>
-                        <input type="text" value={district} onChange={e => setDistrict(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`} />
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">City / District <span className="text-red-500">*</span></label>
+                        <input type="text" value={district} onChange={e => setDistrict(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`} />
                     </div>
                   )}
                  </>
                ) : (
                   <div>
-                    <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">City / Region <span className="text-red-500">*</span></label>
-                    <input type="text" value={state} onChange={e => setState(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`} />
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">City / Region <span className="text-red-500">*</span></label>
+                    <input type="text" value={state} onChange={e => setState(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`} />
                   </div>
                )}
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">Local Address (Village/Street) <span className="text-red-500">*</span></label>
-                <input type="text" value={localAddress} onChange={e=>setLocalAddress(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`} />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Local Address (Village/Street) <span className="text-red-500">*</span></label>
+                <input type="text" value={localAddress} onChange={e=>setLocalAddress(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`} />
               </div>
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider mb-2 opacity-70">PIN / ZIP Code <span className="text-red-500">*</span></label>
-                <input type="text" value={pincode} onChange={e=>setPincode(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`} />
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">PIN / ZIP Code <span className="text-red-500">*</span></label>
+                <input type="text" value={pincode} onChange={e=>setPincode(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`} />
               </div>
             </div>
 
@@ -292,7 +292,7 @@ export default function SeekerWizard({ userUid, userEmail, onSuccess }: { userUi
         {/* Step 2: Education */}
         {currentStep === 2 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-             <h2 className={`text-xl font-bold flex items-center gap-2 ${atsConfig.theme.primaryText}`}><GraduationCap className="w-5 h-5"/> Educational Background</h2>
+             <h2 className={`text-xl font-bold flex items-center gap-2 ${atsConfig.theme.primaryText}`}><GraduationCap className="w-5 h-5 text-[#DAA520] drop-shadow-[0_0_5px_rgba(218,165,32,0.8)]"/> Educational Background</h2>
              
              {education.map((edu, idx) => (
                 <div key={idx} className={`p-4 rounded-xl border border-white/10 ${atsConfig.theme.cardBg} relative`}>
@@ -332,7 +332,7 @@ export default function SeekerWizard({ userUid, userEmail, onSuccess }: { userUi
         {currentStep === 3 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
              <div className="flex justify-between items-center">
-                <h2 className={`text-xl font-bold flex items-center gap-2 ${atsConfig.theme.primaryText}`}><Briefcase className="w-5 h-5"/> Work Experience</h2>
+                <h2 className={`text-xl font-bold flex items-center gap-2 ${atsConfig.theme.primaryText}`}><Briefcase className="w-5 h-5 text-[#DAA520] drop-shadow-[0_0_5px_rgba(218,165,32,0.8)]"/> Work Experience</h2>
                 <label className="flex items-center gap-2 text-sm">
                   <input type="checkbox" checked={isFresher} onChange={e => setIsFresher(e.target.checked)} className="w-4 h-4 accent-[#C5A059]" />
                   I am a Fresher
@@ -369,7 +369,7 @@ export default function SeekerWizard({ userUid, userEmail, onSuccess }: { userUi
         {/* Step 4: Skills & Preferences */}
         {currentStep === 4 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-             <h2 className={`text-xl font-bold flex items-center gap-2 ${atsConfig.theme.primaryText}`}><Sparkles className="w-5 h-5"/> Skills & Preferences</h2>
+             <h2 className={`text-xl font-bold flex items-center gap-2 ${atsConfig.theme.primaryText}`}><Sparkles className="w-5 h-5 text-[#DAA520] drop-shadow-[0_0_5px_rgba(218,165,32,0.8)]"/> Skills & Preferences</h2>
              
              <div>
                <label className="block text-xs font-mono uppercase opacity-70 mb-3">Key Skills (Select all that apply) <span className="text-red-500">*</span></label>
@@ -389,7 +389,7 @@ export default function SeekerWizard({ userUid, userEmail, onSuccess }: { userUi
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                <div>
                  <label className="block text-xs font-mono uppercase opacity-70 mb-2">Preferred Job Type</label>
-                 <select value={jobType} onChange={e=>setJobType(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`}>
+                 <select value={jobType} onChange={e=>setJobType(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`}>
                     <option value="Full-time">Full-time</option>
                     <option value="Part-time">Part-time</option>
                     <option value="Contract">Contract</option>
@@ -398,11 +398,11 @@ export default function SeekerWizard({ userUid, userEmail, onSuccess }: { userUi
                </div>
                <div>
                  <label className="block text-xs font-mono uppercase opacity-70 mb-2">Expected Salary Range</label>
-                 <input type="text" placeholder="e.g. ₹15,000 - ₹25,000" value={expectedSalary} onChange={e=>setExpectedSalary(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`} />
+                 <input type="text" placeholder="e.g. ₹15,000 - ₹25,000" value={expectedSalary} onChange={e=>setExpectedSalary(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`} />
                </div>
                <div className="md:col-span-2">
                  <label className="block text-xs font-mono uppercase opacity-70 mb-2">Preferred Location</label>
-                 <input type="text" placeholder="e.g. Remote, Bhubaneswar, Anywhere in Odisha" value={preferredLocation} onChange={e=>setPreferredLocation(e.target.value)} className={`w-full ${atsConfig.theme.cardBg} border border-white/10 rounded-xl px-4 py-3 outline-none`} />
+                 <input type="text" placeholder="e.g. Remote, Bhubaneswar, Anywhere in Odisha" value={preferredLocation} onChange={e=>setPreferredLocation(e.target.value)} className={`w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] outline-none`} />
                </div>
              </div>
           </div>
