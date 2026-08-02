@@ -245,94 +245,25 @@ export default function DashboardPage() {
     ];
     // Override default tab if needed
     if (activeTab === "home") setActiveTab("overview");
-  } else if (actualRole === "weaver") {
+  } else if (['weaver', 'store', 'wholesaler', 'raw_material'].includes(actualRole)) {
     navItems = [
-      { id: "home", label: "Dashboard Overview", icon: "ðŸ“Š", category: "Dashboard & Reports" },
-      { id: "personal", label: "Personal Profile", icon: "ðŸ‘¤", category: "1. Profile & Setup" },
-      { id: "store_settings", label: "Setup Public Store", icon: "ðŸª", category: "1. Profile & Setup" },
-      { id: "verification", label: "Verification (KYC)", icon: "ðŸ›¡ï¸", category: "1. Profile & Setup" },
-      { id: "vanity_url", label: "Custom Brand URL", icon: "ðŸ”—", category: "8. Subscription & Billing" },
-      { id: "staff", label: "Staff Accounts", icon: "ðŸ‘¥", category: "1. Profile & Setup" },
-      { id: "pricing", label: "Subscription Plan", icon: "ðŸ’Ž", category: "8. Subscription & Billing" },
+      { id: 'home', label: 'Dashboard Overview', icon: '📊', category: 'My Shop (Free Features)' },
+      { id: 'personal', label: 'Profile & Store Setup', icon: '👤', category: 'My Shop (Free Features)' },
+      { id: 'verification', label: 'Verification (KYC)', icon: '🛡️', category: 'My Shop (Free Features)' },
+      { id: 'products', label: 'Catalog Management', icon: '📦', category: 'My Shop (Free Features)' },
+      { id: 'wallet', label: 'Wallet & Bank Payouts', icon: '💰', category: 'My Shop (Free Features)' },
+      { id: 'security', label: 'Security & Login', icon: '🔒', category: 'My Shop (Free Features)' },
+      { id: 'help_guide', label: 'Help & Support Guide', icon: '📖', category: 'My Shop (Free Features)' },
+      { id: 'support', label: 'Contact Admin Support', icon: '🎧', category: 'My Shop (Free Features)' },
       
-      { id: "products", label: "Catalog Management", icon: "ðŸ“¦", category: "2. Catalog Management" },
-
-      
-      { id: "orders", label: "Manage Orders", icon: "ðŸšš", category: "3. Orders & Deliveries" },
-      
-      { id: "wallet", label: "Wallet & Bank Payouts", icon: "ðŸ’°", category: "4. Finance & Earnings" },
-      
-      { id: "marketing", label: "Marketing & Promos", icon: "ðŸ“ˆ", category: "5. Marketing & Comm" },
-      { id: "messages", label: "Customer Messages", icon: "ðŸ’¬", category: "5. Marketing & Comm" },
-      
-      { id: "help_guide", label: "Help & Support Guide", icon: "ðŸ“˜", category: "6. Help & Support" },
-      { id: "support", label: "Contact Admin Support", icon: "ðŸŽ§", category: "6. Help & Support" },
-      
-      { id: "security", label: "Security & Login", icon: "ðŸ”", category: "7. Security" },
-    ];
-  } else if (actualRole === "store" || actualRole === "wholesaler") {
-    navItems = [
-      { id: "home", label: "Dashboard Overview", icon: "ðŸ“Š", category: "Dashboard & Reports" },
-      { id: "personal", label: "Personal Profile", icon: "ðŸ‘¤", category: "1. Profile & Setup" },
-      { id: "store_settings", label: "Setup Public Store", icon: "ðŸª", category: "1. Profile & Setup" },
-      { id: "verification", label: "Verification (KYC)", icon: "ðŸ›¡ï¸", category: "1. Profile & Setup" },
-      { id: "vanity_url", label: "Custom Brand URL", icon: "ðŸ”—", category: "8. Subscription & Billing" },
-      { id: "staff", label: "Staff Accounts", icon: "ðŸ‘¥", category: "1. Profile & Setup" },
-      { id: "pricing", label: "Subscription Plan", icon: "ðŸ’Ž", category: "8. Subscription & Billing" },
-      
-      { id: "products", label: "Catalog Management", icon: "ðŸ“¦", category: "2. Catalog Management" },
-
-      
-      { id: "orders", label: "Manage Orders", icon: "ðŸšš", category: "3. Orders & Deliveries" },
-      
-      { id: "finance", label: "Wallet & Bank Payouts", icon: "ðŸ’°", category: "4. Finance & Earnings" },
-      
-      { id: "marketing", label: "Marketing & Promos", icon: "ðŸ“ˆ", category: "5. Marketing & Comm" },
-      { id: "messages", label: "Customer Messages", icon: "ðŸ’¬", category: "5. Marketing & Comm" },
-      
-      { id: "help_guide", label: "Help & Support Guide", icon: "ðŸ“˜", category: "6. Help & Support" },
-      { id: "support", label: "Contact Admin Support", icon: "ðŸŽ§", category: "6. Help & Support" },
-      
-      { id: "security", label: "Security & Password", icon: "ðŸ”", category: "7. Security" },
-    ];
-  } else if (actualRole === "weaver_staff" || actualRole === "store_staff") {
-    navItems = [
-      { id: "home", label: "Dashboard", icon: "ðŸ“Š", category: "Dashboard & Reports" },
-    ];
-    if (vendorPermissions.includes("products")) navItems.push({ id: "products", label: "Inventory Catalog", icon: "ðŸ“¦", category: "Catalog & Inventory" });
-    if (vendorPermissions.includes("orders")) navItems.push({ id: "orders", label: "Order Management", icon: "ðŸšš", category: "Orders & Logistics" });
-    if (vendorPermissions.includes("marketing")) navItems.push({ id: "marketing", label: "Marketing & Promos", icon: "ðŸ“ˆ", category: "Marketing & Growth" });
-    if (vendorPermissions.includes("messages")) navItems.push({ id: "messages", label: "Customer Messages", icon: "ðŸ’¬", category: "Marketing & Growth" });
-  } else if (actualRole === "reseller") {
-    navItems = [
-      { id: "home", label: "Dashboard Overview", icon: "ðŸ“Š", category: "Dashboard & Reports" },
-      { id: "profile", label: "Personal Profile", icon: "ðŸ‘¤", category: "1. Profile & Setup" },
-      { id: "verification", label: "Verification (KYC)", icon: "ðŸ›¡ï¸", category: "1. Profile & Setup" },
-      { id: "security", label: "Security & Login", icon: "ðŸ”", category: "1. Profile & Setup" },
-      { id: "curation", label: "Curate Products", icon: "ðŸ›ï¸", category: "2. Build Your Storefront" },
-      { id: "links", label: "Share Marketing Links", icon: "ðŸ”—", category: "2. Build Your Storefront" },
-      { id: "proxy", label: "Place Proxy Orders", icon: "ðŸ›’", category: "3. Sales & Orders" },
-      { id: "analytics", label: "Sales Analytics", icon: "ðŸ“ˆ", category: "3. Sales & Orders" },
-      { id: "wallet", label: "Wallet & Bank Payouts", icon: "ðŸ’°", category: "4. Finance & Earnings" },
-      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "ðŸ“˜", category: "5. Help & Support" },
-      { id: "support", label: "Contact Admin Support", icon: "ðŸŽ§", category: "5. Help & Support" },
-    ];
-  } else if (actualRole === "raw_material") {
-    navItems = [
-      { id: "personal", label: "Personal Profile", icon: "ðŸ‘¤", category: "1. Profile & Setup" },
-      { id: "store_settings", label: "Professional Store", icon: "ðŸª", category: "1. Profile & Setup" },
-      { id: "verification", label: "Verification (KYC)", icon: "ðŸ›¡ï¸", category: "1. Profile & Setup" },
-      { id: "security", label: "Security & Login", icon: "ðŸ”", category: "1. Profile & Setup" },
-      { id: "vanity_url", label: "Brand & URL Settings", icon: "ðŸ”—", category: "1. Profile & Setup" },
-      { id: "inventory", label: "Catalog Management", icon: "ðŸ“¦", category: "2. Catalog Management" },
-      { id: "orders", label: "Order Management", icon: "ðŸšš", category: "3. Orders & Deliveries" },
-      { id: "wallet", label: "Wallet & Payouts", icon: "ðŸ’°", category: "4. Finance & Earnings" },
-      { id: "marketing", label: "Marketing & Promos", icon: "ðŸ“ˆ", category: "5. Marketing & Comm" },
-      { id: "help_guide", label: "Dashboard Guide & FAQ", icon: "ðŸ“˜", category: "6. Help & Support" },
-      { id: "support", label: "Admin Support", icon: "ðŸŽ§", category: "6. Help & Support" },
+      { id: 'orders', label: '🔒 Manage Orders', icon: '🚚', category: 'Pro Hub (Premium Features)' },
+      { id: 'vanity_url', label: '🔒 Premium Vanity URL', icon: '🔗', category: 'Pro Hub (Premium Features)' },
+      { id: 'staff', label: '🔒 Staff Accounts', icon: '👥', category: 'Pro Hub (Premium Features)' },
+      { id: 'marketing', label: '🔒 Marketing & Promos', icon: '📈', category: 'Pro Hub (Premium Features)' },
+      { id: 'messages', label: '🔒 Customer Messages', icon: '💬', category: 'Pro Hub (Premium Features)' },
+      { id: 'pricing', label: 'Subscription Plan', icon: '💎', category: 'Pro Hub (Premium Features)' },
     ];
   }
-
   return (
     <DashboardLayout
       userName={userName}
