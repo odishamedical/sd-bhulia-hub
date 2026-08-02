@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Shield, Ban, Star, KeyRound, MoreVertical, LogIn, Plus, X, Edit2, UploadCloud } from 'lucide-react';
 import { useWeavers, useStores, useWholesalers, useSuppliers } from '@/lib/db-hooks';
-import { db } from '@/lib/firebase';
+import { db, auth } from '@/lib/firebase';
 import { deleteDoc, doc, updateDoc, setDoc } from 'firebase/firestore';
 import ImageUploader from '@/components/ImageUploader';
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from '@/lib/locations';
@@ -179,13 +179,48 @@ export default function MasterVendorCRM() {
     }
   };
 
+
+  const [isGenerating, setIsGenerating] = useState<string | null>(null);
+
   const generateCredentials = async (shop: any) => {
     if (!shop.email) {
       alert('Cannot verify! This vendor does not have an owner email mapped. Please edit the vendor and add an email to generate login credentials.');
       return;
     }
+    
+    if (!confirm(`Are you sure you want to generate auth credentials for ${shop.email}?`)) return;
+    
+    setIsGenerating(shop.id);
     const pwd = Math.random().toString(36).slice(-8);
-    alert(`Mock Registration: Created user ${shop.email} with password: ${pwd}`);
+    
+    try {
+      const adminToken = await auth.currentUser?.getIdToken();
+      if (!adminToken) throw new Error("Admin not authenticated properly.");
+
+      const res = await fetch('/api/admin/create-vendor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: shop.email,
+          password: pwd,
+          uid: shop.id,
+          role: shop.role || shop.type, // Make sure role is passed correctly
+          name: shop.title || shop.name || shop.ownerName || '',
+          adminToken
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to create vendor credentials');
+      
+      alert(`SUCCESS! User ${shop.email} created in ecosystem.\n\nTemporary Password: ${pwd}\n\nPlease securely share this with the vendor via WhatsApp.`);
+      
+    } catch (e: any) {
+      console.error(e);
+      alert('Error creating credentials: ' + e.message);
+    } finally {
+      setIsGenerating(null);
+    }
   };
 
   if (loading) {

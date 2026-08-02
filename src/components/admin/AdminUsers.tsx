@@ -175,24 +175,7 @@ export default function UserManagementPage() {
       source: s.source || "organic",
     }));
 
-    // Extract Customers from Orders (Mocking legacy customers from purchases)
-    const cList = Array.from(new Set(orders.map(o => o.customerName))).filter(Boolean).map((name, idx) => ({
-      id: `order_cust_${idx}`,
-      name: name as string,
-      role: "customer",
-      phone: orders.find(o => o.customerName === name)?.customerPhone || "N/A",
-      state: (String(orders.find(o => o.customerName === name)?.customerAddress || "").split(",")?.[2] || "").split("-")?.[0]?.trim() || "N/A",
-      district: String(orders.find(o => o.customerName === name)?.customerAddress || "").split(",")?.[1]?.trim() || "N/A",
-      country: "India",
-      volume: orders.filter(o => o.customerName === name).reduce((acc, curr) => acc + (parseInt(curr.productPrice?.toString().replace(/[^0-9]/g, '') || "0")), 0), // Total spent
-      purchasedProductIds: orders.filter(o => o.customerName === name).map(o => o.productId).filter(Boolean),
-      whatsapp: orders.find(o => o.customerName === name)?.customerWhatsapp || "N/A",
-      address: orders.find(o => o.customerName === name)?.customerAddress || "N/A",
-      email: "N/A",
-      referralId: `SDC-${String(`order_cust_${idx}`).substring(0,6).toUpperCase()}`,
-      status: "approved",
-      source: "organic",
-    }));
+
 
     // Explicitly Registered Customers (May not have purchased yet)
     const registeredCustomersList = customers.map((c) => ({
@@ -262,7 +245,7 @@ export default function UserManagementPage() {
       source: r.source || "organic",
     }));
 
-    const allCombined = [...wList, ...sList, ...b2bList, ...supplierList, ...registeredCustomersList, ...cList, ...identityUsersList, ...rList];
+    const allCombined = [...wList, ...sList, ...b2bList, ...supplierList, ...registeredCustomersList, ...identityUsersList, ...rList];
     const uniqueUsersMap = new Map();
     
     for (const u of allCombined) {
