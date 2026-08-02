@@ -262,7 +262,7 @@ export default function AdminJobsManager() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {applications.filter(app => !searchQuery || app.seeker?.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || app.jobTitle?.toLowerCase().includes(searchQuery.toLowerCase())).map(app => (
+            {applications.filter(app => !searchQuery || (app.seeker?.fullName?.toLowerCase() || '').includes(searchQuery.toLowerCase()) || (app.jobTitle?.toLowerCase() || '').includes(searchQuery.toLowerCase())).map(app => (
               <div key={app.id} className="border border-gray-100 rounded-lg p-4 flex flex-col gap-2">
                 <div className="flex justify-between items-start">
                   <div>
@@ -306,7 +306,7 @@ export default function AdminJobsManager() {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {resumeDB.filter(s => !searchQuery || s.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || s.district?.toLowerCase().includes(searchQuery.toLowerCase()) || s.skills?.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()))).map(seeker => (
+            {resumeDB.filter(s => !searchQuery || (s.fullName?.toLowerCase() || '').includes(searchQuery.toLowerCase()) || (s.district?.toLowerCase() || '').includes(searchQuery.toLowerCase()) || s.skills?.some(skill => (skill?.toLowerCase() || '').includes(searchQuery.toLowerCase()))).map(seeker => (
               <div key={seeker.uid} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow bg-gray-50">
                 <div className="flex gap-4">
                   <div className="w-16 h-16 rounded-full bg-white border border-gray-200 flex items-center justify-center overflow-hidden shrink-0">
