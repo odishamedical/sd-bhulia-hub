@@ -250,13 +250,13 @@ export default function DashboardPage() {
       { id: 'home', label: 'Dashboard Overview', icon: '📊', category: 'My Shop (Free Features)' },
       { id: 'personal', label: 'Profile & Store Setup', icon: '👤', category: 'My Shop (Free Features)' },
       { id: 'verification', label: 'Verification (KYC)', icon: '🛡️', category: 'My Shop (Free Features)' },
-      { id: 'products', label: 'Catalog Management', icon: '📦', category: 'My Shop (Free Features)' },
-      { id: 'wallet', label: 'Wallet & Bank Payouts', icon: '💰', category: 'My Shop (Free Features)' },
+            { id: 'wallet', label: 'Wallet & Bank Payouts', icon: '💰', category: 'My Shop (Free Features)' },
       { id: 'security', label: 'Security & Login', icon: '🔒', category: 'My Shop (Free Features)' },
       { id: 'help_guide', label: 'Help & Support Guide', icon: '📖', category: 'My Shop (Free Features)' },
       { id: 'support', label: 'Contact Admin Support', icon: '🎧', category: 'My Shop (Free Features)' },
       
       { id: 'orders', label: '🔒 Manage Orders', icon: '🚚', category: 'Pro Hub (Premium Features)' },
+      { id: 'products', label: '🔒 Manage Inventory', icon: '🛍️', category: 'Pro Hub (Premium Features)' },
       { id: 'vanity_url', label: '🔒 Premium Vanity URL', icon: '🔗', category: 'Pro Hub (Premium Features)' },
       { id: 'staff', label: '🔒 Staff Accounts', icon: '👥', category: 'Pro Hub (Premium Features)' },
       { id: 'marketing', label: '🔒 Marketing & Promos', icon: '📈', category: 'Pro Hub (Premium Features)' },
@@ -1480,7 +1480,17 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
 
       {activeTab === "products" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-5xl animate-in fade-in">
-          {!isAddInventoryOpen ? (
+          {subscriptionTier === "free" ? (
+             <div className="p-12 text-center border-2 border-dashed border-gray-200 rounded-3xl">
+                 <div className="text-5xl mb-4">🔒</div>
+                 <h2 className="text-2xl font-black text-gray-900 mb-2">Pro Feature Locked</h2>
+                 <p className="text-gray-500 mb-8 font-medium">You must upgrade to the Pro Tier to manage inventory, catalog products, and receive bulk orders.</p>
+                 <button onClick={() => setIsUpgraderOpen(true)} className="bg-gradient-to-r from-[#0070F3] to-[#005bb5] text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">Upgrade to Pro</button>
+             </div>
+          ) : (
+            <></>
+          )}
+          {subscriptionTier !== "free" && !isAddInventoryOpen ? (
             <div>
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                 <div>

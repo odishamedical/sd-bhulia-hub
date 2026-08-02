@@ -356,6 +356,15 @@ export default function WholesalerDashboardPage() {
 
         {activeTab === "catalog" && (
           <div className="animate-in fade-in space-y-6">
+            {subscriptionTier === "free" ? (
+               <div className="p-12 text-center border-2 border-dashed border-gray-200 rounded-3xl bg-white shadow-sm mt-6">
+                   <div className="text-5xl mb-4">🔒</div>
+                   <h2 className="text-2xl font-black text-gray-900 mb-2">Pro Feature Locked</h2>
+                   <p className="text-gray-500 mb-8 font-medium">You must upgrade to the Pro Tier to unlock Catalog Management and Bulk Uploads.</p>
+                   <button onClick={() => setIsUpgraderOpen(true)} className="bg-gradient-to-r from-[#0070F3] to-[#005bb5] text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">Upgrade to Pro</button>
+               </div>
+            ) : (
+              <>
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Catalog Management</h2>
@@ -403,6 +412,8 @@ export default function WholesalerDashboardPage() {
                 ))}
               </div>
             )}
+              </>
+            )
           </div>
         )}
 
