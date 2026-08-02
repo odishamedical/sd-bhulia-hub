@@ -30,6 +30,7 @@ import SellerSetupHub from "@/components/SellerSetupHub";
 import MarketingTab from "@/components/MarketingTab";
 import SaaSUpgraderModal from "@/components/SaaSUpgraderModal";
 import PricingTab from "@/components/PricingTab";
+import WeaverJobsManager from "@/components/dashboard/WeaverJobsManager";
 
 import { uploadBase64ToStorage } from "@/lib/storageUtils";
 
@@ -260,6 +261,7 @@ export default function DashboardPage() {
       { id: 'vanity_url', label: '🔒 Premium Vanity URL', icon: '🔗', category: 'Pro Hub (Premium Features)' },
       { id: 'staff', label: '🔒 Staff Accounts', icon: '👥', category: 'Pro Hub (Premium Features)' },
       { id: 'marketing', label: '🔒 Marketing & Promos', icon: '📈', category: 'Pro Hub (Premium Features)' },
+      { id: 'jobs', label: '🔒 Job Board (Hiring)', icon: '💼', category: 'Pro Hub (Premium Features)' },
       { id: 'messages', label: '🔒 Customer Messages', icon: '💬', category: 'Pro Hub (Premium Features)' },
       { id: 'pricing', label: 'Subscription Plan', icon: '💎', category: 'Pro Hub (Premium Features)' },
     ];

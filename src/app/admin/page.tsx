@@ -32,6 +32,7 @@ import AdminSubscriptions from "@/components/admin/AdminSubscriptions";
 import AdminRoleAssignments from "@/components/admin/AdminRoleAssignments";
 import MasterVendorCRM from "@/components/admin/MasterVendorCRM";
 import AdminNewApplications from "@/components/admin/AdminNewApplications";
+import AdminJobsManager from "@/components/admin/AdminJobsManager";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -45,7 +46,8 @@ const SIDEBAR_CATEGORIES = [
       { name: "Verification Queue", id: "kyc" },
       { name: "Master Vendor CRM", id: "master-crm" },
       { name: "User Directory", id: "users" },
-      { name: "Customer Tickets", id: "tickets" }
+      { name: "Customer Tickets", id: "tickets" },
+      { name: "Job Board (ATS)", id: "jobs" }
     ]
   },
   {
@@ -169,6 +171,8 @@ export default function AdminSPA() {
         return <AdminPageBuilder />;
       case "help":
         return <AdminHelp />;
+      case "jobs":
+        return <AdminJobsManager />;
       case "tickets":
         return <AdminTickets />;
       case "fraud":

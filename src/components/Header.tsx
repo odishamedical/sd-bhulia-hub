@@ -13,7 +13,8 @@ const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Shop Sarees", href: "/search" },
   { label: "Directory", href: "/directory" },
-  { label: "About Us", href: "/p/about-us" }
+  { label: "About Us", href: "/p/about-us" },
+  { label: "JOB.", href: "/jobs" }
 ];
 
 export default function Header() {
