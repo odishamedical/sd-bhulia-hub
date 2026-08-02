@@ -154,6 +154,16 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
       return 0;
     });
   }, [combinedDirectory, selectedRole, selectedCountry, selectedState, selectedDistrict, selectedBlock, selectedVillage, searchQuery, selectedSort]);
+  const [shuffledDistricts, setShuffledDistricts] = useState<string[]>([]);
+  useEffect(() => {
+    const dSet = new Set<string>();
+    filteredDirectory.forEach(item => {
+      const d = (item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha";
+      if (d) dSet.add(d);
+    });
+    setShuffledDistricts(Array.from(dSet).sort(() => Math.random() - 0.5));
+  }, [filteredDirectory]);
+
   const verifiedListings = filteredDirectory.filter(item => item.status === "approved");
   const unverifiedListings = filteredDirectory.filter(item => item.status !== "approved");
 
@@ -360,28 +370,25 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
           </div>
         ) : (
           <div className="space-y-12">
-            
-            {/* Verified Listings */}
-            {verifiedListings.length > 0 ? (
-              <div>
-                <div className="flex items-center gap-3 mb-6">
-                  <h2 className="text-2xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-[#C5A059]">Verified Partners</h2>
-                  <div className="h-px flex-1 bg-gradient-to-r from-[#C5A059]/30 to-transparent"></div>
-                </div>
-                {renderGridWithAds(verifiedListings)}
-              </div>
-            ) : (
-              <div className="bg-[#0B2B26] p-8 rounded-2xl border border-[#C5A059]/20 text-center">
-                <p className="text-[#C5A059] font-medium">No verified listings match your search criteria.</p>
-              </div>
-            )}
-
-            {/* Unverified Listings Grouped by Role */}
-            {unverifiedListings.length > 0 && (
-              <div className="pt-12 space-y-12">
-                {/* Master Weavers Group */}
-                {unverifiedListings.filter(item => item.role === "weaver").length > 0 && (
+            {selectedDistrict !== "all" ? (
+              // DRILL DOWN VIEW (Single District Selected)
+              <>
+                {verifiedListings.length > 0 ? (
                   <div>
+                    <div className="flex items-center gap-3 mb-6">
+                      <h2 className="text-2xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-[#C5A059]">Verified Partners in {selectedDistrict}</h2>
+                      <div className="h-px flex-1 bg-gradient-to-r from-[#C5A059]/30 to-transparent"></div>
+                    </div>
+                    {renderGridWithAds(verifiedListings)}
+                  </div>
+                ) : (
+                  <div className="bg-[#0B2B26] p-8 rounded-2xl border border-[#C5A059]/20 text-center">
+                    <p className="text-[#C5A059] font-medium">No verified listings match your search criteria.</p>
+                  </div>
+                )}
+
+                {unverifiedListings.filter(item => item.role === "weaver").length > 0 && (
+                  <div className="pt-12">
                     <div className="flex items-center gap-3 mb-6 opacity-80">
                       <h2 className="text-xl font-serif font-bold text-[#C5A059]">Other Master Weavers</h2>
                       <div className="h-px flex-1 bg-gradient-to-r from-[#C5A059]/50 to-transparent"></div>
@@ -390,9 +397,8 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
                   </div>
                 )}
 
-                {/* Retail Shops Group */}
                 {unverifiedListings.filter(item => item.role === "store").length > 0 && (
-                  <div>
+                  <div className="pt-12">
                     <div className="flex items-center gap-3 mb-6 opacity-80">
                       <h2 className="text-xl font-serif font-bold text-[#C5A059]">Other Retail Shops</h2>
                       <div className="h-px flex-1 bg-gradient-to-r from-[#C5A059]/50 to-transparent"></div>
@@ -400,13 +406,65 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
                     {renderGridWithAds(unverifiedListings.filter(item => item.role === "store"))}
                   </div>
                 )}
+              </>
+            ) : (
+              // GROUPED BY DISTRICT VIEW
+              shuffledDistricts.map((dist, index) => {
+                const distListings = filteredDirectory.filter(item => ((item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha") === dist);
                 
-                <div className="text-center pt-8">
-                  <button className="bg-transparent border border-[#C5A059] text-[#C5A059] hover:bg-[#C5A059] hover:text-[#051815] transition-all duration-300 font-bold px-10 py-4 rounded-full text-sm uppercase tracking-widest shadow-lg hover:-translate-y-1">
-                    Load More Listings
-                  </button>
-                </div>
-              </div>
+                const distVerifiedWeavers = distListings.filter(item => item.status === "approved" && item.role === "weaver");
+                const distVerifiedShops = distListings.filter(item => item.status === "approved" && item.role === "store");
+                const distUnverifiedWeavers = distListings.filter(item => item.status !== "approved" && item.role === "weaver");
+                const distUnverifiedShops = distListings.filter(item => item.status !== "approved" && item.role === "store");
+
+                const sections = [
+                  { title: "Verified Master Weavers", data: distVerifiedWeavers },
+                  { title: "Verified Retail Shops", data: distVerifiedShops },
+                  { title: "Other Master Weavers", data: distUnverifiedWeavers, isOther: true },
+                  { title: "Other Retail Shops", data: distUnverifiedShops, isOther: true }
+                ];
+
+                return (
+                  <div key={dist} className="mb-16">
+                    <div className="flex justify-between items-end border-b border-[#C5A059]/30 pb-2 mb-6">
+                      <div className="flex items-center gap-3">
+                        <h2 className="text-2xl font-serif font-bold text-white">Odisha <span className="text-[#C5A059] font-light">|</span> {dist}</h2>
+                      </div>
+                      <button 
+                        onClick={() => { setSelectedDistrict(dist); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                        className="bg-transparent border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059] hover:text-[#051815] text-[10px] sm:text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest transition-all"
+                      >
+                        Browse {distListings.length} Shops &gt;
+                      </button>
+                    </div>
+
+                    <div className="space-y-10">
+                      {sections.map(section => {
+                        if (section.data.length === 0) return null;
+                        
+                        // Restrict to max 4 items for one row
+                        const rowData = section.data.slice(0, 4);
+                        
+                        return (
+                          <div key={section.title}>
+                            <h3 className={`text-sm sm:text-base font-serif font-bold mb-4 ${section.isOther ? "text-gray-400" : "text-[#C5A059]"}`}>
+                              {section.title}
+                            </h3>
+                            {renderGridWithAds(rowData)}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    
+                    {/* Inject Ad between every 3 districts */}
+                    {(index + 1) % 3 === 0 && (
+                      <div className="mt-12">
+                         <GlobalBannerSlot placement={`directory_grouped_ad_${index}`} fallbackColor="from-[#0B2B26] to-[#051815]" />
+                      </div>
+                    )}
+                  </div>
+                );
+              })
             )}
           </div>
         )}
