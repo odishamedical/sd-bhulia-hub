@@ -21,6 +21,14 @@ export default function JobsPage() {
   const router = useRouter();
   const { user, userData } = useAuth();
   
+  const [userRole, setUserRole] = useState<string | null>(null);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setUserRole(localStorage.getItem('sd_current_user_role') || userData?.roles?.['bhulia-hub'] || userData?.role || 'user');
+    }
+  }, [userData]);
+  
   const profile = user ? { id: user.uid, role: userRole } : null;
   
   const handlePostJobClick = () => {
@@ -45,13 +53,7 @@ export default function JobsPage() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [viewingJob, setViewingJob] = useState<any | null>(null);
   const [hasSeekerProfile, setHasSeekerProfile] = useState<boolean | null>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setUserRole(localStorage.getItem('sd_current_user_role'));
-    }
-  }, []);
 
   useEffect(() => {
     if (profile) {
