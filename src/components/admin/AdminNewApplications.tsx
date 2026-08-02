@@ -4,10 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { FileText, PhoneCall, CheckCircle, Store, Mail, MapPin, XCircle } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-// Assuming addNotification and logAdminActivity exist in some form, or we can mock them if they don't.
-// Let's implement lightweight versions or use what's available.
-import { addNotification } from '@/lib/firestore/notifications';
-import { logAdminActivity } from '@/lib/firestore/admin_activities';
+
 
 export default function AdminNewApplications() {
   const [applications, setApplications] = useState<any[]>([]);
