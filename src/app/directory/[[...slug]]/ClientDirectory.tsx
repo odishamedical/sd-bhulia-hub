@@ -209,9 +209,13 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
                 <h3 className="text-sm sm:text-base font-bold text-white group-hover:text-[#C5A059] transition-colors line-clamp-2 leading-snug">
                   {item.title || item.name}
                 </h3>
-                {isVerified && (
+                {isVerified ? (
                   <div className="shrink-0 bg-green-500 rounded-full p-0.5 mt-0.5" title="Verified Partner">
                     <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+                  </div>
+                ) : (
+                  <div className="shrink-0 border border-[#C5A059] text-[#C5A059] rounded-md px-1.5 py-0.5 mt-0.5 text-[8px] font-bold uppercase tracking-wider bg-[#C5A059]/10" title="Unverified Listing">
+                    Unverified
                   </div>
                 )}
               </div>
@@ -222,7 +226,9 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
               </div>
 
               <div className="flex items-center gap-2 mt-auto pt-3 border-t border-[#C5A059]/10">
-                <span className="text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-wider group-hover:underline">View Profile</span>
+                <span className="text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-wider group-hover:underline">
+                  {isVerified ? "View Profile" : "Claim Business"}
+                </span>
                 <span className="text-[#C5A059] text-xs transition-transform group-hover:translate-x-1">→</span>
               </div>
             </div>
@@ -390,7 +396,7 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
                 {unverifiedListings.filter(item => item.role === "weaver").length > 0 && (
                   <div className="pt-12">
                     <div className="flex items-center gap-3 mb-6 opacity-80">
-                      <h2 className="text-xl font-serif font-bold text-[#C5A059]">Other Master Weavers</h2>
+                      <h2 className="text-xl font-serif font-bold text-[#C5A059]">Unverified Master Weavers</h2>
                       <div className="h-px flex-1 bg-gradient-to-r from-[#C5A059]/50 to-transparent"></div>
                     </div>
                     {renderGridWithAds(unverifiedListings.filter(item => item.role === "weaver"))}
@@ -400,7 +406,7 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
                 {unverifiedListings.filter(item => item.role === "store").length > 0 && (
                   <div className="pt-12">
                     <div className="flex items-center gap-3 mb-6 opacity-80">
-                      <h2 className="text-xl font-serif font-bold text-[#C5A059]">Other Retail Shops</h2>
+                      <h2 className="text-xl font-serif font-bold text-[#C5A059]">Unverified Retail Shops</h2>
                       <div className="h-px flex-1 bg-gradient-to-r from-[#C5A059]/50 to-transparent"></div>
                     </div>
                     {renderGridWithAds(unverifiedListings.filter(item => item.role === "store"))}
@@ -420,8 +426,8 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
                 const sections = [
                   { title: "Verified Master Weavers", data: distVerifiedWeavers },
                   { title: "Verified Retail Shops", data: distVerifiedShops },
-                  { title: "Other Master Weavers", data: distUnverifiedWeavers, isOther: true },
-                  { title: "Other Retail Shops", data: distUnverifiedShops, isOther: true }
+                  { title: "Unverified Master Weavers", data: distUnverifiedWeavers, isOther: true },
+                  { title: "Unverified Retail Shops", data: distUnverifiedShops, isOther: true }
                 ];
 
                 return (

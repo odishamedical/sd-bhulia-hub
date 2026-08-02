@@ -25,23 +25,38 @@ export default function AdminGoogleCRM() {
   const [googleResults, setGoogleResults] = useState<any[]>([]);
   const [isCrawling, setIsCrawling] = useState(false);
   const [importRole, setImportRole] = useState("store");
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+  const [selectedCrawlerIds, setSelectedCrawlerIds] = useState<string[]>([]);
 
   // Inspect & Edit State for Crawler
   const [inspectPlaceId, setInspectPlaceId] = useState<string | null>(null);
   const [editedPlaces, setEditedPlaces] = useState<Record<string, any>>({});
 
-  const handleCrawl = async () => {
-    if (!googleQuery) return;
+  const handleCrawl = async (useNextPage = false) => {
+    if (!googleQuery && !useNextPage) return;
     setIsCrawling(true);
     try {
+      const payload: any = { query: googleQuery };
+      if (useNextPage && nextPageToken) {
+        payload.pageToken = nextPageToken;
+        // Google requires a brief pause before the token is valid
+        await new Promise(r => setTimeout(r, 2000));
+      }
+
       const res = await fetch("/api/places", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: googleQuery })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       if (data.places || data.results) {
-        setGoogleResults(data.places || data.results);
+        const newResults = data.places || data.results;
+        if (useNextPage) {
+           setGoogleResults(prev => [...prev, ...newResults]);
+        } else {
+           setGoogleResults(newResults);
+        }
+        setNextPageToken(data.nextPageToken || null);
       } else {
         alert("No results found or error occurred.");
       }
@@ -53,7 +68,19 @@ export default function AdminGoogleCRM() {
     }
   };
 
-  const importPlace = async (place: any) => {
+  const handleBulkImport = async () => {
+    if (!selectedCrawlerIds.length) return;
+    const placesToImport = googleResults.filter(p => selectedCrawlerIds.includes(p.id));
+    if (confirm(`Import ${placesToImport.length} leads as ${importRole}?`)) {
+      for (const place of placesToImport) {
+        await importPlace(place, false);
+      }
+      setSelectedCrawlerIds([]);
+      alert(`Successfully imported ${placesToImport.length} leads!`);
+    }
+  };
+
+  const importPlace = async (place: any, showSuccessAlert = true) => {
     try {
       let country = "India";
       let state = "Odisha";
@@ -94,7 +121,7 @@ export default function AdminGoogleCRM() {
       const newRef = doc(db, collectionName, place.id || Date.now().toString());
       
       await setDoc(newRef, newDoc);
-      alert(`${newDoc.title} imported successfully as ${importRole}!`);
+      if (showSuccessAlert) alert(`${newDoc.title} imported successfully as ${importRole}!`);
       setInspectPlaceId(null);
     } catch (e) {
       alert("Error importing lead");
@@ -263,35 +290,106 @@ export default function AdminGoogleCRM() {
           </div>
           
           {googleResults.length > 0 && (
-            <div className="mt-6 grid gap-4">
-              {googleResults.map((place, idx) => {
-                const edits = editedPlaces[place.id] || {};
-                return (
-                  <div key={idx} className="bg-gray-50 p-4 rounded-xl border border-gray-200 flex justify-between items-center">
-                    <div>
-                      <h3 className="text-gray-900 font-bold text-sm">{edits.name || place.displayName?.text || place.name}</h3>
-                      <p className="text-gray-500 text-xs mt-1">{edits.address || place.formattedAddress || place.address}</p>
-                      <p className="text-green-600 text-xs mt-1 font-mono font-bold">{edits.phone || place.nationalPhoneNumber || place.phone || "No Phone"}</p>
+            <div className="mt-6">
+              <div className="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl border border-gray-200">
+                <div className="flex items-center gap-2">
+                  <input 
+                    type="checkbox" 
+                    className="w-4 h-4 rounded border-gray-300 text-green-500 focus:ring-green-500" 
+                    checked={selectedCrawlerIds.length > 0 && selectedCrawlerIds.length === googleResults.filter(p => !crmLeads.some(l => l.id === p.id)).length}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedCrawlerIds(googleResults.filter(p => !crmLeads.some(l => l.id === p.id)).map(p => p.id));
+                      } else {
+                        setSelectedCrawlerIds([]);
+                      }
+                    }}
+                  />
+                  <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Select All New</span>
+                </div>
+                {selectedCrawlerIds.length > 0 && (
+                  <button 
+                    onClick={handleBulkImport}
+                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
+                  >
+                    Import {selectedCrawlerIds.length} Selected Leads
+                  </button>
+                )}
+              </div>
+              <div className="grid gap-4">
+                {googleResults.map((place, idx) => {
+                  const edits = editedPlaces[place.id] || {};
+                  const isDuplicate = crmLeads.some(l => l.id === place.id);
+                  const isSelected = selectedCrawlerIds.includes(place.id);
+                  const imageCount = place.photoUrls?.length || 0;
+                  const hasPhone = !!(place.nationalPhoneNumber || place.phone);
+                  const hasAddressDetails = !!place.addressComponents;
+
+                  return (
+                    <div key={idx} className={`bg-gray-50 p-4 rounded-xl border flex justify-between items-center transition-colors ${isSelected ? 'border-green-500 bg-green-50/30' : 'border-gray-200'} ${isDuplicate ? 'opacity-70 grayscale-[30%]' : ''}`}>
+                      <div className="flex items-center gap-4">
+                        {!isDuplicate && (
+                          <input 
+                            type="checkbox" 
+                            className="w-4 h-4 rounded border-gray-300 text-green-500 focus:ring-green-500" 
+                            checked={isSelected}
+                            onChange={() => {
+                              setSelectedCrawlerIds(prev => prev.includes(place.id) ? prev.filter(i => i !== place.id) : [...prev, place.id]);
+                            }}
+                          />
+                        )}
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-gray-900 font-bold text-sm">{edits.name || place.displayName?.text || place.name}</h3>
+                            {isDuplicate && <span className="px-2 py-0.5 bg-gray-200 text-gray-600 rounded text-[10px] font-bold uppercase tracking-wider">Already Imported</span>}
+                          </div>
+                          <p className="text-gray-500 text-xs mt-1">{edits.address || place.formattedAddress || place.address}</p>
+                          <div className="flex items-center gap-3 mt-2">
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 bg-white border border-gray-200 rounded text-gray-500">
+                              📸 Images: {imageCount}
+                            </span>
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 border rounded ${hasPhone ? 'bg-green-50 border-green-200 text-green-600' : 'bg-red-50 border-red-200 text-red-600'}`}>
+                              📞 Phone: {hasPhone ? 'Yes' : 'No'}
+                            </span>
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 border rounded ${hasAddressDetails ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-orange-50 border-orange-200 text-orange-600'}`}>
+                              📍 Address: {hasAddressDetails ? 'Detailed' : 'Raw'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <button 
+                          onClick={() => setInspectPlaceId(place.id)}
+                          className="bg-white border border-gray-300 text-gray-700 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                        >
+                          Inspect & Edit
+                        </button>
+                        {!isDuplicate && (
+                          <button 
+                            onClick={() => importPlace(place)}
+                            className="bg-green-50 border border-green-200 text-green-700 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-green-500 hover:text-white transition-colors"
+                          >
+                            Import
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => setInspectPlaceId(place.id)}
-                        className="bg-transparent border border-gray-400 text-gray-600 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
-                      >
-                        Inspect & Edit
-                      </button>
-                      <button 
-                        onClick={() => importPlace(place)}
-                        className="bg-transparent border border-green-500 text-green-600 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-green-500 hover:text-white transition-colors"
-                      >
-                        Import Lead
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+              
+              {nextPageToken && (
+                <div className="mt-6 flex justify-center">
+                  <button 
+                    onClick={() => handleCrawl(true)}
+                    disabled={isCrawling}
+                    className="bg-blue-500 text-white px-6 py-3 rounded-xl font-bold uppercase tracking-widest hover:bg-blue-600 disabled:opacity-50 transition-colors"
+                  >
+                    {isCrawling ? "Loading..." : "Load Next 20 Results"}
+                  </button>
+                </div>
+              )}
             </div>
-          )}
         </div>
       )}
 
