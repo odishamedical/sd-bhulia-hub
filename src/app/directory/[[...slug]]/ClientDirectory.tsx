@@ -61,7 +61,7 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
     const wList = weavers.map(w => ({ ...w, role: "weaver", displayType: "Master Weaver" }));
     const b2bList = wholesalers.map(b => ({ ...b, role: "wholesaler", displayType: "B2B Wholesaler" }));
     const sList = suppliers.map(s => ({ ...s, role: "raw_material", displayType: "Raw Material Supplier" }));
-    const all = [...vList, ...wList, ...b2bList, ...sList].filter(item => item.status === "approved" || item.status === "unclaimed");
+    const all = [...vList, ...wList, ...b2bList, ...sList].filter(item => item.status === "approved" || item.status === "unclaimed" || item.status === "active");
     return all.sort(() => Math.random() - 0.5);
   }, [stores, weavers, wholesalers, suppliers]);
 
@@ -164,8 +164,8 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
     setShuffledDistricts(Array.from(dSet).sort(() => Math.random() - 0.5));
   }, [filteredDirectory]);
 
-  const verifiedListings = filteredDirectory.filter(item => item.status === "approved");
-  const unverifiedListings = filteredDirectory.filter(item => item.status !== "approved");
+  const verifiedListings = filteredDirectory.filter(item => item.status === "approved" || item.status === "active");
+  const unverifiedListings = filteredDirectory.filter(item => item.status !== "approved" && item.status !== "active");
 
   const loading = storesLoading || weaversLoading;
 
@@ -176,7 +176,7 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
 
     for (let i = 0; i < listings.length; i++) {
       const item = listings[i];
-      const isVerified = item.status === "approved";
+      const isVerified = item.status === "approved" || item.status === "active";
       
       result.push(
         <div key={item.id} className="group relative bg-[#0B2B26] rounded-2xl border border-[#C5A059]/20 hover:border-[#C5A059]/80 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:-translate-y-1 flex flex-col h-full">
@@ -412,10 +412,10 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
               shuffledDistricts.map((dist, index) => {
                 const distListings = filteredDirectory.filter(item => ((item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha") === dist);
                 
-                const distVerifiedWeavers = distListings.filter(item => item.status === "approved" && item.role === "weaver");
-                const distVerifiedShops = distListings.filter(item => item.status === "approved" && item.role === "store");
-                const distUnverifiedWeavers = distListings.filter(item => item.status !== "approved" && item.role === "weaver");
-                const distUnverifiedShops = distListings.filter(item => item.status !== "approved" && item.role === "store");
+                const distVerifiedWeavers = distListings.filter(item => (item.status === "approved" || item.status === "active") && item.role === "weaver");
+                const distVerifiedShops = distListings.filter(item => (item.status === "approved" || item.status === "active") && item.role === "store");
+                const distUnverifiedWeavers = distListings.filter(item => item.status !== "approved" && item.status !== "active" && item.role === "weaver");
+                const distUnverifiedShops = distListings.filter(item => item.status !== "approved" && item.status !== "active" && item.role === "store");
 
                 const sections = [
                   { title: "Verified Master Weavers", data: distVerifiedWeavers },
