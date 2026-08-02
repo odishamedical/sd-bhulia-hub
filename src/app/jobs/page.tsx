@@ -10,6 +10,7 @@ import { jobApplicationsCollection } from '@/lib/jobs';
 import { useEffect } from 'react';
 import PostJobModal from './components/PostJobModal';
 import GlobalBannerSlot from '@/components/GlobalBannerSlot';
+import { useAuth } from '@/context/AuthContext';
 
 // Fetch real jobs below
 
@@ -17,6 +18,7 @@ const CATEGORIES = ['All', 'Master Weaver', 'Dyer', 'Spinner', 'Tailor', 'Sales 
 
 export default function JobsPage() {
   const router = useRouter();
+  const { userData } = useAuth();
   // using AuthContext or just relying on profile status; for now mocking
   const profile = null;
   const loginDemo = () => {};
@@ -118,26 +120,28 @@ export default function JobsPage() {
 
       {/* Background Effects */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#0070F3]/5 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#005bb5]/5 rounded-full blur-[100px] mix-blend-screen pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#6B1D2F]/5 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#4A1020]/5 rounded-full blur-[100px] mix-blend-screen pointer-events-none" />
         <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
       </div>
 
           
-      <div className="bg-[#0070F3] text-white py-16 px-4 text-center relative z-10">
+      <div className="bg-[#6B1D2F] text-white py-16 px-4 text-center relative z-10">
         <h1 className="text-4xl font-bold mb-4">Bhulia Hub Job Portal</h1>
         <p className="text-lg opacity-90 max-w-2xl mx-auto mb-6">Find the perfect career in the Sambalpuri handloom industry. Apply to top shops across India or create a Seeker Profile.</p>
         
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-          <Link href="/jobs/profile" className="bg-white text-[#0070F3] font-bold px-6 py-3 rounded-xl hover:opacity-90 transition-all shadow-md text-center">
+          <Link href="/jobs/profile" className="bg-[#C5A059] text-black font-bold px-6 py-3 rounded-xl hover:opacity-90 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] text-center">
             Create Seeker Profile
           </Link>
-          <button 
-            onClick={() => setShowPostModal(true)}
-            className="bg-[#005bb5] border border-[#003d7a] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#003d7a] transition-all text-center shadow-md"
-          >
-            Post a Job (Vendors)
-          </button>
+          {userData && ['store', 'weaver', 'wholesaler', 'admin', 'super_admin'].includes(userData.role?.toLowerCase() || '') && (
+            <button 
+              onClick={() => setShowPostModal(true)}
+              className="bg-black/20 border border-[#C5A059]/30 text-[#C5A059] font-bold px-6 py-3 rounded-xl hover:bg-black/40 transition-all text-center shadow-md backdrop-blur-sm"
+            >
+              Post a Job (Vendors)
+            </button>
+          )}
         </div>
       </div>
   
@@ -152,7 +156,7 @@ export default function JobsPage() {
             <input 
               type="text" 
               placeholder="Search for jobs by title, skill, or shop..." 
-              className="w-full bg-black/40 border border-[#C5A059]/30 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-[#FDF8F5]/40 focus:outline-none focus:border-[#0070F3] backdrop-blur-md transition-colors"
+              className="w-full bg-black/40 border border-[#C5A059]/30 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-[#FDF8F5]/40 focus:outline-none focus:border-[#C5A059] backdrop-blur-md transition-colors"
             />
           </div>
           <div className="flex flex-wrap justify-center gap-3">
@@ -160,7 +164,7 @@ export default function JobsPage() {
               <button 
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-full text-sm font-bold transition-all border ${activeCategory === cat ? 'bg-[#0070F3]/20 border-[#0070F3] text-[#0070F3]' : 'bg-white/5 border-white/10 text-[#FDF8F5]/60 hover:bg-white/10 hover:text-white'}`}
+                className={`px-4 py-2 rounded-full text-sm font-bold transition-all border ${activeCategory === cat ? 'bg-[#6B1D2F]/20 border-[#C5A059] text-[#C5A059]' : 'bg-white/5 border-white/10 text-[#FDF8F5]/60 hover:bg-white/10 hover:text-white'}`}
               >
                 {cat}
               </button>
@@ -181,10 +185,10 @@ export default function JobsPage() {
           ) : filteredJobs.length === 0 ? (
             <div className="text-center py-12 text-[#FDF8F5]/50 font-mono">No active jobs found.</div>
           ) : filteredJobs.map(job => (
-            <div key={job.id} className="bg-black/40 border border-white/5 rounded-2xl p-6 hover:border-[#0070F3]/30 transition-all group backdrop-blur-sm">
+            <div key={job.id} className="bg-black/40 border border-white/5 rounded-2xl p-6 hover:border-[#C5A059]/30 transition-all group backdrop-blur-sm">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-white group-hover:text-[#0070F3] transition-colors">{job.title}</h3>
+                  <h3 className="text-xl font-bold text-white group-hover:text-[#C5A059] transition-colors">{job.title}</h3>
                   <p className="text-[#FDF8F5]/60 mt-1 flex items-center gap-2">
                     <Briefcase className="w-4 h-4 text-[#005bb5]" /> 
                     {job.shopName ? job.shopName : (job.shopId === 'platform' ? 'Gold Dunia Direct' : `Shop ID: ${job.shopId}`)}
@@ -201,13 +205,13 @@ export default function JobsPage() {
                 <span className="bg-white/5 px-2 py-1 rounded border border-white/10">Edu: {job.qualification || 'Any'}</span>
                 <span className="bg-white/5 px-2 py-1 rounded border border-white/10">{job.vacancies || 1} Vacanc{(job.vacancies || 1) > 1 ? 'ies' : 'y'}</span>
                 
-                <span className="text-xs text-[#FDF8F5]/40 italic flex items-center gap-1 ml-auto"><Clock className="w-3 h-3 text-[#0070F3]" /> {job.createdAt ? new Date((job.createdAt as any).seconds * 1000).toLocaleDateString() : 'Recently'}</span>
+                <span className="text-xs text-[#FDF8F5]/40 italic flex items-center gap-1 ml-auto"><Clock className="w-3 h-3 text-[#C5A059]" /> {job.createdAt ? new Date((job.createdAt as any).seconds * 1000).toLocaleDateString() : 'Recently'}</span>
               </div>
               
               <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
                 <button 
                   onClick={() => setViewingJob(job)}
-                  className="text-[#0070F3] hover:text-white text-sm font-bold transition-colors underline-offset-4 hover:underline"
+                  className="text-[#C5A059] hover:text-white text-sm font-bold transition-colors underline-offset-4 hover:underline"
                 >
                   View Details
                 </button>
@@ -219,7 +223,7 @@ export default function JobsPage() {
                   <button 
                     onClick={() => handleApply(job)}
                     disabled={applyingTo === job.id}
-                    className="bg-[#0070F3] text-[#f8fafc] font-bold px-4 py-2 rounded-lg hover:bg-[#FDF8F5] transition-colors flex items-center gap-2 ml-auto disabled:opacity-50"
+                    className="bg-[#6B1D2F] text-[#f8fafc] font-bold px-4 py-2 rounded-lg hover:bg-[#FDF8F5] transition-colors flex items-center gap-2 ml-auto disabled:opacity-50"
                   >
                     {applyingTo === job.id ? 'Applying...' : 'Apply Now'} <ChevronRight className="w-4 h-4" />
                   </button>
@@ -272,14 +276,14 @@ export default function JobsPage() {
       {/* JOB DETAILS MODAL */}
       {viewingJob && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-[#0A101C] border border-[#0070F3]/20 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
+          <div className="bg-[#0A101C] border border-[#C5A059]/20 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
             <button onClick={() => setViewingJob(null)} className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors">
               <CheckCircle2 className="w-8 h-8 opacity-0" /> {/* Spacer */}
               <span className="text-xl">&times;</span>
             </button>
             
             <div className="p-6 md:p-8">
-              <h2 className="text-3xl font-serif font-bold text-[#0070F3] mb-2">{viewingJob.title}</h2>
+              <h2 className="text-3xl font-serif font-bold text-[#C5A059] mb-2">{viewingJob.title}</h2>
               <p className="text-white/80 text-lg mb-6 flex items-center gap-2">
                 <Briefcase className="w-5 h-5 text-[#005bb5]" /> 
                 {viewingJob.shopName ? viewingJob.shopName : (viewingJob.shopId === 'platform' ? 'Gold Dunia Direct' : `Shop ID: ${viewingJob.shopId}`)}
@@ -305,7 +309,7 @@ export default function JobsPage() {
               </div>
 
               <div className="mb-8">
-                <h3 className="text-[#0070F3] font-bold text-lg mb-3">Job Description</h3>
+                <h3 className="text-[#C5A059] font-bold text-lg mb-3">Job Description</h3>
                 <div className="text-white/80 whitespace-pre-wrap leading-relaxed text-sm">
                   {viewingJob.description || viewingJob.requirements}
                 </div>
