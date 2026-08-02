@@ -100,7 +100,7 @@ export default function Footer() {
               </div>
               <p className="text-xs text-gray-300 leading-relaxed font-sans italic opacity-90 group-hover:opacity-100 transition-opacity">“Collaborate with Bhulia for bulk orders, corporate gifting, and global trade.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Db2b" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
+            <Link href="/join?role=wholesaler" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
               Partner with Us
             </Link>
           </div>

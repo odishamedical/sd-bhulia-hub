@@ -226,7 +226,7 @@ function JoinWizardContent() {
             )}
 
             {/* STEP 2: Business Details */}
-            {step === 5 && (
+            {step === 2 && (
               <div className="animate-in fade-in duration-500">
                 <h2 className="text-3xl font-light mb-2 text-white">Business Details</h2>
                 <p className="text-gray-400 mb-8">Provide your location and contact details for the Bhulia Ecosystem.</p>
@@ -317,8 +317,8 @@ function JoinWizardContent() {
               </div>
             )}
 
-            {/* STEP 2: Legal & Compliance */}
-            {step === 5 && (
+            {/* STEP 3: Legal & Compliance */}
+            {step === 3 && (
               <div className="animate-in fade-in duration-500">
                 <h2 className="text-3xl font-serif font-bold mb-2 text-white">Additional Details</h2>
                 <p className="text-gray-400 mb-8">Optional business and compliance details.</p>
@@ -361,8 +361,8 @@ function JoinWizardContent() {
               </div>
             )}
 
-            {/* STEP 3: Review */}
-            {step === 5 && (
+            {/* STEP 4: Review */}
+            {step === 4 && (
               <div className="animate-in fade-in duration-500">
                 <h2 className="text-3xl font-light mb-2 text-white">Final Review</h2>
                 <p className="text-gray-400 mb-8">Please confirm your details before submitting to the Super Admin.</p>
