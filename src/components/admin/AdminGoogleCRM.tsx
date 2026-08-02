@@ -54,10 +54,31 @@ export default function AdminGoogleCRM() {
 
   const importPlace = async (place: any) => {
     try {
+      let country = "India";
+      let state = "Odisha";
+      let district = "";
+      let block = "";
+
+      if (place.addressComponents) {
+        place.addressComponents.forEach((comp: any) => {
+          if (comp.types.includes("country")) country = comp.longText;
+          if (comp.types.includes("administrative_area_level_1")) state = comp.longText;
+          if (comp.types.includes("administrative_area_level_2")) district = comp.longText;
+          if (!district && comp.types.includes("administrative_area_level_3")) district = comp.longText;
+          if (comp.types.includes("locality") || comp.types.includes("sublocality")) {
+            if (!block) block = comp.longText;
+          }
+        });
+      }
+
       const edits = editedPlaces[place.id] || {};
       const newDoc = {
         title: edits.name || place.displayName?.text || place.name || "Unknown",
         address: edits.address || place.formattedAddress || place.address || "",
+        country: country,
+        state: state,
+        district: district,
+        block: block,
         phoneNumber: edits.phone || place.nationalPhoneNumber || place.phone || "",
         website: edits.website || place.websiteUri || place.website || "",
         rating: edits.rating || place.rating || 0,

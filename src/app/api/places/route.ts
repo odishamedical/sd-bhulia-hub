@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': 'places.id,places.displayName.text,places.formattedAddress,places.nationalPhoneNumber,places.websiteUri,places.rating,places.userRatingCount,places.location,places.photos,nextPageToken'
+        'X-Goog-FieldMask': 'places.id,places.displayName.text,places.formattedAddress,places.addressComponents,places.nationalPhoneNumber,places.websiteUri,places.rating,places.userRatingCount,places.location,places.photos,nextPageToken'
       },
       body: JSON.stringify(requestBody)
     });
