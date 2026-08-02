@@ -57,14 +57,14 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-[#0A101C] border border-[#0070F3]/20 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
+      <div className="bg-[#051815] border border-[#C5A059]/20 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
         <button onClick={onClose} className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors">
           <X className="w-6 h-6" />
         </button>
 
         <div className="p-6 md:p-8">
           <div className="mb-6">
-            <h2 className="text-2xl font-serif font-bold text-[#0070F3]">Post a New Job</h2>
+            <h2 className="text-2xl font-serif font-bold text-[#C5A059]">Post a New Job</h2>
             <p className="text-white/60 text-sm mt-1">
               {isAdmin 
                 ? "Admin Mode: Your job will instantly become active."
@@ -80,7 +80,7 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                   type="text" 
                   value={shopId} 
                   onChange={e => setShopId(e.target.value)} 
-                  className="w-full bg-black/40 border border-[#0070F3]/30 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#0070F3]" 
+                  className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
                   placeholder="Use 'platform' for global" 
                   required
                 />
@@ -95,8 +95,8 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                     type="text" 
                     value={shopName} 
                     onChange={e => setShopName(e.target.value)} 
-                    className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#0070F3]" 
-                    placeholder="e.g. Gold Dunia Official" 
+                    className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
+                    placeholder="e.g. Bhulia Hub Official" 
                     required
                   />
                 </div>
@@ -107,8 +107,8 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                   type="text" 
                   value={title} 
                   onChange={e => setTitle(e.target.value)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#0070F3]" 
-                  placeholder="e.g. Master Goldsmith" 
+                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
+                  placeholder="e.g. Master Weaver" 
                   required
                 />
               </div>
@@ -118,7 +118,7 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                   type="text" 
                   value={location} 
                   onChange={e => setLocation(e.target.value)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#0070F3]" 
+                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
                   placeholder="e.g. Bhubaneswar, Odisha" 
                   required
                 />
@@ -128,11 +128,11 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                 <select 
                   value={jobType} 
                   onChange={e => setJobType(e.target.value as any)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#0070F3]"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]"
                 >
-                  <option value="Full-time" className="bg-[#0A101C]">Full-time</option>
-                  <option value="Part-time" className="bg-[#0A101C]">Part-time</option>
-                  <option value="Contract" className="bg-[#0A101C]">Contract</option>
+                  <option value="Full-time" className="bg-[#051815]">Full-time</option>
+                  <option value="Part-time" className="bg-[#051815]">Part-time</option>
+                  <option value="Contract" className="bg-[#051815]">Contract</option>
                 </select>
               </div>
               <div>
@@ -141,7 +141,7 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                   type="text" 
                   value={salaryRange} 
                   onChange={e => setSalaryRange(e.target.value)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#0070F3]" 
+                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
                   placeholder="e.g. ₹20,000 - ₹30,000" 
                 />
               </div>
@@ -150,13 +150,13 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                 <select 
                   value={experience} 
                   onChange={e => setExperience(e.target.value)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#0070F3]"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]"
                 >
-                  <option value="Fresher" className="bg-[#0A101C]">Fresher</option>
-                  <option value="1-2 Years" className="bg-[#0A101C]">1-2 Years</option>
-                  <option value="3-5 Years" className="bg-[#0A101C]">3-5 Years</option>
-                  <option value="5-10 Years" className="bg-[#0A101C]">5-10 Years</option>
-                  <option value="10+ Years" className="bg-[#0A101C]">10+ Years</option>
+                  <option value="Fresher" className="bg-[#051815]">Fresher</option>
+                  <option value="1-2 Years" className="bg-[#051815]">1-2 Years</option>
+                  <option value="3-5 Years" className="bg-[#051815]">3-5 Years</option>
+                  <option value="5-10 Years" className="bg-[#051815]">5-10 Years</option>
+                  <option value="10+ Years" className="bg-[#051815]">10+ Years</option>
                 </select>
               </div>
               <div>
@@ -164,14 +164,14 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                 <select 
                   value={qualification} 
                   onChange={e => setQualification(e.target.value)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#0070F3]"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]"
                 >
-                  <option value="Any" className="bg-[#0A101C]">Any</option>
-                  <option value="10th Pass" className="bg-[#0A101C]">10th Pass</option>
-                  <option value="12th Pass" className="bg-[#0A101C]">12th Pass</option>
-                  <option value="Graduate" className="bg-[#0A101C]">Graduate</option>
-                  <option value="Post Graduate" className="bg-[#0A101C]">Post Graduate</option>
-                  <option value="Specialized Diploma" className="bg-[#0A101C]">Specialized Diploma</option>
+                  <option value="Any" className="bg-[#051815]">Any</option>
+                  <option value="10th Pass" className="bg-[#051815]">10th Pass</option>
+                  <option value="12th Pass" className="bg-[#051815]">12th Pass</option>
+                  <option value="Graduate" className="bg-[#051815]">Graduate</option>
+                  <option value="Post Graduate" className="bg-[#051815]">Post Graduate</option>
+                  <option value="Specialized Diploma" className="bg-[#051815]">Specialized Diploma</option>
                 </select>
               </div>
               <div>
@@ -181,7 +181,7 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                   value={vacancies} 
                   onChange={e => setVacancies(e.target.value)} 
                   min="1"
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#0070F3]" 
+                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
                   required
                 />
               </div>
@@ -192,7 +192,7 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
               <textarea 
                 value={description} 
                 onChange={e => setDescription(e.target.value)} 
-                className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#0070F3] h-32 resize-none" 
+                className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059] h-32 resize-none" 
                 placeholder="Detailed job description, responsibilities, and requirements..." 
                 required
               />
@@ -209,7 +209,7 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
               
               <p className="text-center text-xs text-white/40">
                 You can manage your candidates from the 
-                <a href={isAdmin ? "/admin" : "/vendor"} className="text-[#0070F3] hover:underline ml-1">Dashboard</a>.
+                <a href={isAdmin ? "/admin" : "/vendor"} className="text-[#C5A059] hover:underline ml-1">Dashboard</a>.
               </p>
             </div>
           </form>

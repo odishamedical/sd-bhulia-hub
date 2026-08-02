@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Jewelry Jobs & Careers | Gold Dunia Job Portal',
+  title: 'Handloom Jobs & Careers | Bhulia Hub Job Portal',
   description: 'Find the perfect career in the jewelry industry. Apply to top shops across India or create a Seeker Profile to let shops find you.',
   openGraph: {
     title: 'Jewelry Jobs & Careers | Gold Dunia',
