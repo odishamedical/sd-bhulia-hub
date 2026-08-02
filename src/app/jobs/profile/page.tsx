@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { User, CheckCircle2 } from 'lucide-react';
+import { User } from 'lucide-react';
 import Link from 'next/link';
 import { doc, getDoc } from 'firebase/firestore';
 import { jobSeekersCollection } from '@/lib/jobs';
 import SeekerWizard from '@/components/ats/SeekerWizard';
+import SeekerDashboard from '@/components/ats/SeekerDashboard';
 import { atsConfig } from '@/config/ats.config';
 import Header from '@/components/Header';
 
@@ -14,11 +15,15 @@ export default function SeekerProfilePage() {
   const { user } = useAuth();
   const loading = false;
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
+  const [seekerData, setSeekerData] = useState<any>(null);
 
   useEffect(() => {
     if (user?.uid) {
       getDoc(doc(jobSeekersCollection, user.uid)).then((docSnap) => {
         setHasProfile(docSnap.exists());
+        if (docSnap.exists()) {
+          setSeekerData(docSnap.data());
+        }
       }).catch(err => {
         console.error(err);
         setHasProfile(false);
@@ -53,20 +58,16 @@ export default function SeekerProfilePage() {
     );
   }
 
-  // Phase 3 will replace this block with the fully-featured Dashboard
-  if (hasProfile) {
+  // Phase 3 Dashboard
+  if (hasProfile && seekerData) {
     return (
-      <main className={`min-h-screen ${atsConfig.theme.primaryBg} pt-32 pb-20 relative overflow-hidden flex items-center justify-center text-white`}>
+      <main className={`min-h-screen ${atsConfig.theme.primaryBg} pt-32 pb-20 relative overflow-hidden flex flex-col`}>
         <Header />
-        <div className="relative z-10 max-w-md w-full bg-black/40 border border-white/10 rounded-[2rem] p-10 text-center">
-          <div className="w-20 h-20 bg-[#25D366]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-10 h-10 text-[#25D366]" />
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Profile Created!</h2>
-          <p className="text-white/60 mb-8">Your {atsConfig.terminology.cvName} is active. (Dashboard coming in Phase 3!)</p>
-          <Link href="/jobs" className={`${atsConfig.theme.buttonSecondary} font-bold px-6 py-3 rounded-xl block w-full`}>
-            Back to Job Board
-          </Link>
+        <div className="absolute inset-0 z-0">
+          <div className={`absolute top-1/4 left-1/4 w-[800px] h-[800px] ${atsConfig.theme.secondaryBg}/5 rounded-full blur-[120px] mix-blend-screen pointer-events-none`} />
+        </div>
+        <div className="relative z-10 px-4">
+          <SeekerDashboard seekerData={seekerData} />
         </div>
       </main>
     );
@@ -82,7 +83,12 @@ export default function SeekerProfilePage() {
         <SeekerWizard 
           userUid={user.uid} 
           userEmail={user.email} 
-          onSuccess={() => setHasProfile(true)} 
+          onSuccess={() => {
+             getDoc(doc(jobSeekersCollection, user.uid)).then(d => {
+               setSeekerData(d.data());
+               setHasProfile(true);
+             });
+          }} 
         />
       </div>
     </main>
