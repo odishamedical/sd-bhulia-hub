@@ -15,6 +15,7 @@ export default function AdminGoogleCRM() {
   const [stateFilter, setStateFilter] = useState("all");
   const [districtFilter, setDistrictFilter] = useState("all");
   const [roleFilter, setRoleFilter] = useState("all");
+  const [editingLead, setEditingLead] = useState<any>(null);
 
   const crmLeads = useMemo(() => {
     const wList = weavers.filter(w => w.source === "google_places").map(w => ({
@@ -98,6 +99,23 @@ export default function AdminGoogleCRM() {
     }
   };
 
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingLead) return;
+    try {
+      const collectionName = editingLead.role === "weaver" ? "weavers" : editingLead.role === "store" ? "stores" : editingLead.role === "wholesaler" ? "wholesalers" : "suppliers";
+      await updateDoc(doc(db, collectionName, editingLead.id), {
+        title: editingLead.name,
+        address: editingLead.address,
+        phoneNumber: editingLead.phone
+      });
+      alert("Lead updated successfully!");
+      setEditingLead(null);
+    } catch (error) {
+      alert("Error updating lead");
+    }
+  };
+
   const handleCall = (phone: string) => {
     if (phone === "N/A") return alert("No phone number available");
     window.open(`tel:${phone}`);
@@ -153,7 +171,7 @@ export default function AdminGoogleCRM() {
                 <th className="py-4 px-6">Role</th>
                 <th className="py-4 px-6">Location</th>
                 <th className="py-4 px-6">Contact</th>
-                <th className="py-4 px-6 text-right">Actions</th>
+                <th className="py-4 px-6 text-right sticky right-0 bg-gray-50 z-10 shadow-[-10px_0_15px_-10px_rgba(0,0,0,0.1)]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -180,7 +198,10 @@ export default function AdminGoogleCRM() {
                       <span className="text-gray-400">No Phone</span>
                     )}
                   </td>
-                  <td className="py-4 px-6 text-right space-x-3">
+                  <td className="py-4 px-6 text-right space-x-3 sticky right-0 bg-white shadow-[-10px_0_15px_-10px_rgba(0,0,0,0.05)] group-hover:bg-green-50/100 transition-colors">
+                    <button onClick={() => setEditingLead(lead)} className="text-blue-500 font-bold hover:text-blue-700 text-xs uppercase tracking-wider">
+                      Edit
+                    </button>
                     <button onClick={() => handleDelete(lead.role, lead.id)} className="text-red-500 font-bold hover:text-red-700 text-xs uppercase tracking-wider">
                       Delete
                     </button>
@@ -198,6 +219,33 @@ export default function AdminGoogleCRM() {
           </table>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {editingLead && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Edit Google Lead</h2>
+            <form onSubmit={handleSaveEdit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Business Name</label>
+                <input required type="text" value={editingLead.name} onChange={e => setEditingLead({...editingLead, name: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:border-green-500 outline-none font-medium text-gray-900" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Phone Number</label>
+                <input required type="text" value={editingLead.phone} onChange={e => setEditingLead({...editingLead, phone: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:border-green-500 outline-none font-medium text-gray-900" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Address</label>
+                <textarea required value={editingLead.address} onChange={e => setEditingLead({...editingLead, address: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:border-green-500 outline-none font-medium text-gray-900 h-24 resize-none"></textarea>
+              </div>
+              <div className="flex gap-3 pt-4">
+                <button type="button" onClick={() => setEditingLead(null)} className="flex-1 px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 font-bold text-sm uppercase tracking-wider hover:bg-gray-50">Cancel</button>
+                <button type="submit" className="flex-1 px-4 py-2.5 rounded-lg bg-green-500 text-white font-bold text-sm uppercase tracking-wider hover:bg-green-600">Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
