@@ -234,7 +234,7 @@ function JoinWizardContent() {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">{formData.role === 'weaver' ? 'Your Name / Loom Name' : formData.role === 'reseller' ? 'Your Name / Reseller Brand' : 'Business / Business / Name'} *</label>
-                    <input type="text" value={formData.businessName} onChange={e => setFormData({...formData, shopName: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder={formData.role === 'weaver' ? 'e.g. Ramakant Meher' : formData.role === 'reseller' ? 'e.g. Meher Handlooms' : 'e.g. Bhulia Silk Center'} required />
+                    <input type="text" value={formData.businessName} onChange={e => setFormData({...formData, businessName: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder={formData.role === 'weaver' ? 'e.g. Ramakant Meher' : formData.role === 'reseller' ? 'e.g. Meher Handlooms' : 'e.g. Bhulia Silk Center'} required />
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
