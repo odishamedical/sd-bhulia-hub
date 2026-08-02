@@ -32,7 +32,7 @@ import AdminSubscriptions from "@/components/admin/AdminSubscriptions";
 import AdminRoleAssignments from "@/components/admin/AdminRoleAssignments";
 import MasterVendorCRM from "@/components/admin/MasterVendorCRM";
 import AdminNewApplications from "@/components/admin/AdminNewApplications";
-import AdminJobsManager from "@/components/admin/AdminJobsManager";
+import AdminATSManager from "@/components/ats/AdminATSManager";
 
 const SIDEBAR_CATEGORIES = [
   {
