@@ -94,8 +94,8 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
       }
       const addr = String(rawAddr).toLowerCase();
       const dist = ((item as any).district || "").toLowerCase();
-      const st = ((item as any).state || "").toLowerCase();
-      const cntry = ((item as any).country || "").toLowerCase();
+      const st = ((item as any).state || "odisha").toLowerCase();
+      const cntry = ((item as any).country || "india").toLowerCase();
       const blk = ((item as any).block || "").toLowerCase();
       const vill = ((item as any).townVillage || "").toLowerCase();
 
