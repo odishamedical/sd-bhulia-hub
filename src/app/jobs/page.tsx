@@ -44,6 +44,7 @@ export default function JobsPage() {
   const loginDemo = () => {};
   
   const [activeCategory, setActiveCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
   const [applyingTo, setApplyingTo] = useState<string | null>(null);
   const [appliedJobs, setAppliedJobs] = useState<string[]>([]);
   const [pendingJob, setPendingJob] = useState<any | null>(null);
@@ -117,7 +118,18 @@ export default function JobsPage() {
     }
   };
 
-  const filteredJobs = jobs;
+  const filteredJobs = jobs.filter(job => {
+    const matchesSearch = !searchQuery || 
+      job.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      job.shopName?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      job.location?.toLowerCase().includes(searchQuery.toLowerCase());
+      
+    const matchesCategory = activeCategory === 'All' || 
+      job.title?.toLowerCase().includes(activeCategory.toLowerCase()) ||
+      job.description?.toLowerCase().includes(activeCategory.toLowerCase());
+      
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <main className="min-h-screen bg-[#051815] pb-20 relative overflow-hidden">
