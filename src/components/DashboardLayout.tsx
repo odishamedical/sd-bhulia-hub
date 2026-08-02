@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import NotificationBell from "@/components/NotificationBell";
 import { auth } from "@/lib/firebase";
 
 export type NavItem = {
@@ -128,6 +129,7 @@ export default function DashboardLayout({
             </div>
           )}
 
+          <NotificationBell />
           <div className="w-9 h-9 rounded-full bg-white/20 border border-white/20 flex items-center justify-center text-white font-bold uppercase hidden sm:flex shadow-sm">
              {userName?.charAt(0) || "U"}
           </div>

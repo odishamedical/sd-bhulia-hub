@@ -4,12 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { FileText, PhoneCall, CheckCircle, Store, Mail, MapPin, XCircle } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { addNotification } from '@/lib/firestore/notifications';
 
 
 export default function AdminNewApplications() {
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [selectedApp, setSelectedApp] = useState<any | null>(null);
 
   useEffect(() => {
     fetchApplications();
@@ -65,9 +67,7 @@ export default function AdminNewApplications() {
         });
       }
       
-      const adminName = localStorage.getItem("sd_current_user_name") || "Admin";
-      const adminEmail = localStorage.getItem("sd_current_user_email") || "admin@bhulia.com";
-      await logAdminActivity(adminName, adminEmail, "Approved Application", `Approved ${app.collectionName.slice(0, -1)} application for ${app.name} (${app.id})`);
+
 
       setApplications(applications.filter(a => a.id !== app.id));
       alert('Application approved successfully!');
@@ -92,9 +92,7 @@ export default function AdminNewApplications() {
         await addNotification(app.ownerUid, 'rejected', `Your application for ${app.name} was declined and removed. Reason: ${reason}`);
       }
       
-      const adminName = localStorage.getItem("sd_current_user_name") || "Admin";
-      const adminEmail = localStorage.getItem("sd_current_user_email") || "admin@bhulia.com";
-      await logAdminActivity(adminName, adminEmail, "Declined Application", `Declined and deleted ${app.collectionName.slice(0, -1)} application for ${app.name} (${app.id}). Reason: ${reason}`);
+
 
       setApplications(applications.filter(a => a.id !== app.id));
       alert('Application permanently deleted and removed from pending list.');
@@ -155,6 +153,13 @@ export default function AdminNewApplications() {
                     </div>
                     <p className="text-sm text-gray-400 max-w-lg truncate mb-4">{app.address}</p>
                     
+                                      <button 
+                    onClick={() => setSelectedApp(app)}
+                    className="mt-4 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-bold transition-colors w-full md:w-auto"
+                  >
+                    View Full Details
+                  </button>
+
                     {/* Document Previews */}
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-2 text-sm text-gray-300">
@@ -213,6 +218,148 @@ export default function AdminNewApplications() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Application Details Modal */}
+      {selectedApp && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0A1121] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-white/10 flex justify-between items-center sticky top-0 bg-[#0A1121]/90 backdrop-blur z-10">
+              <div>
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                  <Store className="text-[#C5A059]" /> {selectedApp.name || selectedApp.businessName}
+                </h3>
+                <span className={`mt-2 inline-block px-2 py-0.5 text-[10px] uppercase font-bold tracking-widest rounded border ${roleColors[selectedApp.collectionName] || roleColors.resellers}`}>
+                  {selectedApp.collectionName.slice(0, -1)}
+                </span>
+              </div>
+              <button onClick={() => setSelectedApp(null)} className="text-gray-400 hover:text-white p-2">
+                <XCircle className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              {/* Business Info */}
+              <div>
+                <h4 className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4">Business Information</h4>
+                <div className="grid grid-cols-2 gap-4 bg-black/30 p-4 rounded-xl border border-white/5 text-sm">
+                  <div>
+                    <span className="block text-gray-500 mb-1">Business Name</span>
+                    <span className="text-white font-medium">{selectedApp.name || selectedApp.businessName}</span>
+                  </div>
+                  <div>
+                    <span className="block text-gray-500 mb-1">Owner Name</span>
+                    <span className="text-white font-medium">{selectedApp.ownerName}</span>
+                  </div>
+                  <div>
+                    <span className="block text-gray-500 mb-1">Phone Number</span>
+                    <span className="text-white font-medium">{selectedApp.phone}</span>
+                  </div>
+                  <div>
+                    <span className="block text-gray-500 mb-1">Email Address</span>
+                    <span className="text-white font-medium">{selectedApp.email}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Location Info */}
+              <div>
+                <h4 className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4">Location Details</h4>
+                <div className="grid grid-cols-2 gap-4 bg-black/30 p-4 rounded-xl border border-white/5 text-sm">
+                  <div>
+                    <span className="block text-gray-500 mb-1">Country</span>
+                    <span className="text-white font-medium">{selectedApp.country}</span>
+                  </div>
+                  <div>
+                    <span className="block text-gray-500 mb-1">State</span>
+                    <span className="text-white font-medium">{selectedApp.state}</span>
+                  </div>
+                  <div>
+                    <span className="block text-gray-500 mb-1">District</span>
+                    <span className="text-white font-medium">{selectedApp.district}</span>
+                  </div>
+                  <div>
+                    <span className="block text-gray-500 mb-1">Block / City</span>
+                    <span className="text-white font-medium">{selectedApp.block}</span>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="block text-gray-500 mb-1">Full Local Address</span>
+                    <span className="text-white font-medium">{selectedApp.address}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Documents & Extra */}
+              <div>
+                <h4 className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4">Verification & Documents</h4>
+                <div className="grid grid-cols-2 gap-4 bg-black/30 p-4 rounded-xl border border-white/5 text-sm">
+                  {selectedApp.panNumber && (
+                    <div>
+                      <span className="block text-gray-500 mb-1">PAN Number</span>
+                      <span className="text-white font-mono bg-white/10 px-2 py-1 rounded">{selectedApp.panNumber}</span>
+                    </div>
+                  )}
+                  {selectedApp.gstNumber && (
+                    <div>
+                      <span className="block text-gray-500 mb-1">GST Number</span>
+                      <span className="text-white font-mono bg-white/10 px-2 py-1 rounded">{selectedApp.gstNumber}</span>
+                    </div>
+                  )}
+                  {selectedApp.loomsCount && (
+                    <div>
+                      <span className="block text-gray-500 mb-1">Number of Looms</span>
+                      <span className="text-white font-medium">{selectedApp.loomsCount}</span>
+                    </div>
+                  )}
+                  {selectedApp.socialMediaLink && (
+                    <div className="col-span-2">
+                      <span className="block text-gray-500 mb-1">Social Media</span>
+                      <a href={selectedApp.socialMediaLink} target="_blank" className="text-blue-400 hover:underline">{selectedApp.socialMediaLink}</a>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* WhatsApp Actions */}
+              <div>
+                <h4 className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4">WhatsApp Communication</h4>
+                <div className="flex flex-col gap-3">
+                  <a 
+                    href={`https://wa.me/91${selectedApp.phone?.replace(/\D/g, '')}?text=Hello ${selectedApp.ownerName}, this is the Bhulia Hub Admin Team. We are reviewing your application for ${selectedApp.name || selectedApp.businessName} and need a bit more information...`}
+                    target="_blank"
+                    className="flex items-center justify-center gap-2 bg-[#25D366]/20 hover:bg-[#25D366]/30 text-[#25D366] border border-[#25D366]/30 py-3 rounded-xl font-bold transition-colors"
+                  >
+                    <PhoneCall className="w-5 h-5" /> Chat on WhatsApp (Ask for Info)
+                  </a>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <button 
+                      onClick={() => {
+                        handleApprove(selectedApp);
+                        setSelectedApp(null);
+                        window.open(`https://wa.me/91${selectedApp.phone?.replace(/\D/g, '')}?text=Congratulations ${selectedApp.ownerName}! Your application for ${selectedApp.name || selectedApp.businessName} on Bhulia Hub has been APPROVED. You can now login to your dashboard.`, '_blank');
+                      }}
+                      className="flex items-center justify-center gap-2 bg-[#C5A059] hover:bg-[#8A6A32] text-black py-3 rounded-xl font-bold transition-colors"
+                    >
+                      <CheckCircle className="w-5 h-5" /> Approve & Notify
+                    </button>
+                    
+                    <button 
+                      onClick={() => {
+                        handleDecline(selectedApp);
+                        setSelectedApp(null);
+                        // Rejection whatsapp is optional, usually decline deletes it directly, but they can still message if they want.
+                      }}
+                      className="flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 py-3 rounded-xl font-bold transition-colors"
+                    >
+                      <XCircle className="w-5 h-5" /> Decline Application
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
