@@ -413,7 +413,7 @@ function JoinWizardContent() {
                   An administrator will call you at <strong>{formData.phone}</strong> shortly to verify your documents and identity.
                 </p>
                 <button onClick={() => window.location.href = '/'} className="px-8 py-4 border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059]/10 rounded-lg font-bold uppercase tracking-widest transition-colors">
-                  Return to Gold Hub
+                  Return to Bhulia Hub
                 </button>
               </div>
             )}
