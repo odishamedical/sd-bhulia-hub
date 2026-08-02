@@ -172,7 +172,7 @@ export default function AdminSPA() {
       case "help":
         return <AdminHelp />;
       case "jobs":
-        return <AdminJobsManager />;
+        return <AdminATSManager />;
       case "tickets":
         return <AdminTickets />;
       case "fraud":
