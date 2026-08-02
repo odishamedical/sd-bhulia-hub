@@ -1416,7 +1416,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
              "Dashboard"}
           </h1>
           <p className="text-gray-500 font-medium mt-1">
-            {activeTab === "home" ? `Welcome back, ${userName}! Here is an overview of your business performance.` :
+            {activeTab === "home" ? `Welcome back! Here is an overview of your business performance.` :
              activeTab === "products" ? (roleTitle.includes("Weaver") ? "Manage your handloom products and dispatch operations." : "Manage your retail inventory and dispatch operations.") :
              activeTab === "pricing" ? "View and manage your current subscription plan and billing cycle." :
              activeTab === "wallet" ? "Manage your earnings, pending payouts, and bank details." :
