@@ -145,6 +145,9 @@ export default function JobsPage() {
           }}
         />
       )}
+      {showUpgradeModal && (
+        <SaaSUpgraderModal onClose={() => setShowUpgradeModal(false)} />
+      )}
 
       {/* Background Effects */}
       <div className="absolute inset-0 z-0">
