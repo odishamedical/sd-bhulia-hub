@@ -424,3 +424,11 @@ function JoinWizardContent() {
     </div>
   );
 }
+
+export default function JoinWizard() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <JoinWizardContent />
+    </Suspense>
+  );
+}
