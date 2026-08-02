@@ -9,6 +9,7 @@ import ProductCard from "./ProductCard";
 import ShareWidget from "./ShareWidget";
 import Breadcrumbs, { BreadcrumbItem } from "./Breadcrumbs";
 import { useRouter } from "next/navigation";
+import { Star, ShieldCheck, Building, User, Wallet } from "lucide-react";
 
 export interface PublicProfileProps {
   type: "weaver" | "store" | "wholesaler" | "supplier";
@@ -40,6 +41,13 @@ export interface PublicProfileProps {
     videoUrl?: string;
     facebookUrl?: string;
     instagramUrl?: string;
+    subscriptionTier?: string;
+    kycDocumentUrl?: string;
+    bankHolder?: string;
+    bankName?: string;
+    bankAccount?: string;
+    bankIfsc?: string;
+    bankUpi?: string;
   };
   products: Product[];
   allProducts?: Product[];
@@ -164,6 +172,17 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                       📍 {profile.address}
                     </span>
                   ) : null}
+
+                  {profile.subscriptionTier === 'advance' && (
+                    <span className="flex items-center gap-1 bg-amber-500/20 border border-amber-500/50 px-3 py-1 rounded-full text-amber-500 text-[11px] sm:text-xs font-bold shadow-inner">
+                      <Star className="w-3.5 h-3.5 fill-amber-500" /> Advance Pro
+                    </span>
+                  )}
+                  {profile.subscriptionTier === 'pro' && (
+                    <span className="flex items-center gap-1 bg-blue-500/20 border border-blue-500/50 px-3 py-1 rounded-full text-blue-400 text-[11px] sm:text-xs font-bold shadow-inner">
+                      <Star className="w-3.5 h-3.5 fill-blue-500" /> Pro Partner
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -252,45 +271,85 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                </div>
             </div>
 
-            {/* Right: Artisan Heritage & Craft (or Shop Details) */}
+            {/* Middle/Right: Artisan Heritage & Craft */}
             <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl flex flex-col h-full relative overflow-hidden">
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#C5A059]/5 blur-[50px] rounded-full pointer-events-none" />
-              <h3 className="text-sm uppercase tracking-widest text-[#C5A059] font-bold mb-6 relative z-10">
+              <h3 className="text-sm uppercase tracking-widest text-[#C5A059] font-bold mb-4 relative z-10">
                 {type === "store" ? "Store Details & Legacy" : "Artisan Heritage & Craft"}
               </h3>
               
-              <div className="grid grid-cols-2 gap-y-8 gap-x-4 flex-1 relative z-10">
+              <div className="grid grid-cols-2 gap-y-6 gap-x-4 flex-1 relative z-10 mb-6 border-b border-[#C5A059]/20 pb-6">
                 {profile.generations && (
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-3">
-                      <span className="text-[#C5A059] text-xl">👨‍👩‍👧‍👦</span>
+                    <div className="w-10 h-10 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-2">
+                      <span className="text-[#C5A059] text-lg">👨‍👩‍👧‍👦</span>
                     </div>
-                    <div className="text-sm text-white font-bold">{profile.generations}</div>
-                    <div className="text-[10px] text-white/60 uppercase font-semibold mt-1">Generations Legacy</div>
+                    <div className="text-xs text-white font-bold">{profile.generations}</div>
+                    <div className="text-[9px] text-white/60 uppercase font-semibold mt-1">Legacy</div>
                   </div>
                 )}
                 
                 {(profile.weaverExperience || profile.handloomExperience) && (
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-3">
-                      <span className="text-[#C5A059] text-xl">⏳</span>
+                    <div className="w-10 h-10 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-2">
+                      <span className="text-[#C5A059] text-lg">⏳</span>
                     </div>
-                    <div className="text-sm text-white font-bold">{profile.weaverExperience || profile.handloomExperience}</div>
-                    <div className="text-[10px] text-white/60 uppercase font-semibold mt-1">
-                      {type === "store" ? "Retail Experience" : "Experience"}
+                    <div className="text-xs text-white font-bold">{profile.weaverExperience || profile.handloomExperience}</div>
+                    <div className="text-[9px] text-white/60 uppercase font-semibold mt-1">Experience</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Trust & Payment Section */}
+              <div className="relative z-10 space-y-4">
+                <h3 className="text-sm uppercase tracking-widest text-[#C5A059] font-bold">Trust & Payments</h3>
+                
+                {profile.kycDocumentUrl ? (
+                  <div className="flex items-center gap-3 bg-black/20 p-3 rounded-xl border border-green-500/30">
+                    <ShieldCheck className="w-8 h-8 text-green-500 shrink-0" />
+                    <div>
+                      <span className="block text-xs font-bold text-green-400 uppercase">KYC Verified Vendor</span>
+                      <span className="block text-[10px] text-white/60">Govt. ID verified by Bhulia Hub</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3 bg-black/20 p-3 rounded-xl border border-amber-500/30">
+                    <ShieldCheck className="w-8 h-8 text-amber-500 shrink-0" />
+                    <div>
+                      <span className="block text-xs font-bold text-amber-400 uppercase">Unverified KYC</span>
+                      <span className="block text-[10px] text-white/60">Vendor has not submitted ID</span>
                     </div>
                   </div>
                 )}
 
-                {profile.specialties && profile.specialties.length > 0 && (
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-3">
-                      <span className="text-[#C5A059] text-xl">🧵</span>
+                {(profile.bankUpi || profile.bankAccount) && (
+                  <div className="bg-[#C5A059]/5 p-4 rounded-xl border border-[#C5A059]/20">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Wallet className="w-4 h-4 text-[#C5A059]" />
+                      <span className="text-[11px] font-bold text-white uppercase tracking-wider">Direct Payment Info</span>
                     </div>
-                    <div className="text-sm text-white font-bold line-clamp-2 leading-tight">{profile.specialties[0]}</div>
-                    <div className="text-[10px] text-white/60 uppercase font-semibold mt-1">
-                      {type === "store" ? "Primary Category" : "Handwoven Craft"}
-                    </div>
+                    {profile.bankUpi && (
+                      <div className="mb-2">
+                        <span className="block text-[9px] text-white/50 uppercase">UPI ID</span>
+                        <span className="block text-xs font-mono text-white/90 bg-black/30 px-2 py-1 rounded select-all">{profile.bankUpi}</span>
+                      </div>
+                    )}
+                    {profile.bankAccount && (
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <div>
+                           <span className="block text-[9px] text-white/50 uppercase">Account</span>
+                           <span className="block text-[10px] font-mono text-white/90 bg-black/30 px-2 py-1 rounded select-all">{profile.bankAccount}</span>
+                        </div>
+                        <div>
+                           <span className="block text-[9px] text-white/50 uppercase">IFSC</span>
+                           <span className="block text-[10px] font-mono text-white/90 bg-black/30 px-2 py-1 rounded select-all">{profile.bankIfsc}</span>
+                        </div>
+                        <div className="col-span-2 mt-1">
+                           <span className="block text-[9px] text-white/50 uppercase">Bank / Holder</span>
+                           <span className="block text-[10px] text-white/90">{profile.bankName} - {profile.bankHolder}</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

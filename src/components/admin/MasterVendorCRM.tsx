@@ -5,6 +5,8 @@ import { Search, Shield, Ban, Star, KeyRound, MoreVertical, LogIn, Plus, X, Edit
 import { useWeavers, useStores, useWholesalers, useSuppliers } from '@/lib/db-hooks';
 import { db } from '@/lib/firebase';
 import { deleteDoc, doc, updateDoc, setDoc } from 'firebase/firestore';
+import ImageUploader from '@/components/ImageUploader';
+import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from '@/lib/locations';
 
 export default function MasterVendorCRM() {
   const { weavers, loading: wLoading } = useWeavers(1000);
@@ -23,22 +25,14 @@ export default function MasterVendorCRM() {
 
   // Form State
   const [formData, setFormData] = useState({
-    title: '',
-    phone: '',
-    whatsapp: '',
-    email: '',
-    website: '',
-    desc: '',
-    address: '',
-    img: '',
-    heroImg: '',
-    status: 'approved',
-    role: 'store', // weaver, store, wholesaler, supplier
-    weaverExperience: '',
-    generations: '',
-    materials: '',
-    scale: '',
-    productsOffered: ''
+    title: '', phone: '', whatsapp: '', email: '', website: '', desc: '',
+    country: 'India', state: '', district: '', block: '', address: '',
+    img: '', heroImg: '', gallery: [] as string[],
+    status: 'approved', role: 'store', // weaver, store, wholesaler, supplier
+    weaverExperience: '', generations: '', materials: '', scale: '', productsOffered: '',
+    kycType: '', kycId: '', kycDocumentUrl: '',
+    bankHolder: '', bankName: '', bankAccount: '', bankIfsc: '', bankUpi: '',
+    subscriptionTier: 'free', subscriptionExpiresAt: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -76,8 +70,14 @@ export default function MasterVendorCRM() {
   const openAddModal = () => {
     setSelectedShop(null);
     setFormData({
-      title: '', phone: '', whatsapp: '', email: '', website: '', desc: '', address: '', img: '', heroImg: '',
-      status: 'approved', role: 'store', weaverExperience: '', generations: '', materials: '', scale: '', productsOffered: ''
+      title: '', phone: '', whatsapp: '', email: '', website: '', desc: '',
+      country: 'India', state: '', district: '', block: '', address: '',
+      img: '', heroImg: '', gallery: [],
+      status: 'approved', role: 'store',
+      weaverExperience: '', generations: '', materials: '', scale: '', productsOffered: '',
+      kycType: '', kycId: '', kycDocumentUrl: '',
+      bankHolder: '', bankName: '', bankAccount: '', bankIfsc: '', bankUpi: '',
+      subscriptionTier: 'free', subscriptionExpiresAt: ''
     });
     setModalStep(1);
     setShowAddModal(true);
@@ -92,16 +92,31 @@ export default function MasterVendorCRM() {
       email: shop.email || '',
       website: shop.website || '',
       desc: shop.desc || shop.description || '',
+      country: shop.country || 'India',
+      state: shop.state || '',
+      district: shop.district || '',
+      block: shop.block || '',
       address: shop.address || '',
       img: shop.img || shop.image || shop.logoUrl || '',
       heroImg: shop.heroImg || '',
+      gallery: shop.gallery || [],
       status: shop.status || 'approved',
       role: shop._collectionRole || 'store',
       weaverExperience: shop.weaverExperience || '',
       generations: shop.generations || '',
       materials: shop.materials || '',
       scale: shop.scale || '',
-      productsOffered: shop.productsOffered || ''
+      productsOffered: shop.productsOffered || '',
+      kycType: shop.kycType || '',
+      kycId: shop.kycId || '',
+      kycDocumentUrl: shop.kycDocumentUrl || '',
+      bankHolder: shop.bankHolder || '',
+      bankName: shop.bankName || '',
+      bankAccount: shop.bankAccount || '',
+      bankIfsc: shop.bankIfsc || '',
+      bankUpi: shop.bankUpi || '',
+      subscriptionTier: shop.subscriptionTier || 'free',
+      subscriptionExpiresAt: shop.subscriptionExpiresAt || ''
     });
     setModalStep(1);
     setShowEditModal(true);
@@ -120,15 +135,30 @@ export default function MasterVendorCRM() {
         whatsapp: formData.whatsapp,
         email: formData.email,
         website: formData.website,
+        country: formData.country,
+        state: formData.state,
+        district: formData.district,
+        block: formData.block,
         address: formData.address,
         img: formData.img,
         heroImg: formData.heroImg,
+        gallery: formData.gallery,
         status: formData.status,
         weaverExperience: formData.weaverExperience,
         generations: formData.generations,
         materials: formData.materials,
         scale: formData.scale,
         productsOffered: formData.productsOffered,
+        kycType: formData.kycType,
+        kycId: formData.kycId,
+        kycDocumentUrl: formData.kycDocumentUrl,
+        bankHolder: formData.bankHolder,
+        bankName: formData.bankName,
+        bankAccount: formData.bankAccount,
+        bankIfsc: formData.bankIfsc,
+        bankUpi: formData.bankUpi,
+        subscriptionTier: formData.subscriptionTier,
+        subscriptionExpiresAt: formData.subscriptionExpiresAt,
         updatedAt: new Date().toISOString()
       };
 
@@ -218,7 +248,11 @@ export default function MasterVendorCRM() {
                         )}
                       </div>
                       <div>
-                        <div className="font-bold text-gray-900">{shop.title}</div>
+                        <div className="font-bold text-gray-900 flex items-center gap-1">
+                          {shop.title}
+                          {shop.subscriptionTier === 'advance' && <Star className="w-3 h-3 text-amber-500 fill-amber-500" />}
+                          {shop.subscriptionTier === 'pro' && <Star className="w-3 h-3 text-blue-500 fill-blue-500" />}
+                        </div>
                         <div className="text-xs text-gray-500 font-mono mt-0.5">{shop.id}</div>
                       </div>
                     </div>
@@ -249,7 +283,7 @@ export default function MasterVendorCRM() {
                     <button onClick={() => openEditModal(shop)} className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-all shadow-sm" title="Edit Shop">
                       <Edit2 className="w-3.5 h-3.5" /> Edit
                     </button>
-                    <button onClick={() => handleHardDelete(shop.id, shop.title, shop._collectionRole)} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-bold transition-all border border-red-100 shadow-sm" title="Delete Shop">
+                    <button onClick={() => handleHardDelete(shop.id, shop.title, shop._collectionRole)} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-bold transition-all shadow-sm" title="Delete Shop">
                       <Ban className="w-3.5 h-3.5" />
                     </button>
                   </td>
@@ -262,153 +296,293 @@ export default function MasterVendorCRM() {
 
       {/* Add / Edit Shop Modal */}
       {(showAddModal || showEditModal) && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-3xl w-full flex flex-col max-h-[90vh] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            {/* Header */}
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-              <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3 tracking-tight">
-                {showAddModal ? <><Plus className="w-6 h-6 text-blue-600"/> Add New Vendor</> : <><Edit2 className="w-6 h-6 text-blue-600"/> Edit Vendor Profile</>}
-              </h2>
-              <button onClick={() => { setShowAddModal(false); setShowEditModal(false); }} className="text-gray-400 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors">
-                <X className="w-5 h-5" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden flex flex-col">
+            <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex justify-between items-center z-10 shrink-0">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                {showAddModal ? <><Plus className="w-5 h-5 text-blue-600"/> Add New Vendor</> : <><Edit2 className="w-5 h-5 text-blue-600"/> Edit Vendor Profile</>}
+              </h3>
+              <div className="flex items-center gap-2">
+                <button onClick={() => { setShowAddModal(false); setShowEditModal(false); }} className="text-gray-400 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            
+            {/* Modal Tabs Header */}
+            <div className="flex border-b border-gray-100 shrink-0 overflow-x-auto">
+              <button onClick={() => setModalStep(1)} className={`flex-1 min-w-[120px] py-4 px-2 text-sm font-bold border-b-2 transition-colors ${modalStep === 1 ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}>
+                1. Brand & Media
+              </button>
+              <button onClick={() => setModalStep(2)} className={`flex-1 min-w-[150px] py-4 px-2 text-sm font-bold border-b-2 transition-colors ${modalStep === 2 ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}>
+                2. Identity & Trade
+              </button>
+              <button onClick={() => setModalStep(3)} className={`flex-1 min-w-[120px] py-4 px-2 text-sm font-bold border-b-2 transition-colors ${modalStep === 3 ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}>
+                3. KYC & Bank
+              </button>
+              <button onClick={() => setModalStep(4)} className={`flex-1 min-w-[120px] py-4 px-2 text-sm font-bold border-b-2 transition-colors ${modalStep === 4 ? 'border-amber-600 text-amber-600 bg-amber-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}>
+                4. God Mode
               </button>
             </div>
 
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-              <div className="space-y-8">
-                
-                {/* Section: Role & Basics */}
-                <section>
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Vendor Type</h3>
-                  <select 
-                    value={formData.role} 
-                    onChange={e => setFormData({...formData, role: e.target.value})} 
-                    disabled={!!selectedShop}
-                    className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 focus:border-blue-500 outline-none disabled:opacity-50"
-                  >
-                    <option value="weaver">Master Weaver</option>
-                    <option value="store">Retail Shop</option>
-                    <option value="wholesaler">B2B Wholesaler</option>
-                    <option value="supplier">Raw Material Supplier</option>
-                  </select>
-                </section>
-
-                <section>
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">1. Basic Details</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1">Business Name *</label>
-                      <input type="text" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none text-black" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1">Owner Email (For Login)</label>
-                      <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none text-black" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1">Phone Number *</label>
-                      <input type="text" required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none text-black" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1">WhatsApp Number</label>
-                      <input type="text" value={formData.whatsapp} onChange={e => setFormData({...formData, whatsapp: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none text-black" />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-xs font-bold text-gray-600 mb-1">Business Address</label>
-                      <textarea value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none h-24 text-black"></textarea>
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-xs font-bold text-gray-600 mb-1">Description</label>
-                      <textarea value={formData.desc} onChange={e => setFormData({...formData, desc: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none h-24 text-black"></textarea>
+            <div className="p-6 space-y-6 flex-1 bg-gray-50">
+              {/* STEP 1: Brand & Media */}
+              <div className={`space-y-6 ${modalStep === 1 ? 'block' : 'hidden'}`}>
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                  <div className="mb-4 bg-yellow-50 border border-yellow-200 text-yellow-800 p-3 rounded-lg flex items-start gap-2">
+                    <span className="text-xl leading-none">⚠️</span>
+                    <div className="text-xs font-medium">
+                      <strong>Important:</strong> Uploading an image here only shows a preview. You MUST click <strong>"Save Shop Profile"</strong> to permanently save your images!
                     </div>
                   </div>
-                </section>
 
-                <section>
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">2. Visuals & Branding</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Logo Slot */}
+                    <div className="p-4 rounded-xl border border-gray-200 bg-gray-50 flex flex-col">
+                      <span className="text-xs font-bold text-gray-700 uppercase mb-3 block">Dedicated Logo</span>
+                      <ImageUploader label="Upload Logo" aspectRatio="square" value={formData.img} onChange={(url) => setFormData({...formData, img: url})} />
+                    </div>
+
+                    {/* Hero Slot */}
+                    <div className="p-4 rounded-xl border border-blue-200 bg-blue-50 flex flex-col">
+                      <span className="text-xs font-bold text-blue-800 uppercase mb-3 block">Hero Banner Image</span>
+                      <ImageUploader label="Upload Hero Image" aspectRatio="landscape" value={formData.heroImg} onChange={(url) => setFormData({...formData, heroImg: url})} />
+                    </div>
+
+                    {/* Gallery Slots */}
+                    <div className="md:col-span-2 mt-4">
+                       <h4 className="text-sm font-bold text-gray-900 border-b pb-2 mb-4">5-Image Bento Box (Gallery)</h4>
+                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                         {[0, 1, 2, 3].map(idx => (
+                           <div key={idx} className="p-3 rounded-xl border border-gray-200 bg-white flex flex-col">
+                             <span className="text-[10px] font-bold text-gray-500 uppercase mb-2 block">Gallery Image {idx+1}</span>
+                             <ImageUploader 
+                               label="Upload" 
+                               aspectRatio="square" 
+                               value={formData.gallery[idx] || ""} 
+                               onChange={(url) => {
+                                 const newGal = [...formData.gallery];
+                                 while (newGal.length <= idx) newGal.push("");
+                                 newGal[idx] = url;
+                                 setFormData({...formData, gallery: newGal});
+                               }} 
+                             />
+                           </div>
+                         ))}
+                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* STEP 2: Identity & Trade */}
+              <div className={`space-y-6 ${modalStep === 2 ? 'block' : 'hidden'}`}>
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2"><h4 className="text-sm font-bold text-gray-900 border-b pb-2 mb-2">Core Identity</h4></div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Business Name *</label>
+                      <input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Owner Email (For Login) *</label>
+                      <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Phone Number</label>
+                      <input type="text" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">WhatsApp Number</label>
+                      <input type="text" value={formData.whatsapp} onChange={e => setFormData({...formData, whatsapp: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Website URL</label>
+                      <input type="url" value={formData.website} onChange={e => setFormData({...formData, website: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Description</label>
+                      <textarea rows={3} value={formData.desc} onChange={e => setFormData({...formData, desc: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div className="md:col-span-2 mt-4"><h4 className="text-sm font-bold text-gray-900 border-b pb-2 mb-2">Location (5-Tier System)</h4></div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Country</label>
+                      <select value={formData.country} onChange={(e) => setFormData({...formData, country: e.target.value, state: '', district: '', block: ''})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-white">
+                        <option value="India">India</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    {formData.country === 'India' && (
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 mb-1">State</label>
+                        <select value={formData.state} onChange={(e) => setFormData({...formData, state: e.target.value, district: '', block: ''})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-white">
+                          <option value="">Select State</option>
+                          {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                        </select>
+                      </div>
+                    )}
+                    {formData.state === 'Odisha' && (
+                      <>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">District</label>
+                          <select value={formData.district} onChange={(e) => setFormData({...formData, district: e.target.value, block: ''})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="">Select District</option>
+                            {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 mb-1">Block / City</label>
+                          <select value={formData.block} onChange={(e) => setFormData({...formData, block: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="">Select Block</option>
+                            {formData.district && (ODISHA_DISTRICT_BLOCKS as any)[formData.district]?.map((b: string) => <option key={b} value={b}>{b}</option>)}
+                          </select>
+                        </div>
+                      </>
+                    )}
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Local Address & Pincode</label>
+                      <input type="text" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" placeholder="Street, village, pincode..." />
+                    </div>
+
+                    <div className="md:col-span-2 mt-4"><h4 className="text-sm font-bold text-gray-900 border-b pb-2 mb-2">Trade & Craftsmanship</h4></div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Weaver Experience (Years)</label>
+                      <input type="text" value={formData.weaverExperience} onChange={e => setFormData({...formData, weaverExperience: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Generations in Business</label>
+                      <input type="text" value={formData.generations} onChange={e => setFormData({...formData, generations: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Materials Used</label>
+                      <input type="text" value={formData.materials} onChange={e => setFormData({...formData, materials: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" placeholder="Cotton, Silk, etc." />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Scale of Production</label>
+                      <input type="text" value={formData.scale} onChange={e => setFormData({...formData, scale: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Products Offered</label>
+                      <input type="text" value={formData.productsOffered} onChange={e => setFormData({...formData, productsOffered: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" placeholder="Sarees, Dress Materials, etc." />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* STEP 3: KYC & Bank */}
+              <div className={`space-y-6 ${modalStep === 3 ? 'block' : 'hidden'}`}>
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2"><h4 className="text-sm font-bold text-gray-900 border-b pb-2 mb-2">KYC Document</h4></div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Document Type</label>
+                      <select value={formData.kycType} onChange={e => setFormData({...formData, kycType: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-white">
+                        <option value="">Select...</option>
+                        <option value="Aadhar">Aadhar</option>
+                        <option value="PAN">PAN</option>
+                        <option value="ArtisanCard">Artisan Card</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Document ID Number</label>
+                      <input type="text" value={formData.kycId} onChange={e => setFormData({...formData, kycId: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-gray-700 mb-2">Upload KYC File</label>
+                      <ImageUploader label="Upload Photo" aspectRatio="landscape" value={formData.kycDocumentUrl} onChange={(url) => setFormData({...formData, kycDocumentUrl: url})} />
+                    </div>
+
+                    <div className="md:col-span-2 mt-4"><h4 className="text-sm font-bold text-gray-900 border-b pb-2 mb-2">Bank & UPI for Payouts</h4></div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Account Holder Name</label>
+                      <input type="text" value={formData.bankHolder} onChange={e => setFormData({...formData, bankHolder: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Bank Name</label>
+                      <input type="text" value={formData.bankName} onChange={e => setFormData({...formData, bankName: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">Account Number</label>
+                      <input type="text" value={formData.bankAccount} onChange={e => setFormData({...formData, bankAccount: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-700 mb-1">IFSC Code</label>
+                      <input type="text" value={formData.bankIfsc} onChange={e => setFormData({...formData, bankIfsc: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-gray-700 mb-1">UPI ID (Optional)</label>
+                      <input type="text" value={formData.bankUpi} onChange={e => setFormData({...formData, bankUpi: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* STEP 4: God Mode */}
+              <div className={`space-y-6 ${modalStep === 4 ? 'block' : 'hidden'}`}>
+                <div className="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                  <div className="flex justify-between items-center mb-6 border-b border-amber-200 pb-4">
+                    <div>
+                      <h4 className="text-sm font-bold text-amber-900">Admin Privileges & SaaS Tiers</h4>
+                      <p className="text-[10px] text-amber-700 mt-1">Override vendor roles, status, and subscription tiers.</p>
+                    </div>
+                    <div className="text-2xl">👑</div>
+                  </div>
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1">Profile Image / Logo (URL)</label>
-                      <input type="text" placeholder="https://..." value={formData.img} onChange={e => setFormData({...formData, img: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none mb-2 text-black" />
-                      <div className="flex items-center gap-2">
-                        <UploadCloud className="w-4 h-4 text-gray-400" />
-                        <span className="text-[10px] text-gray-500">Alternatively, manually upload custom image via Firebase Storage inside the actual store dashboard later.</span>
-                      </div>
+                      <label className="block text-xs font-bold text-amber-900 mb-1">Vendor Role Category</label>
+                      <select value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})} className="w-full border border-amber-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold">
+                        <option value="weaver">Weaver</option>
+                        <option value="store">Store</option>
+                        <option value="wholesaler">Wholesaler</option>
+                        <option value="supplier">Supplier</option>
+                      </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1">Hero Image Banner (URL)</label>
-                      <input type="text" placeholder="https://..." value={formData.heroImg} onChange={e => setFormData({...formData, heroImg: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none mb-2 text-black" />
+                      <label className="block text-xs font-bold text-amber-900 mb-1">Verification Status</label>
+                      <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full border border-amber-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold">
+                        <option value="approved">Verified Active</option>
+                        <option value="pending_approval">Pending Review</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-amber-900 mb-1">SaaS Subscription Tier</label>
+                      <select value={formData.subscriptionTier} onChange={e => setFormData({...formData, subscriptionTier: e.target.value})} className="w-full border border-amber-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold">
+                        <option value="free">Free Tier</option>
+                        <option value="pro">Pro Tier</option>
+                        <option value="advance">Advance Pro Tier</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-amber-900 mb-1">Subscription Expires At</label>
+                      <input type="date" value={formData.subscriptionExpiresAt} onChange={e => setFormData({...formData, subscriptionExpiresAt: e.target.value})} className="w-full border border-amber-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-500 outline-none bg-white" />
                     </div>
                   </div>
-                </section>
-
-                <section>
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">3. Specialized Fields</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-blue-50 p-6 rounded-xl border border-blue-100">
-                    {formData.role === 'weaver' && (
-                      <>
-                        <div>
-                          <label className="block text-xs font-bold text-blue-800 mb-1">Years of Experience</label>
-                          <input type="text" value={formData.weaverExperience} onChange={e => setFormData({...formData, weaverExperience: e.target.value})} className="w-full bg-white border border-blue-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none text-black" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-bold text-blue-800 mb-1">Generations in Handloom</label>
-                          <input type="text" value={formData.generations} onChange={e => setFormData({...formData, generations: e.target.value})} className="w-full bg-white border border-blue-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none text-black" />
-                        </div>
-                        <div className="md:col-span-2">
-                          <label className="block text-xs font-bold text-blue-800 mb-1">Materials Used (comma separated)</label>
-                          <input type="text" value={formData.materials} onChange={e => setFormData({...formData, materials: e.target.value})} className="w-full bg-white border border-blue-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none text-black" />
-                        </div>
-                      </>
-                    )}
-                    {(formData.role === 'wholesaler' || formData.role === 'supplier') && (
-                      <>
-                        <div>
-                          <label className="block text-xs font-bold text-blue-800 mb-1">Business Scale</label>
-                          <input type="text" placeholder="e.g. 50+ Looms" value={formData.scale} onChange={e => setFormData({...formData, scale: e.target.value})} className="w-full bg-white border border-blue-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none text-black" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-bold text-blue-800 mb-1">Products Offered</label>
-                          <input type="text" value={formData.productsOffered} onChange={e => setFormData({...formData, productsOffered: e.target.value})} className="w-full bg-white border border-blue-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:border-blue-500 outline-none text-black" />
-                        </div>
-                      </>
-                    )}
-                    {formData.role === 'store' && (
-                      <div className="md:col-span-2 text-sm text-blue-600 font-medium">
-                        Standard retail store. Additional fields are managed via the storefront app.
-                      </div>
-                    )}
-                  </div>
-                </section>
-                
-                <section>
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">4. Verification Status</h3>
-                  <select 
-                    value={formData.status} 
-                    onChange={e => setFormData({...formData, status: e.target.value})} 
-                    className="w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 focus:border-blue-500 outline-none"
-                  >
-                    <option value="approved">Verified & Active</option>
-                    <option value="pending_approval">Pending Review</option>
-                    <option value="unclaimed">Unclaimed (Google Lead)</option>
-                  </select>
-                </section>
-
+                </div>
               </div>
             </div>
-
-            {/* Footer */}
-            <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-between items-center">
+            
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6 flex justify-between items-center z-10 shrink-0">
               <button disabled={isSubmitting} onClick={() => { setShowAddModal(false); setShowEditModal(false); }} className="text-gray-500 text-sm font-bold hover:text-gray-900 transition-colors">
                 Cancel
               </button>
-              <button 
-                disabled={isSubmitting} 
-                onClick={handleSaveShop}
-                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-8 py-3 rounded-xl transition-all shadow-md disabled:opacity-50"
-              >
-                {isSubmitting ? "Saving Data..." : "Save Vendor"}
-              </button>
+              <div className="flex gap-3">
+                {modalStep > 1 && (
+                  <button onClick={() => setModalStep(prev => (prev - 1) as 1 | 2 | 3)} className="px-5 py-2.5 text-gray-700 bg-gray-50 border border-gray-300 font-bold hover:bg-gray-100 rounded-lg transition-colors shadow-sm">
+                    Back
+                  </button>
+                )}
+                {modalStep < 4 ? (
+                  <button onClick={() => setModalStep(prev => (prev + 1) as 2 | 3 | 4)} className="px-5 py-2.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2">
+                    Next
+                  </button>
+                ) : (
+                  <button disabled={isSubmitting} onClick={handleSaveShop} className="px-5 py-2.5 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors shadow-md disabled:opacity-50 flex items-center gap-2">
+                    {isSubmitting ? 'Saving...' : 'Save Vendor Profile'}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

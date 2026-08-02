@@ -48,6 +48,16 @@ export interface Weaver {
   isAutoApproved?: boolean;
   canSellWholesale?: boolean;
   pendingChanges?: any;
+  kycType?: string;
+  kycId?: string;
+  kycDocumentUrl?: string;
+  bankHolder?: string;
+  bankName?: string;
+  bankAccount?: string;
+  bankIfsc?: string;
+  bankUpi?: string;
+  subscriptionTier?: "free" | "pro" | "advance";
+  subscriptionExpiresAt?: string;
 }
 
 export interface Store {
@@ -79,6 +89,22 @@ export interface Store {
   isAutoApproved?: boolean;
   canSellWholesale?: boolean;
   pendingChanges?: any;
+  kycType?: string;
+  kycId?: string;
+  kycDocumentUrl?: string;
+  bankHolder?: string;
+  bankName?: string;
+  bankAccount?: string;
+  bankIfsc?: string;
+  bankUpi?: string;
+  subscriptionTier?: "free" | "pro" | "advance";
+  subscriptionExpiresAt?: string;
+  gallery?: string[];
+  weaverExperience?: string;
+  generations?: string;
+  materials?: string[];
+  scale?: string;
+  productsOffered?: string;
 }
 
 
