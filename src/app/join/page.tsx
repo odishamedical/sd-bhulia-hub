@@ -213,7 +213,7 @@ function JoinWizardContent() {
                   ].map(role => (
                     <button 
                       key={role.id}
-                      onClick={() => { setFormData(prev => ({...prev, role: role.id})); setStep(2); }}
+                      onClick={() => { setFormData(prev => ({...prev, role: role.id, ...(role.id === 'weaver' ? { country: 'India', state: 'Odisha' } : {})})); setStep(2); }}
                       className="text-left bg-black/50 border border-white/10 rounded-xl p-6 hover:border-[#C5A059] hover:bg-[#C5A059]/5 transition-all group"
                     >
                       <div className="text-3xl mb-3">{role.icon}</div>
@@ -234,17 +234,17 @@ function JoinWizardContent() {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">{formData.role === 'weaver' ? 'Your Name / Loom Name' : formData.role === 'reseller' ? 'Your Name / Reseller Brand' : 'Business / Business / Name'} *</label>
-                    <input type="text" value={formData.businessName} onChange={e => setFormData({...formData, shopName: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="e.g. Glow Jewellers" required />
+                    <input type="text" value={formData.businessName} onChange={e => setFormData({...formData, shopName: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder={formData.role === 'weaver' ? 'e.g. Ramakant Meher' : formData.role === 'reseller' ? 'e.g. Meher Handlooms' : 'e.g. Bhulia Silk Center'} required />
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">Country *</label>
-                      <select required value={formData.country === 'India' ? 'India' : (formData.country ? 'Other' : '')} onChange={e => setFormData({...formData, country: e.target.value === 'Other' ? '' : e.target.value, state: '', district: '', block: ''})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors">
+                      <select required disabled={formData.role === 'weaver'} value={formData.role === 'weaver' ? 'India' : (formData.country === 'India' ? 'India' : (formData.country ? 'Other' : ''))} onChange={e => setFormData({...formData, country: e.target.value === 'Other' ? '' : e.target.value, state: '', district: '', block: ''})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors">
                         <option value="India" className="bg-[#0A1121]">India</option>
                         <option value="Other" className="bg-[#0A1121]">Other</option>
                       </select>
-                      {formData.country !== 'India' && (
+                      {formData.role !== 'weaver' && formData.country !== 'India' && (
                         <input type="text" required value={formData.country} onChange={e => setFormData({...formData, country: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors mt-2" placeholder="Enter Country" />
                       )}
                     </div>
@@ -252,7 +252,7 @@ function JoinWizardContent() {
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">State / Province *</label>
                       {formData.country === 'India' ? (
-                        <select required value={formData.state} onChange={e => setFormData({...formData, state: e.target.value, district: '', block: ''})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors">
+                        <select required disabled={formData.role === 'weaver'} value={formData.role === 'weaver' ? 'Odisha' : formData.state} onChange={e => setFormData({...formData, state: e.target.value, district: '', block: ''})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors">
                           <option value="" className="bg-[#0A1121]">Select State</option>
                           {INDIAN_STATES.map(st => <option key={st} value={st} className="bg-[#0A1121]">{st}</option>)}
                         </select>
@@ -263,10 +263,10 @@ function JoinWizardContent() {
 
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">District *</label>
-                      {(formData.country === 'India' && formData.state === 'Odisha') ? (
+                      {((formData.role === 'weaver') || (formData.country === 'India' && formData.state === 'Odisha')) ? (
                         <select required value={formData.district} onChange={e => setFormData({...formData, district: e.target.value, block: ''})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors">
                           <option value="" className="bg-[#0A1121]">Select District</option>
-                          {Object.keys(ODISHA_DISTRICT_BLOCKS).map(dst => <option key={dst} value={dst} className="bg-[#0A1121]">{dst}</option>)}
+                          {Object.keys(ODISHA_DISTRICT_BLOCKS).filter(dst => formData.role !== 'weaver' || ['Bargarh', 'Subarnapur (Sonepur)', 'Sambalpur', 'Boudh', 'Balangir', 'Kalahandi', 'Nuapada', 'Sonepur'].includes(dst)).map(dst => <option key={dst} value={dst} className="bg-[#0A1121]">{dst}</option>)}
                         </select>
                       ) : (
                         <input type="text" required value={formData.district} onChange={e => setFormData({...formData, district: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="e.g. Pune" />
@@ -275,7 +275,7 @@ function JoinWizardContent() {
                     
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">City / Block *</label>
-                      {(formData.country === 'India' && formData.state === 'Odisha' && formData.district) ? (
+                      {(((formData.role === 'weaver') || (formData.country === 'India' && formData.state === 'Odisha')) && formData.district) ? (
                         <select required value={formData.block} onChange={e => setFormData({...formData, block: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors">
                           <option value="" className="bg-[#0A1121]">Select Block</option>
                           {(ODISHA_DISTRICT_BLOCKS as any)[formData.district]?.map((b: string) => <option key={b} value={b} className="bg-[#0A1121]">{b}</option>)}
