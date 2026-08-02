@@ -17,6 +17,7 @@ export default function AdminGoogleCRM() {
   const [districtFilter, setDistrictFilter] = useState("all");
   const [roleFilter, setRoleFilter] = useState("all");
   const [editingLead, setEditingLead] = useState<any>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   // Crawler State
   const [showCrawler, setShowCrawler] = useState(false);
@@ -138,6 +139,37 @@ export default function AdminGoogleCRM() {
 
   const allStates = Array.from(new Set(crmLeads.map(l => l.state))).sort();
   const allDistricts = Array.from(new Set(crmLeads.map(l => l.district))).sort();
+
+  const toggleAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(filteredLeads.map(l => l.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const toggleOne = (id: string) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
+  const handleBulkDelete = async () => {
+    if (!selectedIds.length) return;
+    if (confirm(`Are you sure you want to permanently delete ${selectedIds.length} selected leads?`)) {
+      try {
+        const deletePromises = selectedIds.map(id => {
+          const lead = crmLeads.find(l => l.id === id);
+          if (!lead) return Promise.resolve();
+          const collectionName = lead.role === "weaver" ? "weavers" : lead.role === "store" ? "stores" : lead.role === "wholesaler" ? "wholesalers" : "suppliers";
+          return deleteDoc(doc(db, collectionName, id));
+        });
+        await Promise.all(deletePromises);
+        setSelectedIds([]);
+        alert(`${selectedIds.length} leads deleted successfully.`);
+      } catch (e) {
+        alert("Error during bulk delete.");
+      }
+    }
+  };
 
   const handleDelete = async (role: string, id: string) => {
     if (confirm("Delete this lead permanently?")) {
@@ -334,11 +366,30 @@ export default function AdminGoogleCRM() {
         </select>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative">
+        {selectedIds.length > 0 && (
+          <div className="absolute top-0 left-0 w-full bg-red-50 border-b border-red-100 px-6 py-3 flex items-center justify-between z-20">
+            <span className="text-red-800 font-bold text-sm">{selectedIds.length} leads selected</span>
+            <button 
+              onClick={handleBulkDelete}
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
+            >
+              Delete Selected
+            </button>
+          </div>
+        )}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold tracking-wider">
               <tr>
+                <th className="py-4 px-6 w-12">
+                  <input 
+                    type="checkbox" 
+                    className="w-4 h-4 rounded border-gray-300 text-green-500 focus:ring-green-500" 
+                    checked={selectedIds.length > 0 && selectedIds.length === filteredLeads.length}
+                    onChange={toggleAll}
+                  />
+                </th>
                 <th className="py-4 px-6">Business Name</th>
                 <th className="py-4 px-6">Role</th>
                 <th className="py-4 px-6">Location</th>
@@ -348,7 +399,15 @@ export default function AdminGoogleCRM() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredLeads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-green-50/30 transition-colors group">
+                <tr key={lead.id} className={`hover:bg-green-50/30 transition-colors group ${selectedIds.includes(lead.id) ? 'bg-green-50/20' : ''}`}>
+                  <td className="py-4 px-6">
+                    <input 
+                      type="checkbox" 
+                      className="w-4 h-4 rounded border-gray-300 text-green-500 focus:ring-green-500" 
+                      checked={selectedIds.includes(lead.id)}
+                      onChange={() => toggleOne(lead.id)}
+                    />
+                  </td>
                   <td className="py-4 px-6">
                     <div className="font-bold text-gray-900">{lead.name}</div>
                     <div className="text-xs text-gray-500 truncate max-w-[200px]">{lead.address}</div>
@@ -382,7 +441,7 @@ export default function AdminGoogleCRM() {
               ))}
               {filteredLeads.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-gray-500 font-medium">
+                  <td colSpan={6} className="py-12 text-center text-gray-500 font-medium">
                     No Google Data CRM leads found matching your criteria.
                   </td>
                 </tr>
