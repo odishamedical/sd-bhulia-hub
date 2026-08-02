@@ -193,9 +193,10 @@ function JoinWizardContent() {
           )}
 
           {/* Form Card */}
-          <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+          <div className="bg-[#111111] border-2 border-yellow-500/80 rounded-[32px] p-8 md:p-12 shadow-[0_0_50px_rgba(234,179,8,0.3),0_0_20px_rgba(234,179,8,0.6),inset_0_2px_15px_rgba(255,255,255,0.05)] relative overflow-hidden">
             {/* Glossy top border */}
-            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C5A059]/50 to-transparent" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-gradient-to-r from-transparent via-[#ffd266] to-transparent opacity-80 shadow-[0_0_15px_rgba(255,255,255,0.8)] z-50 pointer-events-none"></div>
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-gradient-to-r from-transparent via-[#ffd266] to-transparent opacity-80 shadow-[0_0_15px_rgba(255,255,255,0.8)] z-50 pointer-events-none"></div>
 
             {/* STEP 1: Role Selection */}
             {step === 1 && (
@@ -214,7 +215,7 @@ function JoinWizardContent() {
                     <button 
                       key={role.id}
                       onClick={() => { setFormData(prev => ({...prev, role: role.id, ...(role.id === 'weaver' ? { country: 'India', state: 'Odisha' } : {})})); setStep(2); }}
-                      className="text-left bg-black/50 border border-white/10 rounded-xl p-6 hover:border-[#C5A059] hover:bg-[#C5A059]/5 transition-all group"
+                      className="text-left bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8)] rounded-[20px] p-6 hover:border-[#DAA520] hover:shadow-[0_0_20px_rgba(218,165,32,0.3)] transition-all group relative overflow-hidden"
                     >
                       <div className="text-3xl mb-3">{role.icon}</div>
                       <h3 className="font-bold text-lg text-white group-hover:text-[#C5A059]">{role.title}</h3>
@@ -233,84 +234,84 @@ function JoinWizardContent() {
                 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">{formData.role === 'weaver' ? 'Your Name / Loom Name' : formData.role === 'reseller' ? 'Your Name / Reseller Brand' : 'Business / Business / Name'} *</label>
-                    <input type="text" value={formData.businessName} onChange={e => setFormData({...formData, businessName: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder={formData.role === 'weaver' ? 'e.g. Ramakant Meher' : formData.role === 'reseller' ? 'e.g. Meher Handlooms' : 'e.g. Bhulia Silk Center'} required />
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">{formData.role === 'weaver' ? 'Your Name / Loom Name' : formData.role === 'reseller' ? 'Your Name / Reseller Brand' : 'Business / Business / Name'} *</label>
+                    <input type="text" value={formData.businessName} onChange={e => setFormData({...formData, businessName: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all" placeholder={formData.role === 'weaver' ? 'e.g. Ramakant Meher' : formData.role === 'reseller' ? 'e.g. Meher Handlooms' : 'e.g. Bhulia Silk Center'} required />
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">Country *</label>
-                      <select required disabled={formData.role === 'weaver'} value={formData.role === 'weaver' ? 'India' : (formData.country === 'India' ? 'India' : (formData.country ? 'Other' : ''))} onChange={e => setFormData({...formData, country: e.target.value === 'Other' ? '' : e.target.value, state: '', district: '', block: ''})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors">
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Country *</label>
+                      <select required disabled={formData.role === 'weaver'} value={formData.role === 'weaver' ? 'India' : (formData.country === 'India' ? 'India' : (formData.country ? 'Other' : ''))} onChange={e => setFormData({...formData, country: e.target.value === 'Other' ? '' : e.target.value, state: '', district: '', block: ''})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all">
                         <option value="India" className="bg-[#0A1121]">India</option>
                         <option value="Other" className="bg-[#0A1121]">Other</option>
                       </select>
                       {formData.role !== 'weaver' && formData.country !== 'India' && (
-                        <input type="text" required value={formData.country} onChange={e => setFormData({...formData, country: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors mt-2" placeholder="Enter Country" />
+                        <input type="text" required value={formData.country} onChange={e => setFormData({...formData, country: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all mt-2" placeholder="Enter Country" />
                       )}
                     </div>
                     
                     <div>
-                      <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">State / Province *</label>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">State / Province *</label>
                       {formData.country === 'India' ? (
-                        <select required disabled={formData.role === 'weaver'} value={formData.role === 'weaver' ? 'Odisha' : formData.state} onChange={e => setFormData({...formData, state: e.target.value, district: '', block: ''})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors">
+                        <select required disabled={formData.role === 'weaver'} value={formData.role === 'weaver' ? 'Odisha' : formData.state} onChange={e => setFormData({...formData, state: e.target.value, district: '', block: ''})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all">
                           <option value="" className="bg-[#0A1121]">Select State</option>
                           {INDIAN_STATES.map(st => <option key={st} value={st} className="bg-[#0A1121]">{st}</option>)}
                         </select>
                       ) : (
-                        <input type="text" required value={formData.state} onChange={e => setFormData({...formData, state: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="Enter State" />
+                        <input type="text" required value={formData.state} onChange={e => setFormData({...formData, state: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all" placeholder="Enter State" />
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">District *</label>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">District *</label>
                       {((formData.role === 'weaver') || (formData.country === 'India' && formData.state === 'Odisha')) ? (
-                        <select required value={formData.district} onChange={e => setFormData({...formData, district: e.target.value, block: ''})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors">
+                        <select required value={formData.district} onChange={e => setFormData({...formData, district: e.target.value, block: ''})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all">
                           <option value="" className="bg-[#0A1121]">Select District</option>
                           {Object.keys(ODISHA_DISTRICT_BLOCKS).filter(dst => formData.role !== 'weaver' || ['Bargarh', 'Subarnapur (Sonepur)', 'Sambalpur', 'Boudh', 'Balangir', 'Kalahandi', 'Nuapada', 'Sonepur'].includes(dst)).map(dst => <option key={dst} value={dst} className="bg-[#0A1121]">{dst}</option>)}
                         </select>
                       ) : (
-                        <input type="text" required value={formData.district} onChange={e => setFormData({...formData, district: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="e.g. Pune" />
+                        <input type="text" required value={formData.district} onChange={e => setFormData({...formData, district: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all" placeholder="e.g. Pune" />
                       )}
                     </div>
                     
                     <div>
-                      <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">City / Block *</label>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">City / Block *</label>
                       {(((formData.role === 'weaver') || (formData.country === 'India' && formData.state === 'Odisha')) && formData.district) ? (
-                        <select required value={formData.block} onChange={e => setFormData({...formData, block: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors">
+                        <select required value={formData.block} onChange={e => setFormData({...formData, block: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all">
                           <option value="" className="bg-[#0A1121]">Select Block</option>
                           {(ODISHA_DISTRICT_BLOCKS as any)[formData.district]?.map((b: string) => <option key={b} value={b} className="bg-[#0A1121]">{b}</option>)}
                         </select>
                       ) : (
-                        <input type="text" required value={formData.block} onChange={e => setFormData({...formData, block: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="e.g. Bhubaneswar" />
+                        <input type="text" required value={formData.block} onChange={e => setFormData({...formData, block: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all" placeholder="e.g. Bhubaneswar" />
                       )}
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">Local Address (Optional)</label>
-                      <input type="text" value={formData.localAddress} onChange={e => setFormData({...formData, localAddress: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="Street, Building, Landmark" />
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Local Address (Optional)</label>
+                      <input type="text" value={formData.localAddress} onChange={e => setFormData({...formData, localAddress: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all" placeholder="Street, Building, Landmark" />
                     </div>
                     
                     <div className="md:col-span-2">
-                      <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">Pincode (Optional)</label>
-                      <input type="text" value={formData.pincode} onChange={e => setFormData({...formData, pincode: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="e.g. 751001" />
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Pincode (Optional)</label>
+                      <input type="text" value={formData.pincode} onChange={e => setFormData({...formData, pincode: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all" placeholder="e.g. 751001" />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">Owner / Contact Person *</label>
-                    <input type="text" value={formData.personalName} onChange={e => setFormData({...formData, personalName: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="Full Name" required />
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Owner / Contact Person *</label>
+                    <input type="text" value={formData.personalName} onChange={e => setFormData({...formData, personalName: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all" placeholder="Full Name" required />
                   </div>
                   <div className="grid grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">Mobile Number *</label>
-                      <input type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="+91" required />
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Mobile Number *</label>
+                      <input type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all" placeholder="+91" required />
                     </div>
                     <div>
-                      <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">WhatsApp Number *</label>
-                      <input type="tel" value={formData.whatsapp} onChange={e => setFormData({...formData, whatsapp: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="+91" required />
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">WhatsApp Number *</label>
+                      <input type="tel" value={formData.whatsapp} onChange={e => setFormData({...formData, whatsapp: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all" placeholder="+91" required />
                     </div>
                   </div>
-                  <button onClick={nextStep} className="w-full bg-gradient-to-r from-[#C5A059] to-[#8A6A32] text-black font-bold uppercase tracking-widest py-4 rounded-lg mt-8 hover:brightness-110 transition-all">
+                  <button onClick={nextStep} className="w-full bg-gradient-to-b from-[#ffe680] via-[#c2861c] to-[#966311] text-white font-bold uppercase tracking-widest py-4 rounded-[14px] mt-8 hover:brightness-110 transition-all shadow-[0_0_25px_rgba(251,191,36,0.6),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_35px_rgba(251,191,36,0.8)] hover:-translate-y-0.5 border border-[#ffd266]/50">
                     Continue to Compliance →
                   </button>
                 </div>
@@ -326,23 +327,23 @@ function JoinWizardContent() {
                 <div className="space-y-6">
                   {formData.role === 'weaver' && (
                     <div>
-                      <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">Number of Looms (Optional)</label>
-                      <input type="number" value={formData.loomsCount} onChange={e => setFormData({...formData, loomsCount: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="e.g. 3" />
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Number of Looms (Optional)</label>
+                      <input type="number" value={formData.loomsCount} onChange={e => setFormData({...formData, loomsCount: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all" placeholder="e.g. 3" />
                     </div>
                   )}
                   {formData.role === 'reseller' && (
                     <div>
-                      <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">Social Media Link / Store Link (Optional)</label>
-                      <input type="url" value={formData.socialMediaLink} onChange={e => setFormData({...formData, socialMediaLink: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors" placeholder="e.g. https://instagram.com/myreseller" />
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Social Media Link / Store Link (Optional)</label>
+                      <input type="url" value={formData.socialMediaLink} onChange={e => setFormData({...formData, socialMediaLink: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all" placeholder="e.g. https://instagram.com/myreseller" />
                     </div>
                   )}
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">GST Identification Number (Optional)</label>
-                    <input type="text" value={formData.gstin} onChange={e => setFormData({...formData, gstin: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors font-mono" placeholder="22AAAAA0000A1Z5" />
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">GST Identification Number (Optional)</label>
+                    <input type="text" value={formData.gstin} onChange={e => setFormData({...formData, gstin: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all font-mono" placeholder="22AAAAA0000A1Z5" />
                   </div>
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-2">PAN Number (Optional)</label>
-                    <input type="text" value={formData.panNumber} onChange={e => setFormData({...formData, panNumber: e.target.value})} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C5A059] transition-colors font-mono uppercase" placeholder="ABCDE1234F" />
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">PAN Number (Optional)</label>
+                    <input type="text" value={formData.panNumber} onChange={e => setFormData({...formData, panNumber: e.target.value})} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] rounded-[14px] px-4 py-3 outline-none transition-all font-mono uppercase" placeholder="ABCDE1234F" />
                   </div>
                   
                   <div className="p-4 rounded-lg bg-[#C5A059]/10 border border-[#C5A059]/30 text-sm text-[#C5A059]">
@@ -350,10 +351,10 @@ function JoinWizardContent() {
                   </div>
 
                   <div className="flex gap-4 mt-8">
-                    <button onClick={prevStep} className="px-8 py-4 border border-white/10 rounded-lg text-white hover:bg-white/5 font-bold uppercase tracking-widest transition-colors">
+                    <button onClick={prevStep} className="px-8 py-4 bg-white/5 backdrop-blur-md border border-white/20 rounded-[14px] text-white hover:bg-white/10 hover:border-white/40 shadow-[0_4px_10px_rgba(0,0,0,0.3)] font-bold uppercase tracking-widest transition-all">
                       Back
                     </button>
-                    <button onClick={nextStep} className="flex-1 bg-gradient-to-r from-[#C5A059] to-[#8A6A32] text-black font-bold uppercase tracking-widest py-4 rounded-lg hover:brightness-110 transition-all">
+                    <button onClick={nextStep} className="flex-1 bg-gradient-to-b from-[#ffe680] via-[#c2861c] to-[#966311] text-white font-bold uppercase tracking-widest py-4 rounded-[14px] hover:brightness-110 transition-all shadow-[0_0_25px_rgba(251,191,36,0.6),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_35px_rgba(251,191,36,0.8)] hover:-translate-y-0.5 border border-[#ffd266]/50">
                       Review Application →
                     </button>
                   </div>
@@ -387,12 +388,12 @@ function JoinWizardContent() {
                 </div>
 
                 <div className="flex gap-4">
-                  <button onClick={prevStep} className="px-8 py-4 border border-white/10 rounded-lg text-white hover:bg-white/5 font-bold uppercase tracking-widest transition-colors">
+                  <button onClick={prevStep} className="px-8 py-4 bg-white/5 backdrop-blur-md border border-white/20 rounded-[14px] text-white hover:bg-white/10 hover:border-white/40 shadow-[0_4px_10px_rgba(0,0,0,0.3)] font-bold uppercase tracking-widest transition-all">
                     Edit
                   </button>
-                  <button onClick={handleAuthAndSubmit} disabled={loading} className="flex-1 flex items-center justify-center gap-3 bg-gradient-to-r from-[#C5A059] to-[#8A6A32] text-black font-bold uppercase tracking-widest py-4 rounded-lg hover:brightness-110 transition-all">
+                  <button onClick={handleAuthAndSubmit} disabled={loading} className="flex-1 flex items-center justify-center gap-3 bg-gradient-to-b from-[#ffe680] via-[#c2861c] to-[#966311] text-white font-bold uppercase tracking-widest py-4 rounded-[14px] hover:brightness-110 transition-all shadow-[0_0_25px_rgba(251,191,36,0.6),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_35px_rgba(251,191,36,0.8)] hover:-translate-y-0.5 border border-[#ffd266]/50 disabled:opacity-50 disabled:hover:translate-y-0 disabled:shadow-none">
                     {loading ? (
-                      <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-black border-t-[#966311] rounded-full animate-spin" />
                     ) : (
                       user ? "Submit Application" : "Sign in with Google to Submit"
                     )}
