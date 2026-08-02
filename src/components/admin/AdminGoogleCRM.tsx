@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { useWeavers, useStores, useWholesalers, useSuppliers } from "@/lib/db-hooks";
 import { db } from "@/lib/firebase";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 
 export default function AdminGoogleCRM() {
   const { weavers, loading: wLoading } = useWeavers(500);
@@ -11,65 +11,97 @@ export default function AdminGoogleCRM() {
   const { wholesalers, loading: whLoading } = useWholesalers(500);
   const { suppliers, loading: suLoading } = useSuppliers(500);
   const loading = wLoading || sLoading || whLoading || suLoading;
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [stateFilter, setStateFilter] = useState("all");
   const [districtFilter, setDistrictFilter] = useState("all");
   const [roleFilter, setRoleFilter] = useState("all");
   const [editingLead, setEditingLead] = useState<any>(null);
 
+  // Crawler State
+  const [showCrawler, setShowCrawler] = useState(false);
+  const [googleQuery, setGoogleQuery] = useState("");
+  const [googleResults, setGoogleResults] = useState<any[]>([]);
+  const [isCrawling, setIsCrawling] = useState(false);
+  const [importRole, setImportRole] = useState("store");
+
+  // Inspect & Edit State for Crawler
+  const [inspectPlaceId, setInspectPlaceId] = useState<string | null>(null);
+  const [editedPlaces, setEditedPlaces] = useState<Record<string, any>>({});
+
+  const handleCrawl = async () => {
+    if (!googleQuery) return;
+    setIsCrawling(true);
+    try {
+      const res = await fetch("/api/places", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: googleQuery })
+      });
+      const data = await res.json();
+      if (data.places || data.results) {
+        setGoogleResults(data.places || data.results);
+      } else {
+        alert("No results found or error occurred.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Crawler error");
+    } finally {
+      setIsCrawling(false);
+    }
+  };
+
+  const importPlace = async (place: any) => {
+    try {
+      const edits = editedPlaces[place.id] || {};
+      const newDoc = {
+        title: edits.name || place.displayName?.text || place.name || "Unknown",
+        address: edits.address || place.formattedAddress || place.address || "",
+        phoneNumber: edits.phone || place.nationalPhoneNumber || place.phone || "",
+        website: edits.website || place.websiteUri || place.website || "",
+        rating: edits.rating || place.rating || 0,
+        img: edits.img || place.image || "",
+        source: "google_places",
+        role: importRole,
+        status: "unclaimed",
+        createdAt: new Date().toISOString()
+      };
+      
+      const collectionName = importRole === "weaver" ? "weavers" : importRole === "store" ? "stores" : importRole === "wholesaler" ? "wholesalers" : "suppliers";
+      const newRef = doc(db, collectionName, place.id || Date.now().toString());
+      
+      await setDoc(newRef, newDoc);
+      alert(`${newDoc.title} imported successfully as ${importRole}!`);
+      setInspectPlaceId(null);
+    } catch (e) {
+      alert("Error importing lead");
+    }
+  };
+
+  const updateEdit = (id: string, field: string, value: any) => {
+    setEditedPlaces(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [field]: value
+      }
+    }));
+  };
+
   const crmLeads = useMemo(() => {
     const wList = weavers.filter(w => w.source === "google_places").map(w => ({
-      id: w.id,
-      name: w.title,
-      role: "weaver",
-      phone: w.phoneNumber || "N/A",
-      state: String(w.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || w.state || "N/A",
-      district: String(w.address || "").split(",")?.[1]?.trim() || w.district || "N/A",
-      address: w.address,
-      status: w.status || "approved",
-      website: w.website || "N/A",
-      rating: w.rating || "N/A",
+      id: w.id, name: w.title, role: "weaver", phone: w.phoneNumber || "N/A", state: String(w.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || w.state || "N/A", district: String(w.address || "").split(",")?.[1]?.trim() || w.district || "N/A", address: w.address, status: w.status || "approved", website: w.website || "N/A", rating: w.rating || "N/A",
     }));
-
     const sList = stores.filter(s => s.source === "google_places").map(s => ({
-      id: s.id,
-      name: s.title,
-      role: "store",
-      phone: s.phoneNumber || "N/A",
-      state: String(s.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || s.state || "N/A",
-      district: String(s.address || "").split(",")?.[1]?.trim() || s.district || "N/A",
-      address: s.address,
-      status: s.status || "approved",
-      website: s.website || "N/A",
-      rating: s.rating || "N/A",
+      id: s.id, name: s.title, role: "store", phone: s.phoneNumber || "N/A", state: String(s.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || s.state || "N/A", district: String(s.address || "").split(",")?.[1]?.trim() || s.district || "N/A", address: s.address, status: s.status || "approved", website: s.website || "N/A", rating: s.rating || "N/A",
     }));
-
     const bList = wholesalers.filter(b => b.source === "google_places").map(b => ({
-      id: b.id,
-      name: b.title,
-      role: "wholesaler",
-      phone: b.phoneNumber || "N/A",
-      state: String(b.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || b.state || "N/A",
-      district: String(b.address || "").split(",")?.[1]?.trim() || b.district || "N/A",
-      address: b.address,
-      status: b.status || "approved",
-      website: b.website || "N/A",
-      rating: b.rating || "N/A",
+      id: b.id, name: b.title, role: "wholesaler", phone: b.phoneNumber || "N/A", state: String(b.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || b.state || "N/A", district: String(b.address || "").split(",")?.[1]?.trim() || b.district || "N/A", address: b.address, status: b.status || "approved", website: b.website || "N/A", rating: b.rating || "N/A",
     }));
-
     const suList = suppliers.filter(su => su.source === "google_places").map(su => ({
-      id: su.id,
-      name: su.title,
-      role: "supplier",
-      phone: su.phoneNumber || "N/A",
-      state: String(su.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || su.state || "N/A",
-      district: String(su.address || "").split(",")?.[1]?.trim() || su.district || "N/A",
-      address: su.address,
-      status: su.status || "approved",
-      website: su.website || "N/A",
-      rating: su.rating || "N/A",
+      id: su.id, name: su.title, role: "supplier", phone: su.phoneNumber || "N/A", state: String(su.address || "").split(",")?.[2]?.split("-")?.[0]?.trim() || su.state || "N/A", district: String(su.address || "").split(",")?.[1]?.trim() || su.district || "N/A", address: su.address, status: su.status || "approved", website: su.website || "N/A", rating: su.rating || "N/A",
     }));
-
     return [...wList, ...sList, ...bList, ...suList];
   }, [weavers, stores, wholesalers, suppliers]);
 
@@ -79,7 +111,6 @@ export default function AdminGoogleCRM() {
       const matchesState = stateFilter === "all" || String(lead.state || "").toLowerCase() === stateFilter.toLowerCase();
       const matchesDistrict = districtFilter === "all" || String(lead.district || "").toLowerCase() === districtFilter.toLowerCase();
       const matchesRole = roleFilter === "all" || lead.role === roleFilter;
-
       return matchesSearch && matchesState && matchesDistrict && matchesRole;
     });
   }, [crmLeads, searchTerm, stateFilter, districtFilter, roleFilter]);
@@ -90,7 +121,7 @@ export default function AdminGoogleCRM() {
   const handleDelete = async (role: string, id: string) => {
     if (confirm("Delete this lead permanently?")) {
       try {
-        const collectionName = role === "weaver" ? "weavers" : "stores";
+        const collectionName = role === "weaver" ? "weavers" : role === "store" ? "stores" : role === "wholesaler" ? "wholesalers" : "suppliers";
         await deleteDoc(doc(db, collectionName, id));
         alert("Lead deleted.");
       } catch (e) {
@@ -123,6 +154,9 @@ export default function AdminGoogleCRM() {
 
   if (loading) return <div className="p-8 text-center text-gray-500 font-bold animate-pulse">Loading CRM Data...</div>;
 
+  const inspectedPlace = googleResults.find(p => p.id === inspectPlaceId);
+  const currentEdits = inspectedPlace ? (editedPlaces[inspectPlaceId as string] || {}) : null;
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-20">
       <header className="mb-8">
@@ -133,8 +167,123 @@ export default function AdminGoogleCRM() {
           Google Data CRM
         </h1>
         <p className="text-gray-500 mt-2 font-medium text-sm">Manage and track leads imported from Google Places.</p>
+        
+        <button 
+          onClick={() => setShowCrawler(!showCrawler)}
+          className="mt-4 bg-gray-900 text-white text-xs font-bold uppercase tracking-widest px-6 py-2.5 rounded-lg hover:bg-green-600 transition-colors">
+          {showCrawler ? "Close Crawler" : "Open Google Maps Crawler"}
+        </button>
       </header>
 
+      {showCrawler && (
+        <div className="bg-white p-6 rounded-2xl border border-gray-200 mb-8 shadow-lg">
+          <h2 className="text-gray-900 font-bold mb-4 flex items-center gap-2">
+            <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            Crawl Google Places
+          </h2>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <input 
+              type="text" 
+              placeholder="e.g. Sambalpuri Saree Shop in Bargarh" 
+              value={googleQuery}
+              onChange={(e) => setGoogleQuery(e.target.value)}
+              className="flex-1 px-4 py-3 bg-gray-50 text-gray-900 border border-gray-300 rounded-xl text-sm focus:border-green-500 outline-none font-medium"
+            />
+            <select 
+              value={importRole} 
+              onChange={e => setImportRole(e.target.value)} 
+              className="bg-gray-50 text-gray-900 border border-gray-300 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-green-500">
+              <option value="weaver">Target: Master Weaver</option>
+              <option value="store">Target: Retail Shop</option>
+              <option value="wholesaler">Target: B2B Wholesaler</option>
+              <option value="supplier">Target: Raw Material Supplier</option>
+            </select>
+            <button 
+              onClick={handleCrawl}
+              disabled={isCrawling}
+              className="bg-green-500 text-white text-sm font-bold px-6 py-3 rounded-xl hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isCrawling ? "Crawling..." : "Search"}
+            </button>
+          </div>
+          
+          {googleResults.length > 0 && (
+            <div className="mt-6 grid gap-4">
+              {googleResults.map((place, idx) => {
+                const edits = editedPlaces[place.id] || {};
+                return (
+                  <div key={idx} className="bg-gray-50 p-4 rounded-xl border border-gray-200 flex justify-between items-center">
+                    <div>
+                      <h3 className="text-gray-900 font-bold text-sm">{edits.name || place.displayName?.text || place.name}</h3>
+                      <p className="text-gray-500 text-xs mt-1">{edits.address || place.formattedAddress || place.address}</p>
+                      <p className="text-green-600 text-xs mt-1 font-mono font-bold">{edits.phone || place.nationalPhoneNumber || place.phone || "No Phone"}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => setInspectPlaceId(place.id)}
+                        className="bg-transparent border border-gray-400 text-gray-600 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Inspect & Edit
+                      </button>
+                      <button 
+                        onClick={() => importPlace(place)}
+                        className="bg-transparent border border-green-500 text-green-600 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-green-500 hover:text-white transition-colors"
+                      >
+                        Import Lead
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Inspect & Edit Modal for Crawler */}
+      {inspectPlaceId && inspectedPlace && currentEdits && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-8 relative shadow-2xl my-8 mt-24">
+            <button onClick={() => setInspectPlaceId(null)} className="absolute top-6 right-6 text-gray-400 hover:text-gray-900">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Inspect & Edit Lead Data</h2>
+            <p className="text-gray-500 mb-8">Review the data grabbed by the Google Crawler before importing.</p>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Business Name</label>
+                <input type="text" value={currentEdits.name !== undefined ? currentEdits.name : (inspectedPlace.displayName?.text || inspectedPlace.name || "")} onChange={e => updateEdit(inspectedPlace.id, "name", e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:border-green-500 outline-none text-black" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Phone Number</label>
+                  <input type="text" value={currentEdits.phone !== undefined ? currentEdits.phone : (inspectedPlace.nationalPhoneNumber || inspectedPlace.phone || "")} onChange={e => updateEdit(inspectedPlace.id, "phone", e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:border-green-500 outline-none text-black" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Rating</label>
+                  <input type="number" step="0.1" value={currentEdits.rating !== undefined ? currentEdits.rating : (inspectedPlace.rating || 0)} onChange={e => updateEdit(inspectedPlace.id, "rating", parseFloat(e.target.value))} className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:border-green-500 outline-none text-black" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Address</label>
+                <textarea value={currentEdits.address !== undefined ? currentEdits.address : (inspectedPlace.formattedAddress || inspectedPlace.address || "")} onChange={e => updateEdit(inspectedPlace.id, "address", e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:border-green-500 outline-none text-black h-24" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Profile Image URL (Optional)</label>
+                <input type="text" value={currentEdits.img !== undefined ? currentEdits.img : (inspectedPlace.image || "")} onChange={e => updateEdit(inspectedPlace.id, "img", e.target.value)} className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:border-green-500 outline-none text-black" placeholder="Paste an image URL here..." />
+              </div>
+            </div>
+            
+            <div className="mt-8 flex justify-end gap-3">
+              <button onClick={() => setInspectPlaceId(null)} className="px-6 py-3 border border-gray-300 rounded-xl text-gray-700 font-bold hover:bg-gray-50">Cancel</button>
+              <button onClick={() => importPlace(inspectedPlace)} className="px-8 py-3 bg-green-500 rounded-xl text-white font-bold hover:bg-green-600">Import Lead Now</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main CRM Table */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="flex-1 relative">
           <input 
@@ -176,7 +325,7 @@ export default function AdminGoogleCRM() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredLeads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-green-50/30 transition-colors">
+                <tr key={lead.id} className="hover:bg-green-50/30 transition-colors group">
                   <td className="py-4 px-6">
                     <div className="font-bold text-gray-900">{lead.name}</div>
                     <div className="text-xs text-gray-500 truncate max-w-[200px]">{lead.address}</div>
@@ -220,7 +369,7 @@ export default function AdminGoogleCRM() {
         </div>
       </div>
 
-      {/* Edit Modal */}
+      {/* Basic Edit Modal for Existing Leads */}
       {editingLead && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">

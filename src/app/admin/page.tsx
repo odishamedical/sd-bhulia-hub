@@ -30,6 +30,7 @@ import AdminAffiliates from "@/components/admin/AdminAffiliates";
 import AdminEscrow from "@/components/admin/AdminEscrow";
 import AdminSubscriptions from "@/components/admin/AdminSubscriptions";
 import AdminRoleAssignments from "@/components/admin/AdminRoleAssignments";
+import MasterVendorCRM from "@/components/admin/MasterVendorCRM";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -45,6 +46,7 @@ const SIDEBAR_CATEGORIES = [
     icon: "👥",
     badgeId: "kyc",
     subLinks: [
+      { name: "Master Vendor CRM", id: "master-crm" },
       { name: "User Directory", id: "users" },
       { name: "Verification Queue", id: "kyc" },
       { name: "Ecosystem Guidelines", id: "guide" }
@@ -166,6 +168,8 @@ export default function AdminSPA() {
     switch (activeTab) {
       case "dashboard":
         return <AdminDashboard />;
+      case "master-crm":
+        return <MasterVendorCRM />;
       case "users":
         return <AdminUsers />;
       case "kyc":
