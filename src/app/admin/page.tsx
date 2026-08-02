@@ -31,6 +31,7 @@ import AdminEscrow from "@/components/admin/AdminEscrow";
 import AdminSubscriptions from "@/components/admin/AdminSubscriptions";
 import AdminRoleAssignments from "@/components/admin/AdminRoleAssignments";
 import MasterVendorCRM from "@/components/admin/MasterVendorCRM";
+import AdminNewApplications from "@/components/admin/AdminNewApplications";
 
 const SIDEBAR_CATEGORIES = [
   {
@@ -47,6 +48,7 @@ const SIDEBAR_CATEGORIES = [
     badgeId: "kyc",
     subLinks: [
       { name: "Master Vendor CRM", id: "master-crm" },
+      { name: "New Applications", id: "applications" },
       { name: "User Directory", id: "users" },
       { name: "Verification Queue", id: "kyc" },
       { name: "Ecosystem Guidelines", id: "guide" }

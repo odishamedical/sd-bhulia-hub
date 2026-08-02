@@ -36,7 +36,7 @@ export default function Footer() {
               </div>
               <p className="text-xs text-gray-300 leading-relaxed font-sans italic opacity-90 group-hover:opacity-100 transition-opacity">“Start your journey as a Bhulia Reseller — grow with us, no upfront cost.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Dreseller" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
+            <Link href="/join?role=reseller" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
               Apply as Reseller
             </Link>
           </div>
@@ -52,7 +52,7 @@ export default function Footer() {
               </div>
               <p className="text-xs text-gray-300 leading-relaxed font-sans italic opacity-90 group-hover:opacity-100 transition-opacity">“Showcase your craft to the world — Bhulia empowers real Sambalpuri weavers.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Dweaver" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
+            <Link href="/join?role=weaver" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
               Join as Weaver
             </Link>
           </div>
@@ -68,7 +68,7 @@ export default function Footer() {
               </div>
               <p className="text-xs text-gray-300 leading-relaxed font-sans italic opacity-90 group-hover:opacity-100 transition-opacity">“Expand your reach — list your store and connect with thousands of customers.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Dvendor" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
+            <Link href="/join?role=store" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
               Apply as Store Owner
             </Link>
           </div>
@@ -84,7 +84,7 @@ export default function Footer() {
               </div>
               <p className="text-xs text-gray-300 leading-relaxed font-sans italic opacity-90 group-hover:opacity-100 transition-opacity">“Support the handloom ecosystem — supply authentic raw materials to artisans.”</p>
             </div>
-            <Link href="/login?redirect=%2Fdashboard%3Fapply%3Draw_material" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
+            <Link href="/join?role=supplier" className="relative z-10 mt-6 w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-transparent border border-[#C5A059]/40 text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:bg-[#C5A059] group-hover:text-[#0A1021] transition-all duration-500 shadow-inner">
               Join as Supplier
             </Link>
           </div>
