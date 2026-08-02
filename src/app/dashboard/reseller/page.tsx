@@ -122,9 +122,9 @@ export default function ResellerDashboardPage() {
   }
 
   const navItems: NavItem[] = [
-    { id: "home", label: "Financial Ledger", icon: "ðŸ“Š", category: "Performance" },
-    { id: "promo_hub", label: "Promotional Hub", icon: "ðŸ“¢", category: "Marketing" },
-    { id: "payouts", label: "Withdrawals", icon: "ðŸ’¸", category: "Finance" },
+    { id: "home", label: "Financial Ledger", icon: "📊", category: "Performance" },
+    { id: "promo_hub", label: "Promotional Hub", icon: "📢", category: "Marketing" },
+    { id: "payouts", label: "Withdrawals", icon: "💸", category: "Finance" },
   ];
 
   // Calculations
@@ -180,13 +180,13 @@ export default function ResellerDashboardPage() {
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-100 rounded-bl-full -mr-4 -mt-4 opacity-50"></div>
                 <h3 className="text-gray-500 font-bold mb-1 text-sm uppercase tracking-wider">Pending (Transit)</h3>
-                <p className="text-4xl font-black text-amber-500">â‚¹{pendingCommissions.toLocaleString()}</p>
+                <p className="text-4xl font-black text-amber-500">₹{pendingCommissions.toLocaleString()}</p>
                 <p className="text-xs text-gray-400 mt-2">Awaiting delivery.</p>
               </div>
               <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-green-100 rounded-bl-full -mr-4 -mt-4 opacity-50"></div>
                 <h3 className="text-gray-500 font-bold mb-1 text-sm uppercase tracking-wider">Cleared (Payouts)</h3>
-                <p className="text-4xl font-black text-emerald-600">â‚¹{clearedCommissions.toLocaleString()}</p>
+                <p className="text-4xl font-black text-emerald-600">₹{clearedCommissions.toLocaleString()}</p>
                 <p className="text-xs text-gray-400 mt-2">Ready to withdraw.</p>
               </div>
             </div>
@@ -218,7 +218,7 @@ export default function ResellerDashboardPage() {
                         <td className="px-6 py-4">{new Date(c.createdAt).toLocaleDateString()}</td>
                         <td className="px-6 py-4 font-bold text-gray-900">{c.productName}</td>
                         <td className="px-6 py-4 font-mono text-xs">{c.orderId}</td>
-                        <td className="px-6 py-4 font-black text-green-600">+â‚¹{c.amount}</td>
+                        <td className="px-6 py-4 font-black text-green-600">+₹{c.amount}</td>
                         <td className="px-6 py-4">
                           {c.status === "pending" && <span className="text-yellow-600 bg-yellow-100 px-2 py-1 rounded text-xs font-bold uppercase">Transit</span>}
                           {c.status === "cleared" && <span className="text-green-600 bg-green-100 px-2 py-1 rounded text-xs font-bold uppercase">Cleared</span>}
@@ -237,7 +237,7 @@ export default function ResellerDashboardPage() {
         {activeTab === "promo_hub" && (
           <div>
             <div className="mb-6 bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-start gap-4">
-              <span className="text-2xl">ðŸ’¡</span>
+              <span className="text-2xl">💡</span>
               <div>
                 <h4 className="font-bold text-blue-900">How it works</h4>
                 <p className="text-sm text-blue-700">Browse the products below. Click "Copy Promo Link" and share it on WhatsApp, Instagram, or Facebook. When someone buys through your link, you instantly earn the margin amount shown!</p>
@@ -267,11 +267,11 @@ export default function ResellerDashboardPage() {
                         <div className="flex justify-between items-baseline mb-4">
                           <div>
                             <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Retail</p>
-                            <p className="text-sm text-gray-500 line-through">â‚¹{numericPrice.toLocaleString()}</p>
+                            <p className="text-sm text-gray-500 line-through">₹{numericPrice.toLocaleString()}</p>
                           </div>
                           <div className="text-right">
                             <p className="text-[10px] text-green-600 uppercase font-bold tracking-widest">Your Profit</p>
-                            <p className="text-lg font-black text-green-600">+â‚¹{marginAmt.toLocaleString()}</p>
+                            <p className="text-lg font-black text-green-600">+₹{marginAmt.toLocaleString()}</p>
                           </div>
                         </div>
                         <button 
@@ -295,10 +295,10 @@ export default function ResellerDashboardPage() {
           <div className="max-w-xl">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl">ðŸ’¸</span>
+                <span className="text-4xl">💸</span>
               </div>
               <h2 className="text-2xl font-black text-gray-900 mb-2">Request Payout</h2>
-              <p className="text-gray-500 mb-8">You have <span className="font-bold text-green-600">â‚¹{clearedCommissions.toLocaleString()}</span> in cleared funds ready to withdraw.</p>
+              <p className="text-gray-500 mb-8">You have <span className="font-bold text-green-600">₹{clearedCommissions.toLocaleString()}</span> in cleared funds ready to withdraw.</p>
               
               {clearedCommissions >= 500 ? (
                 <button className="w-full bg-green-600 text-white py-4 rounded-xl font-bold uppercase tracking-wider text-sm shadow-lg hover:bg-green-700 transition-colors">
@@ -306,7 +306,7 @@ export default function ResellerDashboardPage() {
                 </button>
               ) : (
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                  <p className="text-sm font-bold text-gray-500">Minimum withdrawal amount is â‚¹500.</p>
+                  <p className="text-sm font-bold text-gray-500">Minimum withdrawal amount is ₹500.</p>
                 </div>
               )}
             </div>

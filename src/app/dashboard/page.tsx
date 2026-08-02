@@ -222,13 +222,13 @@ export default function DashboardPage() {
     navItems = [
       { id: "home", label: "Dashboard", icon: "📊", category: "Dashboard & Reports" },
       { id: "orders", label: "My Orders", icon: "📦", category: "Orders & Logistics" },
-      { id: "wishlist", label: "Wishlist", icon: "â¤ï¸", category: "Catalog & Inventory" },
+      { id: "wishlist", label: "Wishlist", icon: "❤️", category: "Catalog & Inventory" },
       { id: "profile", label: "Profile Settings", icon: "👤", category: "User Management" },
-      { id: "address", label: "Address Book", icon: "ðŸ“", category: "User Management" },
+      { id: "address", label: "Address Book", icon: "📍", category: "User Management" },
       { id: "wallet", label: "Wallet & Rewards", icon: "💎", category: "Finance & Accounting" },
       { id: "messages", label: "Messages", icon: "💬", category: "Support & Verification" },
       { id: "support", label: "Support Tickets", icon: "📞", category: "Support & Verification" },
-      { id: "security", label: "Security & Login", icon: "ðŸ”", category: "Platform & System" },
+      { id: "security", label: "Security & Login", icon: "🔒", category: "Platform & System" },
     ];
     if (activeTab === "seller_hub") {
       navItems.push({ id: "seller_hub", label: "Partner Application", icon: "🚀", category: "Marketing & Growth" });
@@ -236,12 +236,12 @@ export default function DashboardPage() {
   } else if (actualRole === "super_admin") {
     navItems = [
       { id: "overview", label: "Overview", icon: "📊", category: "Dashboard & Reports" },
-      { id: "products", label: "Products", icon: "ðŸ›ï¸", category: "Catalog & Inventory" },
+      { id: "products", label: "Products", icon: "🛍️", category: "Catalog & Inventory" },
       { id: "logistics", label: "Logistics", icon: "🚚", category: "Orders & Logistics" },
-      { id: "kyc", label: "KYC (Users)", icon: "ðŸ›¡ï¸", category: "User Management" },
+      { id: "kyc", label: "KYC (Users)", icon: "🛡️", category: "User Management" },
       { id: "finance", label: "Finance", icon: "💰", category: "Finance & Accounting" },
       { id: "help_guide", label: "Admin Staff Guide", icon: "📖", category: "Support & Verification" },
-      { id: "google_import", label: "Google Importer", icon: "ðŸŒ", category: "Platform & System" },
+      { id: "google_import", label: "Google Importer", icon: "🌐", category: "Platform & System" },
     ];
     // Override default tab if needed
     if (activeTab === "home") setActiveTab("overview");
@@ -288,7 +288,7 @@ export default function DashboardPage() {
             return (
             <div key={n.id} className="bg-green-50 border border-green-200 p-4 rounded-2xl flex items-start justify-between shadow-sm animate-in fade-in slide-in-from-top-4">
               <div className="flex gap-3 items-start">
-                <div className="text-2xl">{titleStr.includes('🎉') ? '🎉' : titleStr.includes('ðŸ ') ? 'ðŸ ' : '🔔'}</div>
+                <div className="text-2xl">{titleStr.includes('🎉') ? '🎉' : titleStr.includes('🏪') ? '🏪' : '🔔'}</div>
                 <div>
                   <h4 className="font-bold text-green-900 text-sm">{titleStr || "New Notification"}</h4>
                   <p className="text-green-800 text-sm mt-1 leading-snug">{typeof n.message === 'string' ? n.message : ""}</p>
@@ -338,7 +338,7 @@ export default function DashboardPage() {
       {auth.currentUser && !auth.currentUser.emailVerified && !isViewAsMode && (
         <div className="bg-yellow-50 text-yellow-800 p-4 rounded-xl mb-6 flex justify-between items-center shadow-sm border border-yellow-200">
           <div className="flex items-center gap-3">
-            <span className="text-xl">âš ï¸</span>
+            <span className="text-xl">⚠️</span>
             <div>
               <span className="font-bold text-sm block">Unverified Email Address</span>
               <span className="text-xs font-medium">Please check your inbox to verify your email. Some features may be restricted until verified.</span>
@@ -371,7 +371,7 @@ export default function DashboardPage() {
             <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
               <div className="w-32 h-32 bg-yellow-400 rounded-full"></div>
             </div>
-            <div className="text-7xl mb-6 animate-bounce relative z-10">â³</div>
+            <div className="text-7xl mb-6 animate-bounce relative z-10">⏳</div>
             <h2 className="text-3xl md:text-4xl font-black text-yellow-900 mb-4 tracking-tight relative z-10">Application Under Review</h2>
             <p className="text-yellow-800/80 font-medium text-lg max-w-2xl mx-auto leading-relaxed relative z-10">
               You have successfully submitted your application. Our Administration team is currently reviewing your documents and store details to ensure everything is perfect.
@@ -570,7 +570,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                 <p className="text-sm text-yellow-800 mt-1">Your shipping address and contact info are missing. You must complete this to place orders.</p>
               </div>
               <button onClick={() => onTabChange("profile")} className="shrink-0 px-6 py-3 bg-yellow-400 text-yellow-900 rounded-xl font-bold hover:bg-yellow-500 transition-colors shadow-sm">
-                Complete Now â†’
+                Complete Now →
               </button>
             </div>
           )}
@@ -583,14 +583,14 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
                   {orders.filter(o => o.customerId === getEffectiveUserId(auth.currentUser?.uid)).length} total orders found.
                 </div>
               </div>
-              <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View All Orders â†’</button>
+              <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View All Orders →</button>
             </div>
             <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between group hover:border-[#0070F3]/30 transition-colors">
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Wishlist Preview</h3>
                 <div className="text-sm text-gray-500">Your wishlist is empty.</div>
               </div>
-              <button onClick={() => onTabChange("wishlist")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View Wishlist â†’</button>
+              <button onClick={() => onTabChange("wishlist")} className="mt-6 text-sm text-[#0070F3] font-bold text-left w-max group-hover:underline">View Wishlist →</button>
             </div>
             <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div>
@@ -1373,7 +1373,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
   if (applicationStatus === "pending_approval") {
     return (
       <div className="bg-yellow-50 p-12 rounded-3xl text-center border border-yellow-200 mt-10 animate-in fade-in">
-        <div className="text-6xl mb-6">â³</div>
+        <div className="text-6xl mb-6">⏳</div>
         <h2 className="text-3xl font-black text-yellow-900 mb-4">Account Under Review</h2>
         <p className="text-yellow-800 text-lg font-medium max-w-2xl mx-auto">
           You have successfully joined as a {roleTitle.replace(' Hub', '')}. 
@@ -1495,7 +1495,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
               {sellerProductsRaw.length > 0 && (
                 <div className="flex flex-col md:flex-row gap-4 mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-100">
                   <div className="flex-1 relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">ðŸ”</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
                     <input 
                       type="text" 
                       placeholder="Search products by name..." 
@@ -1519,7 +1519,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
 
               {sellerProductsRaw.length === 0 ? (
                 <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50">
-                  <div className="text-4xl mb-4">ðŸ›ï¸</div>
+                  <div className="text-4xl mb-4">🛍️</div>
                   <h3 className="text-lg font-bold text-gray-900 mb-2">No Products Yet</h3>
                   <p className="text-gray-500 max-w-md mx-auto mb-6">You haven't added any products to your catalog. Add your first item to start selling.</p>
                   <button onClick={handleAddNewClick} className="bg-[#0070F3] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#005BB5] transition-colors shadow-sm">
@@ -1582,7 +1582,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                           </td>
                           <td className="py-4 text-right whitespace-nowrap">
                             <a href={"/product/" + product.slug} target="_blank" className="inline-block bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors mr-2">
-                              View Live â†—
+                              View Live ↗
                             </a>
                             <button onClick={() => handleEditClick(product)} className="inline-block bg-blue-50 text-[#0070F3] border border-blue-100 hover:bg-blue-100 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors">
                               Edit
@@ -1599,7 +1599,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
             <div>
               <div className="flex items-center gap-4 mb-8">
                 <button onClick={() => setIsAddInventoryOpen(false)} className="text-gray-400 hover:text-gray-900 transition-colors">
-                  â† Back to Catalog
+                  ← Back to Catalog
                 </button>
                 <h2 className="text-2xl font-bold text-gray-900">{editingProductId ? "Edit Inventory" : "Upload New Inventory"}</h2>
               </div>
@@ -1707,7 +1707,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
         <h3 className="text-sm font-bold text-gray-900 mb-4">Product Images & Video</h3>
         <div className="mb-4">
           <label className="block text-xs font-bold text-[#FF0000] uppercase tracking-wider mb-2 flex items-center gap-2">
-            <span className="text-lg leading-none">â–¶</span> YouTube Shorts URLs <span className="text-xs text-gray-500 font-normal normal-case">(Up to 4 videos, Optional)</span>
+            <span className="text-lg leading-none">▶</span> YouTube Shorts URLs <span className="text-xs text-gray-500 font-normal normal-case">(Up to 4 videos, Optional)</span>
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[0, 1, 2, 3].map(index => (
@@ -1736,8 +1736,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
 
       <div className="border border-gray-200 rounded-2xl overflow-hidden bg-white">
         <button type="button" onClick={() => setShowAdvanced(!showAdvanced)} className="w-full p-4 flex justify-between items-center bg-gray-50 hover:bg-gray-100 transition-colors">
-          <span className="font-bold text-gray-900 text-sm">âš™ï¸ Advanced Selling Options (B2B & Resellers)</span>
-          <span className="text-gray-500">{showAdvanced ? "â–²" : "â–¼"}</span>
+          <span className="font-bold text-gray-900 text-sm">⚙️ Advanced Selling Options (B2B & Resellers)</span>
+          <span className="text-gray-500">{showAdvanced ? "▲" : "▼"}</span>
         </button>
         
         {showAdvanced && (
@@ -1801,7 +1801,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
     <div className="flex gap-4">
       {uploadStep < 3 ? (
         <button type="button" onClick={() => { setUploadStep(uploadStep + 1); saveDraft(); }} className="w-full md:w-auto bg-black text-white px-8 py-3 font-bold rounded-xl hover:bg-gray-800 transition-colors shadow-sm">
-          Next Step â†’
+          Next Step →
         </button>
       ) : (
         <button type="submit" disabled={isUploading} className="w-full md:w-auto bg-[#0070F3] text-white px-8 py-3 font-bold rounded-xl disabled:opacity-50 hover:bg-[#005BB5] transition-colors shadow-sm">
@@ -1916,7 +1916,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                           <span className="text-xs font-mono text-gray-900 font-bold">{order.trackingNumber || 'AWB-PENDING'}</span>
                         </div>
                       )}
-                      <button onClick={() => window.open(`/dashboard/print-slip?orderId=${order.id}`, '_blank')} className="mt-2 w-full px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 transition-colors rounded-lg text-[10px] font-bold uppercase tracking-widest border border-gray-300 shadow-sm flex items-center justify-center gap-1">ðŸ–¨ï¸ Print Slip</button>
+                      <button onClick={() => window.open(`/dashboard/print-slip?orderId=${order.id}`, '_blank')} className="mt-2 w-full px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 transition-colors rounded-lg text-[10px] font-bold uppercase tracking-widest border border-gray-300 shadow-sm flex items-center justify-center gap-1">🖨️ Print Slip</button>
                     </td>
                   </tr>
                 )) : (
@@ -2060,7 +2060,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
         <div className="animate-in fade-in max-w-2xl">
           {subscriptionTier === "free" ? (
              <div className="bg-white p-12 rounded-3xl border border-gray-100 text-center shadow-sm">
-                 <div className="text-5xl mb-4">ðŸ”’</div>
+                 <div className="text-5xl mb-4">🔏</div>
                  <h2 className="text-2xl font-black text-gray-900 mb-2">Pro Feature Locked</h2>
                  <p className="text-gray-500 mb-8 font-medium">You must upgrade to the Pro Tier to invite staff, assign granular permissions, and delegate dashboard access.</p>
                  <button onClick={() => setIsUpgraderOpen(true)} className="bg-gradient-to-r from-[#0070F3] to-[#005bb5] text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">Upgrade to Pro</button>
@@ -2278,7 +2278,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
             {/* Step Indicators */}
             {roleTitle === "Weaver Hub" && storeStatus === "pending" && (
               <div className="mb-6 bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl flex items-start gap-3 shadow-sm animate-in fade-in slide-in-from-top-2">
-                <div className="text-xl">â³</div>
+                <div className="text-xl">⏳</div>
                 <div>
                   <h4 className="font-bold text-sm">Store Profile Under Review</h4>
                   <p className="text-xs mt-1">Your public store profile is currently being reviewed by our Admin team. It will be live once approved!</p>
@@ -2509,18 +2509,18 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
                               const lat = position.coords.latitude;
                               const lng = position.coords.longitude;
                               setGooglePin(`https://www.google.com/maps?q=${lat},${lng}`);
-                              btn.innerText = "ðŸ“ Use Current Location";
+                              btn.innerText = "📍 Use Current Location";
                             },
                             (error) => {
                               alert("Unable to retrieve your location. Please check browser permissions.");
-                              btn.innerText = "ðŸ“ Use Current Location";
+                              btn.innerText = "📍 Use Current Location";
                             }
                           );
                         } else {
                           alert("Geolocation is not supported by your browser");
                         }
                       }} className="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-600 px-2 py-1 rounded-md font-bold transition-colors border border-blue-200 shadow-sm whitespace-nowrap">
-                        ðŸ“ Use Current Location
+                        📍 Use Current Location
                       </button>
                     </div>
                     <input type="text" placeholder="https://maps.app.goo.gl/..." value={googlePin} onChange={e => setGooglePin(e.target.value)} className="w-full bg-white border-2 border-gray-300 shadow-sm font-medium focus:ring-4 focus:ring-[#0070F3]/15 rounded-xl p-3 text-gray-900 focus:border-[#0070F3] outline-none" />
@@ -2746,7 +2746,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
       {activeTab === "home" && (
         <div className="space-y-6 animate-in fade-in">
           <div className="bg-blue-50 border border-blue-200 p-6 rounded-2xl flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-blue-500 text-xl shadow-sm shrink-0">â³</div>
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-blue-500 text-xl shadow-sm shrink-0">⏳</div>
             <div>
               <h3 className="font-bold text-gray-900 text-lg">Activation Pending</h3>
               <p className="text-sm text-gray-600 mt-1">Our staff will contact you shortly to verify your identity and activate your storefront link.</p>
@@ -2851,7 +2851,7 @@ function ResellerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
               </div>
             </div>
             <div className="bg-blue-50 p-5 rounded-2xl border border-blue-100 flex items-start gap-4">
-              <span className="text-xl">â„¹ï¸</span>
+              <span className="text-xl">ℹ️</span>
               <p className="text-sm text-blue-800 font-medium">Proxy orders are shipped in your name. The customer will not see Bhulia.com pricing, ensuring your markup is protected.</p>
             </div>
             <button type="submit" disabled={isOrdering} className="w-full bg-[#0070F3] text-white font-bold py-3.5 rounded-xl disabled:opacity-50 hover:bg-[#005BB5] transition-colors shadow-sm mt-4">
@@ -3220,7 +3220,7 @@ function GoogleImporterTab() {
                     <td className="p-4 text-sm text-gray-500 max-w-xs truncate" title={r.formattedAddress}>{r.formattedAddress}</td>
                     <td className="p-4">
                       <div className="flex items-center gap-1">
-                        <span className="text-yellow-400">â˜…</span>
+                        <span className="text-yellow-400">★</span>
                         <span className="font-bold text-gray-900">{r.rating || "N/A"}</span>
                         <span className="text-xs text-gray-400">({r.userRatingCount || 0})</span>
                       </div>
@@ -3461,7 +3461,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
               <p className="text-blue-600 text-sm mt-1">We have upgraded to the new Enterprise Admin Engine. Please use the new hub for all Product Approvals, KYC, and Orders.</p>
             </div>
             <a href="/admin/dashboard" className="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl shadow hover:bg-blue-700 transition-colors">
-              Go to Enterprise Admin â†’
+              Go to Enterprise Admin →
             </a>
           </div>
           <h2 className="text-xl font-bold text-gray-900 mb-6 line-through text-gray-400">Product Approvals (Legacy)</h2>
@@ -3595,7 +3595,7 @@ function SuperAdminDashboard({ activeTab, onTabChange }: { activeTab: string, on
                 <span className="text-xs font-bold uppercase tracking-wider text-[#0070F3]">Ecosystem Verification</span>
                 <h3 className="text-2xl font-black text-gray-900 mt-1">Inspect: {selectedItem.title}</h3>
               </div>
-              <button onClick={() => setSelectedItem(null)} className="p-2 bg-gray-50 text-gray-500 rounded-full hover:bg-gray-100 transition-colors">âœ•</button>
+              <button onClick={() => setSelectedItem(null)} className="p-2 bg-gray-50 text-gray-500 rounded-full hover:bg-gray-100 transition-colors">✕</button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-blue-50 p-6 rounded-2xl border border-blue-100 mb-4">
@@ -3731,12 +3731,12 @@ function SupplierDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
           <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Bulk Orders</h3>
             <div className="text-4xl font-black text-[#8B4513]">0</div>
-            <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#8B4513] font-bold text-left">View Orders â†’</button>
+            <button onClick={() => onTabChange("orders")} className="mt-6 text-sm text-[#8B4513] font-bold text-left">View Orders →</button>
           </div>
           <div className="p-6 bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Inventory Items</h3>
             <div className="text-4xl font-black text-[#8B4513]">0</div>
-            <button onClick={() => onTabChange("inventory")} className="mt-6 text-sm text-[#8B4513] font-bold text-left">Manage Inventory â†’</button>
+            <button onClick={() => onTabChange("inventory")} className="mt-6 text-sm text-[#8B4513] font-bold text-left">Manage Inventory →</button>
           </div>
         </div>
       )}

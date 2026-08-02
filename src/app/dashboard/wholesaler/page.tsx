@@ -211,22 +211,22 @@ export default function WholesalerDashboardPage() {
   }
 
   const navItems: NavItem[] = [
-    { id: "personal", label: "Personal Profile", icon: "ðŸ‘¤", category: "1. Profile & Setup" },
-    { id: "profile", label: "Business Profile", icon: "ðŸ¢", category: "1. Profile & Setup" },
-    { id: "kyc", label: "Verification (KYC)", icon: "ðŸ›¡ï¸", category: "1. Profile & Setup" },
-    { id: "vanity_url", label: "Custom Brand URL", icon: "ðŸ”—", category: "8. Subscription & Billing" },
-    { id: "staff", label: "Staff Accounts", icon: "ðŸ‘¥", category: "1. Profile & Setup" },
-    { id: "pricing", label: "Subscription Plan", icon: "ðŸ’Ž", category: "8. Subscription & Billing" },
-    { id: "catalog", label: "Catalog Management", icon: "ðŸ“¦", category: "2. Catalog Management" },
-    { id: "orders", label: "B2B Orders & Fulfillment", icon: "ðŸšš", category: "3. Orders & Deliveries" },
-    { id: "finance", label: "Finance & Bank Payouts", icon: "ðŸ’°", category: "4. Finance & Earnings" },
-    { id: "marketing", label: "Marketing & Promos", icon: "ðŸ“ˆ", category: "5. Marketing & Comm" },
-    { id: "messages", label: "Customer Messages", icon: "ðŸ’¬", category: "5. Marketing & Comm" },
-    { id: "reviews", label: "Reviews & Ratings", icon: "â­", category: "5. Marketing & Comm" },
-    { id: "help_guide", label: "Help & Support Guide", icon: "ðŸ“˜", category: "6. Help & Support" },
-    { id: "support", label: "Contact Admin Support", icon: "ðŸŽ§", category: "6. Help & Support" },
-    { id: "security", label: "Security & Login", icon: "ðŸ”", category: "7. Security" },
-    { id: "home", label: "Dashboard & Insights", icon: "ðŸ“Š", category: "Dashboard & Reports" },
+    { id: "personal", label: "Personal Profile", icon: "👤", category: "1. Profile & Setup" },
+    { id: "profile", label: "Business Profile", icon: "🏢", category: "1. Profile & Setup" },
+    { id: "kyc", label: "Verification (KYC)", icon: "🛡️", category: "1. Profile & Setup" },
+    { id: "vanity_url", label: "Custom Brand URL", icon: "🔗", category: "8. Subscription & Billing" },
+    { id: "staff", label: "Staff Accounts", icon: "👥", category: "1. Profile & Setup" },
+    { id: "pricing", label: "Subscription Plan", icon: "💎", category: "8. Subscription & Billing" },
+    { id: "catalog", label: "Catalog Management", icon: "📦", category: "2. Catalog Management" },
+    { id: "orders", label: "B2B Orders & Fulfillment", icon: "🚚", category: "3. Orders & Deliveries" },
+    { id: "finance", label: "Finance & Bank Payouts", icon: "💰", category: "4. Finance & Earnings" },
+    { id: "marketing", label: "Marketing & Promos", icon: "📈", category: "5. Marketing & Comm" },
+    { id: "messages", label: "Customer Messages", icon: "💬", category: "5. Marketing & Comm" },
+    { id: "reviews", label: "Reviews & Ratings", icon: "⭐", category: "5. Marketing & Comm" },
+    { id: "help_guide", label: "Help & Support Guide", icon: "📖", category: "6. Help & Support" },
+    { id: "support", label: "Contact Admin Support", icon: "🎧", category: "6. Help & Support" },
+    { id: "security", label: "Security & Login", icon: "🔒", category: "7. Security" },
+    { id: "home", label: "Dashboard & Insights", icon: "📊", category: "Dashboard & Reports" },
   ];
 
   const handleSavePersonal = async (e: React.FormEvent) => {
@@ -349,7 +349,7 @@ export default function WholesalerDashboardPage() {
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-t-4 border-t-amber-500">
               <h3 className="text-gray-500 font-bold mb-1">Pending Receivables</h3>
-              <p className="text-4xl font-black text-amber-600">â‚¹0</p>
+              <p className="text-4xl font-black text-amber-600">₹0</p>
             </div>
           </div>
         )}
@@ -395,7 +395,7 @@ export default function WholesalerDashboardPage() {
                       <h3 className="font-bold text-gray-900 text-lg truncate">{p.title}</h3>
                       <div className="flex justify-between items-center mt-2">
                         <span className="text-xs text-gray-500 uppercase tracking-wider font-bold">Wholesale Price</span>
-                        <span className="text-lg font-black text-emerald-600">â‚¹{p.commercialPrice || p.price}</span>
+                        <span className="text-lg font-black text-emerald-600">₹{p.commercialPrice || p.price}</span>
                       </div>
                       <p className="text-xs text-gray-500 mt-2 bg-gray-50 p-2 rounded border border-gray-100">Terms: {p.wholesaleTerms || 'Standard MOQ'}</p>
                     </div>
@@ -430,7 +430,7 @@ export default function WholesalerDashboardPage() {
                       <tr key={order.id} className="border-b border-gray-50 hover:bg-gray-50/50">
                         <td className="p-4 text-sm font-medium text-gray-900">{order.id.slice(0, 8).toUpperCase()}</td>
                         <td className="p-4 text-sm text-gray-500">{new Date(order.createdAt?.seconds * 1000).toLocaleDateString()}</td>
-                        <td className="p-4 text-sm font-bold text-emerald-600">â‚¹{order.total}</td>
+                        <td className="p-4 text-sm font-bold text-emerald-600">₹{order.total}</td>
                         <td className="p-4">
                           <span className="bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full uppercase">
                             {order.status || 'Pending'}
@@ -498,7 +498,7 @@ export default function WholesalerDashboardPage() {
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-3xl animate-in fade-in">
             <h2 className="text-2xl font-bold text-gray-900 mb-3">Personal Profile & KYC</h2>
             <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-8">
-              <h3 className="text-red-800 font-bold text-sm mb-1">ðŸ”’ Strictly Confidential</h3>
+              <h3 className="text-red-800 font-bold text-sm mb-1">🔏 Strictly Confidential</h3>
               <p className="text-red-700 text-xs font-medium">This information is for official KYC and bank verification only. It will NEVER be shown publicly. A verified person must be behind every business.</p>
             </div>
             <form className="space-y-8" onSubmit={handleSavePersonal}>
