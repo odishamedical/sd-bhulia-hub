@@ -1,218 +1,460 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import { CustomerProfile } from '@/types/gold-hub';
-import { jobsCollection, Job } from '@/lib/jobs';
-import { addDoc, serverTimestamp } from 'firebase/firestore';
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { X, CheckCircle2, ChevronRight, ChevronLeft, Upload, Building2, Briefcase, FileText, Image as ImageIcon } from "lucide-react";
+import { atsConfig } from "@/config/ats.config";
+import { storage, db } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, setDoc, serverTimestamp, collection } from "firebase/firestore";
+import { jobsCollection, Job } from "@/lib/jobs";
+import Image from "next/image";
 
 interface PostJobModalProps {
   onClose: () => void;
-  profile: CustomerProfile;
+  profile: any; // User Profile
   onSuccess: () => void;
 }
 
 export default function PostJobModal({ onClose, profile, onSuccess }: PostJobModalProps) {
-  const isAdmin = profile.role === 'admin' || profile.role === 'super_admin';
-  const [shopId, setShopId] = useState(isAdmin ? 'platform' : profile.id);
-  
-  const [title, setTitle] = useState('');
-  const [shopName, setShopName] = useState('');
-  const [location, setLocation] = useState('');
-  const [jobType, setJobType] = useState<'Full-time'|'Part-time'|'Contract'>('Full-time');
-  const [salaryRange, setSalaryRange] = useState('');
-  const [experience, setExperience] = useState('Fresher');
-  const [qualification, setQualification] = useState('Any');
-  const [vacancies, setVacancies] = useState('1');
-  const [description, setDescription] = useState('');
+  const [currentStep, setCurrentStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [previewMode, setPreviewMode] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Form State
+  const [formData, setFormData] = useState({
+    // Page 1
+    shopName: profile?.companyName || profile?.name || "",
+    industry: "",
+    companyWebsite: "",
+    companyAddress: profile?.address || "",
+    contactName: profile?.name || "",
+    contactEmail: profile?.email || "",
+    contactPhone: profile?.phone || "",
+    contactWhatsapp: "",
+    // Page 2
+    title: "",
+    jobType: "Full-time",
+    location: "",
+    salaryRange: "",
+    experience: "",
+    qualification: "",
+    skillsRequired: [] as string[],
+    vacancies: 1,
+    deadline: "",
+    // Page 3
+    description: "",
+    keyResponsibilities: "",
+    benefits: [] as string[],
+    workSchedule: "Day Shift",
+    additionalNotes: ""
+  });
+
+  const [companyLogoFile, setCompanyLogoFile] = useState<File | null>(null);
+  const [companyLogoPreview, setCompanyLogoPreview] = useState("");
+
+  // Load Draft on mount
+  useEffect(() => {
+    const draft = localStorage.getItem(`${atsConfig.dbPrefix}_job_draft_${profile?.id}`);
+    if (draft) {
+      try {
+        setFormData(JSON.parse(draft));
+      } catch (e) {
+        console.error("Failed to parse draft", e);
+      }
+    }
+  }, [profile?.id]);
+
+  const saveDraft = () => {
+    localStorage.setItem(`${atsConfig.dbPrefix}_job_draft_${profile?.id}`, JSON.stringify(formData));
+    alert("Draft saved locally!");
+  };
+
+  const updateForm = (field: string, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const toggleSkill = (skill: string) => {
+    const current = formData.skillsRequired;
+    if (current.includes(skill)) {
+      updateForm('skillsRequired', current.filter(s => s !== skill));
+    } else {
+      updateForm('skillsRequired', [...current, skill]);
+    }
+  };
+
+  const toggleBenefit = (benefit: string) => {
+    const current = formData.benefits;
+    if (current.includes(benefit)) {
+      updateForm('benefits', current.filter(b => b !== benefit));
+    } else {
+      updateForm('benefits', [...current, benefit]);
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setCompanyLogoFile(file);
+      setCompanyLogoPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const validateStep = (step: number) => {
+    setErrorMsg("");
+    if (step === 1) {
+      if (!companyLogoFile && !companyLogoPreview && !formData.industry) {
+        // Just enforcing basics to prevent huge blocking
+        if (!formData.shopName || !formData.industry || !formData.contactEmail) {
+           setErrorMsg("Please fill all mandatory company details.");
+           return false;
+        }
+      }
+    }
+    if (step === 2) {
+      if (!formData.title || !formData.location || !formData.deadline) {
+         setErrorMsg("Please fill Job Title, Location, and Deadline.");
+         return false;
+      }
+    }
+    if (step === 3) {
+      if (!formData.description) {
+         setErrorMsg("Please provide a Job Description.");
+         return false;
+      }
+    }
+    return true;
+  };
+
+  const nextStep = () => {
+    if (validateStep(currentStep)) setCurrentStep(currentStep + 1);
+  };
+  const prevStep = () => {
+    if (previewMode) setPreviewMode(false);
+    else setCurrentStep(currentStep - 1);
+  };
+
+  const handleSubmit = async () => {
+    if (!companyLogoFile && !companyLogoPreview) {
+      setErrorMsg("Company Logo is required.");
+      setPreviewMode(false);
+      setCurrentStep(1);
+      return;
+    }
     setSubmitting(true);
     try {
-      const newJob: Omit<Job, 'id'> = {
-        shopId,
-        shopName,
-        title,
-        location,
-        jobType,
-        salaryRange,
-        experience,
-        qualification,
-        vacancies: parseInt(vacancies) || 1,
-        description,
-        status: isAdmin ? 'Active' : 'Pending',
-        createdAt: serverTimestamp() as any
+      let logoUrl = companyLogoPreview;
+      if (companyLogoFile) {
+        const imageRef = ref(storage, `${atsConfig.dbPrefix}_logos/${profile.id}_${Date.now()}`);
+        await uploadBytes(imageRef, companyLogoFile);
+        logoUrl = await getDownloadURL(imageRef);
+      }
+
+      const jobData: Job = {
+        shopId: profile.id,
+        shopName: formData.shopName,
+        companyLogo: logoUrl,
+        industry: formData.industry,
+        companyWebsite: formData.companyWebsite,
+        companyAddress: formData.companyAddress,
+        contactName: formData.contactName,
+        contactEmail: formData.contactEmail,
+        contactPhone: formData.contactPhone,
+        contactWhatsapp: formData.contactWhatsapp,
+        
+        title: formData.title,
+        jobType: formData.jobType as any,
+        location: formData.location,
+        salaryRange: formData.salaryRange,
+        experience: formData.experience,
+        qualification: formData.qualification,
+        skillsRequired: formData.skillsRequired,
+        vacancies: formData.vacancies,
+        deadline: formData.deadline,
+        
+        description: formData.description,
+        keyResponsibilities: formData.keyResponsibilities,
+        benefits: formData.benefits,
+        workSchedule: formData.workSchedule,
+        additionalNotes: formData.additionalNotes,
+        
+        status: "Pending", // Needs admin approval
+        isDraft: false,
+        createdAt: serverTimestamp()
       };
-      await addDoc(jobsCollection, newJob);
-      alert(isAdmin ? "Job posted successfully!" : "Job submitted! It will be public once approved by an Admin.");
+
+      const newDocRef = doc(jobsCollection);
+      await setDoc(newDocRef, jobData);
+      
+      localStorage.removeItem(`${atsConfig.dbPrefix}_job_draft_${profile?.id}`);
       onSuccess();
-      onClose();
     } catch (e) {
       console.error(e);
-      alert("Error posting job.");
+      setErrorMsg("Failed to post job. Please try again.");
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-[#051815] border border-[#C5A059]/20 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
-        <button onClick={onClose} className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors">
-          <X className="w-6 h-6" />
-        </button>
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto">
+      <div className={`w-full max-w-4xl ${atsConfig.theme.primaryBg} border ${atsConfig.theme.primaryBorder}/20 rounded-3xl overflow-hidden relative shadow-2xl flex flex-col my-8`}>
+        
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-white/10 sticky top-0 bg-black/40 backdrop-blur-md z-20">
+          <h2 className="text-2xl font-bold text-white">
+            {previewMode ? "Preview Job Post" : "Post a New Job"}
+          </h2>
+          <button onClick={onClose} className="p-2 bg-white/5 hover:bg-red-500/20 hover:text-red-500 rounded-full transition-colors text-white">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
 
-        <div className="p-6 md:p-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-serif font-bold text-[#C5A059]">Post a New Job</h2>
-            <p className="text-white/60 text-sm mt-1">
-              {isAdmin 
-                ? "Admin Mode: Your job will instantly become active."
-                : "Vendor Mode: Your job will be published upon Admin approval."}
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {isAdmin && (
-              <div>
-                <label className="block text-xs font-mono text-[#FDF8F5]/60 uppercase tracking-widest mb-2">Shop ID / Assignment</label>
-                <input 
-                  type="text" 
-                  value={shopId} 
-                  onChange={e => setShopId(e.target.value)} 
-                  className="w-full bg-black/40 border border-[#C5A059]/30 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
-                  placeholder="Use 'platform' for global" 
-                  required
-                />
+        {/* Form Body */}
+        <div className="p-6 md:p-8 text-white flex-1 overflow-y-auto min-h-[500px]">
+          
+          {!previewMode && (
+            <div className="mb-8 relative z-10">
+              <div className="flex justify-between items-center relative max-w-md mx-auto">
+                <div className="absolute top-1/2 left-0 right-0 h-1 bg-white/10 -z-10 -translate-y-1/2 rounded-full"></div>
+                <div className={`absolute top-1/2 left-0 h-1 ${atsConfig.theme.secondaryBg} -z-10 -translate-y-1/2 transition-all duration-300 rounded-full`} style={{ width: `${((currentStep - 1) / 2) * 100}%` }}></div>
+                {[1,2,3].map(step => (
+                  <div key={step} className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${currentStep >= step ? atsConfig.theme.secondaryBg + ' ' + atsConfig.theme.textLight : 'bg-black/50 text-white/40 border border-white/10'}`}>
+                    {step}
+                  </div>
+                ))}
               </div>
-            )}
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {isAdmin && (
-                <div>
-                  <label className="block text-xs font-mono text-[#FDF8F5]/60 uppercase tracking-widest mb-2">Shop Name (Display)</label>
-                  <input 
-                    type="text" 
-                    value={shopName} 
-                    onChange={e => setShopName(e.target.value)} 
-                    className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
-                    placeholder="e.g. Bhulia Hub Official" 
-                    required
-                  />
+            </div>
+          )}
+
+          {errorMsg && (
+            <div className="bg-red-500/10 border border-red-500/30 text-red-500 px-4 py-3 rounded-xl mb-6 text-sm text-center font-bold">
+              {errorMsg}
+            </div>
+          )}
+
+          {/* PREVIEW MODE */}
+          {previewMode ? (
+            <div className="space-y-8">
+              <div className="p-8 bg-black/40 rounded-2xl border border-white/10">
+                 <div className="flex items-center gap-6 mb-6">
+                    <div className="w-24 h-24 bg-white/5 rounded-xl border border-white/10 overflow-hidden relative">
+                      {companyLogoPreview ? <Image src={companyLogoPreview} alt="Logo" fill className="object-cover"/> : <ImageIcon className="w-8 h-8 m-auto mt-8 text-white/20"/>}
+                    </div>
+                    <div>
+                      <h1 className="text-3xl font-bold text-[#C5A059]">{formData.title}</h1>
+                      <p className="text-xl text-white/80">{formData.shopName}</p>
+                      <p className="text-sm text-white/50">{formData.location} &bull; {formData.jobType}</p>
+                    </div>
+                 </div>
+                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-sm">
+                   <div className="bg-white/5 p-3 rounded-lg border border-white/10"><span className="opacity-50 block text-xs">Salary</span>{formData.salaryRange || 'Not disclosed'}</div>
+                   <div className="bg-white/5 p-3 rounded-lg border border-white/10"><span className="opacity-50 block text-xs">Experience</span>{formData.experience || 'Any'}</div>
+                   <div className="bg-white/5 p-3 rounded-lg border border-white/10"><span className="opacity-50 block text-xs">Vacancies</span>{formData.vacancies}</div>
+                   <div className="bg-white/5 p-3 rounded-lg border border-white/10"><span className="opacity-50 block text-xs">Apply By</span>{formData.deadline}</div>
+                 </div>
+                 <div>
+                   <h3 className="font-bold text-lg mb-2 text-[#C5A059]">Job Description</h3>
+                   <p className="whitespace-pre-wrap text-white/70">{formData.description}</p>
+                 </div>
+                 <div className="mt-6">
+                   <h3 className="font-bold text-lg mb-2 text-[#C5A059]">Required Skills</h3>
+                   <div className="flex flex-wrap gap-2">
+                     {formData.skillsRequired.map(s => <span key={s} className="px-3 py-1 bg-white/10 rounded-full text-xs">{s}</span>)}
+                   </div>
+                 </div>
+              </div>
+              <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 p-4 rounded-xl text-sm text-center">
+                 Your contact details (Email, Phone, WhatsApp) will remain hidden from the public and are for administrative use only.
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* STEP 1: Company Details */}
+              {currentStep === 1 && (
+                <div className="space-y-6 animate-in fade-in">
+                  <h2 className={`text-xl font-bold flex items-center gap-2 ${atsConfig.theme.primaryText}`}><Building2 className="w-5 h-5"/> Company Details</h2>
+                  
+                  <div className="flex flex-col md:flex-row gap-6 mb-6">
+                    <label className={`w-32 h-32 shrink-0 border-2 border-dashed border-white/20 rounded-2xl ${atsConfig.theme.cardBg} hover:bg-black/60 transition-colors cursor-pointer flex flex-col items-center justify-center overflow-hidden relative`}>
+                        <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                        {companyLogoPreview ? (
+                          <Image src={companyLogoPreview} alt="Preview" fill className="object-cover" />
+                        ) : (
+                          <>
+                            <Upload className={`w-6 h-6 ${atsConfig.theme.primaryText} mb-2`} />
+                            <span className="text-xs font-bold text-center px-2">Logo *</span>
+                          </>
+                        )}
+                    </label>
+                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs uppercase opacity-70 mb-2">Company Name *</label>
+                        <input type="text" value={formData.shopName} onChange={e=>updateForm('shopName', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3" />
+                      </div>
+                      <div>
+                        <label className="block text-xs uppercase opacity-70 mb-2">Industry *</label>
+                        <select value={formData.industry} onChange={e=>updateForm('industry', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3">
+                          <option value="">Select Industry</option>
+                          {atsConfig.industries.map(i => <option key={i} value={i}>{i}</option>)}
+                        </select>
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs uppercase opacity-70 mb-2">Company Address</label>
+                        <input type="text" value={formData.companyAddress} onChange={e=>updateForm('companyAddress', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <h3 className="text-lg font-bold border-t border-white/10 pt-6">Private Contact Info (Hidden from Public)</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs uppercase opacity-70 mb-2">Contact Person *</label>
+                      <input type="text" value={formData.contactName} onChange={e=>updateForm('contactName', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3" />
+                    </div>
+                    <div>
+                      <label className="block text-xs uppercase opacity-70 mb-2">Email *</label>
+                      <input type="email" value={formData.contactEmail} onChange={e=>updateForm('contactEmail', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3" />
+                    </div>
+                    <div>
+                      <label className="block text-xs uppercase opacity-70 mb-2">Phone</label>
+                      <input type="tel" value={formData.contactPhone} onChange={e=>updateForm('contactPhone', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3" />
+                    </div>
+                    <div>
+                      <label className="block text-xs uppercase opacity-70 mb-2">WhatsApp</label>
+                      <input type="tel" value={formData.contactWhatsapp} onChange={e=>updateForm('contactWhatsapp', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3" />
+                    </div>
+                  </div>
                 </div>
               )}
-              <div>
-                <label className="block text-xs font-mono text-[#FDF8F5]/60 uppercase tracking-widest mb-2">Job Title</label>
-                <input 
-                  type="text" 
-                  value={title} 
-                  onChange={e => setTitle(e.target.value)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
-                  placeholder="e.g. Master Weaver" 
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-mono text-[#FDF8F5]/60 uppercase tracking-widest mb-2">Location</label>
-                <input 
-                  type="text" 
-                  value={location} 
-                  onChange={e => setLocation(e.target.value)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
-                  placeholder="e.g. Bhubaneswar, Odisha" 
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-mono text-[#FDF8F5]/60 uppercase tracking-widest mb-2">Job Type</label>
-                <select 
-                  value={jobType} 
-                  onChange={e => setJobType(e.target.value as any)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]"
-                >
-                  <option value="Full-time" className="bg-[#051815]">Full-time</option>
-                  <option value="Part-time" className="bg-[#051815]">Part-time</option>
-                  <option value="Contract" className="bg-[#051815]">Contract</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-mono text-[#FDF8F5]/60 uppercase tracking-widest mb-2">Salary Range</label>
-                <input 
-                  type="text" 
-                  value={salaryRange} 
-                  onChange={e => setSalaryRange(e.target.value)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
-                  placeholder="e.g. ₹20,000 - ₹30,000" 
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-mono text-[#FDF8F5]/60 uppercase tracking-widest mb-2">Experience</label>
-                <select 
-                  value={experience} 
-                  onChange={e => setExperience(e.target.value)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]"
-                >
-                  <option value="Fresher" className="bg-[#051815]">Fresher</option>
-                  <option value="1-2 Years" className="bg-[#051815]">1-2 Years</option>
-                  <option value="3-5 Years" className="bg-[#051815]">3-5 Years</option>
-                  <option value="5-10 Years" className="bg-[#051815]">5-10 Years</option>
-                  <option value="10+ Years" className="bg-[#051815]">10+ Years</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-mono text-[#FDF8F5]/60 uppercase tracking-widest mb-2">Qualification</label>
-                <select 
-                  value={qualification} 
-                  onChange={e => setQualification(e.target.value)} 
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]"
-                >
-                  <option value="Any" className="bg-[#051815]">Any</option>
-                  <option value="10th Pass" className="bg-[#051815]">10th Pass</option>
-                  <option value="12th Pass" className="bg-[#051815]">12th Pass</option>
-                  <option value="Graduate" className="bg-[#051815]">Graduate</option>
-                  <option value="Post Graduate" className="bg-[#051815]">Post Graduate</option>
-                  <option value="Specialized Diploma" className="bg-[#051815]">Specialized Diploma</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-mono text-[#FDF8F5]/60 uppercase tracking-widest mb-2">Vacancies</label>
-                <input 
-                  type="number" 
-                  value={vacancies} 
-                  onChange={e => setVacancies(e.target.value)} 
-                  min="1"
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059]" 
-                  required
-                />
-              </div>
-            </div>
 
-            <div>
-              <label className="block text-xs font-mono text-[#FDF8F5]/60 uppercase tracking-widest mb-2">Job Description</label>
-              <textarea 
-                value={description} 
-                onChange={e => setDescription(e.target.value)} 
-                className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#C5A059] h-32 resize-none" 
-                placeholder="Detailed job description, responsibilities, and requirements..." 
-                required
-              />
-            </div>
+              {/* STEP 2: Job Information */}
+              {currentStep === 2 && (
+                <div className="space-y-6 animate-in fade-in">
+                  <h2 className={`text-xl font-bold flex items-center gap-2 ${atsConfig.theme.primaryText}`}><Briefcase className="w-5 h-5"/> Job Information</h2>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2">
+                      <label className="block text-xs uppercase opacity-70 mb-2">Job Title *</label>
+                      <input type="text" placeholder="e.g. Master Weaver, Sales Executive" value={formData.title} onChange={e=>updateForm('title', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3" />
+                    </div>
+                    <div>
+                      <label className="block text-xs uppercase opacity-70 mb-2">Job Type</label>
+                      <select value={formData.jobType} onChange={e=>updateForm('jobType', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3">
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs uppercase opacity-70 mb-2">Location (City, State or Remote) *</label>
+                      <input type="text" value={formData.location} onChange={e=>updateForm('location', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3" />
+                    </div>
+                    <div>
+                      <label className="block text-xs uppercase opacity-70 mb-2">Salary Range</label>
+                      <input type="text" placeholder="e.g. ₹15k - ₹20k / month" value={formData.salaryRange} onChange={e=>updateForm('salaryRange', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3" />
+                    </div>
+                    <div>
+                      <label className="block text-xs uppercase opacity-70 mb-2">Application Deadline *</label>
+                      <input type="date" value={formData.deadline} onChange={e=>updateForm('deadline', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3" style={{colorScheme:'dark'}} />
+                    </div>
+                  </div>
 
-            <div className="flex flex-col gap-4 pt-4 border-t border-white/5">
-              <button 
-                type="submit" 
-                disabled={submitting}
-                className="w-full bg-gradient-to-r from-[#0070F3] to-[#005bb5] text-[#ffffff] font-bold py-3 px-6 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
-              >
-                {submitting ? 'Submitting...' : 'Post Job Listing'}
-              </button>
-              
-              <p className="text-center text-xs text-white/40">
-                You can manage your candidates from the 
-                <a href={isAdmin ? "/admin" : "/vendor"} className="text-[#C5A059] hover:underline ml-1">Dashboard</a>.
-              </p>
-            </div>
-          </form>
+                  <div className="mt-4">
+                    <label className="block text-xs uppercase opacity-70 mb-3">Skills Required</label>
+                    <div className="flex flex-wrap gap-2">
+                      {atsConfig.skills.map(skill => (
+                        <button key={skill} onClick={() => toggleSkill(skill)} className={`px-3 py-1 rounded-full border text-xs font-bold transition-all ${formData.skillsRequired.includes(skill) ? 'bg-[#C5A059]/20 border-[#C5A059] text-[#C5A059]' : 'bg-black/20 border-white/10 text-white/60'}`}>
+                          {skill}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 3: Job Description & Extras */}
+              {currentStep === 3 && (
+                <div className="space-y-6 animate-in fade-in">
+                  <h2 className={`text-xl font-bold flex items-center gap-2 ${atsConfig.theme.primaryText}`}><FileText className="w-5 h-5"/> Description & Extras</h2>
+                  
+                  <div>
+                    <label className="block text-xs uppercase opacity-70 mb-2">Detailed Job Description *</label>
+                    <textarea value={formData.description} onChange={e=>updateForm('description', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 min-h-[150px]"></textarea>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase opacity-70 mb-2">Key Responsibilities</label>
+                    <textarea value={formData.keyResponsibilities} onChange={e=>updateForm('keyResponsibilities', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 min-h-[100px]"></textarea>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                      <label className="block text-xs uppercase opacity-70 mb-3">Benefits Offered</label>
+                      <div className="flex flex-col gap-2">
+                        {["Health Insurance", "PF", "Bonus / Incentives", "Flexible Hours", "Accommodation"].map(b => (
+                          <label key={b} className="flex items-center gap-2 text-sm text-white/80 cursor-pointer">
+                            <input type="checkbox" checked={formData.benefits.includes(b)} onChange={() => toggleBenefit(b)} className="w-4 h-4 accent-[#C5A059]" /> {b}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs uppercase opacity-70 mb-2">Work Schedule</label>
+                      <select value={formData.workSchedule} onChange={e=>updateForm('workSchedule', e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3">
+                        <option value="Day Shift">Day Shift</option>
+                        <option value="Night Shift">Night Shift</option>
+                        <option value="Flexible">Flexible</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+        </div>
+
+        {/* Footer Navigation */}
+        <div className="p-6 border-t border-white/10 bg-black/20 flex flex-wrap gap-4 items-center justify-between">
+          {!previewMode ? (
+            <>
+              <div className="flex gap-4">
+                <button onClick={prevStep} disabled={currentStep === 1} className={`px-6 py-3 rounded-xl font-bold transition-all ${currentStep === 1 ? 'opacity-0 pointer-events-none' : 'bg-white/10 hover:bg-white/20 text-white flex items-center gap-2'}`}>
+                  <ChevronLeft className="w-5 h-5"/> Back
+                </button>
+                <button onClick={saveDraft} className="px-6 py-3 rounded-xl font-bold bg-white/5 hover:bg-white/10 text-white/80 border border-white/10 hidden md:block">
+                  Save Draft
+                </button>
+              </div>
+              <div className="flex gap-4">
+                {currentStep === 3 && (
+                  <button onClick={() => { if(validateStep(3)) setPreviewMode(true); }} className="px-6 py-3 rounded-xl font-bold bg-[#C5A059]/20 text-[#C5A059] border border-[#C5A059]/30 hover:bg-[#C5A059]/30">
+                    Preview Mode
+                  </button>
+                )}
+                {currentStep < 3 ? (
+                  <button onClick={nextStep} className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg ${atsConfig.theme.buttonSecondary}`}>
+                    Next <ChevronRight className="w-5 h-5"/>
+                  </button>
+                ) : (
+                  <button onClick={handleSubmit} disabled={submitting} className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg ${submitting ? 'opacity-50' : ''} ${atsConfig.theme.buttonPrimary}`}>
+                    {submitting ? 'Posting...' : 'Submit Job'} <CheckCircle2 className="w-5 h-5"/>
+                  </button>
+                )}
+              </div>
+            </>
+          ) : (
+             <div className="flex justify-between w-full">
+                <button onClick={prevStep} className="px-6 py-3 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white flex items-center gap-2">
+                  <ChevronLeft className="w-5 h-5"/> Edit Details
+                </button>
+                <button onClick={handleSubmit} disabled={submitting} className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg ${submitting ? 'opacity-50' : ''} ${atsConfig.theme.buttonPrimary}`}>
+                  {submitting ? 'Posting...' : 'Confirm & Submit'} <CheckCircle2 className="w-5 h-5"/>
+                </button>
+             </div>
+          )}
         </div>
       </div>
     </div>
