@@ -10,6 +10,7 @@ export default function AdminJobsManager() {
   
   const [activeTab, setActiveTab] = useState<'jobs' | 'applications' | 'resumes'>('jobs');
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // New Job State
   const [showForm, setShowForm] = useState(false);
@@ -247,9 +248,21 @@ export default function AdminJobsManager() {
       {/* APPLICATIONS TAB */}
       {activeTab === 'applications' && (
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-          <h2 className="font-bold text-lg mb-4 text-gray-800">All Job Applications (System-wide)</h2>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+            <h2 className="font-bold text-lg text-gray-800">All Job Applications (System-wide)</h2>
+            <div className="relative w-full md:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input 
+                type="text" 
+                placeholder="Search applicants..." 
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white transition-colors"
+              />
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {applications.map(app => (
+            {applications.filter(app => !searchQuery || app.seeker?.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || app.jobTitle?.toLowerCase().includes(searchQuery.toLowerCase())).map(app => (
               <div key={app.id} className="border border-gray-100 rounded-lg p-4 flex flex-col gap-2">
                 <div className="flex justify-between items-start">
                   <div>
@@ -275,13 +288,25 @@ export default function AdminJobsManager() {
       {/* RESUME DB TAB */}
       {activeTab === 'resumes' && (
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <h2 className="font-bold text-lg text-gray-800">Global Resume Database</h2>
-            <span className="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-full text-sm">{resumeDB.length} Candidates</span>
+            <div className="flex items-center gap-4 w-full md:w-auto">
+              <div className="relative flex-1 md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input 
+                  type="text" 
+                  placeholder="Search by name, skill, or location..." 
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:bg-white transition-colors"
+                />
+              </div>
+              <span className="bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-full text-sm whitespace-nowrap">{resumeDB.length} Candidates</span>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {resumeDB.map(seeker => (
+            {resumeDB.filter(s => !searchQuery || s.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || s.district?.toLowerCase().includes(searchQuery.toLowerCase()) || s.skills?.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()))).map(seeker => (
               <div key={seeker.uid} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow bg-gray-50">
                 <div className="flex gap-4">
                   <div className="w-16 h-16 rounded-full bg-white border border-gray-200 flex items-center justify-center overflow-hidden shrink-0">
