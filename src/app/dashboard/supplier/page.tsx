@@ -435,7 +435,7 @@ export default function SupplierDashboardPage() {
               </div>
             )}
               </>
-            )
+            )}
           </div>
         )}
 

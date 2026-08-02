@@ -413,7 +413,7 @@ export default function WholesalerDashboardPage() {
               </div>
             )}
               </>
-            )
+            )}
           </div>
         )}
 
