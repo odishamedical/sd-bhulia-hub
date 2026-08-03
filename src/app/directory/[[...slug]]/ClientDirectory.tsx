@@ -177,7 +177,7 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
     for (let i = 0; i < listings.length; i++) {
       const item = listings[i];
       const isVerified = item.status === "approved" || item.status === "active";
-      
+      result.push(
         <div key={item.id} className="group relative rounded-2xl overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-all duration-300 hover:shadow-[0_0_25px_rgba(197,160,89,0.4)] hover:-translate-y-1 flex flex-col h-full bg-gradient-to-tr from-[#8E6927] via-[#F2D77C] to-[#C5A059] p-[1.5px]">
           
           <Link href={item.role === 'weaver' ? `/weaver/${item.slug}` : `/store/${item.slug}`} className="flex flex-col h-full cursor-pointer bg-[#051815] rounded-2xl overflow-hidden relative">
