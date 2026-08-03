@@ -202,18 +202,18 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
               </div>
             </div>
 
-            {/* Prominent Content Underneath with Glassmorphism (Right Side) */}
-            <div className="p-3 sm:p-5 flex flex-col flex-grow justify-center bg-[#0A1A18]/95 backdrop-blur-xl relative z-20">
+            {/* Prominent Content Underneath with Pop-Out Background (Right Side) */}
+            <div className="p-3 sm:p-5 flex flex-col flex-grow justify-center bg-gradient-to-br from-[#1C463F] to-[#0D2420] relative z-20">
               <div className="flex items-start justify-between gap-2 mb-1.5 sm:mb-2">
-                <h3 className="text-sm sm:text-base font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#F2D77C] via-[#FFFFFF] to-[#C5A059] group-hover:brightness-125 transition-all line-clamp-2 leading-snug drop-shadow-sm">
+                <h3 className="text-sm sm:text-base font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#F2D77C] via-[#FFFFFF] to-[#C5A059] group-hover:brightness-125 transition-all leading-snug drop-shadow-sm pr-2">
                   {item.title || item.name}
                 </h3>
                 {isVerified ? (
-                  <div className="shrink-0 bg-gradient-to-tr from-[#C5A059] to-[#F2D77C] rounded-full p-0.5 shadow-[0_0_10px_rgba(197,160,89,0.5)]" title="Verified Partner">
+                  <div className="shrink-0 bg-gradient-to-tr from-[#C5A059] to-[#F2D77C] rounded-full p-0.5 shadow-[0_0_10px_rgba(197,160,89,0.5)] mt-0.5" title="Verified Partner">
                     <svg className="w-3 h-3 text-[#051815]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" /></svg>
                   </div>
                 ) : (
-                  <div className="shrink-0 border border-[#C5A059] text-[#C5A059] rounded-md px-1 py-0.5 text-[7px] sm:text-[8px] font-bold uppercase tracking-wider bg-[#C5A059]/10" title="Unverified Listing">
+                  <div className="shrink-0 border border-[#C5A059] text-[#C5A059] rounded-md px-1 py-0.5 text-[7px] sm:text-[8px] font-bold uppercase tracking-wider bg-[#C5A059]/10 mt-0.5" title="Unverified Listing">
                     Unverified
                   </div>
                 )}
