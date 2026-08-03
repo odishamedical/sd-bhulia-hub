@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Search, MapPin, Briefcase, IndianRupee, Clock, ChevronRight, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -156,26 +157,44 @@ export default function JobsPage() {
         <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
       </div>
 
+      <div className="relative text-white py-20 px-4 text-center z-10 border-b border-[#C5A059]/10 overflow-hidden">
+        {/* Background Image and Dark Overlay */}
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="/bhulia-hero.png"
+            alt="Bhulia Hub Jobs"
+            fill
+            className="object-cover opacity-20 pointer-events-none"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#6B1D2F]/90 via-[#4A1020]/95 to-[#051815] mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-black/40"></div>
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-3xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#F2D77C] to-[#FFFFFF] drop-shadow-md">
+            Bhulia Hub Job Portal
+          </h1>
+          <p className="text-lg opacity-90 max-w-2xl mx-auto mb-8 font-medium">
+            Find the perfect career in the Sambalpuri handloom industry. Apply to top shops across India or create a Seeker Profile.
+          </p>
           
-      <div className="bg-[#6B1D2F] text-white py-16 px-4 text-center relative z-10">
-        <h1 className="text-4xl font-bold mb-4">Bhulia Hub Job Portal</h1>
-        <p className="text-lg opacity-90 max-w-2xl mx-auto mb-6">Find the perfect career in the Sambalpuri handloom industry. Apply to top shops across India or create a Seeker Profile.</p>
-        
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-          <Link href="/jobs/profile" className="bg-[#C5A059] text-black font-bold px-6 py-3 rounded-xl hover:opacity-90 transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] text-center">
-            Create Seeker Profile
-          </Link>
-          {userData && ['store', 'weaver', 'wholesaler', 'admin', 'super_admin'].includes(userData.role?.toLowerCase() || '') && (
-            <button 
-              onClick={handlePostJobClick}
-              className="bg-black/20 border border-[#C5A059]/30 text-[#C5A059] font-bold px-6 py-3 rounded-xl hover:bg-black/40 transition-all text-center shadow-md backdrop-blur-sm"
-            >
-              Post a Job (Vendors)
-            </button>
-          )}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+            <Link href="/jobs/profile" className="bg-gradient-to-tr from-[#C5A059] to-[#F2D77C] text-[#051815] font-bold px-8 py-3 rounded-xl hover:brightness-110 transition-all shadow-[0_0_20px_rgba(197,160,89,0.4)] text-center w-full sm:w-auto">
+              Create Seeker Profile
+            </Link>
+            {userData && ['store', 'weaver', 'wholesaler', 'admin', 'super_admin'].includes(userData.role?.toLowerCase() || '') && (
+              <button 
+                onClick={handlePostJobClick}
+                className="bg-black/40 border border-[#C5A059]/50 text-[#F2D77C] font-bold px-8 py-3 rounded-xl hover:bg-black/60 hover:text-white transition-all text-center shadow-lg backdrop-blur-md w-full sm:w-auto"
+              >
+                Post a Job
+              </button>
+            )}
+          </div>
         </div>
       </div>
-  
       
 
       <div className="relative z-10 max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
