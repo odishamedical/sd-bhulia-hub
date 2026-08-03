@@ -245,6 +245,7 @@ export default function DynamicSlugPage() {
 
       {/* Public Storefront Content */}
       <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 py-8 flex flex-col gap-8 relative z-10 flex-1">
+        <h1 className="sr-only">Original Sambalpuri Saree - Buy Sambalpuri Silk Saree, Sambalpuri Cotton, Sambalpuri Ikat, Bandha, and Sambalpuri Pata Saree at {franchise.name}</h1>
         
         {/* Banner Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">

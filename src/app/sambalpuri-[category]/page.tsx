@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const categoryParts = rawCategory.split('-');
   const categoryName = categoryParts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
 
-  const title = `Premium Sambalpuri ${categoryName} | Buy Original Handloom`;
-  const description = `Shop authentic Sambalpuri ${categoryName} directly from Odisha's master weavers. 100% Handloom mark certified quality.`;
+  const title = `Original Sambalpuri ${categoryName} Saree | Authentic Odisha Handloom`;
+  const description = `Shop original Sambalpuri ${categoryName} sarees directly from Odisha's master weavers. Explore our collection of 100% Handloom mark certified Sambalpuri handloom, including Sambalpuri silk saree, Sambalpuri cotton, Sambalpuri Ikat, Bandha, and Sambalpuri pata saree.`;
 
   return {
     title,

@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const locationParts = rawLocation.split('-');
   const locationName = locationParts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
 
-  const title = `Authentic Sambalpuri Sarees in ${locationName} | Buy Direct from Weavers`;
-  const description = `Find 100% original handloom mark certified Sambalpuri Pata, Silk, and Cotton sarees directly from weavers and retail shops in ${locationName}.`;
+  const title = `Original Sambalpuri Saree in ${locationName}, Odisha | Buy Direct from Weavers`;
+  const description = `Find 100% original handloom mark certified Sambalpuri handloom directly from weavers and retail shops in ${locationName}, Odisha. Best collection of Sambalpuri silk saree, Sambalpuri cotton, Sambalpuri Ikat, Bandha, and Sambalpuri pata saree.`;
 
   return {
     title,

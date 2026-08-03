@@ -178,40 +178,40 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
       const item = listings[i];
       const isVerified = item.status === "approved" || item.status === "active";
       
-      result.push(
-        <div key={item.id} className="group relative bg-[#0B2B26] rounded-2xl border border-[#C5A059]/20 hover:border-[#C5A059]/80 overflow-hidden shadow-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] hover:-translate-y-1 flex flex-col h-full">
+        <div key={item.id} className="group relative rounded-2xl overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-all duration-300 hover:shadow-[0_0_25px_rgba(197,160,89,0.4)] hover:-translate-y-1 flex flex-col h-full bg-gradient-to-tr from-[#8E6927] via-[#F2D77C] to-[#C5A059] p-[1.5px]">
           
-          <Link href={item.role === 'weaver' ? `/weaver/${item.slug}` : `/store/${item.slug}`} className="flex flex-col h-full cursor-pointer">
+          <Link href={item.role === 'weaver' ? `/weaver/${item.slug}` : `/store/${item.slug}`} className="flex flex-col h-full cursor-pointer bg-[#051815] rounded-2xl overflow-hidden relative">
             
-            {/* Massive Square Thumbnail */}
+            {/* Massive Square Thumbnail (Uncropped, not fading) */}
             <div className="w-full aspect-square relative bg-[#051815] overflow-hidden">
               <Image 
                 src={(item as any).image || (item as any).photo || (item as any).photoUrl || (item as any).imageUrl || (item as any).thumbnail || (item as any).cover_image || (item as any).featured_image || (item as any).picture || (item as any).avatar || (item as any).business_logo || (item as any)['Profile Photo'] || (item as any)['Business Logo'] || (item as any).logo || (item as any).profileImage || (item as any).img || "/bhulia-hero.png"} 
                 alt={item.title || "Listing"}
                 fill
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
-                className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B26] via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+              {/* Removed the fading gradient overlay so image is clearly visible, only keep a very subtle shadow at bottom for contrast if needed, but per request: 'not fading' */}
+              <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#051815] to-transparent opacity-80 pointer-events-none"></div>
               
               <div className="absolute top-3 left-3 z-10">
                 <span className={`px-2 py-1 rounded shadow-md backdrop-blur-md text-[9px] uppercase font-bold tracking-widest border ${
-                  item.role === 'weaver' ? 'bg-amber-900/90 text-amber-300 border-amber-500/50' : 'bg-blue-900/90 text-blue-300 border-blue-500/50'
+                  item.role === 'weaver' ? 'bg-black/70 text-[#F2D77C] border-[#F2D77C]/50' : 'bg-black/70 text-blue-300 border-blue-500/50'
                 }`}>
                   {item.role === 'weaver' ? 'Master Weaver' : 'Retail Shop'}
                 </span>
               </div>
             </div>
 
-            {/* Content Underneath */}
-            <div className="p-4 sm:p-5 flex flex-col flex-grow">
+            {/* Prominent Content Underneath with Glassmorphism */}
+            <div className="p-4 sm:p-5 flex flex-col flex-grow bg-[#0A1A18]/95 backdrop-blur-xl relative z-20">
               <div className="flex items-start justify-between gap-2 mb-2">
-                <h3 className="text-sm sm:text-base font-bold text-white group-hover:text-[#C5A059] transition-colors line-clamp-2 leading-snug">
+                <h3 className="text-base sm:text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#F2D77C] via-[#FFFFFF] to-[#C5A059] group-hover:brightness-125 transition-all line-clamp-2 leading-snug drop-shadow-sm">
                   {item.title || item.name}
                 </h3>
                 {isVerified ? (
-                  <div className="shrink-0 bg-green-500 rounded-full p-0.5 mt-0.5" title="Verified Partner">
-                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+                  <div className="shrink-0 bg-gradient-to-tr from-[#C5A059] to-[#F2D77C] rounded-full p-0.5 mt-0.5 shadow-[0_0_10px_rgba(197,160,89,0.5)]" title="Verified Partner">
+                    <svg className="w-3.5 h-3.5 text-[#051815]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
                   </div>
                 ) : (
                   <div className="shrink-0 border border-[#C5A059] text-[#C5A059] rounded-md px-1.5 py-0.5 mt-0.5 text-[8px] font-bold uppercase tracking-wider bg-[#C5A059]/10" title="Unverified Listing">
@@ -220,16 +220,16 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
                 )}
               </div>
 
-              <div className="text-gray-400 text-xs mb-4 flex items-center gap-1.5 opacity-80">
-                <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+              <div className="text-gray-300 text-xs mb-4 flex items-center gap-1.5 font-medium">
+                <svg className="w-4 h-4 shrink-0 text-[#C5A059]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 <span className="truncate">{item.district || item.townVillage || item.state || "N/A"}</span>
               </div>
 
-              <div className="flex items-center gap-2 mt-auto pt-3 border-t border-[#C5A059]/10">
-                <span className="text-[#C5A059] text-[10px] sm:text-xs font-bold uppercase tracking-wider group-hover:underline">
+              <div className="flex items-center justify-between mt-auto pt-3 border-t border-[#C5A059]/30">
+                <span className="text-[#F2D77C] text-[10px] sm:text-xs font-bold uppercase tracking-widest group-hover:text-white transition-colors">
                   {isVerified ? "View Profile" : "Claim Business"}
                 </span>
-                <span className="text-[#C5A059] text-xs transition-transform group-hover:translate-x-1">→</span>
+                <span className="text-[#F2D77C] text-sm transition-transform group-hover:translate-x-1 font-bold">→</span>
               </div>
             </div>
           </Link>

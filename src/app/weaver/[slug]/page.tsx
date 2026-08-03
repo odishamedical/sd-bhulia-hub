@@ -22,8 +22,8 @@ export async function generateMetadata(
   }
 
   const district = profile.district || "Odisha";
-  const title = `${profile.title} - Authentic Sambalpuri Saree Weaver in ${district} | Bhulia.com`;
-  const description = `Buy 100% original Sambalpuri Pata, Dress materials, and cotton sarees directly from ${profile.title} in ${district}. Handloom mark certified.`;
+  const title = `${profile.title} - Original Sambalpuri Saree Weaver in ${district} | Bhulia.com`;
+  const description = `Buy original Sambalpuri sarees directly from ${profile.title} in ${district}, Odisha. 100% authentic Sambalpuri handloom, including Sambalpuri silk saree, Sambalpuri cotton, Sambalpuri Ikat, Bandha, and Sambalpuri pata saree. Handloom mark certified.`;
 
   return {
     title: title,

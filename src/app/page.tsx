@@ -76,6 +76,7 @@ export default function HomeDraftV2() {
       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #C5A059 1px, transparent 0)', backgroundSize: '48px 48px' }} />
       
       <div className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-6 relative z-10 space-y-16 overflow-hidden max-w-[1600px] mx-auto">
+        <h1 className="sr-only">Original Sambalpuri Saree & Sambalpuri Handloom from Odisha - Buy Sambalpuri Silk Saree, Sambalpuri Cotton, Sambalpuri Ikat, Bandha, and Sambalpuri Pata Saree</h1>
         
         {widgets.map((widget, idx) => {
           

@@ -3,11 +3,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bhulia.com"),
-  title: "BHULIA | Heritage Sambalpuri Marketplace",
-  description: "Experience the timeless artistry of Sambalpuri handloom weavers.",
+  title: "BHULIA | Original Sambalpuri Saree & Handloom from Odisha",
+  description: "Experience the timeless artistry of Sambalpuri handloom weavers. Buy original Sambalpuri sarees, Sambalpuri silk sarees, Sambalpuri cotton, Ikat, Bandha, and Pata sarees directly from grassroots pit looms in Odisha.",
   openGraph: {
-    title: "BHULIA | Heritage Sambalpuri Marketplace",
-    description: "Experience the timeless artistry of Sambalpuri handloom weavers. Direct from grassroots pit looms.",
+    title: "BHULIA | Original Sambalpuri Saree & Handloom from Odisha",
+    description: "Experience the timeless artistry of Sambalpuri handloom weavers. Buy original Sambalpuri sarees, Sambalpuri silk sarees, Sambalpuri cotton, Ikat, Bandha, and Pata sarees directly from grassroots pit looms in Odisha.",
     url: "https://bhulia.com",
     siteName: "Bhulia Hub",
     images: [
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
         url: "/bhulia-hero.png",
         width: 1200,
         height: 630,
-        alt: "Bhulia Heritage Sambalpuri Sarees",
+        alt: "Bhulia Original Sambalpuri Sarees & Handloom",
       },
     ],
     locale: "en_IN",
@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "BHULIA | Heritage Sambalpuri Marketplace",
-    description: "Experience the timeless artistry of Sambalpuri handloom weavers.",
+    title: "BHULIA | Original Sambalpuri Saree & Handloom from Odisha",
+    description: "Experience the timeless artistry of Sambalpuri handloom weavers. Buy original Sambalpuri sarees, Sambalpuri silk sarees, Sambalpuri cotton, Ikat, Bandha, and Pata sarees.",
     images: ["/bhulia-hero.png"],
   },
 };

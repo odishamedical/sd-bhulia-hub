@@ -21,8 +21,8 @@ export async function generateMetadata(
     };
   }
 
-  const title = ` | Bhulia Hub`;
-  const description = product.description;
+  const title = `${product.title || product.name || 'Original Sambalpuri Saree'} | Authentic Sambalpuri Handloom | Bhulia Hub`;
+  const description = `${product.description} - Shop original Sambalpuri sarees, Sambalpuri silk sarees, Sambalpuri cotton, Ikat, Bandha, and Pata sarees directly from Odisha on Bhulia Hub.`;
 
   return {
     title: title,
