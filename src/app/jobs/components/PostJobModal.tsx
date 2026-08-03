@@ -5,7 +5,7 @@ import { X, CheckCircle2, ChevronRight, ChevronLeft, Upload, Building2, Briefcas
 import { atsConfig } from "@/config/ats.config";
 import { storage, db } from "@/lib/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { doc, setDoc, serverTimestamp, collection } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp, collection, getDocs } from "firebase/firestore";
 import { jobsCollection, Job } from "@/lib/jobs";
 import Image from "next/image";
 
@@ -52,6 +52,22 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
 
   const [companyLogoFile, setCompanyLogoFile] = useState<File | null>(null);
   const [companyLogoPreview, setCompanyLogoPreview] = useState("");
+  const [dynamicCategories, setDynamicCategories] = useState<string[]>(atsConfig.industries);
+
+  // Load dynamic categories from database
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const snap = await getDocs(collection(db, `${atsConfig.dbPrefix}_job_categories`));
+        const cats = snap.docs.map(d => d.data().name).filter(Boolean);
+        const merged = Array.from(new Set([...atsConfig.industries, ...cats]));
+        setDynamicCategories(merged);
+      } catch (e) {
+        console.error("Failed to fetch dynamic categories", e);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // Load Draft on mount
   useEffect(() => {
@@ -186,6 +202,16 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
       const newDocRef = doc(jobsCollection);
       await setDoc(newDocRef, jobData);
       
+      // Save custom category to database
+      const ind = formData.industry.trim();
+      if (ind) {
+        try {
+          const safeId = ind.toLowerCase().replace(/[^a-z0-9]/g, '-');
+          const catRef = doc(db, `${atsConfig.dbPrefix}_job_categories`, safeId);
+          await setDoc(catRef, { name: ind, createdAt: serverTimestamp() }, { merge: true });
+        } catch(e) { console.error("Failed to save category", e); }
+      }
+
       localStorage.removeItem(`${atsConfig.dbPrefix}_job_draft_${profile?.id}`);
       onSuccess();
     } catch (e) {
@@ -298,7 +324,7 @@ export default function PostJobModal({ onClose, profile, onSuccess }: PostJobMod
                         <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-300 mb-2">Job Category *</label>
                         <input list="categoriesList" placeholder="Select or type..." value={formData.industry} onChange={e=>updateForm('industry', e.target.value)} className="w-full bg-[#0f0f0f] border border-[#4a3617] shadow-[inset_0_2px_5px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.05)] focus:bg-[#141414] text-white focus:ring-1 focus:ring-[#DAA520] focus:border-[#DAA520] transition-all duration-300 rounded-[14px] px-4 py-3" />
                           <datalist id="categoriesList">
-                            {atsConfig.industries.map(i => <option key={i} value={i} />)}
+                            {dynamicCategories.map(i => <option key={i} value={i} />)}
                           </datalist>
                       </div>
                       <div className="md:col-span-2">
