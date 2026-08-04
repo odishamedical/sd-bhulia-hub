@@ -131,6 +131,7 @@ export default function Footer() {
             <h4 className="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Quick Links</h4>
             <ul className="space-y-2.5 text-xs text-gray-300">
               <li><Link href="/directory" className="hover:text-[#C5A059] transition-colors">Our Weaver Network</Link></li>
+              <li><Link href="/guide" className="hover:text-[#C5A059] transition-colors">Sambalpuri Handloom Guide</Link></li>
               <li><Link href="/verify" className="hover:text-[#C5A059] transition-colors">Verify Bhulia.com Certificate</Link></li>
               <li><Link href="/p/live-silk-rates" className="hover:text-[#C5A059] transition-colors">Live Silk & Yarn Rates</Link></li>
             </ul>

@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { label: "Shop Sarees", href: "/search" },
   { label: "Directory", href: "/directory" },
   { label: "About Us", href: "/p/about-us" },
+  { label: "Guide", href: "/guide" },
   { label: "JOB.", href: "/jobs" }
 ];
 
