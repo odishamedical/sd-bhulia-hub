@@ -167,7 +167,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-[#C5A059]/20 text-xs text-gray-400 font-mono">
           <p>© 2026 Shyam Dash Creation. All sovereign rights reserved.</p>
           <div className="flex gap-6">
-            <Link href="/p/privacy-policy" className="hover:text-[#C5A059] transition-colors">Privacy Policy</Link>
+            <Link href="/privacy" className="hover:text-[#C5A059] transition-colors">Privacy Policy</Link>
             <Link href="/p/terms-of-service" className="hover:text-[#C5A059] transition-colors">Terms of Service</Link>
             <Link href="/p/bhulia-registry-clearance" className="hover:text-[#C5A059] transition-colors">Bhulia.com Registry Clearance</Link>
           </div>
