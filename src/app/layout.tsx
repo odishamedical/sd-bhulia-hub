@@ -58,13 +58,13 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
-      </head>
-      <body className="font-sans min-h-full flex flex-col bg-[#051815] text-white overflow-x-hidden">
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1792783864518197"
           crossOrigin="anonymous"
         ></script>
+      </head>
+      <body className="font-sans min-h-full flex flex-col bg-[#051815] text-white overflow-x-hidden">
         <GoogleAnalytics gaId="G-BJTLQMQZDV" />
         <AuthProvider>
           <CartProvider>
