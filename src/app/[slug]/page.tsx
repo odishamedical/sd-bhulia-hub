@@ -147,7 +147,7 @@ export default function DynamicSlugPage() {
   // Check if current user is the owner of this franchise page
   const isOwner = userRole === "super_admin" || (userRole === "franchisee" && (userUid === franchise.id || userUid === "sd_sso_custom_uid"));
   
-  const tier = franchise.subscriptionTier || "free";
+  const tier = franchise.subscription?.tier || franchise.subscriptionTier || "free";
 
   // Enforce Free Tier Block for public visitors
   if (tier === "free" && !isOwner) {

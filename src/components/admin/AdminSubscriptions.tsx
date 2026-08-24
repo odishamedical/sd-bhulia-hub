@@ -26,7 +26,7 @@ export default function AdminSubscriptions() {
 
       // Filter shops that have a premium subscription tier or active status
       const premiumShops = allShops.filter(shop => {
-        const tier = shop.subscriptionTier || shop.subscription?.tier;
+        const tier = shop.subscription?.tier || shop.subscriptionTier;
         const status = shop.subscriptionStatus || shop.subscription?.status;
         return (tier && tier !== 'free' && tier !== 'free_trial') || (status && status !== 'free' && status !== 'free_trial');
       });
@@ -94,8 +94,8 @@ export default function AdminSubscriptions() {
                       <div className="text-xs text-gray-500">{shop.phone || shop.phoneNumber || 'N/A'}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider ${(shop.subscriptionTier || shop.subscription?.tier) === 'advance' ? 'bg-indigo-100 text-indigo-700' : 'bg-[#C5A059]/10 text-[#C5A059]'}`}>
-                        {shop.subscriptionTier || shop.subscription?.tier || shop.subscriptionStatus || shop.subscription?.status || 'Pro'}
+                      <span className={`font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider ${(shop.subscription?.tier || shop.subscriptionTier) === 'advance' ? 'bg-indigo-100 text-indigo-700' : 'bg-[#C5A059]/10 text-[#C5A059]'}`}>
+                        {shop.subscription?.tier || shop.subscriptionTier || shop.subscription?.status || shop.subscriptionStatus || 'Pro'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -109,7 +109,7 @@ export default function AdminSubscriptions() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <a 
-                        href={`https://wa.me/?text=${encodeURIComponent(`Congratulations! Your Bhulia Hub shop (${shop.name || shop.title || 'Unnamed'}) has been successfully upgraded to ${(shop.subscriptionTier || shop.subscription?.tier || shop.subscriptionStatus || shop.subscription?.status || 'PRO').toUpperCase()} Tier. Your premium subscription is active until ${shop.subscription?.expiresAt ? new Date(shop.subscription.expiresAt.seconds * 1000 || shop.subscription.expiresAt).toLocaleDateString() : 'Lifetime'}. Thank you for partnering with us!`)}`}
+                        href={`https://wa.me/?text=${encodeURIComponent(`Congratulations! Your Bhulia Hub shop (${shop.name || shop.title || 'Unnamed'}) has been successfully upgraded to ${(shop.subscription?.tier || shop.subscriptionTier || shop.subscription?.status || shop.subscriptionStatus || 'PRO').toUpperCase()} Tier. Your premium subscription is active until ${shop.subscription?.expiresAt ? new Date(shop.subscription.expiresAt.seconds * 1000 || shop.subscription.expiresAt).toLocaleDateString() : 'Lifetime'}. Thank you for partnering with us!`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 bg-green-50 hover:bg-green-100 text-green-700 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors border border-green-200"
