@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setUserData(userDocSnap.data());
           }
 
-          if (currentUser.email === "odishamedical@gmail.com" || currentUser.email === "npfcodisha@gmail.com") {
+          if (currentUser.email === "odishamedical@gmail.com") {
             // Master Admin Override
             localStorage.setItem("sd_current_user_role", "super_admin");
             localStorage.setItem("sd_current_user_uid", currentUser.uid);
