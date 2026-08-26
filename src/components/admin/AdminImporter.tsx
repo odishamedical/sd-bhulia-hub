@@ -29,6 +29,9 @@ export default function AdminImporter() {
   const [results, setResults] = useState<PlaceResult[]>([]);
   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
   const [importing, setImporting] = useState<string | null>(null);
+  
+  const [selectedPlaces, setSelectedPlaces] = useState<string[]>([]);
+  const [bulkImporting, setBulkImporting] = useState(false);
 
   const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setState(e.target.value);
@@ -87,11 +90,13 @@ export default function AdminImporter() {
           setResults(prev => [...prev, ...mappedResults]);
         } else {
           setResults(mappedResults);
+          setSelectedPlaces([]);
         }
         setNextPageToken(data.nextPageToken || null);
       } else if (!token) {
         setResults([]);
         setNextPageToken(null);
+        setSelectedPlaces([]);
       }
       
     } catch (error) {
@@ -113,6 +118,43 @@ export default function AdminImporter() {
     }
   };
 
+  const importPlaceInternal = async (place: PlaceResult) => {
+    let collectionName = "stores";
+    if (targetCategory === "weaver") collectionName = "weavers";
+    else if (targetCategory === "wholesaler") collectionName = "wholesalers";
+    else if (targetCategory === "supplier") collectionName = "suppliers";
+    
+    const img = place.photoUrls && place.photoUrls.length > 0 ? place.photoUrls[0] : "";
+    const gallery = place.photoUrls && place.photoUrls.length > 0 ? place.photoUrls.slice(0, 5) : [];
+    const googlePin = place.location ? `${place.location.latitude},${place.location.longitude}` : "";
+
+    const newDoc = {
+      title: place.name,
+      slug: place.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Date.now().toString().slice(-4),
+      address: place.formatted_address,
+      state: state,
+      district: district,
+      block: block || "",
+      pincode: pincode || "",
+      country: "India",
+      rating: place.rating || 0,
+      reviews_count: place.user_ratings_total || 0,
+      phone: place.international_phone_number || "",
+      website: place.website || "",
+      img: img,
+      gallery: gallery,
+      googlePin: googlePin,
+      source: "google_places",
+      googlePlaceId: place.place_id,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      isVerified: false,
+      status: "active" 
+    };
+
+    await addDoc(collection(db, collectionName), newDoc);
+  };
+
   const importToDirectory = async (place: PlaceResult) => {
     if (!district) {
       alert("Please select a District first so the imported profile gets structured properly.");
@@ -121,49 +163,63 @@ export default function AdminImporter() {
     
     setImporting(place.place_id);
     try {
-      let collectionName = "stores";
-      if (targetCategory === "weaver") collectionName = "weavers";
-      else if (targetCategory === "wholesaler") collectionName = "wholesalers";
-      else if (targetCategory === "supplier") collectionName = "suppliers";
-      
-      const img = place.photoUrls && place.photoUrls.length > 0 ? place.photoUrls[0] : "";
-      const gallery = place.photoUrls && place.photoUrls.length > 0 ? place.photoUrls.slice(0, 5) : [];
-      const googlePin = place.location ? `${place.location.latitude},${place.location.longitude}` : "";
-
-      const newDoc = {
-        title: place.name,
-        slug: place.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Date.now().toString().slice(-4),
-        address: place.formatted_address,
-        state: state,
-        district: district,
-        block: block || "",
-        pincode: pincode || "",
-        country: "India",
-        rating: place.rating || 0,
-        reviews_count: place.user_ratings_total || 0,
-        phone: place.international_phone_number || "",
-        website: place.website || "",
-        img: img,
-        gallery: gallery,
-        googlePin: googlePin,
-        source: "google_places",
-        googlePlaceId: place.place_id,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        isVerified: false,
-        status: "active" // typically active directly if imported by admin
-      };
-
-      await addDoc(collection(db, collectionName), newDoc);
+      await importPlaceInternal(place);
       alert(`${place.name} has been successfully imported to the ${targetCategory} directory!`);
-      
       setResults(prev => prev.filter(p => p.place_id !== place.place_id));
+      setSelectedPlaces(prev => prev.filter(id => id !== place.place_id));
     } catch (error) {
       console.error("Import error:", error);
       alert("Failed to import business data.");
     } finally {
       setImporting(null);
     }
+  };
+
+  const handleBulkImport = async () => {
+    if (!district) {
+      alert("Please select a District first.");
+      return;
+    }
+    if (selectedPlaces.length === 0) return;
+
+    if (!confirm(`Are you sure you want to import ${selectedPlaces.length} places as ${targetCategory}?`)) return;
+
+    setBulkImporting(true);
+    let successCount = 0;
+    
+    for (const placeId of selectedPlaces) {
+      const place = results.find(p => p.place_id === placeId);
+      if (place) {
+        try {
+          await importPlaceInternal(place);
+          successCount++;
+        } catch (error) {
+          console.error("Failed to import place", placeId, error);
+        }
+      }
+    }
+    
+    alert(`Successfully imported ${successCount} out of ${selectedPlaces.length} places!`);
+    
+    setResults(prev => prev.filter(p => !selectedPlaces.includes(p.place_id)));
+    setSelectedPlaces([]);
+    setBulkImporting(false);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedPlaces.length === results.length) {
+      setSelectedPlaces([]);
+    } else {
+      setSelectedPlaces(results.map(r => r.place_id));
+    }
+  };
+
+  const togglePlaceSelection = (placeId: string) => {
+    setSelectedPlaces(prev => 
+      prev.includes(placeId) 
+        ? prev.filter(id => id !== placeId)
+        : [...prev, placeId]
+    );
   };
 
   return (
@@ -286,24 +342,51 @@ export default function AdminImporter() {
 
       {results.length > 0 && (
         <div className="space-y-4">
-          <div className="flex justify-between items-end mb-4">
-            <h3 className="text-lg font-bold text-gray-800">Search Results ({results.length})</h3>
+          <div className="flex justify-between items-end mb-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+            <div className="flex items-center gap-4">
+              <h3 className="text-lg font-bold text-gray-800">Search Results ({results.length})</h3>
+              <button 
+                onClick={toggleSelectAll}
+                className="text-sm font-semibold text-blue-600 hover:text-blue-800 border border-blue-200 bg-blue-50 px-3 py-1.5 rounded-lg"
+              >
+                {selectedPlaces.length === results.length ? "Deselect All" : "Select All"}
+              </button>
+            </div>
+            {selectedPlaces.length > 0 && (
+              <button
+                onClick={handleBulkImport}
+                disabled={bulkImporting || !district}
+                className="px-6 py-2.5 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white text-sm font-bold rounded-lg shadow-sm"
+              >
+                {bulkImporting ? "Importing..." : `Bulk Import (${selectedPlaces.length}) as ${targetCategory}`}
+              </button>
+            )}
           </div>
           
           {results.map(place => (
-            <div key={place.place_id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row gap-6 hover:shadow-md transition-shadow">
+            <div key={place.place_id} className={`bg-white p-5 rounded-xl border ${selectedPlaces.includes(place.place_id) ? 'border-blue-500 ring-1 ring-blue-500' : 'border-gray-200'} shadow-sm flex flex-col md:flex-row gap-6 hover:shadow-md transition-shadow`}>
               
-              {/* Image Preview Thumbnail */}
-              <div className="w-24 h-24 shrink-0 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center relative">
+              <div className="flex items-center shrink-0">
+                <input 
+                  type="checkbox" 
+                  checked={selectedPlaces.includes(place.place_id)}
+                  onChange={() => togglePlaceSelection(place.place_id)}
+                  className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
+                />
+              </div>
+
+              {/* Image Previews Gallery */}
+              <div className="w-full md:w-32 lg:w-48 shrink-0 flex flex-wrap gap-1">
                 {place.photoUrls && place.photoUrls.length > 0 ? (
-                  <>
-                    <img src={place.photoUrls[0]} alt="preview" className="w-full h-full object-cover" />
-                    <div className="absolute bottom-0 right-0 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-tl-lg font-bold">
-                      {place.photoUrls.length} imgs
+                  place.photoUrls.slice(0, 5).map((url, idx) => (
+                    <div key={idx} className={`bg-gray-100 rounded overflow-hidden border border-gray-200 flex items-center justify-center relative ${idx === 0 ? 'w-24 h-24' : 'w-11 h-11'}`}>
+                      <img src={url} alt={`preview ${idx}`} className="w-full h-full object-cover" />
                     </div>
-                  </>
+                  ))
                 ) : (
-                  <span className="text-2xl opacity-20">📷</span>
+                  <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
+                    <span className="text-2xl opacity-20">📷</span>
+                  </div>
                 )}
               </div>
 
