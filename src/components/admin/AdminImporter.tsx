@@ -127,7 +127,7 @@ export default function AdminImporter() {
       else if (targetCategory === "supplier") collectionName = "suppliers";
       
       const img = place.photoUrls && place.photoUrls.length > 0 ? place.photoUrls[0] : "";
-      const gallery = place.photoUrls && place.photoUrls.length > 1 ? place.photoUrls.slice(1, 4) : [];
+      const gallery = place.photoUrls && place.photoUrls.length > 0 ? place.photoUrls.slice(0, 5) : [];
       const googlePin = place.location ? `${place.location.latitude},${place.location.longitude}` : "";
 
       const newDoc = {
