@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
-import { db, addDoc, collection, serverTimestamp } from "../lib/firebase";
+import { db } from "../lib/firebase";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
-import ProfileBlockerModal from "./ProfileBlockerModal";
 
 interface ClaimModalProps {
   listing: {
@@ -18,7 +18,6 @@ interface ClaimModalProps {
 export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalProps) {
   const { user, loginWithGoogle } = useAuth();
   const [step, setStep] = useState(0); // Step 0 is Auth Check
-  const [showProfileBlocker, setShowProfileBlocker] = useState(false);
   
   const [website, setWebsite] = useState("");
   const [ownerName, setOwnerName] = useState("");
@@ -41,14 +40,9 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
 
   useEffect(() => {
     if (user && step === 0) {
-      const isComplete = localStorage.getItem("sd_current_user_profile_complete") === "true";
-      if (!isComplete) {
-        setShowProfileBlocker(true);
-      } else {
-        setStep(1);
-        setOwnerName(user.displayName || "");
-        setEmail(user.email || "");
-      }
+      setStep(1);
+      setOwnerName(user.displayName || "");
+      setEmail(user.email || "");
     }
   }, [user, step]);
 
@@ -77,23 +71,51 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
     setIsSubmitting(true);
 
     try {
-      const docRef = await addDoc(collection(db, "claims"), {
-        listingId: listing.id,
-        listingName: listing.name,
-        category: listing.category,
-        website,
-        ownerName,
-        email,
-        phone,
-        role,
-        docType,
-        docNumber,
-        submittedAt: serverTimestamp(),
-        status: "Pending Payment",
-        uid: user?.uid || null
+      if (!user?.uid) throw new Error("Not logged in");
+
+      // 1. Update User Document
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      const roleName = listing.category || "vendor";
+      
+      if (userSnap.exists()) {
+        await updateDoc(userRef, {
+          [`roles.bhulia-hub`]: roleName,
+          applicationStatus: "pending",
+          personalName: ownerName,
+          phone: phone
+        });
+      } else {
+        await setDoc(userRef, {
+          name: ownerName,
+          email: email,
+          [`roles.bhulia-hub`]: roleName,
+          applicationStatus: "pending",
+          personalName: ownerName,
+          phone: phone,
+          createdAt: new Date()
+        });
+      }
+
+      // 2. Update Listing Document (weavers, stores, etc based on category)
+      const collectionName = listing.category === "weaver" || listing.category === "handlooms" ? "weavers" 
+        : listing.category === "store" ? "stores" 
+        : "stores"; // Fallback
+      
+      const listingRef = doc(db, collectionName, listing.id);
+      
+      await updateDoc(listingRef, {
+        ownerUid: user.uid,
+        status: "pending_admin_approval",
+        website: website,
+        kycDocumentType: docType,
+        kycDocumentNumber: docNumber,
+        contactEmail: email,
+        contactPhone: phone,
+        claimedAt: new Date()
       });
 
-      setClaimId(docRef.id);
+      setClaimId(listing.id);
       setStep(5); // Skip payment modal for now
     } catch (err) {
       console.error("Failed to submit claim:", err);
@@ -112,10 +134,6 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
     };
     return map[cat] || cat;
   };
-
-  if (showProfileBlocker) {
-    return <ProfileBlockerModal onClose={onClose} />;
-  }
 
 
 

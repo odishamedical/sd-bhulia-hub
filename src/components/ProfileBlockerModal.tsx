@@ -56,7 +56,7 @@ export default function ProfileBlockerModal({ onClose, actionName = "perform thi
         {/* Message body */}
         <div className="text-center text-xs text-gray-300 leading-relaxed px-2 space-y-3 font-sans">
           <p>
-            To complete your order checkout, consult doctors, claim listings, or submit reviews, you must verify your profile details.
+            To securely process orders, claim your listing, or interact with vendors, you must verify your profile details.
           </p>
           <div className="bg-[#C5A059]/10 border border-[#C5A059]/20 p-3.5 rounded-xl text-left text-[11px] text-white leading-normal">
             <span className="font-bold text-[#C5A059] uppercase block mb-1">🎁 Ecosystem Promotion Alert</span>
