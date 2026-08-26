@@ -61,7 +61,7 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
     const wList = weavers.map(w => ({ ...w, role: "weaver", displayType: "Master Weaver" }));
     const b2bList = wholesalers.map(b => ({ ...b, role: "wholesaler", displayType: "B2B Wholesaler" }));
     const sList = suppliers.map(s => ({ ...s, role: "raw_material", displayType: "Raw Material Supplier" }));
-    const all = [...vList, ...wList, ...b2bList, ...sList].filter(item => item.status === "approved" || item.status === "unclaimed" || item.status === "active");
+    const all = [...vList, ...wList, ...b2bList, ...sList].filter(item => (item.status === "approved" && !!item.ownerUid) || item.status === "unclaimed" || item.status === "active" || !item.ownerUid);
     return all.sort(() => Math.random() - 0.5);
   }, [stores, weavers, wholesalers, suppliers]);
 
@@ -164,8 +164,8 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
     setShuffledDistricts(Array.from(dSet).sort(() => Math.random() - 0.5));
   }, [filteredDirectory]);
 
-  const verifiedListings = filteredDirectory.filter(item => item.status === "approved" || item.status === "active");
-  const unverifiedListings = filteredDirectory.filter(item => item.status !== "approved" && item.status !== "active");
+  const verifiedListings = filteredDirectory.filter(item => (item.status === "approved" || item.status === "active") && !!item.ownerUid);
+  const unverifiedListings = filteredDirectory.filter(item => !((item.status === "approved" || item.status === "active") && !!item.ownerUid));
 
   const loading = storesLoading || weaversLoading;
 
@@ -176,7 +176,7 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
 
     for (let i = 0; i < listings.length; i++) {
       const item = listings[i];
-      const isVerified = item.status === "approved" || item.status === "active";
+      const isVerified = (item.status === "approved" || item.status === "active") && !!item.ownerUid;
       result.push(
         <div key={item.id} className="group flex flex-col relative rounded-2xl overflow-hidden h-[380px] border border-[#C5A059]/20 hover:border-[#C5A059] transition-all bg-[#0A2520] shadow-lg">
           <Link href={item.role === 'weaver' ? `/weaver/${item.slug}` : `/store/${item.slug}`} className="flex flex-col w-full h-full relative">
@@ -403,10 +403,10 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
               shuffledDistricts.map((dist, index) => {
                 const distListings = filteredDirectory.filter(item => ((item as any).district || item.address?.split(",")?.[1]?.trim() || "Odisha") === dist);
                 
-                const distVerifiedWeavers = distListings.filter(item => (item.status === "approved" || item.status === "active") && item.role === "weaver");
-                const distVerifiedShops = distListings.filter(item => (item.status === "approved" || item.status === "active") && item.role === "store");
-                const distUnverifiedWeavers = distListings.filter(item => item.status !== "approved" && item.status !== "active" && item.role === "weaver");
-                const distUnverifiedShops = distListings.filter(item => item.status !== "approved" && item.status !== "active" && item.role === "store");
+                const distVerifiedWeavers = distListings.filter(item => (item.status === "approved" || item.status === "active") && !!item.ownerUid && item.role === "weaver");
+                const distVerifiedShops = distListings.filter(item => (item.status === "approved" || item.status === "active") && !!item.ownerUid && item.role === "store");
+                const distUnverifiedWeavers = distListings.filter(item => !((item.status === "approved" || item.status === "active") && !!item.ownerUid) && item.role === "weaver");
+                const distUnverifiedShops = distListings.filter(item => !((item.status === "approved" || item.status === "active") && !!item.ownerUid) && item.role === "store");
 
                 const sections = [
                   { title: "Verified Master Weavers", data: distVerifiedWeavers },

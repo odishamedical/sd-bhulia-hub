@@ -74,7 +74,7 @@ export default function DirectoryGridWidget({ data }: { data: DirectoryGridData 
             const desc = item.desc || item.address || item.district || "Verified Ecosystem Partner";
             const img = item.img || item.photoURL || "/bhulia-hero.png";
             
-            const isVerified = item.status === "approved" || item.status === "active";
+            const isVerified = (item.status === "approved" || item.status === "active") && !!item.ownerUid;
             const roleLink = data.role === "store" ? `/store/${item.slug || item.id}` : (data.role === "weaver" ? `/weaver/${item.slug || item.id}` : `/directory`);
 
             return (

@@ -11,6 +11,7 @@ import Breadcrumbs, { BreadcrumbItem } from "./Breadcrumbs";
 import { useRouter, usePathname } from "next/navigation";
 import { Star, ShieldCheck, Building, User, Wallet, QrCode, X } from "lucide-react";
 import QRCode from "react-qr-code";
+import ClaimModal from "./ClaimModal";
 
 export interface PublicProfileProps {
   type: "weaver" | "store" | "wholesaler" | "supplier";
@@ -26,6 +27,7 @@ export interface PublicProfileProps {
     phone: string;
     whatsapp: string;
     status?: string;
+    ownerUid?: string | null;
     googlePlaceId?: string;
     googleRating?: number;
     googleReviewsCount?: number;
@@ -61,6 +63,9 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
   const isWholesaler = type === "wholesaler";
   const isSupplier = type === "supplier";
   
+  const [showQR, setShowQR] = useState(false);
+  const [showClaimModal, setShowClaimModal] = useState(false);
+
   let badgeText = "Bhulia.com Verified Partner";
   if (isWeaver) badgeText = "Bhulia.com Verified Weavers";
   if (isStore) badgeText = "Bhulia.com Verified Sambalpuri Shop";
@@ -78,7 +83,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
   if (isSupplier) badgeBg = "bg-emerald-500/10";
   const [userRole, setUserRole] = useState<string | null>(null);
   const [quickSearch, setQuickSearch] = useState("");
-  const [showQR, setShowQR] = useState(false);
+
   const router = useRouter();
   const pathname = usePathname();
   const currentUrl = typeof window !== 'undefined' ? window.location.href : `https://bhulia.com${pathname || ''}`;
@@ -135,7 +140,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
           
           {/* Premium Hero Header */}
           <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
-            {profile.status === "unclaimed" && (
+            {!profile.ownerUid && (
               <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-bl-xl z-10 shadow-md">
                 Not Verified
               </div>
@@ -194,10 +199,10 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
             
             {/* Quick Contact & Actions */}
             <div className="flex flex-wrap items-center gap-3 shrink-0 w-full md:w-auto mt-4 md:mt-0">
-              {profile.status === "unclaimed" && (
-                <Link href={`/verify?id=${profile.googlePlaceId || ''}&type=${type}&name=${encodeURIComponent(profile.name)}`} className="bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white font-bold text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(220,38,38,0.5)] flex items-center gap-2">
+              {!profile.ownerUid && (
+                <button onClick={() => setShowClaimModal(true)} className="bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white font-bold text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(220,38,38,0.5)] flex items-center gap-2 cursor-pointer">
                   <ShieldCheck className="w-4 h-4" /> Claim Profile
-                </Link>
+                </button>
               )}
               
               <button onClick={() => setShowQR(true)} className="bg-[#051815] border border-[#C5A059]/50 hover:border-[#C5A059] text-[#C5A059] font-bold text-[11px] uppercase tracking-wider p-3 rounded-xl transition-all shadow-sm flex items-center justify-center">
@@ -225,7 +230,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
               return (
                 <div key={i} className={`bg-[#051815] relative group overflow-hidden ${i === 0 ? 'col-span-2 row-span-2 aspect-square' : 'col-span-1 row-span-1 aspect-square'}`}>
                   <Image src={img} fill className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" alt={`Showroom ${i+1}`} unoptimized />
-                  {!profile.gallery?.[i] && profile.status === "unclaimed" && (
+                  {!profile.gallery?.[i] && !profile.ownerUid && (
                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 backdrop-blur-sm">
                        <span className="text-[#C5A059] text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-[#C5A059] rounded-full">Upload</span>
                      </div>
@@ -248,7 +253,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                  </h3>
                  
                  <p className="text-base md:text-lg text-white/90 font-serif leading-relaxed mb-6">
-                   {profile.status === "unclaimed" 
+                   {!profile.ownerUid 
                      ? "This profile was collected from a reliable source but is not yet verified. If you are the owner, please verify it to claim and update your information."
                      : (profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms.")}
                  </p>
@@ -495,6 +500,16 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
             </button>
           </div>
         </div>
+      )}
+      {showClaimModal && (
+        <ClaimModal 
+          listing={{ id: profile.googlePlaceId || 'bhulia-id', name: profile.name, category: profile.listingType || type, address: profile.address || "" }}
+          onClose={() => setShowClaimModal(false)}
+          onSuccess={(id) => {
+            setShowClaimModal(false);
+            window.location.reload();
+          }}
+        />
       )}
     </div>
   );
