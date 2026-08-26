@@ -21,6 +21,7 @@ export default function AdminImporter() {
   const [state, setState] = useState("Odisha");
   const [district, setDistrict] = useState("");
   const [block, setBlock] = useState("");
+  const [placeName, setPlaceName] = useState("");
   const [pincode, setPincode] = useState("");
   const [targetCategory, setTargetCategory] = useState<"weaver" | "store" | "wholesaler" | "supplier">("store");
   const [keyword, setKeyword] = useState("");
@@ -37,11 +38,13 @@ export default function AdminImporter() {
     setState(e.target.value);
     setDistrict("");
     setBlock("");
+    setPlaceName("");
   };
 
   const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     setDistrict(e.target.value);
-    setBlock(""); // reset block when district changes
+    setBlock(""); 
+    setPlaceName("");
   };
 
   const executeSearch = async (token: string | null = null) => {
@@ -51,6 +54,7 @@ export default function AdminImporter() {
     
     // Construct the smart query
     let queryParts = [keyword.trim()];
+    if (placeName) queryParts.push(placeName);
     if (block) queryParts.push(block);
     if (district) queryParts.push(district);
     if (state) queryParts.push(state);
@@ -135,6 +139,8 @@ export default function AdminImporter() {
       state: state,
       district: district,
       block: block || "",
+      townVillage: placeName || "",
+      pin: pincode || "",
       pincode: pincode || "",
       country: "India",
       rating: place.rating || 0,
@@ -292,6 +298,16 @@ export default function AdminImporter() {
                   className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none text-gray-800"
                 />
               )}
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Place Name</label>
+              <input 
+                type="text" 
+                value={placeName}
+                onChange={(e) => setPlaceName(e.target.value)}
+                placeholder="Town / Village"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none text-gray-800"
+              />
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Pincode</label>
