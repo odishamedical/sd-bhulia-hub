@@ -204,7 +204,7 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
 
             {/* Bottom Content Area */}
             <div className="p-6 flex flex-col flex-1 justify-center items-center text-center relative z-20">
-              <h4 className="text-xl font-serif font-bold text-white mb-2 line-clamp-1">
+              <h4 className="text-xl font-serif font-bold text-white mb-2">
                 {item.title || item.name}
               </h4>
               

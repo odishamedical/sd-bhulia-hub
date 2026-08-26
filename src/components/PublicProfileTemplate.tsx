@@ -163,7 +163,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                 <h2 className="text-xs sm:text-sm font-sans font-bold text-white/70 mb-1.5 tracking-wider uppercase">
                   {profile.listingType === "weaver" ? "Sambalpuri Master Weaver" : profile.listingType === "raw_material" ? "Sambalpuri Raw Material Supplier" : "Sambalpuri Handloom Store"}
                 </h2>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#FFF5C0] leading-tight mb-4 line-clamp-2 drop-shadow-sm">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#FFF5C0] leading-tight mb-4 drop-shadow-sm">
                   {profile.name}
                 </h1>
                 
@@ -196,30 +196,9 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                 </div>
               </div>
             </div>
-            
-            {/* Quick Contact & Actions */}
-            <div className="flex flex-wrap items-center gap-3 shrink-0 w-full md:w-auto mt-4 md:mt-0">
-              {!profile.ownerUid && (
-                <button onClick={() => setShowClaimModal(true)} className="bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white font-bold text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(220,38,38,0.5)] flex items-center gap-2 cursor-pointer">
-                  <ShieldCheck className="w-4 h-4" /> Claim Profile
-                </button>
-              )}
-              
-              <button onClick={() => setShowQR(true)} className="bg-[#051815] border border-[#C5A059]/50 hover:border-[#C5A059] text-[#C5A059] font-bold text-[11px] uppercase tracking-wider p-3 rounded-xl transition-all shadow-sm flex items-center justify-center">
-                <QrCode className="w-5 h-5" />
-              </button>
-              
-              <a href={`tel:${profile.phone}`} className="bg-transparent border border-[#C5A059] hover:bg-[#C5A059]/10 text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl transition-colors shadow-sm flex items-center gap-2">
-                📞 Call
-              </a>
-              <button onClick={() => {
-                const msg = `Hello ${profile.name}, I found your profile on Bhulia.com. I am interested in your handlooms.`;
-                window.open(`https://api.whatsapp.com/send?phone=${profile.whatsapp.replace(/[^0-9]/g,'')}&text=${encodeURIComponent(msg)}`, "_blank");
-              }} className="bg-gradient-to-r from-[#D4AF37] to-[#8A5A00] hover:brightness-110 text-[#051815] font-black text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-[0_4px_15px_rgba(212,175,55,0.4)] flex items-center gap-2">
-                💬 WhatsApp
-              </button>
-            </div>
           </div>
+            
+
 
 
 
@@ -364,8 +343,73 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
       </div> {/* End Main Content */}
 
       {/* Sidebar (Right) */}
-      <div className="w-full lg:w-80 shrink-0 space-y-6">
-        <div className="sticky top-24 space-y-6">
+      <div className="w-full lg:w-[340px] shrink-0 space-y-6">
+        <div className="sticky top-24 space-y-6 z-10">
+
+          {/* Unclaimed Call To Action (Premium Red/Gold Glass Ticket) */}
+          {!profile.ownerUid && (
+            <div className="w-full relative group">
+              <div className="absolute inset-0 bg-red-900/10 blur-[40px] rounded-[30px] pointer-events-none -z-10" />
+              
+              <div className="bg-gradient-to-br from-red-900/30 to-[#051815]/80 backdrop-blur-xl border border-red-500/40 shadow-[0_10px_40px_rgba(0,0,0,0.6)] rounded-2xl p-5 flex flex-col items-center justify-center relative overflow-hidden ring-1 ring-inset ring-red-500/20 hover:border-red-500/60 transition-colors group-hover:scale-[1.02] duration-300">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+                
+                <div className="w-full relative z-10 mb-4 text-center">
+                  <h4 className="text-sm md:text-[15px] text-red-100/90 font-bold drop-shadow-md tracking-wide">
+                    Are you the owner of this shop?
+                  </h4>
+                </div>
+                
+                <div className="flex items-center gap-4 relative z-10 w-full justify-center">
+                  <button onClick={() => setShowClaimModal(true)} className="flex-1 text-center bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white font-[family-name:var(--font-display)] text-lg md:text-xl px-6 py-3 rounded-xl shadow-[0_0_20px_rgba(220,38,38,0.3)] hover:shadow-[0_0_30px_rgba(220,38,38,0.5)] transition-all duration-300 font-bold tracking-widest border border-red-500/50 flex items-center justify-center gap-2 cursor-pointer">
+                    <ShieldCheck className="w-5 h-5" /> Claim Now
+                  </button>
+                  <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-black/40 border border-[#C5A059]/30 shadow-inner shrink-0">
+                     <span className="absolute w-3 h-3 bg-[#C5A059] rounded-full animate-ping opacity-75"></span>
+                     <span className="relative w-3 h-3 bg-[#C5A059] rounded-full shadow-[0_0_15px_rgba(197,160,89,1)]"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Action Console (Contact & QR) */}
+          <div className="relative">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[#C5A059]/5 blur-[60px] rounded-[40px] pointer-events-none -z-10" />
+            
+            <div className="bg-[#051815]/80 backdrop-blur-md border border-[#C5A059]/30 shadow-xl rounded-2xl p-6 relative overflow-hidden transition-transform duration-300">
+              <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none rounded-2xl" />
+              
+              {/* QR Code Section */}
+              <div className="flex flex-col items-center justify-center mb-6 pt-2">
+                <div className="bg-white p-3 rounded-xl shadow-lg border border-[#C5A059]/50 mb-3 group-hover:scale-105 transition-transform">
+                  <QRCode 
+                    value={currentUrl}
+                    size={140}
+                    level="H"
+                    fgColor="#051815"
+                    bgColor="#FFFFFF"
+                  />
+                </div>
+                <h3 className="text-[#C5A059] font-bold text-xs uppercase tracking-widest text-center flex items-center gap-1.5">
+                  <QrCode className="w-3.5 h-3.5" /> Scan to View Profile
+                </h3>
+              </div>
+
+              {/* Contact Actions */}
+              <div className="space-y-3">
+                <a href={`tel:${profile.phone}`} className="w-full flex items-center justify-center gap-2 bg-transparent border border-[#C5A059] hover:bg-[#C5A059]/10 text-[#C5A059] py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all shadow-sm hover:scale-[1.02]">
+                  📞 Call {isWeaver ? "Weaver" : "Shop"}
+                </a>
+                <button onClick={() => {
+                  const msg = `Hello ${profile.name}, I found your profile on Bhulia.com. I am interested in your handlooms.`;
+                  window.open(`https://api.whatsapp.com/send?phone=${profile.whatsapp.replace(/[^0-9]/g,'')}&text=${encodeURIComponent(msg)}`, "_blank");
+                }} className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#D4AF37] to-[#8A5A00] hover:brightness-110 text-[#051815] py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-[0_4px_15px_rgba(212,175,55,0.4)] hover:scale-[1.02]">
+                  💬 Chat on WhatsApp
+                </button>
+              </div>
+            </div>
+          </div>
           
           {/* Map Sidebar Widget (Glassmorphism) */}
           {(profile.address || profile.googlePlaceId) && (
