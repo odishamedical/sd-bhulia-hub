@@ -8,8 +8,9 @@ import { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
 import ShareWidget from "./ShareWidget";
 import Breadcrumbs, { BreadcrumbItem } from "./Breadcrumbs";
-import { useRouter } from "next/navigation";
-import { Star, ShieldCheck, Building, User, Wallet } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
+import { Star, ShieldCheck, Building, User, Wallet, QrCode, X } from "lucide-react";
+import QRCode from "react-qr-code";
 
 export interface PublicProfileProps {
   type: "weaver" | "store" | "wholesaler" | "supplier";
@@ -77,7 +78,11 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
   if (isSupplier) badgeBg = "bg-emerald-500/10";
   const [userRole, setUserRole] = useState<string | null>(null);
   const [quickSearch, setQuickSearch] = useState("");
+  const [showQR, setShowQR] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const currentUrl = typeof window !== 'undefined' ? window.location.href : `https://bhulia.com${pathname || ''}`;
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setUserRole(localStorage.getItem("sd_current_user_role"));
@@ -128,58 +133,58 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
         {/* Main Content (Left) */}
         <div className="flex-1 min-w-0 flex flex-col gap-6">
           
-          {/* Compact Hero Header */}
-          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          {/* Premium Hero Header */}
+          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
             {profile.status === "unclaimed" && (
-              <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1 rounded-bl-xl z-10">
+              <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-bl-xl z-10 shadow-md">
                 Not Verified
               </div>
             )}
             
-            <div className="flex items-center gap-5 w-full">
-              {/* Small Logo Box */}
-              <div className="w-16 h-16 md:w-24 md:h-24 shrink-0 relative rounded-2xl overflow-hidden border-2 border-[#C5A059]/50 shadow-lg bg-[#051815]">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 w-full">
+              {/* Massive Logo Box */}
+              <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 relative rounded-2xl overflow-hidden border-4 border-[#C5A059]/30 shadow-2xl bg-[#051815]">
                 {profile.image ? (
                   <Image src={profile.image} alt={profile.name} fill className="object-cover" unoptimized={true} />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-[#C5A059]/10">
-                    <span className="text-3xl md:text-5xl font-serif text-[#C5A059]">{profile.name.charAt(0)}</span>
+                    <span className="text-5xl font-serif text-[#C5A059]">{profile.name.charAt(0)}</span>
                   </div>
                 )}
               </div>
 
               {/* Title and Badges */}
               <div className="flex-1 min-w-0">
-                <h2 className="text-xs md:text-sm font-sans font-bold text-white/70 mb-1 tracking-wider uppercase">
+                <h2 className="text-xs sm:text-sm font-sans font-bold text-white/70 mb-1.5 tracking-wider uppercase">
                   {profile.listingType === "weaver" ? "Sambalpuri Master Weaver" : profile.listingType === "raw_material" ? "Sambalpuri Raw Material Supplier" : "Sambalpuri Handloom Store"}
                 </h2>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-[#C5A059] leading-tight mb-3 truncate">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#FFF5C0] leading-tight mb-4 line-clamp-2 drop-shadow-sm">
                   {profile.name}
                 </h1>
                 
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold border shadow-sm ${badgeBg} ${badgeColor}`}>
-                    <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+                  <span className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] sm:text-xs font-bold border shadow-sm ${badgeBg} ${badgeColor}`}>
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
                     {badgeText}
                   </span>
                   
                   {profile.rawAddress ? (
-                    <span className="text-white/80 text-[11px] sm:text-xs flex items-center gap-1 bg-black/20 px-3 py-1 rounded-full border border-white/10">
+                    <span className="text-white/80 text-[11px] sm:text-xs flex items-center gap-1.5 bg-black/30 px-3.5 py-1.5 rounded-full border border-white/10 shadow-inner">
                       📍 {profile.rawAddress.cityTownVillage || profile.rawAddress.block || profile.rawAddress.district}, {profile.rawAddress.state}
                     </span>
                   ) : profile.address ? (
-                    <span className="text-white/80 text-[11px] sm:text-xs flex items-center gap-1 bg-black/20 px-3 py-1 rounded-full border border-white/10">
+                    <span className="text-white/80 text-[11px] sm:text-xs flex items-center gap-1.5 bg-black/30 px-3.5 py-1.5 rounded-full border border-white/10 shadow-inner">
                       📍 {profile.address}
                     </span>
                   ) : null}
 
                   {profile.subscriptionTier === 'advance' && (
-                    <span className="flex items-center gap-1 bg-amber-500/20 border border-amber-500/50 px-3 py-1 rounded-full text-amber-500 text-[11px] sm:text-xs font-bold shadow-inner">
+                    <span className="flex items-center gap-1.5 bg-amber-500/20 border border-amber-500/50 px-3.5 py-1.5 rounded-full text-amber-500 text-[11px] sm:text-xs font-bold shadow-inner">
                       <Star className="w-3.5 h-3.5 fill-amber-500" /> Advance Pro
                     </span>
                   )}
                   {profile.subscriptionTier === 'pro' && (
-                    <span className="flex items-center gap-1 bg-blue-500/20 border border-blue-500/50 px-3 py-1 rounded-full text-blue-400 text-[11px] sm:text-xs font-bold shadow-inner">
+                    <span className="flex items-center gap-1.5 bg-blue-500/20 border border-blue-500/50 px-3.5 py-1.5 rounded-full text-blue-400 text-[11px] sm:text-xs font-bold shadow-inner">
                       <Star className="w-3.5 h-3.5 fill-blue-500" /> Pro Partner
                     </span>
                   )}
@@ -187,32 +192,31 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
               </div>
             </div>
             
-            {/* Quick Contact Buttons */}
-            <div className="flex items-center gap-3 shrink-0 self-start md:self-center mt-4 md:mt-0">
-              <a href={`tel:${profile.phone}`} className="bg-transparent border border-[#C5A059] hover:bg-[#C5A059]/10 text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-4 py-2.5 rounded-xl transition-colors shadow-sm flex items-center gap-2">
+            {/* Quick Contact & Actions */}
+            <div className="flex flex-wrap items-center gap-3 shrink-0 w-full md:w-auto mt-4 md:mt-0">
+              {profile.status === "unclaimed" && (
+                <Link href={`/verify?id=${profile.googlePlaceId || ''}&type=${type}&name=${encodeURIComponent(profile.name)}`} className="bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white font-bold text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(220,38,38,0.5)] flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4" /> Claim Profile
+                </Link>
+              )}
+              
+              <button onClick={() => setShowQR(true)} className="bg-[#051815] border border-[#C5A059]/50 hover:border-[#C5A059] text-[#C5A059] font-bold text-[11px] uppercase tracking-wider p-3 rounded-xl transition-all shadow-sm flex items-center justify-center">
+                <QrCode className="w-5 h-5" />
+              </button>
+              
+              <a href={`tel:${profile.phone}`} className="bg-transparent border border-[#C5A059] hover:bg-[#C5A059]/10 text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl transition-colors shadow-sm flex items-center gap-2">
                 📞 Call
               </a>
               <button onClick={() => {
                 const msg = `Hello ${profile.name}, I found your profile on Bhulia.com. I am interested in your handlooms.`;
                 window.open(`https://api.whatsapp.com/send?phone=${profile.whatsapp.replace(/[^0-9]/g,'')}&text=${encodeURIComponent(msg)}`, "_blank");
-              }} className="bg-[#C5A059] hover:bg-[#D4AF37] text-[#051815] font-bold text-[11px] uppercase tracking-wider px-4 py-2.5 rounded-xl transition-colors shadow-sm flex items-center gap-2">
+              }} className="bg-gradient-to-r from-[#D4AF37] to-[#8A5A00] hover:brightness-110 text-[#051815] font-black text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-[0_4px_15px_rgba(212,175,55,0.4)] flex items-center gap-2">
                 💬 WhatsApp
               </button>
             </div>
           </div>
 
-          {/* Verification Call to action (if unclaimed) */}
-          {profile.status === "unclaimed" && (
-            <div className="bg-blue-900/30 border border-blue-500/50 p-4 rounded-xl flex items-center justify-between gap-4">
-              <div>
-                <h3 className="text-white font-bold text-sm">Is this your store?</h3>
-                <p className="text-blue-200 text-xs mt-1">Claim and verify this profile to edit details and upload your products.</p>
-              </div>
-              <Link href={`/verify?id=${profile.googlePlaceId || ''}&type=${type}&name=${encodeURIComponent(profile.name)}`} className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase px-6 py-3 rounded-lg transition-colors shadow-sm shrink-0 whitespace-nowrap">
-                Verify Now
-              </Link>
-            </div>
-          )}
+
 
           {/* 5-Image Bento Box Gallery */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 rounded-3xl overflow-hidden border border-[#C5A059]/30 shadow-2xl bg-[#051815]">
@@ -231,129 +235,102 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
             })}
           </div>
 
-          {/* Actions & Details Bar */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left: Description & Socials */}
-            <div className="lg:col-span-2 bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl h-full relative overflow-hidden flex flex-col">
-               <div className="absolute top-0 right-0 w-48 h-48 bg-[#C5A059]/5 blur-[50px] rounded-full pointer-events-none" />
-               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 border-b border-[#C5A059]/20 pb-4">
-                 <h3 className="text-sm uppercase tracking-widest text-[#C5A059] font-bold">About the {isWeaver ? "Weaver" : "Shop"}</h3>
+          {/* Heritage & Legacy Section */}
+          <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 md:p-10 shadow-xl relative overflow-hidden flex flex-col">
+             <div className="absolute top-0 right-0 w-64 h-64 bg-[#C5A059]/10 blur-[80px] rounded-full pointer-events-none" />
+             <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#C5A059]/5 blur-[80px] rounded-full pointer-events-none" />
+             
+             <div className="flex flex-col md:flex-row justify-between items-start gap-8 relative z-10">
+               {/* Left: Description & Socials */}
+               <div className="flex-1 w-full md:w-2/3">
+                 <h3 className="text-sm uppercase tracking-widest text-[#C5A059] font-bold mb-4 flex items-center gap-2">
+                   <Star className="w-4 h-4" /> About the {isWeaver ? "Weaver" : "Shop"}
+                 </h3>
+                 
+                 <p className="text-base md:text-lg text-white/90 font-serif leading-relaxed mb-6">
+                   {profile.status === "unclaimed" 
+                     ? "This profile was collected from a reliable source but is not yet verified. If you are the owner, please verify it to claim and update your information."
+                     : (profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms.")}
+                 </p>
                  
                  {/* Social Links */}
-                 <div className="flex flex-wrap items-center gap-2">
-                   <a href={profile.facebookUrl || "https://facebook.com/bhuliacom"} target="_blank" rel="noopener noreferrer" className="bg-[#051815] border border-[#C5A059]/30 hover:border-[#C5A059] text-[#C5A059] font-bold text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-lg transition-colors shadow-sm">
-                     Fb
+                 <div className="flex flex-wrap items-center gap-3">
+                   <a href={profile.facebookUrl || "https://facebook.com/bhuliacom"} target="_blank" rel="noopener noreferrer" className="bg-[#051815] border border-[#C5A059]/30 hover:border-[#C5A059] text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-xl transition-colors shadow-sm">
+                     Facebook
                    </a>
-                   <a href={profile.instagramUrl || "https://instagram.com/bhuliacom"} target="_blank" rel="noopener noreferrer" className="bg-[#051815] border border-[#C5A059]/30 hover:border-[#C5A059] text-[#C5A059] font-bold text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-lg transition-colors shadow-sm">
-                     Insta
+                   <a href={profile.instagramUrl || "https://instagram.com/bhuliacom"} target="_blank" rel="noopener noreferrer" className="bg-[#051815] border border-[#C5A059]/30 hover:border-[#C5A059] text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-xl transition-colors shadow-sm">
+                     Instagram
                    </a>
-                   <a href={profile.videoUrl || "https://youtube.com/@bhuliacom"} target="_blank" rel="noopener noreferrer" className="bg-[#051815] border border-[#C5A059]/30 hover:border-[#C5A059] text-[#C5A059] font-bold text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-lg transition-colors shadow-sm">
+                   <a href={profile.videoUrl || "https://youtube.com/@bhuliacom"} target="_blank" rel="noopener noreferrer" className="bg-[#051815] border border-[#C5A059]/30 hover:border-[#C5A059] text-[#C5A059] font-bold text-[11px] uppercase tracking-wider px-4 py-2 rounded-xl transition-colors shadow-sm">
                      YouTube
                    </a>
                  </div>
                </div>
                
-               <p className="text-sm md:text-base text-white/90 font-sans leading-relaxed relative z-10 flex-1">
-                 {profile.status === "unclaimed" 
-                   ? "This profile was collected from a reliable source but is not yet verified. If you are the owner, please verify it to claim and update your information."
-                   : (profile.description || "Dedicated to preserving the rich heritage of Sambalpuri handlooms.")}
-               </p>
-               
-               {/* Share Widget */}
-               <div className="mt-6 pt-4 border-t border-[#C5A059]/20 flex items-center justify-between">
-                 <span className="text-[10px] text-white/50 uppercase tracking-widest font-bold">Spread the word</span>
-                 <ShareWidget 
-                   title={profile.name} 
-                   layout="horizontal" 
-                   className="!bg-transparent !border-0 !shadow-none !p-0" 
-                   shareTextOverride="Promote original Sambalpuri Saree. Share this link to your network and support our weavers!"
-                 />
+               {/* Right: Trust Badges */}
+               <div className="w-full md:w-1/3 flex flex-col gap-4">
+                  {/* Experience / Generations */}
+                  <div className="flex gap-4">
+                    {profile.generations && (
+                      <div className="flex-1 bg-black/30 border border-[#C5A059]/30 p-4 rounded-2xl flex flex-col items-center text-center">
+                        <span className="text-[#C5A059] text-2xl mb-1">👨‍👩‍👧‍👦</span>
+                        <div className="text-sm text-white font-bold">{profile.generations}</div>
+                        <div className="text-[10px] text-white/60 uppercase font-semibold">Legacy</div>
+                      </div>
+                    )}
+                    {(profile.weaverExperience || profile.handloomExperience) && (
+                      <div className="flex-1 bg-black/30 border border-[#C5A059]/30 p-4 rounded-2xl flex flex-col items-center text-center">
+                        <span className="text-[#C5A059] text-2xl mb-1">⏳</span>
+                        <div className="text-sm text-white font-bold">{profile.weaverExperience || profile.handloomExperience}</div>
+                        <div className="text-[10px] text-white/60 uppercase font-semibold">Experience</div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* KYC Badge */}
+                  {profile.kycDocumentUrl ? (
+                    <div className="bg-gradient-to-r from-green-900/40 to-black/30 p-4 rounded-2xl border border-green-500/30 flex items-center gap-4">
+                      <ShieldCheck className="w-8 h-8 text-green-500 shrink-0" />
+                      <div>
+                        <span className="block text-xs font-bold text-green-400 uppercase tracking-widest">KYC Verified</span>
+                        <span className="block text-[10px] text-white/60">Govt. ID verified by Bhulia Hub</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-gradient-to-r from-amber-900/40 to-black/30 p-4 rounded-2xl border border-amber-500/30 flex items-center gap-4">
+                      <ShieldCheck className="w-8 h-8 text-amber-500 shrink-0" />
+                      <div>
+                        <span className="block text-xs font-bold text-amber-400 uppercase tracking-widest">Unverified KYC</span>
+                        <span className="block text-[10px] text-white/60">Vendor has not submitted ID</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Bank Info (If exists) */}
+                  {(profile.bankUpi || profile.bankAccount) && (
+                    <div className="bg-[#C5A059]/5 p-4 rounded-2xl border border-[#C5A059]/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Wallet className="w-4 h-4 text-[#C5A059]" />
+                        <span className="text-[11px] font-bold text-white uppercase tracking-wider">Verified Payment</span>
+                      </div>
+                      <div className="text-[10px] text-white/70 font-mono">
+                        {profile.bankUpi ? `UPI: ${profile.bankUpi}` : `A/C: ${profile.bankAccount}`}
+                      </div>
+                    </div>
+                  )}
                </div>
-            </div>
-
-            {/* Middle/Right: Artisan Heritage & Craft */}
-            <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 shadow-xl flex flex-col h-full relative overflow-hidden">
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#C5A059]/5 blur-[50px] rounded-full pointer-events-none" />
-              <h3 className="text-sm uppercase tracking-widest text-[#C5A059] font-bold mb-4 relative z-10">
-                {type === "store" ? "Store Details & Legacy" : "Artisan Heritage & Craft"}
-              </h3>
-              
-              <div className="grid grid-cols-2 gap-y-6 gap-x-4 flex-1 relative z-10 mb-6 border-b border-[#C5A059]/20 pb-6">
-                {profile.generations && (
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-10 h-10 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-[#C5A059] text-lg">👨‍👩‍👧‍👦</span>
-                    </div>
-                    <div className="text-xs text-white font-bold">{profile.generations}</div>
-                    <div className="text-[9px] text-white/60 uppercase font-semibold mt-1">Legacy</div>
-                  </div>
-                )}
-                
-                {(profile.weaverExperience || profile.handloomExperience) && (
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-10 h-10 bg-[#C5A059]/10 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-[#C5A059] text-lg">⏳</span>
-                    </div>
-                    <div className="text-xs text-white font-bold">{profile.weaverExperience || profile.handloomExperience}</div>
-                    <div className="text-[9px] text-white/60 uppercase font-semibold mt-1">Experience</div>
-                  </div>
-                )}
-              </div>
-
-              {/* Trust & Payment Section */}
-              <div className="relative z-10 space-y-4">
-                <h3 className="text-sm uppercase tracking-widest text-[#C5A059] font-bold">Trust & Payments</h3>
-                
-                {profile.kycDocumentUrl ? (
-                  <div className="flex items-center gap-3 bg-black/20 p-3 rounded-xl border border-green-500/30">
-                    <ShieldCheck className="w-8 h-8 text-green-500 shrink-0" />
-                    <div>
-                      <span className="block text-xs font-bold text-green-400 uppercase">KYC Verified Vendor</span>
-                      <span className="block text-[10px] text-white/60">Govt. ID verified by Bhulia Hub</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-3 bg-black/20 p-3 rounded-xl border border-amber-500/30">
-                    <ShieldCheck className="w-8 h-8 text-amber-500 shrink-0" />
-                    <div>
-                      <span className="block text-xs font-bold text-amber-400 uppercase">Unverified KYC</span>
-                      <span className="block text-[10px] text-white/60">Vendor has not submitted ID</span>
-                    </div>
-                  </div>
-                )}
-
-                {(profile.bankUpi || profile.bankAccount) && (
-                  <div className="bg-[#C5A059]/5 p-4 rounded-xl border border-[#C5A059]/20">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Wallet className="w-4 h-4 text-[#C5A059]" />
-                      <span className="text-[11px] font-bold text-white uppercase tracking-wider">Direct Payment Info</span>
-                    </div>
-                    {profile.bankUpi && (
-                      <div className="mb-2">
-                        <span className="block text-[9px] text-white/50 uppercase">UPI ID</span>
-                        <span className="block text-xs font-mono text-white/90 bg-black/30 px-2 py-1 rounded select-all">{profile.bankUpi}</span>
-                      </div>
-                    )}
-                    {profile.bankAccount && (
-                      <div className="grid grid-cols-2 gap-2 mt-2">
-                        <div>
-                           <span className="block text-[9px] text-white/50 uppercase">Account</span>
-                           <span className="block text-[10px] font-mono text-white/90 bg-black/30 px-2 py-1 rounded select-all">{profile.bankAccount}</span>
-                        </div>
-                        <div>
-                           <span className="block text-[9px] text-white/50 uppercase">IFSC</span>
-                           <span className="block text-[10px] font-mono text-white/90 bg-black/30 px-2 py-1 rounded select-all">{profile.bankIfsc}</span>
-                        </div>
-                        <div className="col-span-2 mt-1">
-                           <span className="block text-[9px] text-white/50 uppercase">Bank / Holder</span>
-                           <span className="block text-[10px] text-white/90">{profile.bankName} - {profile.bankHolder}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
+             </div>
+             
+             {/* Share Widget */}
+             <div className="mt-8 pt-6 border-t border-[#C5A059]/20 flex items-center justify-between relative z-10">
+               <span className="text-xs text-white/50 uppercase tracking-widest font-bold">Spread the word</span>
+               <ShareWidget 
+                 title={profile.name} 
+                 layout="horizontal" 
+                 className="!bg-transparent !border-0 !shadow-none !p-0" 
+                 shareTextOverride="Promote original Sambalpuri Saree. Share this link to your network and support our weavers!"
+               />
+             </div>
           </div>
 
         {/* Product Grid Section */}
@@ -475,6 +452,50 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
       </div>
 
       </div> {/* End 2-column flex */}
+
+      {/* QR Code Modal */}
+      {showQR && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#051815] border border-[#C5A059]/40 rounded-3xl p-8 max-w-sm w-full shadow-[0_0_50px_rgba(197,160,89,0.3)] relative">
+            <button 
+              onClick={() => setShowQR(false)}
+              className="absolute top-4 right-4 text-white/50 hover:text-white bg-black/50 p-2 rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-serif font-bold text-[#C5A059] mb-1">Scan to Share</h3>
+              <p className="text-xs text-white/60 uppercase tracking-widest">{profile.name}</p>
+            </div>
+            
+            <div className="bg-white p-6 rounded-2xl flex items-center justify-center mb-6 mx-auto w-fit">
+              <QRCode 
+                value={currentUrl}
+                size={200}
+                style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                viewBox={`0 0 256 256`}
+                fgColor="#051815"
+                bgColor="#FFFFFF"
+              />
+            </div>
+            
+            <p className="text-[10px] text-center text-white/40 mb-4">
+              Point your camera at the QR code to instantly open this profile on your mobile device.
+            </p>
+            
+            <button 
+              onClick={() => {
+                navigator.clipboard.writeText(currentUrl);
+                alert("Link copied to clipboard!");
+              }}
+              className="w-full bg-[#C5A059]/10 hover:bg-[#C5A059] text-[#C5A059] hover:text-[#051815] border border-[#C5A059]/50 transition-all duration-300 py-3 rounded-xl text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2"
+            >
+              Copy Link
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

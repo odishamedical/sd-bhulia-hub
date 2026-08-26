@@ -78,29 +78,36 @@ export default function DirectoryGridWidget({ data }: { data: DirectoryGridData 
             const roleLink = data.role === "store" ? `/store/${item.slug || item.id}` : (data.role === "weaver" ? `/weaver/${item.slug || item.id}` : `/directory`);
 
             return (
-              <Link key={idx} href={roleLink} className="group flex flex-col relative rounded-2xl overflow-hidden h-[380px] border border-[#C5A059]/20 hover:border-[#C5A059] transition-all bg-[#0A2520]">
-                <div className="relative w-full h-48 shrink-0 overflow-hidden bg-[#051815]">
-                  <Image src={img} alt={title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A2520] to-transparent"></div>
-                </div>
-                
-                <div className="absolute top-4 right-4 z-10">
-                  {isVerified && (
-                    <div className="bg-gradient-to-br from-[#FFF5C0] via-[#D4AF37] to-[#8A5A00] text-[#051815] px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-[0_4px_10px_rgba(0,0,0,0.5)] flex items-center gap-1 border border-[#FFF5C0]/50">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
-                      Verified
+              <div key={idx} className="group flex flex-col relative rounded-2xl overflow-hidden h-[380px] border border-[#C5A059]/20 hover:border-[#C5A059] transition-all bg-[#0A2520] shadow-lg">
+                <Link href={roleLink} className="flex flex-col w-full h-full relative">
+                  <div className="relative w-full h-48 shrink-0 overflow-hidden bg-[#051815]">
+                    <Image src={img} alt={title} fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A2520] to-transparent"></div>
+                    
+                    <div className="absolute top-4 right-4 z-10">
+                      {isVerified && (
+                        <div className="bg-gradient-to-br from-[#FFF5C0] via-[#D4AF37] to-[#8A5A00] text-[#051815] px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-[0_4px_10px_rgba(0,0,0,0.5)] flex items-center gap-1 border border-[#FFF5C0]/50">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+                          Verified
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  </div>
 
-                <div className="p-6 flex flex-col flex-1 justify-center items-center text-center">
-                  <h4 className="text-xl font-serif font-bold text-white mb-2 line-clamp-1">{title}</h4>
-                  <p className="text-xs text-gray-400 line-clamp-2 mb-4">{desc}</p>
-                  <span className="mt-auto text-[#C5A059] text-[10px] font-bold uppercase tracking-widest border border-[#C5A059]/30 px-4 py-1.5 rounded-full group-hover:bg-[#C5A059] group-hover:text-[#051815] transition-all">
-                    View Profile →
-                  </span>
-                </div>
-              </Link>
+                  <div className="p-6 flex flex-col flex-1 justify-center items-center text-center relative z-20">
+                    <h4 className="text-xl font-serif font-bold text-white mb-2 line-clamp-1">{title}</h4>
+                    
+                    <div className="text-gray-400 text-xs mb-4 flex items-center justify-center gap-1.5 font-medium">
+                      <svg className="w-3.5 h-3.5 shrink-0 text-[#C5A059]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                      <span className="truncate">{desc}</span>
+                    </div>
+
+                    <span className="mt-auto text-[#C5A059] text-[10px] font-bold uppercase tracking-widest border border-[#C5A059]/30 px-5 py-2 rounded-full group-hover:bg-[#C5A059] group-hover:text-[#051815] transition-all shadow-md">
+                      {isVerified ? "View Profile →" : "Claim Profile →"}
+                    </span>
+                  </div>
+                </Link>
+              </div>
             );
           })
         )}
