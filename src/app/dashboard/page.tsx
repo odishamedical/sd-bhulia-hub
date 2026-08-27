@@ -2373,7 +2373,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
 
       {activeTab === "vanity_url" && (
         <div className="max-w-4xl animate-in fade-in">
-          <VanityUrlManager currentSlug={storeSlug} roleType={displayRole} userState={state} userDistrict={district} />
+          <VanityUrlManager currentSlug={storeSlug} roleType={displayRole} />
         </div>
       )}
 
