@@ -100,22 +100,39 @@ export default function AdminNewApplications() {
   };
 
   const handleDecline = async (app: any) => {
-    const reason = prompt('Please enter a reason for declining. This will permanently delete the application:');
+    const reason = prompt('Please enter a reason for declining:');
     if (reason === null) return;
     
     setActionLoading(app.id);
     try {
-      // Hard delete the application
       const docRef = doc(db, app.collectionName, app.id);
-      await deleteDoc(docRef);
-      if (app.ownerUid) {
-        await addNotification(app.ownerUid, 'rejected', `Your application for ${app.name} was declined and removed. Reason: ${reason}`);
-      }
       
+      // If it's a claimed existing place, just unlink it
+      if (app.googlePlaceId || app.claimedAt || (app.id && app.id.startsWith('ChIJ'))) {
+        await updateDoc(docRef, {
+          ownerUid: null,
+          ownerName: null,
+          status: 'unverified'
+        });
+      } else {
+        // Hard delete the application if it was manually created from scratch
+        await deleteDoc(docRef);
+      }
 
+      if (app.ownerUid) {
+        // Notify the user
+        await addNotification(app.ownerUid, 'rejected', `Your application for ${app.name} was declined. Reason: ${reason}`);
+        
+        // Update user status so they are not permanently locked in 'pending'
+        const userRef = doc(db, "users", app.ownerUid);
+        await updateDoc(userRef, {
+          applicationStatus: 'rejected',
+          rejectionReason: reason
+        });
+      }
 
       setApplications(applications.filter(a => a.id !== app.id));
-      alert('Application permanently deleted and removed from pending list.');
+      alert('Application declined and removed from pending list.');
     } catch (e) {
       console.error(e);
       alert('Failed to delete application');

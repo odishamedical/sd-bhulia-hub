@@ -842,6 +842,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
   const [staffMembers, setStaffMembers] = useState<string[]>([]);
   const [staffEmailInput, setStaffEmailInput] = useState("");
   const [applicationStatus, setApplicationStatus] = useState<string>("approved");
+  const [rejectionReason, setRejectionReason] = useState<string>("");
   const isStaff = roleTitle.includes("Staff");
   
 
@@ -917,6 +918,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
         if (snap.exists()) {
           const data = snap.data();
           setApplicationStatus(data.applicationStatus || "approved");
+          setRejectionReason(data.rejectionReason || "");
           // Staff Members
           setStaffMembers(data.staffMembers || []);
           // Personal
@@ -992,6 +994,25 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
       });
     }
   }, [roleTitle]);
+
+  const handleResetApplication = async () => {
+    if (!auth.currentUser) return;
+    setIsSaving(true);
+    try {
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        applicationStatus: null,
+        rejectionReason: null
+      });
+      setApplicationStatus("approved"); // Reset to show dashboard normally so they can re-apply or browse
+      setRejectionReason("");
+      alert("Status reset successfully. You may now submit a new application.");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to reset application status.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleSavePersonal = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1422,7 +1443,35 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
             </div>
           )}
 
-          {/* Onboarding Progress Bar */}
+          {/* REJECTED BANNER */}
+          {applicationStatus === "rejected" && (
+            <div className="bg-gradient-to-br from-red-50 to-rose-50 rounded-3xl p-8 shadow-sm border border-red-200/60 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
+                <div className="w-48 h-48 bg-red-500 rounded-full"></div>
+              </div>
+              <div className="relative z-10 flex gap-4 items-start">
+                <div className="text-4xl mt-1">❌</div>
+                <div>
+                  <h2 className="text-2xl font-black text-red-900 mb-2 tracking-tight">Application Declined</h2>
+                  <p className="text-red-800/80 font-medium text-sm leading-relaxed max-w-2xl mb-4">
+                    Your application to claim or create this listing was declined by the administration team.
+                  </p>
+                  {rejectionReason && (
+                    <div className="bg-white/60 border border-red-100 p-4 rounded-xl text-sm text-red-900 mb-4 inline-block font-medium">
+                      <strong>Reason for decline:</strong> {rejectionReason}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <button 
+                onClick={handleResetApplication}
+                disabled={isSaving}
+                className="relative z-10 shrink-0 bg-red-600 text-white px-8 py-3 rounded-xl font-black shadow-md hover:bg-red-700 transition-colors transform hover:-translate-y-1 disabled:opacity-50"
+              >
+                {isSaving ? "Resetting..." : "Submit New Application"}
+              </button>
+            </div>
+          )}
           {(() => {
             const steps = [
               { key: 'hasProfile', label: 'Complete Profile (Logo & Address)' },
