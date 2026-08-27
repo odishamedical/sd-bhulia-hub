@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { FileText, PhoneCall, CheckCircle, Store, Mail, MapPin, XCircle } from 'lucide-react';
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { addNotification } from '@/lib/firestore/notifications';
 
 
@@ -53,17 +53,37 @@ export default function AdminNewApplications() {
     setActionLoading(app.id);
     try {
       const docRef = doc(db, app.collectionName, app.id);
-      await updateDoc(docRef, {
-        status: 'active'
-      });
+      
+      let finalDocRef = docRef;
+      
+      if (app.ownerUid && app.ownerUid !== app.id) {
+        // Transfer data to the user's UID document to match dashboard architecture
+        finalDocRef = doc(db, app.collectionName, app.ownerUid);
+        const { collectionName, ...appDataToTransfer } = app;
+        await setDoc(finalDocRef, {
+          ...appDataToTransfer,
+          id: app.ownerUid,
+          status: 'active'
+        });
+        // Delete original claimed document to prevent duplicates
+        await deleteDoc(docRef);
+      } else {
+        await updateDoc(finalDocRef, {
+          status: 'active'
+        });
+      }
+
       if (app.ownerUid) {
         // 1. Notify the user
         await addNotification(app.ownerUid, 'approved', `Your application for ${app.name} has been approved! You can now access your Dashboard.`);
         
         // 2. IMPORTANT: Upgrade the user's role in the DB so they actually see the Vendor Panel
+        // and pre-fill their store name from the claimed listing
         const userRef = doc(db, "users", app.ownerUid);
         await updateDoc(userRef, {
-          ["roles.bhulia-hub"]: app.role || app.collectionName.slice(0, -1) // e.g. weaver
+          ["roles.bhulia-hub"]: app.role || app.collectionName.slice(0, -1), // e.g. weaver
+          storeName: app.name || "",
+          phone: app.phone || app.contactPhone || ""
         });
       }
       
@@ -163,7 +183,7 @@ export default function AdminNewApplications() {
                     {/* Document Previews */}
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-2 text-sm text-gray-300">
-                        <PhoneCall className="w-4 h-4 text-[#C5A059]" /> {app.phone || 'No phone mapped'} (Owner: {app.ownerName})
+                        <PhoneCall className="w-4 h-4 text-[#C5A059]" /> {app.phone || app.contactPhone || 'No phone mapped'} (Owner: {app.ownerName || 'Unknown'})
                       </div>
                       {(app.loomsCount || app.socialMediaLink || app.panNumber) && (
                         <div className="bg-white/5 rounded-lg p-3 mt-2 border border-white/5 space-y-1">

@@ -96,6 +96,8 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
         website: website,
         contactEmail: email,
         contactPhone: phone,
+        phone: phone, // Explicitly for admin panel
+        ownerName: ownerName, // Explicitly for admin panel
         claimedAt: new Date(),
         // Just in case it's a new document being created from a Google API place:
         name: listing.name,
@@ -264,7 +266,7 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
               </div>
 
               <button 
-                onClick={onClose}
+                onClick={() => window.location.href = '/dashboard'}
                 className="px-6 py-3 bg-gradient-to-r from-[#C5A059] to-[#8A5A00] text-[#051815] font-bold rounded-xl hover:opacity-90 transition-all text-xs uppercase tracking-wider mt-6 w-full"
               >
                 Go to Dashboard
