@@ -412,9 +412,9 @@ export default function UserManagementPage() {
         count++;
       }
       alert(`Successfully migrated ${count} vendors to stores!`);
-    } catch(e) {
+    } catch(e: any) {
       console.error(e);
-      alert("Error migrating: " + e.message);
+      alert("Failed to delete user: " + (e.message || "Unknown error"));
     }
   };
 
@@ -483,7 +483,6 @@ export default function UserManagementPage() {
           slug: generatedSlug,
           title: newUserName,
           desc: newUserDescription || `Master weaver specializing in handlooms from ${newUserDistrict || newUserState || "Odisha"}.`,
-          description: newUserDescription || `Master weaver specializing in handlooms from ${newUserDistrict || newUserState || "Odisha"}.`,
           googleMapsLink: newUserGoogleMapsLink,
           specialties: newUserSpecialties.split(",").map(s => s.trim()).filter(Boolean),
           img: "/bhulia-hero.png",
@@ -514,7 +513,6 @@ export default function UserManagementPage() {
           slug: generatedSlug,
           title: newUserName,
           desc: newUserDescription || `Premium handloom store located in ${newUserDistrict || newUserState || "Odisha"}.`,
-          description: newUserDescription || `Premium handloom store located in ${newUserDistrict || newUserState || "Odisha"}.`,
           googleMapsLink: newUserGoogleMapsLink,
           specialties: newUserSpecialties.split(",").map(s => s.trim()).filter(Boolean),
           img: "/bhulia-hero.png",
@@ -618,7 +616,7 @@ export default function UserManagementPage() {
     }
   };
 
-  const handleConvertRole = async (newRole: "weaver" | "shop" | "reseller" | "customer") => {
+  const handleConvertRole = async (newRole: "weaver" | "store" | "reseller" | "customer") => {
     if (!selectedUserForDetails) return;
     
     if (selectedUserForDetails.role !== 'user') {

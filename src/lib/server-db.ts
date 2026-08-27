@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { collection, query, where, limit, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 
 export async function getProfileMeta(collectionName: string, slug: string) {
   try {
@@ -11,10 +11,10 @@ export async function getProfileMeta(collectionName: string, slug: string) {
     }
 
     let docSnap = snapshot.docs[0];
-    for (const doc of snapshot.docs) {
-      const data = doc.data();
+    for (const d of snapshot.docs) {
+      const data = d.data();
       if (data.status === 'active' || data.status === 'approved') {
-        docSnap = doc;
+        docSnap = d;
         break;
       }
     }
@@ -37,22 +37,27 @@ export async function getProfileMeta(collectionName: string, slug: string) {
 
 export async function getProductMeta(slug: string) {
   try {
-    let snapshot = await adminDb
-      .collection('products')
-      .where('slug', '==', slug)
-      .limit(1)
-      .get();
+    const q = query(collection(db, 'products'), where('slug', '==', slug));
+    const snapshot = await getDocs(q);
 
-    let data = null;
+    let data: any = null;
 
     if (snapshot.empty) {
       // Fallback: Check if slug is the doc ID
-      const doc = await adminDb.collection('products').doc(slug).get();
-      if (doc.exists) {
-        data = doc.data();
+      const docRef = doc(db, 'products', slug);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        data = docSnap.data();
       }
     } else {
-      data = snapshot.docs[0].data();
+      let docSnap = snapshot.docs[0];
+      for (const d of snapshot.docs) {
+        if (d.data().status === 'active' || d.data().status === 'approved') {
+          docSnap = d;
+          break;
+        }
+      }
+      data = docSnap.data();
     }
 
     if (!data) return null;

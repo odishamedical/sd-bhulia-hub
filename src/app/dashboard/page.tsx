@@ -379,13 +379,13 @@ export default function DashboardPage() {
       ) : (
         <>
           {actualRole === "customer" && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
-          {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} userStatus={userStatus} />}
-          {actualRole === "store" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} userStatus={userStatus} />}
-          {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" affiliateCommissionsPaid={affiliateCommissionsPaid} vendorPermissions={vendorPermissions} />}
+          {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} userRole={actualRole} />}
+          {actualRole === "store" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} userRole={actualRole} />}
+          {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" affiliateCommissionsPaid={affiliateCommissionsPaid} vendorPermissions={vendorPermissions} userRole={actualRole} />}
         </>
       )}
-      {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Store Hub (Staff)" affiliateCommissionsPaid={affiliateCommissionsPaid} vendorPermissions={vendorPermissions} />}
-      {actualRole === "wholesaler" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="B2B Wholesaler Hub" affiliateCommissionsPaid={affiliateCommissionsPaid} />}
+      {actualRole === "store_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Store Hub (Staff)" affiliateCommissionsPaid={affiliateCommissionsPaid} vendorPermissions={vendorPermissions} userRole={actualRole} />}
+      {actualRole === "wholesaler" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="B2B Wholesaler Hub" affiliateCommissionsPaid={affiliateCommissionsPaid} userRole={actualRole} />}
       {actualRole === "reseller" && <ResellerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "super_admin" && <SuperAdminDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
       {actualRole === "raw_material" && <SupplierDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
@@ -833,7 +833,7 @@ function CustomerDashboard({ activeTab, onTabChange }: { activeTab: string, onTa
 /* ==========================================
    2. WEAVER DASHBOARD
    ========================================== */
-function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissionsPaid = 0, vendorPermissions = [] }: { activeTab: string, onTabChange: (id: string) => void, roleTitle: string, affiliateCommissionsPaid?: number, vendorPermissions?: string[] }) {
+function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissionsPaid = 0, vendorPermissions = [], userRole = "store" }: { activeTab: string, onTabChange: (id: string) => void, roleTitle: string, affiliateCommissionsPaid?: number, vendorPermissions?: string[], userRole?: string }) {
   // Common hooks
   const { products } = useProducts();
   const { orders } = useOrders();
@@ -2686,12 +2686,12 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
   );
 }
 
-function WeaverDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
-  return <SellerDashboard activeTab={activeTab} onTabChange={onTabChange} roleTitle="Weaver Hub" />;
+function WeaverDashboard({ activeTab, onTabChange, userRole }: { activeTab: string, onTabChange: (id: string) => void, userRole?: string }) {
+  return <SellerDashboard activeTab={activeTab} onTabChange={onTabChange} roleTitle="Weaver Hub" userRole={userRole} />;
 }
 
-function VendorDashboard({ activeTab, onTabChange }: { activeTab: string, onTabChange: (id: string) => void }) {
-  return <SellerDashboard activeTab={activeTab} onTabChange={onTabChange} roleTitle="Store Hub" />;
+function VendorDashboard({ activeTab, onTabChange, userRole }: { activeTab: string, onTabChange: (id: string) => void, userRole?: string }) {
+  return <SellerDashboard activeTab={activeTab} onTabChange={onTabChange} roleTitle="Store Hub" userRole={userRole} />;
 }
 
 
