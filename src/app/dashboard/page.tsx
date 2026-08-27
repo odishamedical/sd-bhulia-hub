@@ -367,46 +367,11 @@ export default function DashboardPage() {
 
       {activeTab === "seller_hub" ? (
         <SellerSetupHub userRole={actualRole} />
-      ) : isSellerMode && (userStatus === "pending" || userStatus === "pending_approval" || userStatus === "on_hold") ? (
-        <div className="p-4 md:p-8 mt-10 max-w-4xl mx-auto animate-in fade-in zoom-in-95 duration-300">
-          <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-10 md:p-16 rounded-3xl border border-yellow-200/60 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
-              <div className="w-32 h-32 bg-yellow-400 rounded-full"></div>
-            </div>
-            <div className="text-7xl mb-6 animate-bounce relative z-10">⏳</div>
-            <h2 className="text-3xl md:text-4xl font-black text-yellow-900 mb-4 tracking-tight relative z-10">Application Under Review</h2>
-            <p className="text-yellow-800/80 font-medium text-lg max-w-2xl mx-auto leading-relaxed relative z-10">
-              You have successfully submitted your application. Our Administration team is currently reviewing your documents and store details to ensure everything is perfect.
-              <br/><br/>
-              <span className="bg-yellow-200/50 px-3 py-1 rounded-lg text-yellow-900 text-sm font-bold tracking-wide uppercase">Next Steps</span>
-              <br/>
-              You will receive an email and WhatsApp notification the moment your account is approved and activated.
-            </p>
-            
-            <button 
-              onClick={async () => {
-                if(confirm("Reset this application? You will need to apply again.")){
-                  if(auth.currentUser) {
-                    await updateDoc(doc(db, "users", auth.currentUser.uid), {
-                      applicationStatus: deleteField(),
-                      status: "active",
-                      role: "customer"
-                    });
-                    window.location.reload();
-                  }
-                }
-              }}
-              className="mt-8 text-xs text-yellow-600/60 hover:text-yellow-800 underline transition-colors"
-            >
-              Reset Application (For Testing)
-            </button>
-          </div>
-        </div>
       ) : (
         <>
           {actualRole === "customer" && <CustomerDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
-          {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
-          {actualRole === "store" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} />}
+          {actualRole === "weaver" && <WeaverDashboard activeTab={activeTab} onTabChange={setActiveTab} userStatus={userStatus} />}
+          {actualRole === "store" && <VendorDashboard activeTab={activeTab} onTabChange={setActiveTab} userStatus={userStatus} />}
           {actualRole === "weaver_staff" && <SellerDashboard activeTab={activeTab} onTabChange={setActiveTab} roleTitle="Weaver Hub (Staff)" affiliateCommissionsPaid={affiliateCommissionsPaid} vendorPermissions={vendorPermissions} />}
         </>
       )}
@@ -1431,6 +1396,32 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
 
       {activeTab === "home" && (
         <div className="space-y-6 animate-in fade-in">
+          {/* PENDING BANNER */}
+          {applicationStatus === "pending" && (
+            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-3xl p-8 shadow-sm border border-yellow-200/60 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
+                <div className="w-48 h-48 bg-yellow-400 rounded-full"></div>
+              </div>
+              <div className="relative z-10 flex gap-4 items-start">
+                <div className="text-4xl mt-1 animate-bounce">⏳</div>
+                <div>
+                  <h2 className="text-2xl font-black text-yellow-900 mb-2 tracking-tight">Application Pending Review</h2>
+                  <p className="text-yellow-800/80 font-medium text-sm leading-relaxed max-w-2xl">
+                    Our Administration team is currently reviewing your documents. One of our admins will call you shortly to verify your details and grant you full access to this listing.
+                    <br/><br/>
+                    <strong className="text-yellow-900">While you wait, please complete your shop profile below!</strong>
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={() => onTabChange("personal")}
+                className="relative z-10 shrink-0 bg-yellow-400 text-yellow-900 px-8 py-3 rounded-xl font-black shadow-md hover:bg-yellow-500 transition-colors transform hover:-translate-y-1"
+              >
+                Complete Profile Now
+              </button>
+            </div>
+          )}
+
           {/* UPGRADE BANNER */}
           <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-3xl p-8 shadow-xl text-white flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
