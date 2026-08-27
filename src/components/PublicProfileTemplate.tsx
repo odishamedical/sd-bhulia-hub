@@ -140,9 +140,9 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
           
           {/* Premium Hero Header */}
           <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
-            {!profile.ownerUid && (
+            {profile.status !== 'approved' && (
               <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-bl-xl z-10 shadow-md">
-                Not Verified
+                Pending Verification
               </div>
             )}
             
@@ -168,10 +168,16 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
                 </h1>
                 
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] sm:text-xs font-bold border shadow-sm ${badgeBg} ${badgeColor}`}>
-                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
-                    {badgeText}
-                  </span>
+                  {profile.status === 'approved' ? (
+                    <span className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] sm:text-xs font-bold border shadow-sm ${badgeBg} ${badgeColor}`}>
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+                      {badgeText}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] sm:text-xs font-bold border shadow-sm bg-gray-500/10 text-gray-400 border-gray-500">
+                      Unverified Profile
+                    </span>
+                  )}
                   
                   {profile.rawAddress ? (
                     <span className="text-white/80 text-[11px] sm:text-xs flex items-center gap-1.5 bg-black/30 px-3.5 py-1.5 rounded-full border border-white/10 shadow-inner">

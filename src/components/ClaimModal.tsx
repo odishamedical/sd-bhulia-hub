@@ -246,28 +246,28 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
 
           {step === 5 && (
             <div className="py-12 text-center flex flex-col items-center justify-center gap-6">
-              <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center text-green-400 border border-green-500/30 animate-pulse">
+              <div className="w-16 h-16 bg-[#C5A059]/10 rounded-full flex items-center justify-center text-[#C5A059] border border-[#C5A059]/30 animate-pulse">
                 <Icons.CheckCircle className="w-8 h-8" />
               </div>
               <div>
-                <h4 className="text-xl font-bold text-white mb-2">Claim Request Filed & Payment Received!</h4>
+                <h4 className="text-xl font-bold text-white mb-2">Claim Request Submitted!</h4>
                 <p className="text-xs text-slate-300 leading-relaxed max-w-sm mx-auto">
-                  Your payment was successful and verification file is submitted. Our moderation board will audit your details. We will email setup details to <strong className="text-white">{email}</strong> within 24 hours.
+                  Your claim request has been received. Our moderation board will review your details. We will contact you at <strong className="text-white">{phone}</strong> shortly to complete verification.
                 </p>
               </div>
               
               <div className="w-full bg-cyan-400/5 border border-cyan-400/20 rounded-2xl p-4 text-left flex items-start gap-3 mt-4">
                 <Icons.ShieldCheck className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
                 <p className="text-[10px] text-slate-300 leading-relaxed">
-                  <strong>SSO Integration Note:</strong> Since central SSO registration is offline, your email/phone has been staged for whitelist clearance. No immediate password is required.
+                  <strong>Dashboard Access:</strong> You now have provisional access to your dashboard to complete your profile and upload products while waiting for admin approval.
                 </p>
               </div>
 
               <button 
                 onClick={onClose}
-                className="px-6 py-3 btn-primary-cyan font-bold rounded-xl hover:opacity-90 transition-all text-xs uppercase tracking-wider mt-6 w-full"
+                className="px-6 py-3 bg-gradient-to-r from-[#C5A059] to-[#8A5A00] text-[#051815] font-bold rounded-xl hover:opacity-90 transition-all text-xs uppercase tracking-wider mt-6 w-full"
               >
-                Close Verification portal
+                Go to Dashboard
               </button>
             </div>
           )}

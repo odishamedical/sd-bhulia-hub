@@ -1422,6 +1422,67 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
             </div>
           )}
 
+          {/* Onboarding Progress Bar */}
+          {(() => {
+            const steps = [
+              { key: 'hasProfile', label: 'Complete Profile (Logo & Address)' },
+              { key: 'hasBank', label: 'Add Bank Details' },
+              { key: 'hasKyc', label: 'Complete KYC Verification' },
+              { key: 'hasProduct', label: 'Upload First Product' }
+            ];
+            
+            const onboarding = {
+              hasProfile: !!storeLogo && !!phone && !!streetAddress,
+              hasBank: !!bankAccount,
+              hasKyc: !!kycDocumentUrl,
+              hasProduct: sellerProducts.length > 0
+            };
+
+            const completedSteps = steps.filter(s => (onboarding as any)[s.key]).length;
+            const progressPercentage = (completedSteps / steps.length) * 100;
+            
+            if (completedSteps === steps.length) return null; // Hide if 100% complete
+
+            return (
+              <div className="bg-gradient-to-r from-gray-900 to-black rounded-3xl border border-gray-800 p-8 shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#C5A059]/10 blur-[100px] rounded-full pointer-events-none translate-x-1/2 -translate-y-1/2"></div>
+                
+                <div className="relative z-10">
+                  <div className="flex justify-between items-end mb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
+                        <svg className="w-5 h-5 text-[#C5A059]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Shop Onboarding
+                      </h3>
+                      <p className="text-gray-400 text-sm">Complete these final steps to maximize your shop's visibility.</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-3xl font-black text-[#C5A059]">{progressPercentage}%</span>
+                      <span className="text-sm font-bold text-gray-500 ml-2 uppercase tracking-widest">Complete</span>
+                    </div>
+                  </div>
+
+                  <div className="w-full bg-gray-800 rounded-full h-3 mb-6 overflow-hidden">
+                    <div className="bg-gradient-to-r from-[#C5A059] to-[#8A5A00] h-full transition-all duration-1000" style={{ width: `${progressPercentage}%` }}></div>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {steps.map((step, idx) => {
+                      const isDone = (onboarding as any)[step.key];
+                      return (
+                        <div key={idx} className={`p-4 rounded-xl border ${isDone ? 'bg-green-900/20 border-green-500/30' : 'bg-white/5 border-white/10'} flex flex-col gap-2`}>
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDone ? 'bg-green-500/20 text-green-400' : 'bg-gray-800 text-gray-500'}`}>
+                            {isDone ? <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> : <span className="font-bold text-sm">{idx + 1}</span>}
+                          </div>
+                          <p className={`text-sm font-medium ${isDone ? 'text-green-400/80' : 'text-gray-300'}`}>{step.label}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* UPGRADE BANNER */}
           <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-3xl p-8 shadow-xl text-white flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
