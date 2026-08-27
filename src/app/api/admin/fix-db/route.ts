@@ -1,44 +1,45 @@
 import { NextResponse } from 'next/server';
-import { adminDb as db } from '@/lib/firebase-admin';
+import { db } from '@/lib/firebase';
+import { collection, query, where, getDocs, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
 export async function GET(request: Request) {
   try {
     let updatedCount = 0;
     
     // Check stores
-    const storesSnap = await db.collection('stores').where('googlePlaceId', '!=', null).get();
-    for (const doc of storesSnap.docs) {
-      const data = doc.data();
+    const storesSnap = await getDocs(query(collection(db, 'stores'), where('googlePlaceId', '!=', null)));
+    for (const d of storesSnap.docs) {
+      const data = d.data();
       if (!data.ownerUid && (data.status === 'approved' || data.status === 'active' || !data.status)) {
-        await doc.ref.update({ status: 'unclaimed' });
+        await updateDoc(doc(db, 'stores', d.id), { status: 'unclaimed' });
         updatedCount++;
       }
     }
     
     // Check weavers
-    const weaversSnap = await db.collection('weavers').where('googlePlaceId', '!=', null).get();
-    for (const doc of weaversSnap.docs) {
-      const data = doc.data();
+    const weaversSnap = await getDocs(query(collection(db, 'weavers'), where('googlePlaceId', '!=', null)));
+    for (const d of weaversSnap.docs) {
+      const data = d.data();
       if (!data.ownerUid && (data.status === 'approved' || data.status === 'active' || !data.status)) {
-        await doc.ref.update({ status: 'unclaimed' });
+        await updateDoc(doc(db, 'weavers', d.id), { status: 'unclaimed' });
         updatedCount++;
       }
     }
 
     // Find Rajesh's new doc which has the old slug
     const oldSlug = "rajesh-meher-sambalpuri-saree-centre-6874";
-    const storeSnap = await db.collection('stores').where('slug', '==', oldSlug).get();
+    const storeQ = await getDocs(query(collection(db, 'stores'), where('slug', '==', oldSlug)));
     
     let oldSlugRestored = false;
-    if (!storeSnap.empty) {
-      const rajeshStore = storeSnap.docs[0].data();
-      const uid = storeSnap.docs[0].id;
+    if (!storeQ.empty) {
+      const rajeshStore = storeQ.docs[0].data();
+      const uid = storeQ.docs[0].id;
       
-      const seoDocRef = db.collection('stores').doc(oldSlug);
-      const existing = await seoDocRef.get();
+      const seoDocRef = doc(db, 'stores', oldSlug);
+      const existing = await getDoc(seoDocRef);
       
-      if (!existing.exists) {
-        await seoDocRef.set({
+      if (!existing.exists()) {
+        await setDoc(seoDocRef, {
           ...rajeshStore,
           ownerUid: uid,
           slug: oldSlug,
@@ -46,7 +47,7 @@ export async function GET(request: Request) {
         });
         oldSlugRestored = true;
       } else {
-        await seoDocRef.update({
+        await updateDoc(seoDocRef, {
           ownerUid: uid,
           status: 'active'
         });

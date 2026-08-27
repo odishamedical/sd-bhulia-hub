@@ -1427,8 +1427,8 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
       {activeTab === "home" && (
         <div className="space-y-6 animate-in fade-in">
           {/* PENDING BANNER */}
-          {applicationStatus === "pending" && actualRole === "customer" && (
-            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-3xl p-8 shadow-sm border border-yellow-200/60 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+          {applicationStatus === "pending" && (
+             <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-3xl p-8 shadow-sm border border-yellow-200/60 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
                 <div className="w-48 h-48 bg-yellow-400 rounded-full"></div>
               </div>

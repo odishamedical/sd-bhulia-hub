@@ -1,12 +1,10 @@
-import { adminDb } from './firebase-admin';
+import { db } from './firebase';
+import { collection, query, where, limit, getDocs } from 'firebase/firestore';
 
 export async function getProfileMeta(collectionName: string, slug: string) {
   try {
-    const snapshot = await adminDb
-      .collection(collectionName)
-      .where('slug', '==', slug)
-      .limit(1)
-      .get();
+    const q = query(collection(db, collectionName), where('slug', '==', slug), limit(1));
+    const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
       return null;
