@@ -101,7 +101,7 @@ export default function AdminUserEditModal({ user, onClose, handleConvertRole }:
         }
       }
 
-      await updateDocumentStatus(col, user.id, updates);
+      await updateDocumentStatus(col as any, user.id, updates);
       
       // Also sync user collection for KYC
       if (formData.kycType || formData.kycId || formData.kycDocumentUrl) {
@@ -346,3 +346,4 @@ export default function AdminUserEditModal({ user, onClose, handleConvertRole }:
     </div>
   );
 }
+

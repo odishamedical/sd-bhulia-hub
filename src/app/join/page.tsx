@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { auth, db } from '@/lib/firebase';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, collection } from 'firebase/firestore';
 import { onAuthStateChanged, User, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { INDIAN_STATES, ODISHA_DISTRICT_BLOCKS } from '@/lib/locations';
 
@@ -115,7 +115,7 @@ function JoinWizardContent() {
       if (formData.role === "supplier") collectionName = "suppliers";
       if (formData.role === "reseller") collectionName = "resellers";
 
-      const shopRef = doc(db, collectionName, currentUser.uid);
+      const shopRef = doc(collection(db, collectionName));
       
       const fullAddress = `${formData.localAddress ? formData.localAddress + ', ' : ''}${formData.block}, ${formData.district}, ${formData.state}, ${formData.country} - ${formData.pincode}`;
 

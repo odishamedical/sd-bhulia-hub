@@ -81,29 +81,29 @@ function VerifyContent() {
       const snapshot = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(snapshot.ref);
 
-      // 2. Save to Firestore
-      await addDoc(collection(db, "verification_requests"), {
-        ownerId: user.uid,
-        targetProfileId: id || null,
-        ownerName,
-        email,
-        whatsapp,
-        businessName,
-        address: {
-          state,
-          district,
-          block,
-          cityTownVillage,
-          pincode,
-          streetAddress
+      // 2. Save to Firestore (In-Place Mutation or New Registration)
+      const targetColl = role === "weaver" ? "weavers" : role === "wholesaler" ? "wholesalers" : role === "supplier" ? "suppliers" : role === "reseller" ? "resellers" : "stores";
+      
+      const payload = {
+        ownerUid: user.uid,
+        status: "pending_approval",
+        kycDocumentUrl: downloadURL,
+        applicationData: {
+          ownerName, email, whatsapp, businessName, address: { state, district, block, cityTownVillage, pincode, streetAddress }, gst, documentId
         },
-        gst: gst || null,
-        role,
-        documentId,
-        documentUrl: downloadURL,
-        status: "pending",
-        createdAt: serverTimestamp()
-      });
+        updatedAt: serverTimestamp()
+      };
+
+      if (id) {
+        // Claim Flow: Mutate existing pre-crawled document
+        await updateDoc(doc(db, targetColl, id), payload);
+      } else {
+        // Registration Flow: Create brand new document with standard ID
+        await addDoc(collection(db, targetColl), {
+          ...payload,
+          createdAt: serverTimestamp()
+        });
+      }
 
       setSubmitted(true);
     } catch (error) {

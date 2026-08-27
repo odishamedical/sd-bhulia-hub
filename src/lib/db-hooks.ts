@@ -26,6 +26,9 @@ export interface Weaver {
   address: string;
   tier: "Silver" | "Gold" | "Diamond" | "Master";
   status: "pending_approval" | "approved";
+  phoneNumber?: string;
+  source?: string;
+  googleMapsLink?: string;
   weaverExperience?: string;
   generations?: string;
   specialties?: string[];
@@ -141,6 +144,8 @@ export interface Customer {
   state: string;
   district: string;
   address: string;
+  status?: string;
+  source?: string;
   pin: string;
   createdAt: string;
   totalSales?: number;
@@ -156,6 +161,10 @@ export interface AuthUser {
   role?: string;
   isB2BApproved?: boolean;
   createdAt: string;
+  kycType?: string;
+  kycId?: string;
+  kycDocumentUrl?: string;
+  registrationSource?: string;
 }
 
 export interface Reseller {
@@ -169,6 +178,7 @@ export interface Reseller {
   state: string;
   district: string;
   address: string;
+  source?: string;
   pin: string;
   referralId: string;
   tier: "Bronze" | "Silver" | "Gold" | "Platinum";
@@ -1068,3 +1078,5 @@ export function useSupplierBySlug(slug: string) {
 
   return { supplier, loading };
 }
+
+

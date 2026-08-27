@@ -11,7 +11,7 @@ import AdminUserEditModal from "./AdminUserEditModal";
 export default function UserManagementPage() {
   const { weavers } = useWeavers(200);
   const { stores } = useStores(200);
-  const { orders } = useOrders(200);
+  const { orders } = useOrders();
   const { customers } = useCustomers(200);
   const { authUsers } = useAuthUsers();
   const { resellers } = useResellers(200);
@@ -360,7 +360,7 @@ export default function UserManagementPage() {
            const u = users.find(x => x.id === id);
            if (u) {
               const colName = u.role === "weaver" ? "weavers" : u.role === "store" ? "stores" : u.role === "reseller" ? "resellers" : "customers";
-              await updateDocumentStatus(colName, id, { status: "approved" });
+              await updateDocumentStatus(colName as any, id, { status: "approved" });
            }
         }
         setSelectedUserIds([]);
@@ -1236,3 +1236,5 @@ export default function UserManagementPage() {
     </div>
   );
 }
+
+

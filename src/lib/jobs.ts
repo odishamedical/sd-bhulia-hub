@@ -9,15 +9,15 @@ export interface Job {
   id?: string;
   // Page 1: Company Details
   shopId: string; // The vendor's uid or 'platform'
-  shopName: string; // Company Name
-  companyLogo: string;
-  industry: string;
+  shopName?: string; // Company Name
+  companyLogo?: string;
+  industry?: string;
   companyWebsite?: string;
-  companyAddress: string;
-  contactName: string;
-  contactEmail: string;
-  contactPhone: string;
-  contactWhatsapp: string;
+  companyAddress?: string;
+  contactName?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  contactWhatsapp?: string;
 
   // Page 2: Job Information
   title: string;
@@ -47,6 +47,7 @@ export interface JobSeeker {
   
   // Step 1: Personal Info
   fullName: string;
+  experienceYears?: string;
   dob: string;
   gender: string;
   phone: string;
@@ -104,3 +105,4 @@ export const jobsCollection = collection(db, `${atsConfig.dbPrefix}_jobs`);
 export const jobSeekersCollection = collection(db, `${atsConfig.dbPrefix}_job_seekers`);
 export const jobApplicationsCollection = collection(db, `${atsConfig.dbPrefix}_job_applications`);
 export const sharedCandidatesCollection = collection(db, `${atsConfig.dbPrefix}_shared_candidates`);
+
