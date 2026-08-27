@@ -12,6 +12,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { Star, ShieldCheck, Building, User, Wallet, QrCode, X } from "lucide-react";
 import QRCode from "react-qr-code";
 import ClaimModal from "./ClaimModal";
+import { getProxyImageUrl } from "@/lib/image-proxy";
 
 export interface PublicProfileProps {
   type: "weaver" | "store" | "wholesaler" | "supplier";
@@ -150,7 +151,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
               {/* Massive Logo Box */}
               <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 relative rounded-2xl overflow-hidden border-4 border-[#C5A059]/30 shadow-2xl bg-[#051815]">
                 {profile.image ? (
-                  <Image src={profile.image} alt={profile.name} fill className="object-cover" unoptimized={true} />
+                  <Image src={getProxyImageUrl(profile.image)} alt={profile.name} fill className="object-cover" unoptimized={true} />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-[#C5A059]/10">
                     <span className="text-5xl font-serif text-[#C5A059]">{profile.name.charAt(0)}</span>
@@ -214,7 +215,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
               const img = profile.gallery?.[i] || (i === 0 && profile.image ? profile.image : "https://placehold.co/600x400/051815/333333?text=Add+Photo");
               return (
                 <div key={i} className={`bg-[#051815] relative group overflow-hidden ${i === 0 ? 'col-span-2 row-span-2 aspect-square' : 'col-span-1 row-span-1 aspect-square'}`}>
-                  <Image src={img} fill className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" alt={`Showroom ${i+1}`} unoptimized />
+                  <Image src={getProxyImageUrl(img)} fill className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" alt={`Showroom ${i+1}`} unoptimized />
                   {!profile.gallery?.[i] && !profile.ownerUid && (
                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 backdrop-blur-sm">
                        <span className="text-[#C5A059] text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-[#C5A059] rounded-full">Upload</span>
