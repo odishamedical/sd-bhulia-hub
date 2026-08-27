@@ -47,23 +47,11 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
   }, [user, step]);
 
   const handleNext = () => {
-    if (step === 1 && !website.trim()) {
-      alert("Please provide an official website or social media page.");
-      return;
-    }
-    if (step === 2 && (!ownerName.trim() || !email.trim() || !phone.trim())) {
-      alert("Please fill in all contact information fields.");
-      return;
-    }
-    if (step === 3 && !docNumber.trim()) {
-      alert("Please provide the registration certificate number.");
-      return;
-    }
-    setStep(step + 1);
+    // We don't need handleNext anymore since we only have one step
   };
 
   const handleBack = () => {
-    setStep(step - 1);
+    setStep(0);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -116,7 +104,7 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
       });
 
       setClaimId(listing.id);
-      setStep(5); // Skip payment modal for now
+      setStep(2); // Success step
     } catch (err) {
       console.error("Failed to submit claim:", err);
       alert("Error submitting claim. Please try again.");
@@ -160,25 +148,7 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
           )}
         </div>
 
-        {/* Wizard Steps indicator */}
-        {step < 5 && (
-          <div className="px-6 py-4 bg-[#0A2520] border-b border-[#C5A059]/20 flex justify-between items-center text-xs text-slate-400">
-            <div className="flex gap-4 items-center">
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center font-bold ${step === 1 ? "bg-gradient-to-r from-[#C5A059] to-[#8A5A00] text-[#051815]" : "bg-slate-800 text-slate-300"}`}>1</span>
-              <span className={step === 1 ? "text-[#C5A059] font-bold" : ""}>Business</span>
-            </div>
-            <Icons.ChevronRight className="w-4 h-4 text-slate-700" />
-            <div className="flex gap-4 items-center">
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center font-bold ${step === 2 ? "bg-gradient-to-r from-[#C5A059] to-[#8A5A00] text-[#051815]" : "bg-slate-800 text-slate-300"}`}>2</span>
-              <span className={step === 2 ? "text-[#C5A059] font-bold" : ""}>Contact</span>
-            </div>
-            <Icons.ChevronRight className="w-4 h-4 text-slate-700" />
-            <div className="flex gap-4 items-center">
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center font-bold ${step === 3 ? "bg-gradient-to-r from-[#C5A059] to-[#8A5A00] text-[#051815]" : "bg-slate-800 text-slate-300"}`}>3</span>
-              <span className={step === 3 ? "text-[#C5A059] font-bold" : ""}>Verify</span>
-            </div>
-          </div>
-        )}
+
 
         {/* Content Body */}
         <div className="p-6">
@@ -209,115 +179,6 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
           )}
 
           {step === 1 && (
-            <div className="space-y-4">
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Confirm listing parameters and provide your official digital credentials. We will compare this data to public Google records.
-              </p>
-              <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Company Listing</label>
-                <div className="w-full bg-[#051815]/50 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-sm text-white flex items-center justify-between">
-                  <span>{listing.name}</span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#051815] bg-[#C5A059] px-2 py-0.5 rounded-full">
-                    {getCategoryLabel(listing.category)}
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Registered Address</label>
-                <div className="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-300">
-                  {listing.address}
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label htmlFor="website" className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Official Website or Facebook/Social Page *</label>
-                  <label className="flex items-center gap-1.5 cursor-pointer group">
-                    <input 
-                      type="checkbox" 
-                      className="accent-cyan-400 w-3 h-3 cursor-pointer"
-                      checked={website === "I don't have a website or social media page"}
-                      onChange={(e) => {
-                        if (e.target.checked) setWebsite("I don't have a website or social media page");
-                        else setWebsite("");
-                      }}
-                    />
-                    <span className="text-[10px] text-slate-500 group-hover:text-slate-300 transition-colors">I don't have one</span>
-                  </label>
-                </div>
-                <input 
-                  type="url" 
-                  id="website"
-                  placeholder="https://example.com or https://facebook.com/business"
-                  value={website === "I don't have a website or social media page" ? "" : website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                  disabled={website === "I don't have a website or social media page"}
-                  className="w-full bg-slate-900/60 border border-slate-800 focus:border-cyan-400 focus:outline-none rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                />
-              </div>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div className="space-y-4">
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Provide contact details for the primary representative who will receive login access once verification passes.
-              </p>
-              <div>
-                <label htmlFor="owner-name" className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Full Name *</label>
-                <input 
-                  type="text" 
-                  id="owner-name"
-                  placeholder="Mr/Ms. Sahu"
-                  value={ownerName}
-                  onChange={(e) => setOwnerName(e.target.value)}
-                  className="w-full bg-slate-900/60 border border-slate-800 focus:border-cyan-400 focus:outline-none rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="email" className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Email ID *</label>
-                  <input 
-                    type="email" 
-                    id="email"
-                    placeholder="contact@business.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-slate-900/60 border border-slate-800 focus:border-cyan-400 focus:outline-none rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="phone" className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Mobile / WhatsApp *</label>
-                  <input 
-                    type="tel" 
-                    id="phone"
-                    placeholder="+91 98765 43210"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-slate-900/60 border border-slate-800 focus:border-cyan-400 focus:outline-none rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="role" className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Your Relationship to Business *</label>
-                <select 
-                  id="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="w-full bg-slate-900/60 border border-slate-800 focus:border-cyan-400 focus:outline-none rounded-xl px-4 py-3 text-sm text-white transition-colors"
-                >
-                  <option value="Owner">Primary Owner / Director</option>
-                  <option value="Manager">Store Manager / Head of Operations</option>
-                  <option value="Agent">Authorized Agency / IT Consultant</option>
-                </select>
-              </div>
-            </div>
-          )}
-
-          {step === 3 && (
             <div className="space-y-4">
               <p className="text-xs text-slate-400 leading-relaxed">
                 Upload your official proof of identity to guarantee authenticity and GI-Tag compliance under SD ecosystem bylaws.
@@ -370,10 +231,23 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
                   )}
                 </div>
               </div>
+
+              <div>
+                <label htmlFor="phone" className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Mobile / WhatsApp *</label>
+                <input 
+                  type="tel" 
+                  id="phone"
+                  placeholder="+91 98765 43210"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full bg-slate-900/60 border border-slate-800 focus:border-[#C5A059] focus:outline-none rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors"
+                  required
+                />
+              </div>
             </div>
           )}
 
-          {step === 5 && (
+          {step === 2 && (
             <div className="py-12 text-center flex flex-col items-center justify-center gap-6">
               <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center text-green-400 border border-green-500/30 animate-pulse">
                 <Icons.CheckCircle className="w-8 h-8" />
@@ -403,50 +277,27 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
         </div>
 
         {/* Wizard Footer controls */}
-        {step < 5 && (
+        {step < 2 && step > 0 && (
           <div className="px-6 py-4 bg-[#0A2520] border-t border-[#C5A059]/20 flex justify-between items-center">
-            {step > 1 ? (
-              <button 
-                type="button" 
-                onClick={handleBack} 
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[#C5A059]/50 hover:bg-[#C5A059]/20 text-xs font-bold text-[#C5A059] transition-all cursor-pointer"
-              >
-                <Icons.ArrowLeft className="w-3.5 h-3.5" />
-                <span>Back</span>
-              </button>
-            ) : (
-              <div />
-            )}
-
-            {step < 3 ? (
-              <button 
-                type="button" 
-                onClick={handleNext} 
-                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#C5A059] to-[#8A5A00] text-[#051815] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg hover:shadow-[0_0_15px_rgba(197,160,89,0.3)]"
-              >
-                <span>Continue</span>
-                <Icons.ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            ) : (
-              <button 
-                type="submit" 
-                disabled={isSubmitting}
-                onClick={handleSubmit}
-                className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C5A059] to-[#8A5A00] text-[#051815] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50 shadow-lg hover:shadow-[0_0_15px_rgba(197,160,89,0.3)]"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Icons.Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Verifying...</span>
-                  </>
-                ) : (
-                  <>
-                    <Icons.CheckCircle2 className="w-4 h-4" />
-                    <span>Submit Claim Request</span>
-                  </>
-                )}
-              </button>
-            )}
+            <div />
+            <button 
+              type="submit" 
+              disabled={isSubmitting || !phone.trim() || !docNumber.trim()}
+              onClick={handleSubmit}
+              className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C5A059] to-[#8A5A00] text-[#051815] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50 shadow-lg hover:shadow-[0_0_15px_rgba(197,160,89,0.3)] w-full"
+            >
+              {isSubmitting ? (
+                <>
+                  <Icons.Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Verifying...</span>
+                </>
+              ) : (
+                <>
+                  <Icons.CheckCircle2 className="w-4 h-4" />
+                  <span>Submit Claim Request</span>
+                </>
+              )}
+            </button>
           </div>
         )}
       </div>
