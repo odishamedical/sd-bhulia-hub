@@ -246,7 +246,7 @@ export default function AdminNewApplications() {
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-400"></div>
                       ) : (
                         <>
-                          <XCircle className="w-4 h-4" /> Decline & Delete
+                          <XCircle className="w-4 h-4" /> Decline App
                         </>
                       )}
                     </button>
