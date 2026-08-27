@@ -59,23 +59,14 @@ export default function AdminNewApplications() {
       
       let finalDocRef = docRef;
       const { collectionName, id, createdAt, ...fieldsToUpdate } = appToApprove;
-      
-      if (appToApprove.ownerUid && appToApprove.ownerUid !== appToApprove.id) {
-        // Transfer data to the user's UID document to match dashboard architecture
-        finalDocRef = doc(db, appToApprove.collectionName, appToApprove.ownerUid);
-        await setDoc(finalDocRef, {
-          ...fieldsToUpdate,
-          id: editedApp.ownerUid,
-          status: 'active'
-        });
-        // Delete original claimed document to prevent duplicates
-        await deleteDoc(docRef);
-      } else {
-        await updateDoc(finalDocRef, {
-          ...fieldsToUpdate,
-          status: 'active'
-        });
-      }
+
+      // Ensure we don't delete the original document to preserve SEO URL.
+      // We just update the original document with the ownerUid and active status.
+      await updateDoc(finalDocRef, {
+        ...fieldsToUpdate,
+        ownerUid: appToApprove.ownerUid || null,
+        status: 'active'
+      });
 
       if (appToApprove.ownerUid) {
         // 1. Notify the user

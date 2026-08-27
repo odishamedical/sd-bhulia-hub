@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db, storage } from "@/lib/firebase";
 import Image from "next/image";
-import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc, getDocs, query, where, deleteField } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc, getDocs, query, where, deleteField, limit } from "firebase/firestore";
 import { getEffectiveUserId } from "@/lib/impersonation";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { onAuthStateChanged } from "firebase/auth";
@@ -147,9 +147,18 @@ export default function DashboardPage() {
             let targetCollection = activeRole === "weaver" ? "weavers" : (activeRole === "store" || activeRole === "shop" ? "stores" : null);
             if (targetCollection && activeUid) {
               try {
-                const vendorDoc = await getDoc(doc(db, targetCollection, activeUid as string));
-                if (vendorDoc.exists()) {
-                  setCanSellWholesale(vendorDoc.data().canSellWholesale || false);
+                // IMPORTANT: We now query by ownerUid instead of doc ID to support preserved Google Place SEO IDs
+                const vendorQ = query(collection(db, targetCollection), where("ownerUid", "==", activeUid), limit(1));
+                const vendorSnap = await getDocs(vendorQ);
+                
+                if (!vendorSnap.empty) {
+                  setCanSellWholesale(vendorSnap.docs[0].data().canSellWholesale || false);
+                } else {
+                  // Fallback for organic profiles where doc ID is the UID
+                  const organicDoc = await getDoc(doc(db, targetCollection, activeUid as string));
+                  if (organicDoc.exists()) {
+                    setCanSellWholesale(organicDoc.data().canSellWholesale || false);
+                  }
                 }
               } catch (e) {
                 console.error("Failed to fetch vendorDoc:", e);
@@ -1418,7 +1427,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
       {activeTab === "home" && (
         <div className="space-y-6 animate-in fade-in">
           {/* PENDING BANNER */}
-          {applicationStatus === "pending" && (
+          {applicationStatus === "pending" && actualRole === "customer" && (
             <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-3xl p-8 shadow-sm border border-yellow-200/60 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl pointer-events-none">
                 <div className="w-48 h-48 bg-yellow-400 rounded-full"></div>
@@ -2364,10 +2373,9 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
 
       {activeTab === "vanity_url" && (
         <div className="max-w-4xl animate-in fade-in">
-          <VanityUrlManager currentSlug={"shyam-dash-303"} />
+          <VanityUrlManager currentSlug={storeSlug} roleType={displayRole} userState={state} userDistrict={district} />
         </div>
       )}
-
 
       {activeTab === "store_settings" && (
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-4xl animate-in fade-in">
