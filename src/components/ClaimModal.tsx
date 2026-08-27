@@ -90,14 +90,18 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
       
       const listingRef = doc(db, collectionName, listing.id);
       
-      await updateDoc(listingRef, {
+      await setDoc(listingRef, {
         ownerUid: user.uid,
         status: "pending_admin_approval",
         website: website,
         contactEmail: email,
         contactPhone: phone,
-        claimedAt: new Date()
-      });
+        claimedAt: new Date(),
+        // Just in case it's a new document being created from a Google API place:
+        name: listing.name,
+        category: listing.category,
+        address: listing.address
+      }, { merge: true });
 
       setClaimId(listing.id);
       setStep(5); // Skip payment modal for now
