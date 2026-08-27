@@ -46,9 +46,7 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
     }
   }, [user, step]);
 
-  const handleNext = () => {
-    // We don't need handleNext anymore since we only have one step
-  };
+  const handleNext = () => {};
 
   const handleBack = () => {
     setStep(0);
@@ -96,15 +94,13 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
         ownerUid: user.uid,
         status: "pending_admin_approval",
         website: website,
-        kycDocumentType: docType,
-        kycDocumentNumber: docNumber,
         contactEmail: email,
         contactPhone: phone,
         claimedAt: new Date()
       });
 
       setClaimId(listing.id);
-      setStep(2); // Success step
+      setStep(5); // Skip payment modal for now
     } catch (err) {
       console.error("Failed to submit claim:", err);
       alert("Error submitting claim. Please try again.");
@@ -181,55 +177,50 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
           {step === 1 && (
             <div className="space-y-4">
               <p className="text-xs text-slate-400 leading-relaxed">
-                Upload your official proof of identity to guarantee authenticity and GI-Tag compliance under SD ecosystem bylaws.
+                Confirm listing parameters and provide your official digital credentials. We will compare this data to public Google records.
               </p>
-              
               <div>
-                <label htmlFor="doc-type" className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Document Type *</label>
-                <select 
-                  id="doc-type"
-                  value={docType}
-                  onChange={(e) => setDocType(e.target.value)}
-                  className="w-full bg-[#051815]/50 border border-[#C5A059]/30 focus:border-[#C5A059] focus:outline-none rounded-xl px-4 py-3 text-sm text-white transition-colors"
-                >
-                  <option value="GSTIN / BIS Certificate">GSTIN Number / Business Certificate</option>
-                  <option value="Weaver ID Card">Primary Weaver Cooperative Society ID Card</option>
-                  <option value="Artisan Card">Ministry of Textiles Artisan Card</option>
-                  <option value="Trade License">Municipal Trade License certificate</option>
-                  <option value="Aadhaar / Pan Card">Aadhaar Card / Business PAN card</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="doc-number" className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Registration / Certificate Number *</label>
-                <input 
-                  type="text" 
-                  id="doc-number"
-                  placeholder="e.g. 21AAAAA1111A1Z1 or OMC-55678"
-                  value={docNumber}
-                  onChange={(e) => setDocNumber(e.target.value)}
-                  className="w-full bg-slate-900/60 border border-slate-800 focus:border-cyan-400 focus:outline-none rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Upload Digital Copy (PDF/JPEG) *</label>
-                <div className="w-full border-2 border-dashed border-slate-800 hover:border-cyan-400/50 rounded-2xl p-6 text-center cursor-pointer bg-slate-900/20 transition-all flex flex-col items-center gap-2"
-                  onClick={() => setDocFile("mock_upload_success.pdf")}
-                >
-                  <Icons.UploadCloud className="w-8 h-8 text-cyan-400/60" />
-                  {docFile ? (
-                    <div className="text-xs text-green-400 font-bold flex items-center gap-1">
-                      <Icons.CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>{typeof docFile === 'string' ? docFile : docFile.name} (Ready for submission)</span>
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-xs text-slate-300 font-bold">Click to upload your registration file</p>
-                      <p className="text-[10px] text-slate-500">Max size 5MB (PDF, JPG, PNG)</p>
-                    </>
-                  )}
+                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Company Listing</label>
+                <div className="w-full bg-[#051815]/50 border border-[#C5A059]/30 rounded-xl px-4 py-3 text-sm text-white flex items-center justify-between">
+                  <span>{listing.name}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#051815] bg-[#C5A059] px-2 py-0.5 rounded-full">
+                    {getCategoryLabel(listing.category)}
+                  </span>
                 </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Registered Address</label>
+                <div className="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-300">
+                  {listing.address}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label htmlFor="website" className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Official Website or Facebook/Social Page *</label>
+                  <label className="flex items-center gap-1.5 cursor-pointer group">
+                    <input 
+                      type="checkbox" 
+                      className="accent-cyan-400 w-3 h-3 cursor-pointer"
+                      checked={website === "I don't have a website or social media page"}
+                      onChange={(e) => {
+                        if (e.target.checked) setWebsite("I don't have a website or social media page");
+                        else setWebsite("");
+                      }}
+                    />
+                    <span className="text-[10px] text-slate-500 group-hover:text-slate-300 transition-colors">I don't have one</span>
+                  </label>
+                </div>
+                <input 
+                  type="url" 
+                  id="website"
+                  placeholder="https://example.com or https://facebook.com/business"
+                  value={website === "I don't have a website or social media page" ? "" : website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  disabled={website === "I don't have a website or social media page"}
+                  className="w-full bg-slate-900/60 border border-slate-800 focus:border-cyan-400 focus:outline-none rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                />
               </div>
 
               <div>
@@ -247,7 +238,9 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
             </div>
           )}
 
-          {step === 2 && (
+
+
+          {step === 5 && (
             <div className="py-12 text-center flex flex-col items-center justify-center gap-6">
               <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center text-green-400 border border-green-500/30 animate-pulse">
                 <Icons.CheckCircle className="w-8 h-8" />
@@ -277,12 +270,12 @@ export default function ClaimModal({ listing, onClose, onSuccess }: ClaimModalPr
         </div>
 
         {/* Wizard Footer controls */}
-        {step < 2 && step > 0 && (
+        {step < 5 && step > 0 && (
           <div className="px-6 py-4 bg-[#0A2520] border-t border-[#C5A059]/20 flex justify-between items-center">
             <div />
             <button 
               type="submit" 
-              disabled={isSubmitting || !phone.trim() || !docNumber.trim()}
+              disabled={isSubmitting || !phone.trim() || !website.trim()}
               onClick={handleSubmit}
               className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#C5A059] to-[#8A5A00] text-[#051815] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50 shadow-lg hover:shadow-[0_0_15px_rgba(197,160,89,0.3)] w-full"
             >
