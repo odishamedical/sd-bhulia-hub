@@ -3,14 +3,23 @@ import { collection, query, where, limit, getDocs } from 'firebase/firestore';
 
 export async function getProfileMeta(collectionName: string, slug: string) {
   try {
-    const q = query(collection(db, collectionName), where('slug', '==', slug), limit(1));
+    const q = query(collection(db, collectionName), where('slug', '==', slug));
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
       return null;
     }
 
-    const data = snapshot.docs[0].data();
+    let docSnap = snapshot.docs[0];
+    for (const doc of snapshot.docs) {
+      const data = doc.data();
+      if (data.status === 'active' || data.status === 'approved') {
+        docSnap = doc;
+        break;
+      }
+    }
+
+    const data = docSnap.data();
     
     return {
       title: data.title || data.name || data.storeName || data.companyName || 'Profile',

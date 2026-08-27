@@ -58,6 +58,7 @@ export default function ClientWeaverPage() {
         videoUrl: weaver.videoUrl,
         facebookUrl: weaver.facebookUrl,
         instagramUrl: weaver.instagramUrl,
+        ownerUid: weaver.ownerUid,
       });
 
       // Filter products belonging to this weaver

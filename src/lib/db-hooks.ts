@@ -533,7 +533,14 @@ export function useWeaverBySlug(slug: string) {
     const q = query(collection(db, "weavers"), where("slug", "==", slug));
     const unsubscribe = onSnapshot(q, async (snapshot) => {
       if (!snapshot.empty) {
-        const docSnap = snapshot.docs[0];
+        let docSnap = snapshot.docs[0];
+        for (const doc of snapshot.docs) {
+          const data = doc.data();
+          if (data.status === 'active' || data.status === 'approved') {
+            docSnap = doc;
+            break;
+          }
+        }
         setWeaver({ id: docSnap.id, ...docSnap.data() } as Weaver);
         setLoading(false);
       } else {
@@ -572,7 +579,15 @@ export function useStoreBySlug(slug: string) {
     const q = query(collection(db, "stores"), where("slug", "==", slug));
     const unsubscribe = onSnapshot(q, async (snapshot) => {
       if (!snapshot.empty) {
-        const docSnap = snapshot.docs[0];
+        // Find the active/approved document, or fallback to the first one
+        let docSnap = snapshot.docs[0];
+        for (const doc of snapshot.docs) {
+          const data = doc.data();
+          if (data.status === 'active' || data.status === 'approved') {
+            docSnap = doc;
+            break;
+          }
+        }
         setStore({ id: docSnap.id, ...docSnap.data() } as Store);
         setLoading(false);
       } else {
@@ -977,7 +992,14 @@ export function useWholesalerBySlug(slug: string) {
     const q = query(collection(db, "wholesalers"), where("slug", "==", slug));
     const unsubscribe = onSnapshot(q, async (snapshot) => {
       if (!snapshot.empty) {
-        const docSnap = snapshot.docs[0];
+        let docSnap = snapshot.docs[0];
+        for (const doc of snapshot.docs) {
+          const data = doc.data();
+          if (data.status === 'active' || data.status === 'approved') {
+            docSnap = doc;
+            break;
+          }
+        }
         setWholesaler({ id: docSnap.id, ...docSnap.data() });
         setLoading(false);
       } else {
@@ -1013,7 +1035,14 @@ export function useSupplierBySlug(slug: string) {
     const q = query(collection(db, "suppliers"), where("slug", "==", slug));
     const unsubscribe = onSnapshot(q, async (snapshot) => {
       if (!snapshot.empty) {
-        const docSnap = snapshot.docs[0];
+        let docSnap = snapshot.docs[0];
+        for (const doc of snapshot.docs) {
+          const data = doc.data();
+          if (data.status === 'active' || data.status === 'approved') {
+            docSnap = doc;
+            break;
+          }
+        }
         setSupplier({ id: docSnap.id, ...docSnap.data() });
         setLoading(false);
       } else {

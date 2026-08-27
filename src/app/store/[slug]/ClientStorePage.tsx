@@ -58,6 +58,7 @@ export default function ClientStorePage() {
         videoUrl: store.videoUrl,
         facebookUrl: store.facebookUrl,
         instagramUrl: store.instagramUrl,
+        ownerUid: store.ownerUid,
       });
 
       // Filter products belonging to this store
