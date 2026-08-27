@@ -12,6 +12,7 @@ export default function AdminNewApplications() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [selectedApp, setSelectedApp] = useState<any | null>(null);
+  const [editedApp, setEditedApp] = useState<any | null>(null);
 
   useEffect(() => {
     fetchApplications();
@@ -47,49 +48,52 @@ export default function AdminNewApplications() {
     }
   };
 
-  const handleApprove = async (app: any) => {
-    if (!confirm(`Are you sure you want to approve this ${app.collectionName.slice(0, -1)} application?`)) return;
+  const handleApprove = async (appOverride?: any) => {
+    const appToApprove = appOverride || editedApp;
+    if (!appToApprove) return;
+    if (!confirm(`Are you sure you want to approve this ${appToApprove.collectionName.slice(0, -1)} application?`)) return;
     
-    setActionLoading(app.id);
+    setActionLoading(appToApprove.id);
     try {
-      const docRef = doc(db, app.collectionName, app.id);
+      const docRef = doc(db, appToApprove.collectionName, appToApprove.id);
       
       let finalDocRef = docRef;
+      const { collectionName, id, createdAt, ...fieldsToUpdate } = appToApprove;
       
-      if (app.ownerUid && app.ownerUid !== app.id) {
+      if (appToApprove.ownerUid && appToApprove.ownerUid !== appToApprove.id) {
         // Transfer data to the user's UID document to match dashboard architecture
-        finalDocRef = doc(db, app.collectionName, app.ownerUid);
-        const { collectionName, ...appDataToTransfer } = app;
+        finalDocRef = doc(db, appToApprove.collectionName, appToApprove.ownerUid);
         await setDoc(finalDocRef, {
-          ...appDataToTransfer,
-          id: app.ownerUid,
+          ...fieldsToUpdate,
+          id: editedApp.ownerUid,
           status: 'active'
         });
         // Delete original claimed document to prevent duplicates
         await deleteDoc(docRef);
       } else {
         await updateDoc(finalDocRef, {
+          ...fieldsToUpdate,
           status: 'active'
         });
       }
 
-      if (app.ownerUid) {
+      if (appToApprove.ownerUid) {
         // 1. Notify the user
-        await addNotification(app.ownerUid, 'approved', `Your application for ${app.name} has been approved! You can now access your Dashboard.`);
+        await addNotification(appToApprove.ownerUid, 'approved', `Your application for ${appToApprove.name || appToApprove.businessName} has been approved! You can now access your Dashboard.`);
         
         // 2. IMPORTANT: Upgrade the user's role in the DB so they actually see the Vendor Panel
         // and pre-fill their store name from the claimed listing
-        const userRef = doc(db, "users", app.ownerUid);
+        const userRef = doc(db, "users", appToApprove.ownerUid);
         await updateDoc(userRef, {
-          ["roles.bhulia-hub"]: app.role || app.collectionName.slice(0, -1), // e.g. weaver
-          storeName: app.name || "",
-          phone: app.phone || app.contactPhone || ""
+          ["roles.bhulia-hub"]: appToApprove.role || appToApprove.collectionName.slice(0, -1), // e.g. weaver
+          storeName: appToApprove.name || appToApprove.businessName || "",
+          phone: appToApprove.phone || appToApprove.contactPhone || "",
+          applicationStatus: 'approved'
         });
       }
       
 
-
-      setApplications(applications.filter(a => a.id !== app.id));
+      setApplications(applications.filter(a => a.id !== appToApprove.id));
       alert('Application approved successfully!');
     } catch (e) {
       console.error(e);
@@ -225,7 +229,7 @@ export default function AdminNewApplications() {
                   
                   <div className="flex flex-col gap-2 w-full">
                     <button 
-                      onClick={() => handleApprove(app)}
+                      onClick={() => { setSelectedApp(app); setEditedApp({ ...app }); handleApprove(); }}
                       disabled={actionLoading === app.id}
                       className="w-full flex items-center justify-center gap-2 bg-[#C5A059] hover:bg-[#8A6A32] text-black py-2.5 rounded-lg text-sm font-bold transition-all disabled:opacity-50"
                     >
@@ -283,19 +287,39 @@ export default function AdminNewApplications() {
                 <div className="grid grid-cols-2 gap-4 bg-black/30 p-4 rounded-xl border border-white/5 text-sm">
                   <div>
                     <span className="block text-gray-500 mb-1">Business Name</span>
-                    <span className="text-white font-medium">{selectedApp.name || selectedApp.businessName}</span>
+                    <input 
+                      type="text"
+                      className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059]"
+                      value={editedApp?.name || editedApp?.businessName || ""}
+                      onChange={(e) => setEditedApp({ ...editedApp, name: e.target.value, businessName: e.target.value })}
+                    />
                   </div>
                   <div>
                     <span className="block text-gray-500 mb-1">Owner Name</span>
-                    <span className="text-white font-medium">{selectedApp.ownerName}</span>
+                    <input 
+                      type="text"
+                      className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059]"
+                      value={editedApp?.ownerName || ""}
+                      onChange={(e) => setEditedApp({ ...editedApp, ownerName: e.target.value })}
+                    />
                   </div>
                   <div>
                     <span className="block text-gray-500 mb-1">Phone Number</span>
-                    <span className="text-white font-medium">{selectedApp.phone}</span>
+                    <input 
+                      type="text"
+                      className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059]"
+                      value={editedApp?.phone || ""}
+                      onChange={(e) => setEditedApp({ ...editedApp, phone: e.target.value })}
+                    />
                   </div>
                   <div>
                     <span className="block text-gray-500 mb-1">Email Address</span>
-                    <span className="text-white font-medium">{selectedApp.email}</span>
+                    <input 
+                      type="email"
+                      className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059]"
+                      value={editedApp?.email || ""}
+                      onChange={(e) => setEditedApp({ ...editedApp, email: e.target.value })}
+                    />
                   </div>
                 </div>
               </div>
@@ -306,23 +330,48 @@ export default function AdminNewApplications() {
                 <div className="grid grid-cols-2 gap-4 bg-black/30 p-4 rounded-xl border border-white/5 text-sm">
                   <div>
                     <span className="block text-gray-500 mb-1">Country</span>
-                    <span className="text-white font-medium">{selectedApp.country}</span>
+                    <input 
+                      type="text"
+                      className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059]"
+                      value={editedApp?.country || ""}
+                      onChange={(e) => setEditedApp({ ...editedApp, country: e.target.value })}
+                    />
                   </div>
                   <div>
                     <span className="block text-gray-500 mb-1">State</span>
-                    <span className="text-white font-medium">{selectedApp.state}</span>
+                    <input 
+                      type="text"
+                      className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059]"
+                      value={editedApp?.state || ""}
+                      onChange={(e) => setEditedApp({ ...editedApp, state: e.target.value })}
+                    />
                   </div>
                   <div>
                     <span className="block text-gray-500 mb-1">District</span>
-                    <span className="text-white font-medium">{selectedApp.district}</span>
+                    <input 
+                      type="text"
+                      className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059]"
+                      value={editedApp?.district || ""}
+                      onChange={(e) => setEditedApp({ ...editedApp, district: e.target.value })}
+                    />
                   </div>
                   <div>
                     <span className="block text-gray-500 mb-1">Block / City</span>
-                    <span className="text-white font-medium">{selectedApp.block}</span>
+                    <input 
+                      type="text"
+                      className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059]"
+                      value={editedApp?.block || ""}
+                      onChange={(e) => setEditedApp({ ...editedApp, block: e.target.value })}
+                    />
                   </div>
                   <div className="col-span-2">
                     <span className="block text-gray-500 mb-1">Full Local Address</span>
-                    <span className="text-white font-medium">{selectedApp.address}</span>
+                    <input 
+                      type="text"
+                      className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059]"
+                      value={editedApp?.address || ""}
+                      onChange={(e) => setEditedApp({ ...editedApp, address: e.target.value })}
+                    />
                   </div>
                 </div>
               </div>
@@ -331,28 +380,48 @@ export default function AdminNewApplications() {
               <div>
                 <h4 className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4">Verification & Documents</h4>
                 <div className="grid grid-cols-2 gap-4 bg-black/30 p-4 rounded-xl border border-white/5 text-sm">
-                  {selectedApp.panNumber && (
+                  {editedApp?.panNumber !== undefined && (
                     <div>
                       <span className="block text-gray-500 mb-1">PAN Number</span>
-                      <span className="text-white font-mono bg-white/10 px-2 py-1 rounded">{selectedApp.panNumber}</span>
+                      <input 
+                        type="text"
+                        className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059] font-mono"
+                        value={editedApp?.panNumber || ""}
+                        onChange={(e) => setEditedApp({ ...editedApp, panNumber: e.target.value })}
+                      />
                     </div>
                   )}
-                  {selectedApp.gstNumber && (
+                  {editedApp?.gstNumber !== undefined && (
                     <div>
                       <span className="block text-gray-500 mb-1">GST Number</span>
-                      <span className="text-white font-mono bg-white/10 px-2 py-1 rounded">{selectedApp.gstNumber}</span>
+                      <input 
+                        type="text"
+                        className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059] font-mono"
+                        value={editedApp?.gstNumber || ""}
+                        onChange={(e) => setEditedApp({ ...editedApp, gstNumber: e.target.value })}
+                      />
                     </div>
                   )}
-                  {selectedApp.loomsCount && (
+                  {editedApp?.loomsCount !== undefined && (
                     <div>
                       <span className="block text-gray-500 mb-1">Number of Looms</span>
-                      <span className="text-white font-medium">{selectedApp.loomsCount}</span>
+                      <input 
+                        type="text"
+                        className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059]"
+                        value={editedApp?.loomsCount || ""}
+                        onChange={(e) => setEditedApp({ ...editedApp, loomsCount: e.target.value })}
+                      />
                     </div>
                   )}
-                  {selectedApp.socialMediaLink && (
+                  {editedApp?.socialMediaLink !== undefined && (
                     <div className="col-span-2">
                       <span className="block text-gray-500 mb-1">Social Media</span>
-                      <a href={selectedApp.socialMediaLink} target="_blank" className="text-blue-400 hover:underline">{selectedApp.socialMediaLink}</a>
+                      <input 
+                        type="url"
+                        className="w-full bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white focus:outline-none focus:border-[#C5A059]"
+                        value={editedApp?.socialMediaLink || ""}
+                        onChange={(e) => setEditedApp({ ...editedApp, socialMediaLink: e.target.value })}
+                      />
                     </div>
                   )}
                 </div>
