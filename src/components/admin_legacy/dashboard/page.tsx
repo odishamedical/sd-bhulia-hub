@@ -94,7 +94,7 @@ export default function AdminDashboardPage() {
           "stores": "store",
           "franchises": "reseller"
         };
-        await updateDocumentStatus("users" as any, id, {
+        await updateDocumentStatus("users" as any, data.ownerUid || id, {
           status: "active",
           role: roleMapping[type],
           kycStatus: "verified",

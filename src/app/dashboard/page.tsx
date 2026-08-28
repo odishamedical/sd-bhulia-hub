@@ -134,11 +134,11 @@ export default function DashboardPage() {
               setIsViewAsMode(false);
             }
             
-            // Calculate slug for public pages
+            // Calculate slug for public pages (Fallback)
             const data = userDoc.data();
             setUserStatus(data.status || data.applicationStatus || "active");
-            const slug = String(data.storeName || data.name || "demo").toLowerCase().replace(/[^a-z0-9]+/g, '-');
-            setStoreSlug(slug);
+            let fallbackSlug = String(data.storeName || data.name || "demo").toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            setStoreSlug(fallbackSlug);
 
             // Fetch wholesale permissions
             const activeRole = ((actualRole === "super_admin" || actualRole === "admin" || actualRole === "staff") && viewAsRole) ? viewAsRole : actualRole;
@@ -152,12 +152,18 @@ export default function DashboardPage() {
                 const vendorSnap = await getDocs(vendorQ);
                 
                 if (!vendorSnap.empty) {
-                  setCanSellWholesale(vendorSnap.docs[0].data().canSellWholesale || false);
+                  const vData = vendorSnap.docs[0].data();
+                  setCanSellWholesale(vData.canSellWholesale || false);
+                  if (vData.slug) setStoreSlug(vData.slug);
+                  else setStoreSlug(vendorSnap.docs[0].id);
                 } else {
                   // Fallback for organic profiles where doc ID is the UID
                   const organicDoc = await getDoc(doc(db, targetCollection, activeUid as string));
                   if (organicDoc.exists()) {
-                    setCanSellWholesale(organicDoc.data().canSellWholesale || false);
+                    const vData = organicDoc.data();
+                    setCanSellWholesale(vData.canSellWholesale || false);
+                    if (vData.slug) setStoreSlug(vData.slug);
+                    else setStoreSlug(organicDoc.id);
                   }
                 }
               } catch (e) {
