@@ -34,6 +34,7 @@ export default function ClientWeaverPage() {
       const extCountry = addressParts.length >= 1 ? addressParts[addressParts.length - 1].replace(/[^a-zA-Z ]/g, '').trim() : (weaver.country || "India");
 
       setMappedProfile({
+        id: weaver.id,
         name: weaver.title || "Master Weaver",
         image: weaver.img || "/bhulia-hero.png",
         district: weaver.district || extDistrict,

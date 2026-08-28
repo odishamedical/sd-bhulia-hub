@@ -34,6 +34,7 @@ export default function ClientStorePage() {
       const extCountry = addressParts.length >= 1 ? addressParts[addressParts.length - 1].replace(/[^a-zA-Z ]/g, '').trim() : (store.country || "India");
 
       setMappedProfile({
+        id: store.id,
         name: store.title || "Retail Shop",
         image: store.img || "/bhulia-hero.png",
         district: store.district || extDistrict,

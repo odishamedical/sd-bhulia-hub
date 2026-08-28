@@ -147,15 +147,29 @@ export default function DashboardPage() {
             let targetCollection = activeRole === "weaver" ? "weavers" : (activeRole === "store" || activeRole === "shop" ? "stores" : null);
             if (targetCollection && activeUid) {
               try {
-                // IMPORTANT: We now query by ownerUid instead of doc ID to support preserved Google Place SEO IDs
-                const vendorQ = query(collection(db, targetCollection), where("ownerUid", "==", activeUid), limit(1));
+                // IMPORTANT: We query by ownerUid and fetch all, then find the most relevant one (active + newest)
+                const vendorQ = query(collection(db, targetCollection), where("ownerUid", "==", activeUid));
                 const vendorSnap = await getDocs(vendorQ);
                 
                 if (!vendorSnap.empty) {
-                  const vData = vendorSnap.docs[0].data();
+                  let bestDoc = vendorSnap.docs[0];
+                  let bestScore = -1;
+                  
+                  vendorSnap.forEach(d => {
+                     const data = d.data();
+                     const isActive = (data.status === "active" || data.status === "approved") ? 1 : 0;
+                     const cTime = data.createdAt?.toMillis ? data.createdAt.toMillis() : (data.claimedAt?.toMillis ? data.claimedAt.toMillis() : 0);
+                     const score = (isActive * 10000000000000) + cTime;
+                     if (score > bestScore) {
+                        bestScore = score;
+                        bestDoc = d;
+                     }
+                  });
+
+                  const vData = bestDoc.data();
                   setCanSellWholesale(vData.canSellWholesale || false);
                   if (vData.slug) setStoreSlug(vData.slug);
-                  else setStoreSlug(vendorSnap.docs[0].id);
+                  else setStoreSlug(bestDoc.id);
                 } else {
                   // Fallback for organic profiles where doc ID is the UID
                   const organicDoc = await getDoc(doc(db, targetCollection, activeUid as string));

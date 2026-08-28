@@ -17,6 +17,7 @@ import { getProxyImageUrl } from "@/lib/image-proxy";
 export interface PublicProfileProps {
   type: "weaver" | "store" | "wholesaler" | "supplier";
   profile: {
+    id?: string;
     name: string;
     image: string;
     district: string;
@@ -554,7 +555,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
       )}
       {showClaimModal && (
         <ClaimModal 
-          listing={{ id: profile.googlePlaceId || 'bhulia-id', name: profile.name, category: profile.listingType || type, address: profile.address || "" }}
+          listing={{ id: profile.id || profile.googlePlaceId || 'bhulia-id', name: profile.name, category: profile.listingType || type, address: profile.address || "" }}
           onClose={() => setShowClaimModal(false)}
           onSuccess={(id) => {
             setShowClaimModal(false);
