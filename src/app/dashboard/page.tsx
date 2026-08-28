@@ -280,13 +280,13 @@ export default function DashboardPage() {
       { id: 'home', label: 'Dashboard Overview', icon: '📊', category: 'My Shop (Free Features)' },
       { id: 'personal', label: 'Profile & Store Setup', icon: '👤', category: 'My Shop (Free Features)' },
       { id: 'verification', label: 'Verification (KYC)', icon: '🛡️', category: 'My Shop (Free Features)' },
-            { id: 'wallet', label: 'Wallet & Bank Payouts', icon: '💰', category: 'My Shop (Free Features)' },
+      { id: 'orders', label: 'Manage Orders', icon: '🚚', category: 'My Shop (Free Features)' },
+      { id: 'products', label: 'Manage Inventory', icon: '🛍️', category: 'My Shop (Free Features)' },
+      { id: 'wallet', label: 'Wallet & Bank Payouts', icon: '💰', category: 'My Shop (Free Features)' },
       { id: 'security', label: 'Security & Login', icon: '🔒', category: 'My Shop (Free Features)' },
       { id: 'help_guide', label: 'Help & Support Guide', icon: '📖', category: 'My Shop (Free Features)' },
       { id: 'support', label: 'Contact Admin Support', icon: '🎧', category: 'My Shop (Free Features)' },
       
-      { id: 'orders', label: '🔒 Manage Orders', icon: '🚚', category: 'Pro Hub (Premium Features)' },
-      { id: 'products', label: '🔒 Manage Inventory', icon: '🛍️', category: 'Pro Hub (Premium Features)' },
       { id: 'vanity_url', label: '🔒 Premium Vanity URL', icon: '🔗', category: 'Pro Hub (Premium Features)' },
       { id: 'staff', label: '🔒 Staff Accounts', icon: '👥', category: 'Pro Hub (Premium Features)' },
       { id: 'marketing', label: '🔒 Marketing & Promos', icon: '📈', category: 'Pro Hub (Premium Features)' },
@@ -1296,7 +1296,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
           const maxAllowed = sellerData.subscription?.uploadLimit || sellerData.productLimit || 10;
           const currentCount = sellerProductsRaw.length;
           if (currentCount >= maxAllowed) {
-            alert(`Credit not allowed. You have reached your product upload limit (${maxAllowed}). Please contact admin to increase your limit.`);
+            setIsUpgraderOpen(true);
             setIsUploading(false);
             return;
           }
@@ -1573,7 +1573,7 @@ function SellerDashboard({ activeTab, onTabChange, roleTitle, affiliateCommissio
               </p>
             </div>
             <button 
-              onClick={() => window.location.href = "/pricing"}
+              onClick={() => onTabChange("pricing")}
               className="relative z-10 shrink-0 bg-white text-blue-900 px-8 py-3 rounded-xl font-black shadow-lg hover:bg-gray-50 transition-colors transform hover:-translate-y-1"
             >
               Subscription Plan
