@@ -11,7 +11,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import DirectorySidebarFilter from "@/components/DirectorySidebarFilter";
 import ProductCard from "@/components/ProductCard";
 
-export default function ClientDirectory({ initialRole = 'all', initialState = 'Odisha', initialDistrict = 'all' }: { initialRole?: string, initialState?: string, initialDistrict?: string }) {
+export default function ClientDirectory({ initialRole = 'all', initialState = 'Odisha', initialDistrict = 'all', initialBlock = '' }: { initialRole?: string, initialState?: string, initialDistrict?: string, initialBlock?: string }) {
   const { stores, loading: storesLoading } = useStores(1000);
   const { weavers, loading: weaversLoading } = useWeavers(1000);
   const { wholesalers, loading: wholesalersLoading } = useWholesalers(1000);
@@ -37,7 +37,7 @@ export default function ClientDirectory({ initialRole = 'all', initialState = 'O
   const [selectedCountry, setSelectedCountry] = useState<string>("India");
   const [selectedState, setSelectedState] = useState<string>(initialState || "Odisha");
   const [selectedDistrict, setSelectedDistrict] = useState<string>(initialDistrict || "all");
-  const [selectedBlock, setSelectedBlock] = useState<string>("");
+  const [selectedBlock, setSelectedBlock] = useState<string>(initialBlock || "");
   const [selectedVillage, setSelectedVillage] = useState<string>("");
 
   // URL Sync Effect for taxonomy

@@ -13,7 +13,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const rawLocation = decodeURIComponent(resolvedParams.location);
   
   const locationParts = rawLocation.split('-');
-  const locationName = locationParts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+  let locationName = locationParts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(', ');
+  if (locationParts.length === 3) {
+    locationName = `${locationParts[0].charAt(0).toUpperCase() + locationParts[0].slice(1)} Block, ${locationParts[1].charAt(0).toUpperCase() + locationParts[1].slice(1)}`;
+  } else if (locationParts.length === 2) {
+    locationName = `${locationParts[0].charAt(0).toUpperCase() + locationParts[0].slice(1)}, ${locationParts[1].charAt(0).toUpperCase() + locationParts[1].slice(1)}`;
+  }
 
   const title = `Original Sambalpuri Saree in ${locationName}, Odisha | Buy Direct from Weavers`;
   const description = `Find 100% original handloom mark certified Sambalpuri handloom directly from weavers and retail shops in ${locationName}, Odisha. Best collection of Sambalpuri silk saree, Sambalpuri cotton, Sambalpuri Ikat, Bandha, and Sambalpuri pata saree.`;
@@ -31,15 +36,27 @@ export default async function GeoTargetedSareePage({ params }: PageProps) {
   const rawLocation = decodeURIComponent(resolvedParams.location);
   const locationParts = rawLocation.split('-');
   
-  const districtName = locationParts.length > 0 ? locationParts[0].charAt(0).toUpperCase() + locationParts[0].slice(1) : "";
-  const stateName = locationParts.length > 1 ? locationParts[1].charAt(0).toUpperCase() + locationParts[1].slice(1) : "";
+  let blockName = "";
+  let districtName = "";
+  let stateName = "Odisha";
+
+  if (locationParts.length === 3) {
+    blockName = locationParts[0].charAt(0).toUpperCase() + locationParts[0].slice(1);
+    districtName = locationParts[1].charAt(0).toUpperCase() + locationParts[1].slice(1);
+    stateName = locationParts[2].charAt(0).toUpperCase() + locationParts[2].slice(1);
+  } else if (locationParts.length === 2) {
+    districtName = locationParts[0].charAt(0).toUpperCase() + locationParts[0].slice(1);
+    stateName = locationParts[1].charAt(0).toUpperCase() + locationParts[1].slice(1);
+  } else if (locationParts.length === 1) {
+    districtName = locationParts[0].charAt(0).toUpperCase() + locationParts[0].slice(1);
+  }
 
   return (
     <main>
       <h1 className="sr-only">Authentic Sambalpuri Sarees in {districtName} {stateName}</h1>
       
       <React.Suspense fallback={<div className="flex-1 min-h-screen flex items-center justify-center bg-[#051815]"><div className="w-12 h-12 border-4 border-[#C5A059] border-t-transparent rounded-full animate-spin"></div></div>}>
-        <ClientDirectory initialRole="all" initialState={stateName} initialDistrict={districtName} />
+        <ClientDirectory initialRole="all" initialState={stateName} initialDistrict={districtName} initialBlock={blockName} />
       </React.Suspense>
     </main>
   );
