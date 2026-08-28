@@ -2,18 +2,41 @@
 
 import React, { useState, useMemo } from 'react';
 import { Search, Shield, Ban, Star, KeyRound, MoreVertical, LogIn, Plus, X, Edit2, UploadCloud } from 'lucide-react';
-import { useWeavers, useStores, useWholesalers, useSuppliers } from '@/lib/db-hooks';
 import { db, auth } from '@/lib/firebase';
-import { deleteDoc, doc, updateDoc, setDoc } from 'firebase/firestore';
+import { deleteDoc, doc, updateDoc, setDoc, collection, query, limit, getDocs } from 'firebase/firestore';
 import ImageUploader from '@/components/ImageUploader';
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from '@/lib/locations';
+import { RefreshCcw } from 'lucide-react';
 
 export default function MasterVendorCRM() {
-  const { weavers, loading: wLoading } = useWeavers(1000);
-  const { stores, loading: sLoading } = useStores(1000);
-  const { wholesalers, loading: whLoading } = useWholesalers(1000);
-  const { suppliers, loading: suLoading } = useSuppliers(1000);
-  const loading = wLoading || sLoading || whLoading || suLoading;
+  const [allVendors, setAllVendors] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchVendors = async () => {
+    setLoading(true);
+    try {
+      const [wSnap, sSnap, whSnap, suSnap] = await Promise.all([
+        getDocs(query(collection(db, 'weavers'), limit(1000))),
+        getDocs(query(collection(db, 'stores'), limit(1000))),
+        getDocs(query(collection(db, 'wholesalers'), limit(1000))),
+        getDocs(query(collection(db, 'suppliers'), limit(1000)))
+      ]);
+
+      const wList = wSnap.docs.map(doc => ({ id: doc.id, ...doc.data(), _collectionRole: 'weaver' }));
+      const sList = sSnap.docs.map(doc => ({ id: doc.id, ...doc.data(), _collectionRole: 'store' }));
+      const whList = whSnap.docs.map(doc => ({ id: doc.id, ...doc.data(), _collectionRole: 'wholesaler' }));
+      const suList = suSnap.docs.map(doc => ({ id: doc.id, ...doc.data(), _collectionRole: 'supplier' }));
+
+      setAllVendors([...wList, ...sList, ...whList, ...suList]);
+    } catch (error) {
+      console.error("Error fetching vendors:", error);
+    }
+    setLoading(false);
+  };
+
+  React.useEffect(() => {
+    fetchVendors();
+  }, []);
 
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -36,13 +59,7 @@ export default function MasterVendorCRM() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const allVendors = useMemo(() => {
-    const wList = weavers.map(w => ({ ...w, _collectionRole: 'weaver' }));
-    const sList = stores.map(s => ({ ...s, _collectionRole: 'store' }));
-    const whList = wholesalers.map(wh => ({ ...wh, _collectionRole: 'wholesaler' }));
-    const suList = suppliers.map(su => ({ ...su, _collectionRole: 'supplier' }));
-    return [...wList, ...sList, ...whList, ...suList];
-  }, [weavers, stores, wholesalers, suppliers]);
+
 
   const filteredShops = allVendors.filter(shop => {
     const shopNameStr = shop.title || '';
@@ -236,12 +253,20 @@ export default function MasterVendorCRM() {
           </h1>
           <p className="text-gray-500 font-medium text-sm mt-1">Manage all Bhulia Hub sellers in one place (Weavers, Shops, B2B, Suppliers).</p>
         </div>
-        <button 
-          onClick={openAddModal}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-6 py-2.5 rounded-xl shadow-md transition-colors flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" /> Add Vendor
-        </button>
+        <div className="flex gap-3">
+          <button 
+            onClick={fetchVendors}
+            className="bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-700 font-bold text-sm px-4 py-2.5 rounded-xl shadow-sm transition-colors flex items-center gap-2"
+          >
+            <RefreshCcw className="w-4 h-4" /> Refresh
+          </button>
+          <button 
+            onClick={openAddModal}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-6 py-2.5 rounded-xl shadow-md transition-colors flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" /> Add Vendor
+          </button>
+        </div>
       </header>
 
       {/* Global Search and Filters */}
