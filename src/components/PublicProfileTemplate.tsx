@@ -142,7 +142,7 @@ export default function PublicProfileTemplate({ type, profile, products = [], al
           
           {/* Premium Hero Header */}
           <div className="bg-[#0B2B26] border border-[#C5A059]/40 rounded-3xl p-6 sm:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
-            {profile.status !== 'approved' && profile.status !== 'active' && (
+            {(profile.status === 'pending_approval' || profile.status === 'pending_admin_approval') && (
               <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-bl-xl z-10 shadow-md">
                 Pending Verification
               </div>
