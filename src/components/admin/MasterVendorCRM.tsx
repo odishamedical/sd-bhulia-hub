@@ -300,13 +300,21 @@ export default function MasterVendorCRM() {
                   <td className="py-4 px-6">
                     <div className="flex flex-col gap-1">
                       <span className="text-gray-900 font-medium">{shop.phone || shop.phoneNumber || 'No Phone'}</span>
-                      {shop.status === 'pending_approval' ? (
+                      {shop.status === 'pending_approval' || shop.status === 'pending_admin_approval' ? (
                         <span className="inline-flex items-center gap-1 text-amber-600 text-xs font-bold bg-amber-50 px-2 py-0.5 rounded-full w-max border border-amber-200">
                           <Shield className="w-3 h-3" /> Pending Review
                         </span>
-                      ) : (
+                      ) : shop.status === 'active' || shop.status === 'approved' ? (
                         <span className="inline-flex items-center gap-1 text-green-600 text-xs font-bold bg-green-50 px-2 py-0.5 rounded-full w-max border border-green-200">
                           <Shield className="w-3 h-3" /> Verified Active
+                        </span>
+                      ) : shop.status === 'rejected' ? (
+                        <span className="inline-flex items-center gap-1 text-red-600 text-xs font-bold bg-red-50 px-2 py-0.5 rounded-full w-max border border-red-200">
+                          <Ban className="w-3 h-3" /> Rejected
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-gray-500 text-xs font-bold bg-gray-100 px-2 py-0.5 rounded-full w-max border border-gray-200">
+                          <Shield className="w-3 h-3" /> Unverified
                         </span>
                       )}
                     </div>
