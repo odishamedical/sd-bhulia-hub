@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { bhuliaGuideArticles } from "../data";
 import { notFound } from "next/navigation";
+import AdSenseUnit from "@/components/AdSenseUnit";
 
 export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
   const params = await props.params;
@@ -48,6 +49,10 @@ export default async function GuideArticlePage(props: { params: Promise<{ slug: 
             className="text-[#5A4A42] leading-relaxed font-light space-y-6 text-lg"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
+
+          <div className="mt-8 pt-6 border-t border-[#E8DFC9]">
+            <AdSenseUnit format="auto" />
+          </div>
         </article>
         
         {/* Footer CTA */}

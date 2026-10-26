@@ -6,28 +6,42 @@ import { useBanners } from "@/hooks/useBanners";
 import { AdCampaign } from "@/types/cms";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
+import AdSenseUnit from "@/components/AdSenseUnit";
+
 interface Props {
-  placementId: AdCampaign["placement"];
-  context: {
-    audience: "global" | "weavers" | "shops" | "products";
+  placementId?: AdCampaign["placement"] | string;
+  placement?: string;
+  context?: {
+    audience: "global" | "weavers" | "shops" | "products" | "wholesalers" | "suppliers" | string;
     specificId?: string;
     category?: string;
     material?: string;
     design?: string;
   };
+  fallbackColor?: string;
+  glass?: boolean;
+  showAdSenseFallback?: boolean;
 }
 
-export default function GlobalBannerSlot({ placementId, context }: Props) {
+export default function GlobalBannerSlot({
+  placementId,
+  placement,
+  context,
+  showAdSenseFallback = true,
+}: Props) {
+  const effectivePlacement = (placementId || placement || "homepage_middle") as AdCampaign["placement"];
+  const effectiveContext = context || { audience: "global" as const, specificId: "all" };
+
   const { banners, loading, getBannersForPlacement, trackClick, trackImpression } = useBanners();
   const [activeBanners, setActiveBanners] = useState<AdCampaign[]>([]);
   const [hasLoggedImpressions, setHasLoggedImpressions] = useState(false);
 
   useEffect(() => {
     if (!loading) {
-      const match = getBannersForPlacement(placementId, context);
+      const match = getBannersForPlacement(effectivePlacement, effectiveContext as any);
       setActiveBanners(match);
     }
-  }, [loading, banners, placementId, context]);
+  }, [loading, banners, effectivePlacement, effectiveContext]);
 
   useEffect(() => {
     // Log impression once when banners are rendered
@@ -39,7 +53,16 @@ export default function GlobalBannerSlot({ placementId, context }: Props) {
     }
   }, [activeBanners, hasLoggedImpressions]);
 
-  if (loading || activeBanners.length === 0) return null;
+  if (loading) return null;
+
+  if (activeBanners.length === 0) {
+    if (!showAdSenseFallback) return null;
+    return (
+      <div className="w-full my-6">
+        <AdSenseUnit />
+      </div>
+    );
+  }
 
   const handleAdClick = (banner: AdCampaign) => {
     if (banner.id) trackClick(banner.id);
